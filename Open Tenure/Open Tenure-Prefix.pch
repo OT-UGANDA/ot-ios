@@ -1,0 +1,91 @@
+//
+//  Prefix header
+//
+//  The contents of this file are implicitly included at the beginning of every source file.
+//
+
+#import <Availability.h>
+
+#ifndef __IPHONE_7_0
+#warning "This project uses features only available in iOS SDK 7.0 and later."
+#endif
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+
+/*!
+ CoreData
+ */
+#import <CoreData/CoreData.h>
+
+/*!
+ MapKit
+ */
+#import <MapKit/MapKit.h>
+
+/*!
+ App Delegate
+ */
+#import "OTAppDelegate.h"
+
+/*!
+ Miscellaneous
+ */
+#import "OT.h"
+#import "FileSystemUtilities.h"
+#import "SVProgressHUD.h"
+#import "ZipUtilities.h"
+
+/*!
+ Network & Network response
+ */
+#import "CommunityServerAPI.h"
+#import "ResponseClaim.h"
+#import "ResponseIdType.h"
+#import "ResponseLandUse.h"
+#import "ResponseClaimType.h"
+#import "ResponseDocumentType.h"
+
+/*!
+ Classes Category
+ */
+#import "UIColor+OT.h"
+#import "NSDictionary+OT.h"
+#import "UIAlertView+Blocks.h"
+#import "UIActionSheet+Blocks.h"
+#import "NSString+OT.h"
+#import "NSData+OT.h"
+
+/*!
+ DataController
+ */
+#import "DataController.h"
+#import "IdTypeEntity.h"
+#import "LandUseEntity.h"
+#import "OwnerEntity.h"
+#import "ClaimTypeEntity.h"
+#import "DocumentTypeEntity.h"
+#import "ClaimEntity.h"
+#import "PersonEntity.h"
+#import "AttachmentEntity.h"
+#import "AdditionalInfoEntity.h"
+
+/*!
+ NSManagedObject Subclass
+ */
+#import "Person.h"
+#import "ClaimType.h"
+#import "Owner.h"
+#import "Claim.h"
+#import "LandUse.h"
+#import "IdType.h"
+#import "DocumentType.h"
+#import "Attachment.h"
+#import "AdditionalInfo.h"
+
+// NSManagedObject Subclass category
+#import "Person+OT.h"
+#import "Claim+OT.h"
+
+#endif

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="AdditionalInfo" representedClassName="AdditionalInfo" syncable="YES">
+        <attribute name="key" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="claim" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Claim" inverseName="additionalInfo" inverseEntity="Claim" syncable="YES"/>
+    </entity>
+    <entity name="Attachment" representedClassName="Attachment" syncable="YES">
+        <attribute name="attachmentId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="documentDate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fileExtension" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="md5" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mimeType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="referenceNr" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="size" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="claim" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Claim" inverseName="attachments" inverseEntity="Claim" syncable="YES"/>
+        <relationship name="typeCode" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DocumentType" inverseName="attachments" inverseEntity="DocumentType" syncable="YES"/>
+    </entity>
+    <entity name="Claim" representedClassName="Claim" syncable="YES">
+        <attribute name="challegeExpiryDate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="claimId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="claimName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="claimNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="eastAdjacency" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gpsGeometry" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mappedGeometry" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="northAdjacency" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shouthAdjacency" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="statusCode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="westAdjacency" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="additionalInfo" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AdditionalInfo" inverseName="claim" inverseEntity="AdditionalInfo" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Attachment" inverseName="claim" inverseEntity="Attachment" syncable="YES"/>
+        <relationship name="challenged" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Claim" inverseName="challenges" inverseEntity="Claim" syncable="YES"/>
+        <relationship name="challenges" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Claim" inverseName="challenged" inverseEntity="Claim" syncable="YES"/>
+        <relationship name="claimType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ClaimType" inverseName="claims" inverseEntity="ClaimType" syncable="YES"/>
+        <relationship name="landUse" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LandUse" inverseName="claims" inverseEntity="LandUse" syncable="YES"/>
+        <relationship name="owners" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Owner" inverseName="claim" inverseEntity="Owner" syncable="YES"/>
+        <relationship name="person" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="claim" inverseEntity="Person" syncable="YES"/>
+    </entity>
+    <entity name="ClaimType" representedClassName="ClaimType" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="displayValue" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="partyRequired" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="primary" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="rrrGroupTypeCode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="rrrPanelCode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="shareCheck" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="claims" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Claim" inverseName="claimType" inverseEntity="Claim" syncable="YES"/>
+    </entity>
+    <entity name="DocumentType" representedClassName="DocumentType" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="displayValue" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="forRegistration" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attachment" inverseName="typeCode" inverseEntity="Attachment" syncable="YES"/>
+    </entity>
+    <entity name="IdType" representedClassName="IdType" syncable="YES">
+        <attribute name="attribute" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="displayValue" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="persons" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Person" inverseName="idType" inverseEntity="Person" syncable="YES"/>
+    </entity>
+    <entity name="LandUse" representedClassName="LandUse" syncable="YES">
+        <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="displayValue" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="claims" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Claim" inverseName="landUse" inverseEntity="Claim" syncable="YES"/>
+    </entity>
+    <entity name="Owner" representedClassName="Owner" syncable="YES">
+        <attribute name="denominator" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="nominator" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="ownerId" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="claim" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Claim" inverseName="owners" inverseEntity="Claim" syncable="YES"/>
+        <relationship name="person" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="owner" inverseEntity="Person" syncable="YES"/>
+    </entity>
+    <entity name="Person" representedClassName="Person" syncable="YES">
+        <attribute name="contactPhoneNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dateOfBirth" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="emailAddress" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gender" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="idNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mobilePhoneNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="personId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="personType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="postalAddress" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="claim" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="Claim" inverseName="person" inverseEntity="Claim" syncable="YES"/>
+        <relationship name="idType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IdType" inverseName="persons" inverseEntity="IdType" syncable="YES"/>
+        <relationship name="owner" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="Owner" inverseName="person" inverseEntity="Owner" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="AdditionalInfo" positionX="-9117" positionY="-1440" width="128" height="88"/>
+        <element name="Attachment" positionX="-9695" positionY="-1044" width="128" height="223"/>
+        <element name="Claim" positionX="-9317" positionY="-1348" width="128" height="358"/>
+        <element name="ClaimType" positionX="-9081" positionY="-1305" width="128" height="195"/>
+        <element name="DocumentType" positionX="-9972" positionY="-1159" width="128" height="133"/>
+        <element name="IdType" positionX="-9974" positionY="-1449" width="128" height="135"/>
+        <element name="LandUse" positionX="-9099" positionY="-1072" width="128" height="118"/>
+        <element name="Owner" positionX="-9567" positionY="-1408" width="128" height="118"/>
+        <element name="Person" positionX="-9810" positionY="-1449" width="128" height="253"/>
+    </elements>
+</model>

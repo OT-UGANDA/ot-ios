@@ -1,0 +1,36 @@
+//
+//  TBClusterAnnotation.m
+//  TBAnnotationClustering
+//
+//  Created by Theodore Calmes on 10/8/13.
+//  Copyright (c) 2013 Theodore Calmes. All rights reserved.
+//  Modified by Tran Trung Chuyen on 2/10/2014
+//
+
+#import "TBClusterAnnotation.h"
+
+@implementation TBClusterAnnotation
+
+- (id)initWithCoordinate:(CLLocationCoordinate2D)coordinate count:(NSInteger)count
+{
+    self = [super init];
+    if (self) {
+        _coordinate = coordinate;
+        _title = [NSString stringWithFormat:@"%d annotations in this area", (int)count];
+        _count = count;
+    }
+    return self;
+}
+
+- (NSUInteger)hash
+{
+    NSString *toHash = [NSString stringWithFormat:@"%.5F%.5F", self.coordinate.latitude, self.coordinate.longitude];
+    return [toHash hash];
+}
+
+- (BOOL)isEqual:(id)object
+{
+    return [self hash] == [object hash];
+}
+
+@end
