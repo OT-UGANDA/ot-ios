@@ -27,11 +27,15 @@
  */
 
 #import "OTAppDelegate.h"
+#import "TestFlight.h"
 
 @implementation OTAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
+    [TestFlight takeOff:@"da1fe2db-e054-450f-a05c-0ca1b6ea8f65"];
+    
     //Create folder
     [FileSystemUtilities createOpenTenureFolder];
     [FileSystemUtilities createClaimsFolder];

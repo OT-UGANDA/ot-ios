@@ -39,6 +39,9 @@
 		DE5448D8198AA62100221700 /* OTNewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5448D7198AA62100221700 /* OTNewsViewController.m */; };
 		DE5448DE198AA63E00221700 /* OTPersonsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5448DD198AA63E00221700 /* OTPersonsViewController.m */; };
 		DE5448E4198AA66000221700 /* OTClaimsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5448E3198AA66000221700 /* OTClaimsViewController.m */; };
+		DE5CFBE519AA403B00E253B0 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE5CFBDF19AA403B00E253B0 /* libTestFlight.a */; };
+		DE5CFBE619AA403B00E253B0 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = DE5CFBE019AA403B00E253B0 /* README.md */; };
+		DE5CFBE719AA403B00E253B0 /* release_notes.md in Resources */ = {isa = PBXBuildFile; fileRef = DE5CFBE119AA403B00E253B0 /* release_notes.md */; };
 		DE7952F51976AF9800AAA157 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE7952F41976AF9800AAA157 /* Foundation.framework */; };
 		DE7952F71976AF9800AAA157 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE7952F61976AF9800AAA157 /* CoreGraphics.framework */; };
 		DE7952F91976AF9800AAA157 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE7952F81976AF9800AAA157 /* UIKit.framework */; };
@@ -217,6 +220,12 @@
 		DE5448DD198AA63E00221700 /* OTPersonsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTPersonsViewController.m; path = Classes/Views/MainTabBar/Persons/OTPersonsViewController.m; sourceTree = "<group>"; };
 		DE5448E2198AA66000221700 /* OTClaimsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTClaimsViewController.h; path = Classes/Views/MainTabBar/Claims/OTClaimsViewController.h; sourceTree = "<group>"; };
 		DE5448E3198AA66000221700 /* OTClaimsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTClaimsViewController.m; path = Classes/Views/MainTabBar/Claims/OTClaimsViewController.m; sourceTree = "<group>"; };
+		DE5CFBDF19AA403B00E253B0 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
+		DE5CFBE019AA403B00E253B0 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		DE5CFBE119AA403B00E253B0 /* release_notes.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = release_notes.md; sourceTree = "<group>"; };
+		DE5CFBE219AA403B00E253B0 /* TestFlight+AsyncLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+AsyncLogging.h"; sourceTree = "<group>"; };
+		DE5CFBE319AA403B00E253B0 /* TestFlight+ManualSessions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+ManualSessions.h"; sourceTree = "<group>"; };
+		DE5CFBE419AA403B00E253B0 /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		DE7952F11976AF9800AAA157 /* Open Tenure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open Tenure.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE7952F41976AF9800AAA157 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		DE7952F61976AF9800AAA157 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -432,6 +441,7 @@
 				DE5448BF198A8D7400221700 /* libPROJ.4.a in Frameworks */,
 				DE5448C0198A8D7400221700 /* libSSZipArchive.a in Frameworks */,
 				DE5448C1198A8D7400221700 /* libGEOS.a in Frameworks */,
+				DE5CFBE519AA403B00E253B0 /* libTestFlight.a in Frameworks */,
 				DE7F68EA19896CF10063047F /* libc++.dylib in Frameworks */,
 				DECBE8B119855AC900D475F6 /* libz.dylib in Frameworks */,
 				DEB89C50199A2DCD00BBC9D3 /* QuickLook.framework in Frameworks */,
@@ -696,6 +706,7 @@
 		DE3EE36B1989DF9800CD5568 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				DE5CFBDE19AA403B00E253B0 /* TestFlightSDK3.0.2 */,
 				DEB89C4B199A14B300BBC9D3 /* DirectoryWatcher */,
 				DEEE28C1199117FF00B69E94 /* PickListController */,
 				DED374B0198E8A1900B48E7A /* BPForms */,
@@ -747,6 +758,20 @@
 				DE5448E3198AA66000221700 /* OTClaimsViewController.m */,
 			);
 			name = Claims;
+			sourceTree = "<group>";
+		};
+		DE5CFBDE19AA403B00E253B0 /* TestFlightSDK3.0.2 */ = {
+			isa = PBXGroup;
+			children = (
+				DE5CFBDF19AA403B00E253B0 /* libTestFlight.a */,
+				DE5CFBE019AA403B00E253B0 /* README.md */,
+				DE5CFBE119AA403B00E253B0 /* release_notes.md */,
+				DE5CFBE219AA403B00E253B0 /* TestFlight+AsyncLogging.h */,
+				DE5CFBE319AA403B00E253B0 /* TestFlight+ManualSessions.h */,
+				DE5CFBE419AA403B00E253B0 /* TestFlight.h */,
+			);
+			name = TestFlightSDK3.0.2;
+			path = Dependencies/TestFlightSDK3.0.2;
 			sourceTree = "<group>";
 		};
 		DE7952E81976AF9800AAA157 = {
@@ -1303,9 +1328,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE5CFBE719AA403B00E253B0 /* release_notes.md in Resources */,
 				DEA1379B1976B82E00C0C232 /* Localizable.strings in Resources */,
 				DE0D2CB21981716100D248B9 /* SVProgressHUD.bundle in Resources */,
 				DE79530B1976AF9900AAA157 /* Main_iPad.storyboard in Resources */,
+				DE5CFBE619AA403B00E253B0 /* README.md in Resources */,
 				DE7953131976AF9A00AAA157 /* Images.xcassets in Resources */,
 				DE7953081976AF9900AAA157 /* Main_iPhone.storyboard in Resources */,
 				DE7952FF1976AF9800AAA157 /* InfoPlist.strings in Resources */,
@@ -1626,6 +1653,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dependencies",
+					"$(PROJECT_DIR)/Dependencies/TestFlightSDK3.0.2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1649,6 +1677,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dependencies",
+					"$(PROJECT_DIR)/Dependencies/TestFlightSDK3.0.2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
