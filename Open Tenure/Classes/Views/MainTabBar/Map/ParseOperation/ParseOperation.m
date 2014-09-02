@@ -25,7 +25,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-
 #import "ParseOperation.h"
 #import "ClaimParser.h"
 
@@ -65,8 +64,88 @@
 @implementation ParseOperation
 
 - (id)initWithResponseClaims:(NSArray *)responseClaims sharedPSC:(NSPersistentStoreCoordinator *)psc {
-       return self;
+    if (self = [super init]) {
+        _claimEntity = [ClaimEntity new];
+        _claimTypeEntity = [ClaimTypeEntity new];
+        _landUseEntity = [LandUseEntity new];
+        _personEntity = [PersonEntity new];
+        _idTypeEntity = [IdTypeEntity new];
+        _ownerEntity = [OwnerEntity new];
+        _additionalInfoEntity = [AdditionalInfoEntity new];
+        _documentTypeEntity = [DocumentTypeEntity new];
+        
+        _responseClaims = responseClaims;
+        _currentParseBatch = [[NSMutableArray alloc] init];
+        
+        self.sharedPSC = psc;
+    }
+    return self;
 }
 
+/*!
+ Kiểm tra sự tồn tại của claim trên local (những claim đã tải về). Cập nhật trạng thái cho các claims đã tải về nếu có sự thay đổi từ phía server.
+ @result
+ Danh sách các claim mới tải về
+ */
+- (NSArray *)getValidResponseClaimList:(NSMutableArray *)objects {
+    NSMutableArray *newResponseObject = [NSMutableArray array];
+    for (NSDictionary *object in objects) {
+        ResponseClaim *responseObject = [ResponseClaim claimWithDictionary:object];
+        //if ([ClaimEntity updateFromResponseObject:responseObject]) {
+            [newResponseObject addObject:responseObject];
+        //}
+    }
+    return newResponseObject;
+}
+
+- (void)addClaimsToList:(NSArray *)claims {
+    
+    if ([self.managedObjectContext hasChanges]) {
+        if (![self.managedObjectContext save:nil]) {
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate.
+            // You should not use this function in a shipping application, although it may be useful
+            // during development. If it is not possible to recover from the error, display an alert
+            // panel that instructs the user to quit the application by pressing the Home button.
+            //
+            NSLog(@"Unresolved error");
+            abort();
+        }
+    }
+}
+
+- (void)main {
+    self.managedObjectContext = [[NSManagedObjectContext alloc] init];
+    self.managedObjectContext.persistentStoreCoordinator = self.sharedPSC;
+
+    for (ResponseClaim *responseClaim in _responseClaims) {
+        [self downloadClaim:responseClaim.claimId];
+    }
+    
+    if ([self.currentParseBatch count] > 0) {
+        [self addClaimsToList:self.currentParseBatch];
+    }
+    
+}
+
+- (void)downloadClaim:(NSString *)claimId {
+    
+    [CommunityServerAPI getClaim:claimId completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self processClaimData:nil];
+            _parsedClaimsCounter++;
+            [self.currentParseBatch addObject:@"string"];
+        });
+    }];
+
+}
+
+- (void)processClaimData:(NSData *)data {
+    NSLog(@"string");
+}
+
+- (void)claimParser:(ClaimParser *)claimParser didEndElement:(NSData *)data {
+    NSLog(@"didEndElement");
+}
 
 @end

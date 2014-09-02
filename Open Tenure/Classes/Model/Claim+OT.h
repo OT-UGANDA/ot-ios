@@ -25,6 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import "Claim.h"
 
 @interface Claim (OT)
@@ -33,5 +34,9 @@
 + (Claim *)getFromTemporary;
 - (BOOL)isSaved;
 - (OTViewType)getViewType;
+
+- (NSDictionary *)dictionary;
+
+- (void)importFromJSON:(NSDictionary *)keyedValues;
 
 @end

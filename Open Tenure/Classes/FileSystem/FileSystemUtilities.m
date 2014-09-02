@@ -25,7 +25,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-
 #import "FileSystemUtilities.h"
 
 @implementation FileSystemUtilities
@@ -202,8 +201,10 @@
 }
 
 + (NSString *)getJsonClaim:(NSString *)claimId {
-    
-    return nil;
+    NSString *claimFolder = [self getClaimFolder:claimId];
+    NSString *jsonFile = [claimFolder stringByAppendingPathComponent:@"claim.json"];
+    NSString *jsonString = [NSString stringWithContentsOfFile:jsonFile encoding:NSUTF8StringEncoding error:nil];
+    return jsonString;
 }
 
 + (NSString *)getJsonAttachment:(NSString *)attachmentId {

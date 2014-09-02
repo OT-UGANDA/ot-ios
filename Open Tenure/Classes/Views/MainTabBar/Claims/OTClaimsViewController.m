@@ -28,10 +28,13 @@
 
 #import "OTClaimsViewController.h"
 #import "OTClaimTabBarController.h"
+#import "SaveClaimTask.h"
 
 @interface OTClaimsViewController ()
 
 @property (nonatomic, strong) NSString *rootViewClassName;
+
+@property (nonatomic) NSOperationQueue *saveClaimQueue;
 
 @end
 
@@ -134,6 +137,9 @@
     [super configureCell:cell forTableView:tableView atIndexPath:indexPath];
     Claim *object;
     
+    cell.tintColor = [UIColor otDarkBlue];
+    cell.accessoryType = UITableViewCellAccessoryDetailButton;
+    
     if (_filteredObjects == nil)
         object = [_fetchedResultsController objectAtIndexPath:indexPath];
     else
@@ -172,6 +178,60 @@
         UINavigationController *nav = [[self storyboard] instantiateViewControllerWithIdentifier:@"ClaimTabBar"];
         [self.navigationController presentViewController:nav animated:YES completion:nil];
     }
+}
+
+#pragma recursively iterate the sub views
+// Hàm này đệ quy dùng để tìm subview theo class, không biết nên để ở đâu cho tiện
+
+- (UIView *)getSubviewByClass:(Class)className ofView:(UIView *)view {
+    
+    // Get the subviews of the view
+    NSArray *subviews = [view subviews];
+    
+    // Return if there are no subviews
+    if ([subviews count] == 0) return nil;
+    
+    for (UIView *subview in subviews) {
+        if ([subview isKindOfClass:className])
+            return subview;
+        if (subview.subviews.count > 0)
+            [self getSubviewByClass:className ofView:subview];
+    }
+    return nil;
+}
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    Claim *claim;
+    
+    if (_filteredObjects == nil)
+        claim = [_fetchedResultsController objectAtIndexPath:indexPath];
+    else
+        claim = [_filteredObjects objectAtIndex:indexPath.row];
+    
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    
+    UIView *accessoryView = cell.accessoryView;
+    if (accessoryView == nil) {
+        UIView *cellContentView = nil;
+        
+        for (UIView *accView in [cell subviews]) {
+            accessoryView = [self getSubviewByClass:[UIButton class] ofView:accView];
+        }
+        // if the UIButton doesn't exists, find cell contet view (UITableViewCellContentView)
+        if (accessoryView == nil) {
+            accessoryView   = cellContentView;
+        }
+        // if the cell contet view doesn't exists, use cell view
+        if (accessoryView == nil) {
+            accessoryView   = cell; 
+        }
+    }
+    
+    [UIActionSheet showFromRect:accessoryView.frame inView:cell.contentView animated:YES withTitle:@"Action" cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@[@"Submit claim", @"Action 2", @"Action 3"] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+        if (buttonIndex == 0) {
+            [self submitClaim:claim];
+        }
+    }];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -237,27 +297,40 @@
 }
 
 - (IBAction)login:(id)sender {
-
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"title_activity_login_activity_test", @"Log in") message:nil delegate:self cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel")  otherButtonTitles:NSLocalizedString(@"action_sign_in_short", @"Log in"), nil];
-    alertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
-    [alertView show];
+    [OT login];
 }
 
 - (IBAction)logout:(id)sender {
-    [SVProgressHUD show];
-    [CommunityServerAPI logoutWithCompletionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
+    [OT login];
+}
+
+- (void)submitClaim:(Claim *)claim {
+    
+    if (![OTAppDelegate authenticated]) {
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"message_login_before", @"Do login before")];
+        return;
+    }
+
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"message_uploading", nil)];
+    SaveClaimTask *saveClaimTask = [[SaveClaimTask alloc] initWithClaim:claim];
+    self.saveClaimQueue = [NSOperationQueue new];
+    [_saveClaimQueue addOperation:saveClaimTask];
+/*
+    NSError * err;
+    NSData * jsonData = [NSJSONSerialization dataWithJSONObject:claim.dictionary options:NSJSONWritingPrettyPrinted error:&err];
+    NSString * jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    
+    [CommunityServerAPI saveClaim:jsonString completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
+        NSLog(@"HTTP Response: %tu", httpResponse.statusCode);
+        NSMutableArray *objects = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+        NSLog(@"%@", objects.description);
+        
         if (error != nil) {
             [OT handleError:error];
         } else {
+            
             if ((([httpResponse statusCode]/100) == 2) && [[httpResponse MIMEType] isEqual:@"application/json"]) {
-                [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_logout_ok", @"You have succefully Logout")];
-                // Clear session
-                NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-                for (NSHTTPCookie *cookie in [cookieStorage cookies])
-                    [cookieStorage deleteCookie:cookie];
-                
-                [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] setAuthenticated:NO];
-                [[NSNotificationCenter defaultCenter] postNotificationName:kLogoutSuccessNotificationName object:self userInfo:nil];
+
             } else {
                 NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
                 NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
@@ -268,44 +341,8 @@
             }
         }
     }];
-}
-
-- (void)submitClaim:(id)claim {
+*/
     
-    if (![OTAppDelegate authenticated]) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"message_login_before", @"Do login before")];
-        return;
-    }
-    // TODO: Submit claim
-    
-}
-
-#pragma UIAlertView Delegate methods
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"login_progress_signing_in", @"Loggin in...")];
-        [CommunityServerAPI loginWithUsername:[[alertView textFieldAtIndex:0] text] andPassword:[[alertView textFieldAtIndex:1] text] completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
-            if (error != nil) {
-                [OT handleError:error];
-            } else {
-                if ((([httpResponse statusCode]/100) == 2) && [[httpResponse MIMEType] isEqual:@"application/json"]) {
-                    [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_login_ok", @"You have succefully Login")];
-                    
-                    // Store session
-                    [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:[NSHTTPCookie cookieWithProperties:[httpResponse allHeaderFields]]];
-                    
-                    [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] setAuthenticated:YES];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kLoginSuccessNotificationName object:self userInfo:nil];
-                } else {
-                    NSDictionary *userInfo = @{NSLocalizedDescriptionKey : NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection")};
-                    [OT handleError:[NSError errorWithDomain:@"HTTP"
-                                                        code:[httpResponse statusCode]
-                                                    userInfo:userInfo]];
-                }
-            }
-        }];
-    }
 }
 
 @end

@@ -25,6 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
@@ -41,7 +42,7 @@
 @property (nonatomic, retain) NSString * note;
 @property (nonatomic, retain) NSString * referenceNr;
 @property (nonatomic, retain) NSString * size;
-@property (nonatomic, retain) NSString * status;
+@property (nonatomic, retain) NSString * statusCode;
 @property (nonatomic, retain) Claim *claim;
 @property (nonatomic, retain) DocumentType *typeCode;
 

@@ -75,20 +75,20 @@
     // Set title and view
     if ([_person isSaved]) { // View person/group
         if (_person.claim == nil || [_person.claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local person/group
-            if (_person.personType == kPersonTypeGroup) { // Local group
+            if (![_person.person boolValue]) { // Local group
                 self.title = NSLocalizedString(@"title_group_details", @"Group Detail");
             } else { // Local person
                 self.title = NSLocalizedString(@"title_person_details", @"Person Detail");
             }
         } else { // Readonly person/group
-            if (_person.personType == kPersonTypeGroup) { // Readonly group
+            if (![_person.person boolValue]) { // Readonly group
                 self.title = NSLocalizedString(@"title_group_details", @"Group Detail");
             } else { // Readonly person
                 self.title = NSLocalizedString(@"title_person_details", @"Person Detail");
             }
         }
     } else { // Add person/group
-        if (_person.personType == kPersonTypeGroup) { // Add group
+        if (![_person.person boolValue]) { // Add group
             self.title = NSLocalizedString(@"title_activity_group", @"New group");
         } else { // Add person
             self.title = NSLocalizedString(@"title_activity_person", @"New person");
@@ -145,20 +145,20 @@
     NSArray *titles;
     if ([_person isSaved]) { // View person/group
         if (_person.claim == nil || [_person.claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local person/group
-            if (_person.personType == kPersonTypeGroup) { // Local group
+            if (![_person.person boolValue]) { // Local group
                 titles = @[NSLocalizedString(@"title_group_details", @"Group Detail")];
             } else { // Local person
                 titles = @[NSLocalizedString(@"title_person_details", @"Person Detail")];
             }
         } else { // Readonly person/group
-            if (_person.personType == kPersonTypeGroup) { // Readonly group
+            if (![_person.person boolValue]) { // Readonly group
                 titles = @[NSLocalizedString(@"title_group_details", @"Group Detail")];
             } else { // Readonly person
                 titles = @[NSLocalizedString(@"title_person_details", @"Person Detail")];;
             }
         }
     } else { // Add person/group
-        if (_person.personType == kPersonTypeGroup) { // Add group
+        if (![_person.person boolValue]) { // Add group
             titles = @[NSLocalizedString(@"title_activity_group", @"New group")];
         } else { // Add person
             titles = @[NSLocalizedString(@"title_activity_person", @"New person")];
@@ -236,20 +236,20 @@
         case 0:
             if ([_person isSaved]) { // View person/group
                 if (_person.claim == nil || [_person.claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local person/group
-                    if (_person.personType == kPersonTypeGroup) { // Local group
+                    if (![_person.person boolValue]) { // Local group
                         self.navigationItem.rightBarButtonItems = @[_cancel, _fixedSpace, _save, _flexibleSpace];
                     } else { // Local person
                         self.navigationItem.rightBarButtonItems = @[_cancel, _fixedSpace, _save, _flexibleSpace];
                     }
                 } else { // Readonly person/group
-                    if (_person.personType == kPersonTypeGroup) { // Readonly group
+                    if (![_person.person boolValue]) { // Readonly group
                         self.navigationItem.rightBarButtonItems = @[_cancel, _flexibleSpace];
                     } else { // Readonly person
                         self.navigationItem.rightBarButtonItems = @[_cancel, _flexibleSpace];
                     }
                 }
             } else { // Add person/group
-                if (_person.personType == kPersonTypeGroup) { // Add group
+                if (![_person.person boolValue]) { // Add group
                     self.navigationItem.rightBarButtonItems = @[_cancel, _fixedSpace, _save, _flexibleSpace];
                 } else { // Add person
                     self.navigationItem.rightBarButtonItems = @[_cancel, _fixedSpace, _save, _flexibleSpace];

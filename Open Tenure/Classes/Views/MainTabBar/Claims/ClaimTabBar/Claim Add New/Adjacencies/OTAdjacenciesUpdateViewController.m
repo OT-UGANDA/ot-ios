@@ -52,16 +52,16 @@
         _claim.northAdjacency = inText;
     };
 
-    OTFormInputTextFieldCell *shouthAdjacency =
-    [[inputTextFieldClass alloc] initWithText:_claim.shouthAdjacency
+    OTFormInputTextFieldCell *southAdjacency =
+    [[inputTextFieldClass alloc] initWithText:_claim.southAdjacency
                                   placeholder:NSLocalizedString(@"south_adjacency", nil)
                                      delegate:self
                                     mandatory:NO
                              customCellHeight:customCellHeight
                                  keyboardType:UIKeyboardTypeDefault
                                      viewType:_viewType];
-    shouthAdjacency.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText) {
-        _claim.shouthAdjacency = inText;
+    southAdjacency.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText) {
+        _claim.southAdjacency = inText;
     };
 
     OTFormInputTextFieldCell *eastAdjacency =
@@ -89,7 +89,7 @@
     };
     
     [self setHeaderTitle:NSLocalizedString(@"adjacent_claims", nil) forSection:1];
-    return @[@[northAdjacency, shouthAdjacency, eastAdjacency, westAdjacency], @[]];
+    return @[@[northAdjacency, southAdjacency, eastAdjacency, westAdjacency], @[]];
 }
 
 @end

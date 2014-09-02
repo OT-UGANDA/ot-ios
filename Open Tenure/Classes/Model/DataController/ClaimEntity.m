@@ -1,10 +1,30 @@
-//
-//  ClaimEntity.m
-//  Open Tenure
-//
-//  Created by Chuyen Trung Tran on 8/6/14.
-//  Copyright (c) 2014 Food and Agriculture Organization of the United Nations (FAO). All rights reserved.
-//
+/**
+ * ******************************************************************************************
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ *    1. Redistributions of source code must retain the above copyright notice,this list
+ *       of conditions and the following disclaimer.
+ *    2. Redistributions in binary form must reproduce the above copyright notice,this list
+ *       of conditions and the following disclaimer in the documentation and/or other
+ *       materials provided with the distribution.
+ *    3. Neither the name of FAO nor the names of its contributors may be used to endorse or
+ *       promote products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,STRICT LIABILITY,OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * *********************************************************************************************
+ */
 
 #import "ClaimEntity.h"
 
@@ -110,6 +130,16 @@
     Claim *entityObject = [NSEntityDescription insertNewObjectForEntityForName:[self entityName] inManagedObjectContext:self.managedObjectContext];
     entityObject.claimId = [[[NSUUID UUID] UUIDString] lowercaseString];
     entityObject.statusCode = kClaimStatusCreated;
+    
+    NSDate *currentDate = [NSDate date];
+    entityObject.lodgementDate = [[OT dateFormatter] stringFromDate:currentDate];
+    
+    NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+    [dateComponents setMonth:1];
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    NSDate *challengeExpiryDate = [calendar dateByAddingComponents:dateComponents toDate:currentDate options:0];
+    entityObject.challengeExpiryDate = [[OT dateFormatter] stringFromDate:challengeExpiryDate];
+    entityObject.nr = @"0001";
     return entityObject;
 }
 
@@ -158,9 +188,9 @@
         entityObject.claimName = responseObject.claimName;
         entityObject.gpsGeometry = responseObject.gpsGeometry;
         entityObject.startDate = responseObject.startDate;
-        entityObject.claimNumber = responseObject.nr;
+        entityObject.nr = responseObject.nr;
         entityObject.northAdjacency = responseObject.northAdjacency;
-        entityObject.shouthAdjacency = responseObject.shouthAdjacency;
+        entityObject.southAdjacency = responseObject.southAdjacency;
         entityObject.eastAdjacency = responseObject.eastAdjacency;
         entityObject.westAdjacency = responseObject.westAdjacency;
         entityObject.notes = responseObject.notes;

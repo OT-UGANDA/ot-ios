@@ -15,21 +15,24 @@
         <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="referenceNr" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="size" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="statusCode" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="claim" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Claim" inverseName="attachments" inverseEntity="Claim" syncable="YES"/>
         <relationship name="typeCode" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DocumentType" inverseName="attachments" inverseEntity="DocumentType" syncable="YES"/>
     </entity>
     <entity name="Claim" representedClassName="Claim" syncable="YES">
-        <attribute name="challegeExpiryDate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="challengeExpiryDate" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="claimId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="claimName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="claimNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="decisionDate" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="eastAdjacency" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="gpsGeometry" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lodgementDate" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="mappedGeometry" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="northAdjacency" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="shouthAdjacency" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nr" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recorderName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="southAdjacency" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="startDate" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="statusCode" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="westAdjacency" optional="YES" attributeType="String" syncable="YES"/>
@@ -68,7 +71,6 @@
         <attribute name="displayValue" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="persons" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Person" inverseName="idType" inverseEntity="Person" syncable="YES"/>
     </entity>
     <entity name="LandUse" representedClassName="LandUse" syncable="YES">
         <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
@@ -85,28 +87,28 @@
         <relationship name="person" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="owner" inverseEntity="Person" syncable="YES"/>
     </entity>
     <entity name="Person" representedClassName="Person" syncable="YES">
-        <attribute name="contactPhoneNumber" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="dateOfBirth" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="emailAddress" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="gender" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="birthDate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="genderCode" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="idNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="idTypeCode" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="mobilePhoneNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mobilePhone" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="person" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="personId" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="personType" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="postalAddress" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phone" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="claim" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="Claim" inverseName="person" inverseEntity="Claim" syncable="YES"/>
-        <relationship name="idType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="IdType" inverseName="persons" inverseEntity="IdType" syncable="YES"/>
         <relationship name="owner" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="Owner" inverseName="person" inverseEntity="Owner" syncable="YES"/>
     </entity>
     <elements>
         <element name="AdditionalInfo" positionX="-9117" positionY="-1440" width="128" height="88"/>
         <element name="Attachment" positionX="-9695" positionY="-1044" width="128" height="223"/>
-        <element name="Claim" positionX="-9317" positionY="-1348" width="128" height="358"/>
+        <element name="Claim" positionX="-9317" positionY="-1348" width="128" height="405"/>
         <element name="ClaimType" positionX="-9081" positionY="-1305" width="128" height="195"/>
         <element name="DocumentType" positionX="-9972" positionY="-1159" width="128" height="133"/>
-        <element name="IdType" positionX="-9974" positionY="-1449" width="128" height="135"/>
+        <element name="IdType" positionX="-9974" positionY="-1449" width="128" height="120"/>
         <element name="LandUse" positionX="-9099" positionY="-1072" width="128" height="118"/>
         <element name="Owner" positionX="-9567" positionY="-1408" width="128" height="118"/>
         <element name="Person" positionX="-9810" positionY="-1449" width="128" height="253"/>

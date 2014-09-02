@@ -45,7 +45,17 @@
 }
 
 - (void)parse {
-   
+    NSOperationQueue *operationQueue = [[NSOperationQueue alloc]init];
+    [operationQueue setMaxConcurrentOperationCount:1];
+    [operationQueue waitUntilAllOperationsAreFinished];
+    
+    for (ResponseClaim *responseClaim in _responseClaims) {
+        CommunityServerAPI *com = [[CommunityServerAPI alloc] init];
+        [com getClaim:responseClaim.claimId completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
+            [_delegate claimParser:self didEndElement:data];
+        }];
+        [operationQueue addOperation:com];
+    }
 }
 
 @end

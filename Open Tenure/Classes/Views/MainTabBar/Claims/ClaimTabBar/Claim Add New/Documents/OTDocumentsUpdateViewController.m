@@ -110,7 +110,7 @@
         attachment = [_filteredObjects objectAtIndex:indexPath.row];
     
     cell.textLabel.text = [NSString stringWithFormat:@"%@, Type: %@", attachment.note, attachment.mimeType];
-    cell.detailTextLabel.text = attachment.status;
+    cell.detailTextLabel.text = attachment.statusCode;
 }
 
 #pragma Bar Buttons Action
@@ -176,20 +176,20 @@
         [_dictionary setValue:description forKey:@"description"];
         [_dictionary setValue:typeCode forKey:@"typeCode"];
 
-        Attachment *attachment = [AttachmentEntity create];
-        attachment.attachmentId = [_dictionary objectForKey:@"id"];
-        attachment.note = [_dictionary objectForKey:@"description"];
-        attachment.documentDate = [_dictionary objectForKey:@"documentDate"];
-        attachment.fileExtension = [_dictionary objectForKey:@"fileExtension"];
-        attachment.fileName = [_dictionary objectForKey:@"fileName"];
-        attachment.size = [NSString stringWithFormat:@"%@", [_dictionary objectForKey:@"size"]];
-        attachment.mimeType = [_dictionary objectForKey:@"mimeType"];
-        attachment.referenceNr = [_dictionary objectForKey:@"referenceNr"];
-        attachment.md5 = [_dictionary objectForKey:@"md5"];
-        attachment.status = [_dictionary objectForKey:@"status"];
+        AttachmentEntity *attachmentEntity = [AttachmentEntity new];
+        [attachmentEntity setManagedObjectContext:_claim.managedObjectContext];
+        Attachment *attachment = [attachmentEntity create];
+        [attachment importFromJSON:_dictionary];
+        
         attachment.claim = _claim;
         NSString *typeCode = [_dictionary objectForKey:@"typeCode"];
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(displayValue == %@)", typeCode];
+        
+        // Nạp lại sau khi claim đã save
+        DocumentTypeEntity *docTypeEntity = [DocumentTypeEntity new];
+        [docTypeEntity setManagedObjectContext:_claim.managedObjectContext];
+        _docTypeCollection = [docTypeEntity getCollection];
+        
         DocumentType *docType = [[_docTypeCollection filteredArrayUsingPredicate:predicate] firstObject];
         attachment.typeCode = docType;
         
@@ -369,11 +369,12 @@
         NSNumber *fileSize = [NSNumber numberWithUnsignedInteger:imageData.length];
         NSString *md5 = [imageData md5];
         NSString *file = [NSTemporaryDirectory() stringByAppendingPathComponent:@"_selectedImage_.jpg"];
+        NSString *fileName = [[[[NSUUID UUID] UUIDString] lowercaseString] stringByAppendingPathExtension:@"jpg"];
         [imageData writeToFile:file atomically:YES];
         self.dictionary = [NSMutableDictionary dictionary];
         [_dictionary setValue:[[OT dateFormatter] stringFromDate:[NSDate date]] forKey:@"documentDate"];
         [_dictionary setValue:@"image/jpeg" forKey:@"mimeType"];
-        [_dictionary setValue:[[[NSUUID UUID] UUIDString] lowercaseString]  forKey:@"fileName"];
+        [_dictionary setValue:fileName  forKey:@"fileName"];
         [_dictionary setValue:@"jpg" forKey:@"fileExtension"];
         [_dictionary setValue:[[[NSUUID UUID] UUIDString] lowercaseString] forKey:@"id"];
         [_dictionary setValue:fileSize forKey:@"size"];

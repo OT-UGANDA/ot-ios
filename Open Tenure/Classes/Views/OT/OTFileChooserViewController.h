@@ -25,7 +25,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-
 #import <UIKit/UIKit.h>
 #import <QuickLook/QuickLook.h>
 #import "DirectoryWatcher.h"

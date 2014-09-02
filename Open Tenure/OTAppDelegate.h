@@ -44,7 +44,9 @@
 @property (nonatomic) Claim *claim;
 
 @property (nonatomic) BOOL authenticated;
+@property (nonatomic, strong) NSString *userName;
 
 + (BOOL)authenticated;
++ (NSString *)userName;
 
 @end

@@ -136,7 +136,8 @@
         NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
                                     key, @"key",
                                     value, @"value", nil];
-        AdditionalInfo *newAdditionalInfo = [AdditionalInfoEntity createFromDictionary:dictionary];
+        AdditionalInfo *newAdditionalInfo = [AdditionalInfoEntity create];
+        [newAdditionalInfo importFromJSON:dictionary];
         if (newAdditionalInfo != nil) {
             newAdditionalInfo.claim = _claim;
             [newAdditionalInfo.managedObjectContext save:nil];

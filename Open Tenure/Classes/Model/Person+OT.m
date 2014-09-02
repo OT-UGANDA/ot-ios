@@ -25,7 +25,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-
 #import "Person+OT.h"
 
 @implementation Person (OT)
@@ -42,13 +41,13 @@
     switch (type) {
         case OTFullNameTypeDefault:
             if (self.lastName != nil || self.lastName.length > 0)
-                return [NSString stringWithFormat:@"%@ %@", self.firstName, self.lastName];
+                return [NSString stringWithFormat:@"%@ %@", self.name, self.lastName];
             else
-                return [NSString stringWithFormat:@"%@", self.firstName];
+                return [NSString stringWithFormat:@"%@", self.name];
             break;
         case OTFullNameType1:
             if (self.lastName != nil || self.lastName.length > 0)
-                return [NSString stringWithFormat:@"%@ %@", self.lastName, self.firstName];
+                return [NSString stringWithFormat:@"%@ %@", self.lastName, self.name];
             else
                 return [NSString stringWithFormat:@"%@", self.lastName];
             break;
@@ -58,6 +57,68 @@
 
 - (BOOL)isSaved {
     return ![[self objectID] isTemporaryID];
+}
+
+- (NSDictionary *)dictionary {
+
+    // matching managedObject vs jsonObject
+    NSDictionary * const matching = @{
+                                      @"personId": @"id",
+                                      
+                                      };
+    
+    NSArray *keys = [[[self entity] attributesByName] allKeys];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:[self dictionaryWithValuesForKeys:keys]];
+    
+    for (NSString *key in matching.allKeys) {
+        if ([dict objectForKey:key] != nil) {
+            [dict setObject:[dict objectForKey:key] forKey:[matching objectForKey:key]];
+            [dict removeObjectForKey:key];
+        }
+    }
+    [dict setValue:[NSNumber numberWithBool:[[dict valueForKey:@"person"] boolValue]] forKey:@"person"];
+
+    return dict;
+}
+
+- (void)importFromJSON:(NSDictionary *)keyedValues {
+    [self entityWithDictionary:keyedValues];
+    
+    NSDictionary * const matching = @{
+                                      @"personId": @"id",
+                                      
+                                      };
+    
+    NSDictionary *attributes = [[self entity] attributesByName];
+    for (NSString *key in matching.allKeys) {
+        id value = [keyedValues objectForKey:[matching objectForKey:key]];
+        if (value == nil || [value isKindOfClass:[NSNull class]]) {
+            continue;
+        }
+        NSAttributeType attributeType = [[attributes objectForKey:key] attributeType];
+        if ((attributeType == NSStringAttributeType) && ([value isKindOfClass:[NSNumber class]])) {
+            value = [value stringValue];
+        } else if (((attributeType == NSInteger16AttributeType) || (attributeType == NSInteger32AttributeType) || (attributeType == NSInteger64AttributeType) || (attributeType == NSBooleanAttributeType)) && ([value isKindOfClass:[NSString class]])) {
+            value = [NSNumber numberWithInteger:[value integerValue]];
+        } else if ((attributeType == NSFloatAttributeType) &&  ([value isKindOfClass:[NSString class]])) {
+            value = [NSNumber numberWithDouble:[value doubleValue]];
+        }
+        [self setValue:value forKey:key];
+    }
+}
+
+- (Person *)clone {
+    PersonEntity *personEntity = [PersonEntity new];
+    [personEntity setManagedObjectContext:self.managedObjectContext];
+    Person *person = [personEntity create];
+
+    NSDictionary *attributes = [[self entity] attributesByName];
+    for (NSString *attribute in attributes) {
+        [person setValue:[self valueForKey:attribute] forKey:attribute];
+    }
+    person.personId = [[[NSUUID UUID] UUIDString] lowercaseString];
+    
+    return person;
 }
 
 @end

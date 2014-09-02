@@ -85,7 +85,11 @@
 #import "AdditionalInfo.h"
 
 // NSManagedObject Subclass category
+#import "NSManagedObject+OT.h"
 #import "Person+OT.h"
 #import "Claim+OT.h"
+#import "Attachment+OT.h"
+#import "AdditionalInfo+OT.h"
+#import "Owner+OT.h"
 
 #endif

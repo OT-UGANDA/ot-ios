@@ -43,4 +43,10 @@
 - (NSString *)fullNameType:(OTFullNameType)type;
 - (BOOL)isSaved;
 
+- (NSDictionary *)dictionary;
+
+- (void)importFromJSON:(NSDictionary *)keyedValues;
+
+- (Person *)clone;
+
 @end

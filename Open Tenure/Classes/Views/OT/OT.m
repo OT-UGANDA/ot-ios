@@ -26,7 +26,6 @@
  * *********************************************************************************************
  */
 
-
 #import "OT.h"
 
 NSString * const kLoginSuccessNotificationName = @"LoginSuccessNotificationName";
@@ -42,24 +41,24 @@ NSString * const kGetClaimSuccessNotificationName = @"GetClaimSuccessNotificatio
 NSString * const kClaimStatusCreated = @"created";
 NSString * const kClaimStatusUploading = @"uploading";
 NSString * const kClaimStatusUnmoderated = @"unmoderated";
+NSString * const kClaimStatusUpdating = @"updating";
 NSString * const kClaimStatusModerated = @"moderated";
 NSString * const kClaimStatusChallenged = @"challenged";
 NSString * const kClaimStatusUploadIncomplete = @"upload_incomplete";
 NSString * const kClaimStatusUploadError = @"upload_error";
+NSString * const kClaimStatusUpdateIncomplete = @"update_incomplete";
+NSString * const kClaimStatusUpdateError = @"update_error";
 NSString * const kClaimStatusWithdrawn = @"withdrawn";
 
 NSString * const kAttachmentStatusCreated = @"created";
 NSString * const kAttachmentStatusUploading = @"uploading";
 NSString * const kAttachmentStatusUploaded = @"uploaded";
 NSString * const kAttachmentStatusDeleted = @"deleted";
-NSString * const kAttachmentStatusUpload_Incomplete = @"upload_incomplete";
-NSString * const kAttachmentStatusUpload_Error = @"upload_error";
-NSString * const kAttachmentStatusDownload_Incomplete = @"download_incomplete";
-NSString * const kAttachmentStatusDownload_Failed = @"download_failed";
+NSString * const kAttachmentStatusUploadIncomplete = @"upload_incomplete";
+NSString * const kAttachmentStatusUploadError = @"upload_error";
+NSString * const kAttachmentStatusDownloadIncomplete = @"download_incomplete";
+NSString * const kAttachmentStatusDownloadFailed = @"download_failed";
 NSString * const kAttachmentStatusDownloading = @"downloading";
-
-NSString * const kPersonTypePhysical = @"physical";
-NSString * const kPersonTypeGroup = @"group";
 
 @implementation OT
 
@@ -74,7 +73,9 @@ NSString * const kPersonTypeGroup = @"group";
 
 + (NSDateFormatter *)dateFormatter {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd"];
+    NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+    [dateFormatter setTimeZone:gmt];
+    [dateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
     return dateFormatter;
 }
 
@@ -188,6 +189,63 @@ NSString * const kPersonTypeGroup = @"group";
             }
         }
     }];
+}
+
++ (void)login {
+    if ([OTAppDelegate authenticated]) {
+        // Logout
+        [SVProgressHUD show];
+        [CommunityServerAPI logoutWithCompletionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
+            if (error != nil) {
+                [OT handleError:error];
+            } else {
+                if ((([httpResponse statusCode]/100) == 2) && [[httpResponse MIMEType] isEqual:@"application/json"]) {
+                    [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_logout_ok", @"You have succefully Logout")];
+                    // Clear session
+                    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+                    for (NSHTTPCookie *cookie in [cookieStorage cookies])
+                        [cookieStorage deleteCookie:cookie];
+                    [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] setUserName:nil];
+                    [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] setAuthenticated:NO];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kLogoutSuccessNotificationName object:self userInfo:nil];
+                } else {
+                    NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
+                    NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
+                    NSError *reportError = [NSError errorWithDomain:@"HTTP"
+                                                               code:[httpResponse statusCode]
+                                                           userInfo:userInfo];
+                    [OT handleError:reportError];
+                }
+            }
+        }];
+    } else {
+        // Login        
+        [UIAlertView showWithTitle:NSLocalizedString(@"title_activity_login_activity_test", @"Log in") message:nil style:UIAlertViewStyleLoginAndPasswordInput cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel") otherButtonTitles:@[NSLocalizedString(@"action_sign_in_short", @"Log in")] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+            if (buttonIndex != [alertView cancelButtonIndex]) {
+                [SVProgressHUD showWithStatus:NSLocalizedString(@"login_progress_signing_in", @"Loggin in...")];
+                [CommunityServerAPI loginWithUsername:[[alertView textFieldAtIndex:0] text] andPassword:[[alertView textFieldAtIndex:1] text] completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
+                    if (error != nil) {
+                        [OT handleError:error];
+                    } else {
+                        if ((([httpResponse statusCode]/100) == 2) && [[httpResponse MIMEType] isEqual:@"application/json"]) {
+                            [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_login_ok", @"You have succefully Login")];
+                            
+                            // Store session
+                            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:[NSHTTPCookie cookieWithProperties:[httpResponse allHeaderFields]]];
+                            [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] setUserName:[[alertView textFieldAtIndex:0] text]];
+                            [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] setAuthenticated:YES];
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kLoginSuccessNotificationName object:self userInfo:nil];
+                        } else {
+                            NSDictionary *userInfo = @{NSLocalizedDescriptionKey : NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection")};
+                            [OT handleError:[NSError errorWithDomain:@"HTTP"
+                                                                code:[httpResponse statusCode]
+                                                            userInfo:userInfo]];
+                        }
+                    }
+                }];
+            }
+        }];
+    }
 }
 
 @end

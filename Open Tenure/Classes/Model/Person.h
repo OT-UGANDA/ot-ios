@@ -25,26 +25,27 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Claim, IdType, Owner;
+@class Claim, Owner;
 
 @interface Person : NSManagedObject
 
-@property (nonatomic, retain) NSString * contactPhoneNumber;
-@property (nonatomic, retain) NSString * dateOfBirth;
-@property (nonatomic, retain) NSString * emailAddress;
-@property (nonatomic, retain) NSString * firstName;
-@property (nonatomic, retain) NSString * gender;
+@property (nonatomic, retain) NSString * phone;
+@property (nonatomic, retain) NSString * birthDate;
+@property (nonatomic, retain) NSString * email;
+@property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSString * genderCode;
 @property (nonatomic, retain) NSString * idNumber;
 @property (nonatomic, retain) NSString * lastName;
-@property (nonatomic, retain) NSString * mobilePhoneNumber;
+@property (nonatomic, retain) NSString * mobilePhone;
 @property (nonatomic, retain) NSString * personId;
-@property (nonatomic, retain) NSString * personType;
-@property (nonatomic, retain) NSString * postalAddress;
+@property (nonatomic, retain) NSNumber * person;
+@property (nonatomic, retain) NSString * address;
+@property (nonatomic, retain) NSString * idTypeCode;
 @property (nonatomic, retain) Claim *claim;
-@property (nonatomic, retain) IdType *idType;
 @property (nonatomic, retain) Owner *owner;
 
 @end

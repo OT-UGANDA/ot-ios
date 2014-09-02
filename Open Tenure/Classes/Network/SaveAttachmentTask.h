@@ -25,41 +25,22 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-#import "ResponseClaimParseOperation.h"
-#import "ResponseClaim.h"
-#import "CommunityServerAPI.h"
+#import <Foundation/Foundation.h>
 
-@interface ResponseClaimParseOperation ()
+@class SaveAttachmentTask;
 
-@property (nonatomic, strong) ResponseClaim *currentResponseClaimObject;
-@property (strong) NSMutableArray *sharedClaimList;
+@protocol SaveAttachmentTaskDelegate <NSObject>
 
+@required
+
+- (void)saveAttachment:(SaveAttachmentTask *)controller didFinishTask:(id)task;
 
 @end
 
-@implementation ResponseClaimParseOperation
+@interface SaveAttachmentTask : NSOperation
 
-- (id)initWithData:(NSData *)parseData shareClaimList:(NSMutableArray *)claimList {
-    self = [super init];
-    if (self) {
-        _claimData = [parseData copy];
-        self.sharedClaimList = claimList;
-    }
-    return self;
-}
+@property (weak, nonatomic) id <SaveAttachmentTaskDelegate> delegate;
 
-- (void)addClaimToList:(ResponseClaim *)claim {
-    [self.sharedClaimList addObject:claim];
-}
-
-- (void)main {
-    
-    NSMutableArray *objects = [NSJSONSerialization JSONObjectWithData:self.claimData options:NSJSONReadingMutableLeaves error:nil];
-    for (NSDictionary *object in objects) {
-        ResponseClaim *claim = [[ResponseClaim alloc] initWithDictionary:object];
-        [self addClaimToList:claim];
-    }
-    [[NSNotificationCenter defaultCenter] postNotificationName:kGetAllClaimsSuccessNotificationName object:self.sharedClaimList userInfo:nil];
-}
+- (id)initWithAttachment:(Attachment *)attachment;
 
 @end

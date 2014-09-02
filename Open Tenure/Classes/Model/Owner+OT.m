@@ -26,23 +26,34 @@
  * *********************************************************************************************
  */
 
-#import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
+#import "Owner+OT.h"
 
-@class Claim, Owner;
+@implementation Owner (OT)
 
-@interface Share : NSManagedObject
-
-@property (nonatomic, retain) NSString * shareId;
-@property (nonatomic, retain) NSSet *owners;
-@property (nonatomic, retain) Claim *claim;
-@end
-
-@interface Share (CoreDataGeneratedAccessors)
-
-- (void)addOwnersObject:(Owner *)value;
-- (void)removeOwnersObject:(Owner *)value;
-- (void)addOwners:(NSSet *)values;
-- (void)removeOwners:(NSSet *)values;
+- (NSDictionary *)dictionary {
+    
+    // matching managedObject vs jsonObject
+    NSDictionary * const matching = @{
+                                      @"ownerId": @"id",
+                                      
+                                      };
+    
+    NSArray *keys = [[[self entity] attributesByName] allKeys];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:[self dictionaryWithValuesForKeys:keys]];
+    
+    for (NSString *key in matching.allKeys) {
+        if ([dict objectForKey:key] != nil) {
+            [dict setObject:[dict objectForKey:key] forKey:[matching objectForKey:key]];
+            [dict removeObjectForKey:key];
+        }
+    }
+    
+    if (self.person != nil)
+        [dict setObject:@[self.person.dictionary] forKey:@"owners"];
+    else
+        [dict setObject:@[] forKey:@"owners"];
+    
+    return dict;
+}
 
 @end

@@ -25,7 +25,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-
 #import "ResponseClaim.h"
 
 @implementation ResponseClaim
@@ -64,7 +63,7 @@
         self.startDate = [object objectForKey:@"startDate"];
         self.nr = [object objectForKey:@"nr"];
         self.northAdjacency = [object objectForKey:@"northAdjacency"];
-        self.shouthAdjacency = [object objectForKey:@"shouthAdjacency"];
+        self.southAdjacency = [object objectForKey:@"southAdjacency"];
         self.eastAdjacency = [object objectForKey:@"eastAdjacency"];
         self.westAdjacency = [object objectForKey:@"westAdjacency"];
         self.notes = [object objectForKey:@"notes"];
@@ -86,7 +85,7 @@
                           self.startDate, @"startDate", 
                           self.nr, @"nr", 
                           self.northAdjacency, @"northAdjacency", 
-                          self.shouthAdjacency, @"shouthAdjacency", 
+                          self.southAdjacency, @"southAdjacency",
                           self.eastAdjacency, @"eastAdjacency", 
                           self.westAdjacency, @"westAdjacency", 
                           self.notes, @"notes", nil];

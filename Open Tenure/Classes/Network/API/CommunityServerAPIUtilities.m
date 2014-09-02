@@ -67,5 +67,8 @@ NSString *HTTP_GETIDTYPES = @"http://ot.flossola.org/ws/en-us/ref/getidtypes";
 NSString *HTTPS_GETLANDUSE = @"https://ot.flossola.org/ws/en-us/ref/getlanduses";
 NSString *HTTP_GETLANDUSE = @"http://ot.flossola.org/ws/en-us/ref/getlanduses";
 
+NSString *HTTPS_GETCOMMUNITYAREA = @"https://ot.flossola.org/ws/en-us/ref/getcommunityarea";
+NSString *HTTP_GETCOMMUNITYAREA = @"http://ot.flossola.org/ws/en-us/ref/getcommunityarea";
+
 NSString *HTTPS_WITHDRAWCLAIM = @"https://ot.flossola.org/ws/en-us/claim/withdrawclaim/%@";
 NSString *HTTP_WITHDRAWCLAIM = @"http://ot.flossola.org/ws/en-us/claim/withdrawclaim/%@";

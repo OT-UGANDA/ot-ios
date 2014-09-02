@@ -27,14 +27,13 @@
  */
 
 #import "OTAppDelegate.h"
-#import "TestFlight.h"
+//#import "TestFlight.h"
 
 @implementation OTAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    
-    [TestFlight takeOff:@"da1fe2db-e054-450f-a05c-0ca1b6ea8f65"];
+ //   [TestFlight takeOff:@"c82ef56b-5f83-426d-91f5-822b573ece57"];
     
     //Create folder
     [FileSystemUtilities createOpenTenureFolder];
@@ -73,6 +72,10 @@
 
 + (BOOL)authenticated {
     return [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] authenticated];
+}
+
++ (NSString *)userName {
+    return [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] userName];
 }
 
 @end

@@ -26,15 +26,25 @@
  * *********************************************************************************************
  */
 
-#import "Share.h"
-#import "Claim.h"
-#import "Owner.h"
+#import "DownloadClaimTask.h"
 
+@interface DownloadClaimTask ()
 
-@implementation Share
+@property (nonatomic, strong) NSString *claimId;
 
-@dynamic shareId;
-@dynamic owners;
-@dynamic claim;
+@end
+
+@implementation DownloadClaimTask
+
+- (id)initWithClaimId:(NSString *)claimId {
+    if (self = [super init]) {
+        _claimId = claimId;
+    }
+    return self;
+}
+
+- (void)main {
+    NSLog(@"Downloading %@", _claimId);
+}
 
 @end

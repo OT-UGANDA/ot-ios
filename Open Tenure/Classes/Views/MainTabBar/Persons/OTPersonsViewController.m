@@ -1,10 +1,30 @@
-//
-//  OTPersonsViewController.m
-//  Open Tenure
-//
-//  Created by Chuyen Trung Tran on 7/16/14.
-//  Copyright (c) 2014 Food and Agriculture Organization of the United Nations (FAO). All rights reserved.
-//
+/**
+ * ******************************************************************************************
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ *    1. Redistributions of source code must retain the above copyright notice,this list
+ *       of conditions and the following disclaimer.
+ *    2. Redistributions in binary form must reproduce the above copyright notice,this list
+ *       of conditions and the following disclaimer in the documentation and/or other
+ *       materials provided with the distribution.
+ *    3. Neither the name of FAO nor the names of its contributors may be used to endorse or
+ *       promote products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,STRICT LIABILITY,OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * *********************************************************************************************
+ */
 
 #import "OTPersonsViewController.h"
 #import "OTPersonTabBarController.h"
@@ -66,7 +86,7 @@
 }
 
 - (NSString *)mainTableSectionNameKeyPath {
-    return @"personType";
+    return @"person";
 }
 
 - (NSString *)mainTableCache {
@@ -74,7 +94,7 @@
 }
 
 - (NSArray *)sortKeys {
-    return @[@"personType", @"lastName", @"firstName"];
+    return @[@"person", @"lastName", @"name"];
 }
 
 - (NSString *)entityName {
@@ -100,10 +120,10 @@
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
     if ([_rootViewClassName isEqualToString:@"OTSelectionTabBarViewController"]) {
         // for claim select person
-        return [NSPredicate predicateWithFormat:@"(lastName CONTAINS[cd] %@) OR (firstName CONTAINS[cd] %@) AND (claim = nil)", searchText, searchText];
+        return [NSPredicate predicateWithFormat:@"(lastName CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) AND (claim = nil)", searchText, searchText];
     } else {
         // Default
-        return [NSPredicate predicateWithFormat:@"(lastName CONTAINS[cd] %@) OR (firstName CONTAINS[cd] %@)", searchText, searchText];
+        return [NSPredicate predicateWithFormat:@"(lastName CONTAINS[cd] %@) OR (name CONTAINS[cd] %@)", searchText, searchText];
     }
 }
 
@@ -121,12 +141,12 @@
         person = [_filteredObjects objectAtIndex:indexPath.row];
 
     
-    if ([person.personType isEqualToString:kPersonTypeGroup]) {
-        cell.textLabel.text = [NSString stringWithFormat:@"%@", person.firstName];
+    if (![person.person boolValue]) {
+        cell.textLabel.text = [NSString stringWithFormat:@"%@", person.name];
     } else {
         cell.textLabel.text = [NSString stringWithFormat:@"%@", [person fullNameType:OTFullNameTypeDefault]];
     }
-    cell.detailTextLabel.text = person.idType.displayValue;
+    cell.detailTextLabel.text = person.idTypeCode;
     
     NSString *imageFile = [FileSystemUtilities getClaimantImagePath:person.personId];
     UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
@@ -143,9 +163,9 @@
              otherButtonTitles:@[NSLocalizedString(@"person", nil)]
                       tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                           if (buttonIndex == 0) {
-                              [self insertNewPersonWithType:kPersonTypeGroup];
+                              [self insertNewPersonWithType:NO];
                           } else {
-                              [self insertNewPersonWithType:kPersonTypePhysical];
+                              [self insertNewPersonWithType:YES];
                           }
                           
                           UINavigationController *nav = [[self storyboard] instantiateViewControllerWithIdentifier:@"PersonTabBar"];
@@ -161,14 +181,14 @@
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)insertNewPersonWithType:(NSString *)personType {
+- (void)insertNewPersonWithType:(BOOL)physical {
 
     NSManagedObjectContext *context = [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] temporaryContext];
     PersonEntity *personEntity = [PersonEntity new];
     [personEntity setManagedObjectContext:context];
     Person *newPerson = [personEntity create];
     newPerson.personId = [[[NSUUID UUID] UUIDString] lowercaseString];
-    newPerson.personType = personType;
+    newPerson.person = [NSNumber numberWithBool:physical];
     // Save person to temporary
     [newPerson setToTemporary];
 }
@@ -183,6 +203,18 @@
 #pragma mark - Table View
 
 #pragma mark Editing rows
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (_filteredObjects != nil)
+        return nil;
+    
+    NSArray *sections = [_fetchedResultsController sections];
+    
+    if (sections.count <= section)
+        return nil;
+    
+    return [[[sections objectAtIndex:section] name] boolValue] ? @"Group" : @"Person";
+}
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSIndexPath *rowToSelect = indexPath;

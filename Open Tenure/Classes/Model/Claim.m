@@ -25,6 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import "Claim.h"
 #import "AdditionalInfo.h"
 #import "Attachment.h"
@@ -37,26 +38,29 @@
 
 @implementation Claim
 
-@dynamic challegeExpiryDate;
+@dynamic challengeExpiryDate;
 @dynamic claimId;
 @dynamic claimName;
-@dynamic claimNumber;
+@dynamic nr;
+@dynamic decisionDate;
 @dynamic eastAdjacency;
 @dynamic gpsGeometry;
+@dynamic lodgementDate;
 @dynamic mappedGeometry;
 @dynamic northAdjacency;
 @dynamic notes;
-@dynamic shouthAdjacency;
+@dynamic southAdjacency;
 @dynamic startDate;
 @dynamic statusCode;
 @dynamic westAdjacency;
+@dynamic recorderName;
 @dynamic additionalInfo;
 @dynamic attachments;
 @dynamic challenged;
 @dynamic challenges;
 @dynamic claimType;
 @dynamic landUse;
-@dynamic person;
 @dynamic owners;
+@dynamic person;
 
 @end

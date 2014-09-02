@@ -53,4 +53,102 @@
     }
 }
 
+- (NSDictionary *)dictionary {
+    
+    // matching managedObject vs jsonObject
+    NSDictionary * const matching = @{
+                                      @"claimId": @"id",
+                                      @"claimName": @"description"
+                                      
+                                      };
+    
+    NSArray *keys = [[[self entity] attributesByName] allKeys];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:[self dictionaryWithValuesForKeys:keys]];
+    
+    for (NSString *key in matching.allKeys) {
+        if ([dict objectForKey:key] != nil) {
+            [dict setObject:[dict objectForKey:key] forKey:[matching objectForKey:key]];
+            [dict removeObjectForKey:key];
+        }
+    }
+    
+    if (self.landUse != nil)
+        [dict setObject:self.landUse.code forKey:@"landUseCode"];
+    else
+        [dict setObject:[NSNull null] forKey:@"landUseCode"];
+    
+    if (self.claimType != nil)
+        [dict setObject:self.claimType.code forKey:@"typeCode"];
+    else
+        [dict setObject:[NSNull null] forKey:@"typeCode"];
+
+    if (self.challenged != nil)
+        [dict setObject:self.challenged.claimId forKey:@"challengedClaimId"];
+    else
+        [dict setObject:[NSNull null] forKey:@"challengedClaimId"];
+    
+    if (self.person != nil)
+        [dict setObject:self.person.dictionary forKey:@"claimant"];
+    else
+        [dict setObject:[NSNull null] forKey:@"claimant"];
+
+    if (self.attachments.count > 0) {
+        NSMutableArray *array = [NSMutableArray array];
+        for (Attachment *obj in self.attachments) {
+            [array addObject:obj.dictionary];
+        }
+        [dict setObject:array forKey:@"attachments"];
+    } else
+        [dict setObject:@[] forKey:@"attachments"];
+/*
+    if (self.additionalInfo.count > 0) {
+        NSMutableArray *array = [NSMutableArray array];
+        for (AdditionalInfo *obj in self.additionalInfo) {
+            [array addObject:obj.dictionary];
+        }
+        [dict setObject:array forKey:@"additionalInfos"];
+    } else
+        [dict setObject:@[] forKey:@"additionalInfos"];
+*/
+    if (self.owners.count > 0) {
+        NSMutableArray *array = [NSMutableArray array];
+        for (Owner *obj in self.owners) {
+            [array addObject:obj.dictionary];
+        }
+        [dict setObject:array forKey:@"shares"];
+    } else
+        [dict setObject:@[] forKey:@"shares"];
+
+    [dict setObject:@[] forKey:@"locations"];
+    
+    return dict;
+}
+
+- (void)importFromJSON:(NSDictionary *)keyedValues {
+    [self entityWithDictionary:keyedValues];
+    
+    NSDictionary * const matching = @{
+                                      @"claimId": @"id",
+                                      @"claimName": @"description"
+                                      
+                                      };
+    
+    NSDictionary *attributes = [[self entity] attributesByName];
+    for (NSString *key in matching.allKeys) {
+        id value = [keyedValues objectForKey:[matching objectForKey:key]];
+        if (value == nil || [value isKindOfClass:[NSNull class]]) {
+            continue;
+        }
+        NSAttributeType attributeType = [[attributes objectForKey:key] attributeType];
+        if ((attributeType == NSStringAttributeType) && ([value isKindOfClass:[NSNumber class]])) {
+            value = [value stringValue];
+        } else if (((attributeType == NSInteger16AttributeType) || (attributeType == NSInteger32AttributeType) || (attributeType == NSInteger64AttributeType) || (attributeType == NSBooleanAttributeType)) && ([value isKindOfClass:[NSString class]])) {
+            value = [NSNumber numberWithInteger:[value integerValue]];
+        } else if ((attributeType == NSFloatAttributeType) &&  ([value isKindOfClass:[NSString class]])) {
+            value = [NSNumber numberWithDouble:[value doubleValue]];
+        }
+        [self setValue:value forKey:key];
+    }
+}
+
 @end

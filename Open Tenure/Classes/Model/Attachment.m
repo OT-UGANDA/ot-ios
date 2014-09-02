@@ -25,6 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import "Attachment.h"
 #import "Claim.h"
 #import "DocumentType.h"
@@ -41,7 +42,7 @@
 @dynamic note;
 @dynamic referenceNr;
 @dynamic size;
-@dynamic status;
+@dynamic statusCode;
 @dynamic claim;
 @dynamic typeCode;
 

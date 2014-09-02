@@ -215,13 +215,119 @@ static NSString *destinationPath;
     }];
 }
 
-+ (void)saveClaim:(NSString *)claimId completionHandler:(CompletionHandler)completionHandler {
++ (void)saveClaim:(NSData *)jsonData completionHandler:(CompletionHandler)completionHandler {
+    NSURL *url = [NSURL URLWithString:HTTPS_SAVECLAIM];
     
+    NSString *postLength = [NSString stringWithFormat:@"%d",[jsonData length]];
+    
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    
+    [request setValue:[[self controller] getCoockieStore] forHTTPHeaderField:@"Cookie"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:jsonData];
+    
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionHandler(error, httpResponse, data);
+        });
+    }];
 }
 
-+ (void)uploadChunk:(NSString *)payload chunk:(NSData *)chunk completionHandler:(CompletionHandler)completionHandler {
++ (void)saveAttachment:(NSData *)jsonData completionHandler:(CompletionHandler)completionHandler {
+    NSURL *url = [NSURL URLWithString:HTTPS_SAVEATTACHMENT];
     
+    NSString *postLength = [NSString stringWithFormat:@"%d", [jsonData length]];
+    
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    
+    [request setValue:[[self controller] getCoockieStore] forHTTPHeaderField:@"Cookie"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:jsonData];
+    
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionHandler(error, httpResponse, data);
+        });
+    }];
 }
+
++ (void)uploadChunk:(NSData *)payload chunk:(NSData *)chunk completionHandler:(CompletionHandler)completionHandler {
+    NSURL *url = [NSURL URLWithString:HTTPS_UPLOADCHUNK];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    
+    NSString *boundary = [self generateBoundaryString];
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
+    NSString *postLength = [NSString stringWithFormat:@"%d",[chunk length]];
+    
+    [request setValue:[[self controller] getCoockieStore] forHTTPHeaderField:@"Cookie"];
+    [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
+    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPMethod:@"POST"];
+    
+    NSMutableData *body = [NSMutableData data];
+    
+    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"descriptor\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[NSData dataWithData:payload]];
+    
+    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"chunk\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[NSData dataWithData:chunk]];
+    
+    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+
+    // setting the body of the post to the reqeust
+    [request setHTTPBody:body];
+
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionHandler(error, httpResponse, data);
+        });
+    }];
+
+}
+
++ (void)getCommunityArea:(CompletionHandler)completionHandler {
+    NSURL *url = [NSURL URLWithString:HTTPS_GETCOMMUNITYAREA];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionHandler(error, httpResponse, data);
+        });
+    }];
+}
+
+#pragma for upload chunk
++ (NSString *)generateBoundaryString {
+    CFUUIDRef       uuid;
+    CFStringRef     uuidStr;
+    NSString *      result;
+    
+    uuid = CFUUIDCreate(NULL);
+    assert(uuid != NULL);
+    
+    uuidStr = CFUUIDCreateString(NULL, uuid);
+    assert(uuidStr != NULL);
+    
+    result = [NSString stringWithFormat:@"Boundary-%@", uuidStr];
+    
+    CFRelease(uuidStr);
+    CFRelease(uuid);
+    
+    return result;
+}
+
 
 #pragma Response methods
 /**

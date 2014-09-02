@@ -26,7 +26,6 @@
  * *********************************************************************************************
  */
 
-
 #import <Foundation/Foundation.h>
 
 /*!
@@ -48,10 +47,13 @@ extern NSString * const kGetClaimSuccessNotificationName;
 extern NSString * const kClaimStatusCreated;
 extern NSString * const kClaimStatusUploading;
 extern NSString * const kClaimStatusUnmoderated;
+extern NSString * const kClaimStatusUpdating;
 extern NSString * const kClaimStatusModerated;
 extern NSString * const kClaimStatusChallenged;
 extern NSString * const kClaimStatusUploadIncomplete;
 extern NSString * const kClaimStatusUploadError;
+extern NSString * const kClaimStatusUpdateIncomplete;
+extern NSString * const kClaimStatusUpdateError;
 extern NSString * const kClaimStatusWithdrawn;
 
 // Attachment status
@@ -59,11 +61,12 @@ extern NSString * const kAttachmentStatusCreated;
 extern NSString * const kAttachmentStatusUploading;
 extern NSString * const kAttachmentStatusUploaded;
 extern NSString * const kAttachmentStatusDeleted;
-extern NSString * const kAttachmentStatusUpload_Incomplete;
-extern NSString * const kAttachmentStatusUpload_Error;
-extern NSString * const kAttachmentStatusDownload_Incomplete;
-extern NSString * const kAttachmentStatusDownload_Failed;
+extern NSString * const kAttachmentStatusUploadIncomplete;
+extern NSString * const kAttachmentStatusUploadError;
+extern NSString * const kAttachmentStatusDownloadIncomplete;
+extern NSString * const kAttachmentStatusDownloadFailed;
 extern NSString * const kAttachmentStatusDownloading;
+
 
 // Person kind
 extern NSString * const kPersonTypePhysical;
@@ -100,5 +103,7 @@ typedef NS_ENUM(NSInteger, OTFullNameType) {
 + (void)updateLandUse;
 + (void)updateClaimType;
 + (void)updateDocumentType;
+
++ (void)login;
 
 @end

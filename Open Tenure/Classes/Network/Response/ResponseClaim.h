@@ -39,7 +39,7 @@
 @property (nonatomic, strong) NSString *startDate;
 @property (nonatomic, strong) NSString *nr;
 @property (nonatomic, strong) NSString *northAdjacency;
-@property (nonatomic, strong) NSString *shouthAdjacency;
+@property (nonatomic, strong) NSString *southAdjacency;
 @property (nonatomic, strong) NSString *eastAdjacency;
 @property (nonatomic, strong) NSString *westAdjacency;
 @property (nonatomic, strong) NSString *notes;

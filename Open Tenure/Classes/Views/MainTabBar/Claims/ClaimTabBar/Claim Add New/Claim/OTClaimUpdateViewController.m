@@ -182,8 +182,6 @@
                                           viewType:self.viewType];
     __block OTFormInputTextFieldCell *startDateBlock = startDate;
     startDate.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
-        NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-        [[OT dateFormatter] setTimeZone:gmt];
         NSDate *date = [[OT dateFormatter] dateFromString:inText];
         if (date != nil && inText.length > 0) {
             inCell.shouldShowInfoCell = NO;
@@ -375,7 +373,7 @@ static bool allCellChecked = false;
     [ownerEntity setManagedObjectContext:_claim.managedObjectContext];
     Owner *owner = [ownerEntity create];
     owner.ownerId = [[[NSUUID UUID] UUIDString] lowercaseString];
-    owner.person = person;
+    owner.person = [person clone];
     owner.denominator = [NSNumber numberWithInteger:100];
     owner.nominator = [NSNumber numberWithInteger:100];
     owner.claim = _claim;

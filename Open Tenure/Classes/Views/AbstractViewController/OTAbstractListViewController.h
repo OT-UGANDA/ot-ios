@@ -26,7 +26,6 @@
  * *********************************************************************************************
  */
 
-
 #import <UIKit/UIKit.h>
 
 @interface OTAbstractListViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, NSFetchedResultsControllerDelegate, UISearchDisplayDelegate, UISearchBarDelegate> {

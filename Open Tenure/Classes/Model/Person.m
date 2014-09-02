@@ -28,25 +28,24 @@
 
 #import "Person.h"
 #import "Claim.h"
-#import "IdType.h"
 #import "Owner.h"
 
 
 @implementation Person
 
-@dynamic contactPhoneNumber;
-@dynamic dateOfBirth;
-@dynamic emailAddress;
-@dynamic firstName;
-@dynamic gender;
+@dynamic phone;
+@dynamic birthDate;
+@dynamic email;
+@dynamic name;
+@dynamic genderCode;
 @dynamic idNumber;
 @dynamic lastName;
-@dynamic mobilePhoneNumber;
+@dynamic mobilePhone;
 @dynamic personId;
-@dynamic personType;
-@dynamic postalAddress;
+@dynamic person;
+@dynamic address;
+@dynamic idTypeCode;
 @dynamic claim;
-@dynamic idType;
 @dynamic owner;
 
 @end

@@ -26,7 +26,6 @@
  * *********************************************************************************************
  */
 
-
 #import "OTNewsViewController.h"
 
 @interface OTNewsViewController ()

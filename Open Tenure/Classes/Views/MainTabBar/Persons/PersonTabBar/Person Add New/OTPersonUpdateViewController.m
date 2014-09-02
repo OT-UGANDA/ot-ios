@@ -36,7 +36,7 @@
 @property (nonatomic, strong) PickerView *pickerView;
 
 @property (nonatomic, strong) NSArray *idTypeCollection;
-@property (nonatomic, strong) NSMutableArray *idTypeDisplayValue;
+@property (nonatomic, strong) NSDictionary *idTypes;
 @property (nonatomic, strong) UIImageView *personImageView;
 @property (assign) OTViewType viewType;
 
@@ -50,30 +50,27 @@
     [_pickerView setShouldHideOnSelection:YES];
     
     IdTypeEntity *idTypeEntity = [IdTypeEntity new];
-    [idTypeEntity setManagedObjectContext:_person.managedObjectContext];
-    _idTypeCollection = [idTypeEntity getCollection];
+    NSArray *entities= [idTypeEntity getCollectionWithProperties:@[@"code", @"displayValue"]];
+    NSArray *codes = [entities valueForKeyPath:@"code"];
+    NSArray *displayValues = [entities valueForKeyPath:@"displayValue"];
+    _idTypes = [NSDictionary dictionaryWithObjects:displayValues forKeys:codes];
     
-    _idTypeDisplayValue = [NSMutableArray array];
-    for (IdType *object in _idTypeCollection) {
-        [_idTypeDisplayValue addObject:object.displayValue];
-    }
-
     if ([_person isSaved]) { // View person/group
         if (_person.claim == nil || [_person.claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local person/group
-            if (_person.personType == kPersonTypeGroup) { // Local group
+            if (![_person.person boolValue]) { // Local group
                 self.viewType = OTViewTypeEdit;
             } else { // Local person
                 self.viewType = OTViewTypeEdit;
             }
         } else { // Readonly person/group
-            if (_person.personType == kPersonTypeGroup) { // Readonly group
+            if (![_person.person boolValue]) { // Readonly group
                 self.viewType = OTViewTypeView;
             } else { // Readonly person
                 self.viewType = OTViewTypeView;
             }
         }
     } else { // Add person/group
-        if (_person.personType == kPersonTypeGroup) { // Add group
+        if (![_person.person boolValue]) { // Add group
             self.viewType = OTViewTypeAdd;
         } else { // Add person
             self.viewType = OTViewTypeAdd;
@@ -108,20 +105,20 @@
     
     if ([_person isSaved]) { // View person/group
         if (_person.claim == nil || [_person.claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local person/group
-            if (_person.personType == kPersonTypeGroup) { // Local group
+            if (![_person.person boolValue]) { // Local group
                 self.formCells = [self groupFormCellsEditable:YES];
             } else { // Local person
                 self.formCells = [self personFormCellsEditable:YES];
             }
         } else { // Readonly person/group
-            if (_person.personType == kPersonTypeGroup) { // Readonly group
+            if (![_person.person boolValue]) { // Readonly group
                 self.formCells = [self groupFormCellsEditable:NO];
             } else { // Readonly person
                 self.formCells = [self personFormCellsEditable:NO];
             }
         }
     } else { // Add person/group
-        if (_person.personType == kPersonTypeGroup) { // Add group
+        if (![_person.person boolValue]) { // Add group
             self.formCells = [self groupFormCellsEditable:YES];
         } else { // Add person
             self.formCells = [self personFormCellsEditable:YES];
@@ -136,7 +133,7 @@
     
     [self setHeaderTitle:NSLocalizedString(@"group_name", nil) forSection:0];
     OTFormInputTextFieldCell *firstName =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.firstName
+    [[OTFormInputTextFieldCell alloc] initWithText:_person.name
                                        placeholder:NSLocalizedString(@"group_name", nil)
                                           delegate:self
                                          mandatory:YES
@@ -148,7 +145,7 @@
             inCell.validationState = BPFormValidationStateValid;
             inCell.shouldShowInfoCell = NO;
             if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-                _person.firstName = inText;
+                _person.name = inText;
         } else {
             inCell.validationState = BPFormValidationStateInvalid;
             inCell.infoCell.label.text = NSLocalizedString(@"message_error_mandatory_field_first_name", nil);
@@ -161,7 +158,7 @@
     
     [self setHeaderTitle:NSLocalizedString(@"date_of_establishment_label", nil) forSection:1];
     OTFormInputTextFieldCell *dateOfBirth =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.dateOfBirth
+    [[OTFormInputTextFieldCell alloc] initWithText:_person.birthDate
                                        placeholder:NSLocalizedString(@"date_of_establishment_label", nil)
                                           delegate:self
                                          mandatory:YES
@@ -178,7 +175,7 @@
             inCell.validationState = BPFormValidationStateValid;
             inCell.shouldShowInfoCell = NO;
             if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-                _person.dateOfBirth = inText;
+                _person.birthDate = inText;
         }
         else {
             inCell.validationState = BPFormValidationStateInvalid;
@@ -221,7 +218,7 @@
     
     [self setHeaderTitle:NSLocalizedString(@"postal_address", nil) forSection:3];
     OTFormInputTextFieldCell *postalAddress =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.postalAddress
+    [[OTFormInputTextFieldCell alloc] initWithText:_person.address
                                        placeholder:NSLocalizedString(@"postal_address", nil)
                                           delegate:self
                                          mandatory:NO
@@ -230,13 +227,13 @@
                                           viewType:self.viewType];
     postalAddress.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
         if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-            _person.postalAddress = inText;
+            _person.address = inText;
     };
     postalAddress.textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
     
     [self setHeaderTitle:NSLocalizedString(@"email_address", nil) forSection:4];
     OTFormInputTextFieldCell *emailAddress =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.postalAddress
+    [[OTFormInputTextFieldCell alloc] initWithText:_person.email
                                        placeholder:NSLocalizedString(@"email_address", nil)
                                           delegate:self
                                          mandatory:NO
@@ -246,12 +243,12 @@
     emailAddress.shouldChangeTextBlock = BPValidateBlockWithPatternAndMessage(@"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}", @"The email should look like name@provider.domain");
     emailAddress.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
         if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-            _person.emailAddress = inText;
+            _person.email = inText;
     };
     
     [self setHeaderTitle:NSLocalizedString(@"mobile_phone_number", nil) forSection:5];
     OTFormInputTextFieldCell *mobilePhoneNumber =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.mobilePhoneNumber
+    [[OTFormInputTextFieldCell alloc] initWithText:_person.mobilePhone
                                        placeholder:NSLocalizedString(@"mobile_phone_number", nil)
                                           delegate:self
                                          mandatory:NO
@@ -260,12 +257,12 @@
                                           viewType:self.viewType];
     mobilePhoneNumber.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
         if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-            _person.mobilePhoneNumber = inText;
+            _person.mobilePhone = inText;
     };
     
     [self setHeaderTitle:NSLocalizedString(@"contact_phone_number", nil) forSection:6];
     OTFormInputTextFieldCell *contactPhoneNumber =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.contactPhoneNumber
+    [[OTFormInputTextFieldCell alloc] initWithText:_person.phone
                                        placeholder:NSLocalizedString(@"contact_phone_number", nil)
                                           delegate:self
                                          mandatory:NO
@@ -274,7 +271,7 @@
                                           viewType:self.viewType];
     contactPhoneNumber.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
         if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-            _person.contactPhoneNumber = inText;
+            _person.phone = inText;
     };
     
     return @[@[firstName], @[dateOfBirth], @[idNumber], @[postalAddress], @[emailAddress], @[mobilePhoneNumber], @[contactPhoneNumber]];
@@ -284,7 +281,7 @@
     NSInteger customCellHeight = 40.0f;
     [self setHeaderTitle:NSLocalizedString(@"first_name", nil) forSection:0];
     OTFormInputTextFieldCell *firstName =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.firstName
+    [[OTFormInputTextFieldCell alloc] initWithText:_person.name
                                        placeholder:NSLocalizedString(@"first_name", nil)
                                           delegate:self
                                          mandatory:YES
@@ -296,7 +293,7 @@
             inCell.validationState = BPFormValidationStateValid;
             inCell.shouldShowInfoCell = NO;
             if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-                _person.firstName = inText;
+                _person.name = inText;
         } else {
             inCell.validationState = BPFormValidationStateInvalid;
             inCell.infoCell.label.text = NSLocalizedString(@"message_error_mandatory_field_first_name", nil);
@@ -332,7 +329,7 @@
     
     [self setHeaderTitle:NSLocalizedString(@"date_of_birth_label", nil) forSection:2];
     OTFormInputTextFieldCell *dateOfBirth =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.dateOfBirth
+    [[OTFormInputTextFieldCell alloc] initWithText:_person.birthDate
                                        placeholder:NSLocalizedString(@"date_of_birth", nil)
                                           delegate:self
                                          mandatory:YES
@@ -349,7 +346,7 @@
             inCell.validationState = BPFormValidationStateValid;
             inCell.shouldShowInfoCell = NO;
             if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-                _person.dateOfBirth = inText;
+                _person.birthDate = inText;
         }
         else {
             inCell.validationState = BPFormValidationStateInvalid;
@@ -377,7 +374,7 @@
     
     [self setHeaderTitle:NSLocalizedString(@"gender", nil) forSection:3];
     OTFormInputTextFieldCell *gender =
-    [[OTFormInputTextFieldCell alloc] initWithText:NSLocalizedString(_person.gender, nil)
+    [[OTFormInputTextFieldCell alloc] initWithText:NSLocalizedString(_person.genderCode, nil)
                                        placeholder:NSLocalizedString(@"gender", nil)
                                           delegate:self
                                          mandatory:YES
@@ -391,9 +388,9 @@
             inCell.shouldShowInfoCell = NO;
             if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit) {
                 if ([inText isEqualToString:NSLocalizedString(@"male", nil)])
-                    _person.gender = @"male";
+                    _person.genderCode = @"male";
                 else
-                    _person.gender = @"female";
+                    _person.genderCode = @"female";
             }
             [_pickerView detach];
         } else {
@@ -418,7 +415,7 @@
     
     [self setHeaderTitle:NSLocalizedString(@"id_type", nil) forSection:4];
     OTFormInputTextFieldCell *idType =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.idType.displayValue
+    [[OTFormInputTextFieldCell alloc] initWithText:[_idTypes valueForKey:_person.idTypeCode]
                                        placeholder:NSLocalizedString(@"id_type", nil)
                                           delegate:self
                                          mandatory:NO
@@ -429,16 +426,15 @@
     __block OTFormInputTextFieldCell *idTypeBlock = idType;
     idType.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
         if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit) {
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(displayValue == %@)", inText];
-            IdType *idType = [[_idTypeCollection filteredArrayUsingPredicate:predicate] firstObject];
-            _person.idType = idType;
+            NSString *idTypeCode = [[_idTypes allKeysForObject:inText] firstObject];
+            _person.idTypeCode = idTypeCode;
         }
         [_pickerView detach];
     };
     idType.didBeginEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText) {
         inCell.validationState = BPFormValidationStateNone;
         [_pickerView setPickType:PickTypeList];
-        [_pickerView setPickItems:_idTypeDisplayValue];
+        [_pickerView setPickItems:_idTypes.allValues];
         [_pickerView attachWithTextField:idTypeBlock.textField];
         [_pickerView showPopOverList];
     };
@@ -463,7 +459,7 @@
     
     [self setHeaderTitle:NSLocalizedString(@"postal_address", nil) forSection:6];
     OTFormInputTextFieldCell *postalAddress =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.postalAddress
+    [[OTFormInputTextFieldCell alloc] initWithText:_person.address
                                        placeholder:NSLocalizedString(@"postal_address", nil)
                                           delegate:self
                                          mandatory:NO
@@ -472,13 +468,13 @@
                                           viewType:self.viewType];
     postalAddress.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
         if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-            _person.postalAddress = inText;
+            _person.address = inText;
     };
     postalAddress.textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
     
     [self setHeaderTitle:NSLocalizedString(@"email_address", nil) forSection:7];
     OTFormInputTextFieldCell *emailAddress =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.postalAddress
+    [[OTFormInputTextFieldCell alloc] initWithText:_person.address
                                        placeholder:NSLocalizedString(@"email_address", nil)
                                           delegate:self
                                          mandatory:NO
@@ -488,12 +484,12 @@
     emailAddress.shouldChangeTextBlock = BPValidateBlockWithPatternAndMessage(@"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}", @"The email should look like name@provider.domain");
     emailAddress.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
         if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-            _person.emailAddress = inText;
+            _person.email = inText;
     };
     
     [self setHeaderTitle:NSLocalizedString(@"mobile_phone_number", nil) forSection:8];
     OTFormInputTextFieldCell *mobilePhoneNumber =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.mobilePhoneNumber
+    [[OTFormInputTextFieldCell alloc] initWithText:_person.mobilePhone
                                        placeholder:NSLocalizedString(@"mobile_phone_number", nil)
                                           delegate:self
                                          mandatory:NO
@@ -502,12 +498,12 @@
                                           viewType:self.viewType];
     mobilePhoneNumber.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
         if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-            _person.mobilePhoneNumber = inText;
+            _person.mobilePhone = inText;
     };
     
     [self setHeaderTitle:NSLocalizedString(@"contact_phone_number", nil) forSection:9];
     OTFormInputTextFieldCell *contactPhoneNumber =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.contactPhoneNumber
+    [[OTFormInputTextFieldCell alloc] initWithText:_person.phone
                                        placeholder:NSLocalizedString(@"contact_phone_number", nil)
                                           delegate:self
                                          mandatory:NO
@@ -516,7 +512,7 @@
                                           viewType:self.viewType];
     contactPhoneNumber.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
         if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-            _person.contactPhoneNumber = inText;
+            _person.phone = inText;
     };
         
     return @[@[firstName], @[lastName], @[dateOfBirth], @[gender], @[idType], @[idNumber], @[postalAddress], @[emailAddress], @[mobilePhoneNumber], @[contactPhoneNumber]];
