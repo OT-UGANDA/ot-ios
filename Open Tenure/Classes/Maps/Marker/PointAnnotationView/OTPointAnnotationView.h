@@ -25,12 +25,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-#import "ZipUtilities.h"
+#import <MapKit/MapKit.h>
 
-@implementation ZipUtilities
+@interface OTPointAnnotationView : MKAnnotationView
 
-+ (BOOL)addFilesWithAESEncryption:(NSString *)password claimId:(NSString *)claimId {
-    NSString *zipFile = [FileSystemUtilities getCompressClaim:claimId];
-    return [SSZipArchive createZipFileAtPath:zipFile withContentsOfDirectory:[FileSystemUtilities getClaimFolder:claimId] password:password];}
-                                                      
 @end

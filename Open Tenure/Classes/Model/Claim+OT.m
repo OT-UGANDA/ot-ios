@@ -25,6 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import "Claim+OT.h"
 
 @implementation Claim (OT)
@@ -149,6 +150,68 @@
         }
         [self setValue:value forKey:key];
     }
+    
+    // get claimType
+    ClaimTypeEntity *claimTypeEntity = [ClaimTypeEntity new];
+    [claimTypeEntity setManagedObjectContext:self.managedObjectContext];
+    NSArray *claimTypeCollection = [claimTypeEntity getCollection];
+    NSString *typeCode = [keyedValues objectForKey:@"typeCode"];
+    NSPredicate *claimTypePredicate = [NSPredicate predicateWithFormat:@"(code == %@)", typeCode];
+    ClaimType *claimType = [[claimTypeCollection filteredArrayUsingPredicate:claimTypePredicate] firstObject];
+    self.claimType = claimType;
+    
+    // get landUseCode
+    LandUseEntity *landUseEntity = [LandUseEntity new];
+    [landUseEntity setManagedObjectContext:self.managedObjectContext];
+    NSArray *landUseCollection = [landUseEntity getCollection];
+    NSString *landUseCode = [keyedValues objectForKey:@"landUseCode"];
+    NSPredicate *landUsePredicate = [NSPredicate predicateWithFormat:@"(code == %@)", landUseCode];
+    LandUse *landUse = [[landUseCollection filteredArrayUsingPredicate:landUsePredicate] firstObject];
+    self.landUse = landUse;
+    
+    // create person
+    PersonEntity *personEntity = [PersonEntity new];
+    [personEntity setManagedObjectContext:self.managedObjectContext];
+    NSDictionary *claimant = [keyedValues objectForKey:@"claimant"];
+    Person *person = [personEntity create];
+    [person importFromJSON:claimant];
+    self.person = person;
+    
+    // create Attachment
+    NSArray *attachments = [keyedValues objectForKey:@"attachments"];
+    if (attachments.count > 0) {
+        AttachmentEntity *attachmentEntity = [AttachmentEntity new];
+        [attachmentEntity setManagedObjectContext:temporaryContext];
+        for (NSDictionary *attachmentDict in attachments) {
+            Attachment *attachment = [attachmentEntity create];
+            [attachment importFromJSON:attachmentDict];
+            attachment.claim = self;
+        }
+    }
+    
+    // create owners
+    NSArray *shares = [keyedValues objectForKey:@"shares"];
+    if (shares.count > 0) {
+        OwnerEntity *ownerEntity = [OwnerEntity new];
+        [ownerEntity setManagedObjectContext:self.managedObjectContext];
+        for (NSDictionary *share in shares) {
+            Owner *owner = [ownerEntity create];
+            [owner importFromJSON:share];
+            owner.claim = self;
+        }
+    }
+}
+
+- (BOOL)canBeUploaded {
+    NSArray *conditional = @[kClaimStatusCreated,
+                             kClaimStatusUploading,
+                             kClaimStatusUpdating,
+                             kClaimStatusUploadIncomplete,
+                             kClaimStatusUpdateIncomplete,
+                             kClaimStatusUploadError,
+                             kClaimStatusUpdateError
+                             ];
+    return [conditional containsObject:self.statusCode];
 }
 
 @end

@@ -8,8 +8,6 @@
 
 #import <XCTest/XCTest.h>
 #import "NSDictionary+OT.h"
-#import "NSData+Md5.h"
-#import "NSString+Md5.h"
 
 @interface Open_TenureTests : XCTestCase
 
@@ -31,53 +29,21 @@
 
 - (void)testExample
 {
-    [self Md5];
-}
-
-
-- (void)Md5{
-    NSString *str = @"Trần Trung Chuyên";
-
-    NSLog(@"%@", [str MD5]);
-}
-
-//
-//- (void)tDocType {
-//    NSArray *collection = [DocumentTypeEntity getCollection];
-//    for (DocumentType *docType in collection) {
-//        NSLog(@"Doc: %@", docType.displayValue);
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    [dict setValue:@"abcbcbcbcbcbc" forKey:@"uuid"];
+    [dict setValue:@"Claim 1" forKey:@"claim"];
+    NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
+    ALog(@"upload");
+    [CommunityServerAPI uploadChunk:data chunk:data completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
+        id obj = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+        ALog(@"%@", [obj description]);
+        
+    }];
+    
+//    while(true) {
 //    }
-//    
-//}
-//
-//- (void)testAPI {
-//    //    [CommunityServerAPI withdrawClaim:@"5ac56a97-ee4a-43e9-8d62-7a101c7bb645"];
-//    //    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-//    //    NSDictionary *cookieHeaders = [NSHTTPCookie requestHeaderFieldsWithCookies:[cookieStorage cookies]];
-//    //    NSLog(@"%@", [cookieHeaders objectForKey:@"Cookie"]);
-//    //    for (NSHTTPCookie *each in [cookieStorage cookies]) {
-//    //        NSLog(@"%@", [each description]);
-//    //    }
-//    //    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-//    //    for (NSHTTPCookie *each in [cookieStorage cookiesForURL:[NSURL URLWithString:HTTP_LOGOUT]]) {
-//    //        [cookieStorage deleteCookie:each];
-//    //    }
-//    
-//    //    [ZipUtilities addFilesWithAESEncryption:@"password" claimId:@"abc"];
-//    //    CommunityServerAPI *comm = [[CommunityServerAPI alloc] init];
-//    //    [CommunityServerAPI getAllClaims];
-//    //    [CommunityServerAPI getClaim:@"9ab491c1-5d18-4a9d-a49d-d837e380b947"];
-//    
-//    // Test getAttachment
-//    [FileSystemUtilities createClaimFolder:@"9ab491c1-5d18-4a9d-a49d-d837e380b947"];
-//    NSString *destinationPath = [FileSystemUtilities getAttachmentFolder:@"9ab491c1-5d18-4a9d-a49d-d837e380b947"];
-//    destinationPath = [destinationPath stringByAppendingPathComponent:@"file.jpg"];
-//    [CommunityServerAPI getAttachment:@"b425adcd-04d5-4ee8-8c9e-56d5a9363d08" saveToPath:destinationPath];
-//    
-//    //    [request addValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-//    //    [request addValue:[OTUser sessionId] forHTTPHeaderField:@"Set-Cookie"];
-//    //    NSLog(@"%d\n%@", [OTUser authenticated], [OTUser sessionId]);
-//   
-//}
+    
+}
+
 
 @end

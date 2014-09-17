@@ -49,7 +49,7 @@
     NSError *error = nil;
     
     if (![self.fetchedResultsController performFetch:&error]) {
-        NSLog(@"%@", error);
+        ALog(@"%@", error);
         abort();
     }
 }

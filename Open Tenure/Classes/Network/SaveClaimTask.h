@@ -25,10 +25,23 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import <Foundation/Foundation.h>
+
+@class SaveClaimTask;
+
+@protocol SaveClaimTaskDelegate <NSObject>
+
+@required
+
+- (void)saveClaimTask:(SaveClaimTask *)controller didSaveWithTotalChunksTobeUploaded:(NSInteger)totalChunks totalAttachments:(NSInteger)totalAttachments;
+
+@end
 
 @interface SaveClaimTask : NSOperation
 
-- (id)initWithClaim:(Claim *)claim;
+@property (weak, nonatomic) id <SaveClaimTaskDelegate> delegate;
+
+- (id)initWithClaim:(Claim *)claim viewHolder:(id)viewHolder;
 
 @end

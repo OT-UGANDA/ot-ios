@@ -59,4 +59,10 @@
     return patt_success;
 }
 
+- (BOOL)isWithinDistance:(ShapeKitGeometry *)compareGeometry distance:(double *)distance {
+    double dist;
+    GEOSDistance_r(handle, geosGeom, compareGeometry.geosGeom, &dist);
+    return dist < *distance;
+}
+
 @end

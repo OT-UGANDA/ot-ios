@@ -62,7 +62,7 @@
     [super viewDidLoad];
     
     _person = [Person getFromTemporary];
-    NSLog(@"%@", [_person.managedObjectContext description]);
+    ALog(@"%@", [_person.managedObjectContext description]);
 
     self.dataSource = self;
     self.delegate = self;

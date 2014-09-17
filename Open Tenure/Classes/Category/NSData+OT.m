@@ -25,7 +25,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-
 #import "NSData+OT.h"
 #import <CommonCrypto/CommonDigest.h>
 

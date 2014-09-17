@@ -25,9 +25,24 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import <Foundation/Foundation.h>
 
+@class DownloadClaimTask;
+
+@protocol DownloadClaimTaskDelegate <NSObject>
+
+@required
+
+- (void)downloadClaimTask:(DownloadClaimTask *)controller didFinishWithSuccess:(BOOL)success;
+
+@end
+
 @interface DownloadClaimTask : NSOperation
+
+@property (weak, nonatomic) id <DownloadClaimTaskDelegate> delegate;
+
+@property (nonatomic, strong) Claim *claim;
 
 - (id)initWithClaimId:(NSString *)claimId;
 

@@ -1,10 +1,30 @@
-//
-//  OTDocumentsUpdateViewController.m
-//  Open Tenure
-//
-//  Created by Chuyen Trung Tran on 8/9/14.
-//  Copyright (c) 2014 Food and Agriculture Organization of the United Nations (FAO). All rights reserved.
-//
+/**
+ * ******************************************************************************************
+ * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ *    1. Redistributions of source code must retain the above copyright notice,this list
+ *       of conditions and the following disclaimer.
+ *    2. Redistributions in binary form must reproduce the above copyright notice,this list
+ *       of conditions and the following disclaimer in the documentation and/or other
+ *       materials provided with the distribution.
+ *    3. Neither the name of FAO nor the names of its contributors may be used to endorse or
+ *       promote products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+ * SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,PROCUREMENT
+ * OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,STRICT LIABILITY,OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * *********************************************************************************************
+ */
 
 #import "OTDocumentsUpdateViewController.h"
 #import "OTFileChooserViewController.h"
@@ -260,9 +280,21 @@
     filePath = [filePath stringByAppendingPathComponent:attachment.fileName];
     NSURL *fileUrl = [NSURL fileURLWithPath:filePath];
     
-    // Presenting a Document Interaction Controller
-    UIDocumentInteractionController *docView = [self setupControllerWithURL:fileUrl usingDelegate:self];
-    [docView presentPreviewAnimated:YES];
+    BOOL isFileExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+    if (!isFileExist) {
+        NSString *title = @"Download attachment";
+        NSString *message = @"This file does not exist in local. Do you want to download?";
+        [UIAlertView showWithTitle:title message:message cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"OK", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+            if (buttonIndex != alertView.cancelButtonIndex) {
+                [FileSystemUtilities createClaimFolder:attachment.claim.claimId];
+                [CommunityServerAPI getAttachment:attachment.attachmentId saveToPath:filePath];
+            }
+        }];
+    } else {
+        // Presenting a Document Interaction Controller
+        UIDocumentInteractionController *docView = [self setupControllerWithURL:fileUrl usingDelegate:self];
+        [docView presentPreviewAnimated:YES];
+    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -348,6 +380,7 @@
     [picker dismissViewControllerAnimated:YES completion:^{
         UIImage *selectedImage = [info objectForKey:UIImagePickerControllerOriginalImage];
         if (!selectedImage) return;
+        // TODO: Chưa hiểu tại sao khi chụp ảnh từ thiết bị, lưu vào file, khi submit nó lại báo sai kích thước. Mặc dù đã kiểm tra kích thước đúng?
 //        
 //        // Create a thumbnail version of the image for the recipe object.
 //        CGFloat newSize = 150.0;
@@ -365,12 +398,20 @@
 //        NSData *imageData = UIImageJPEGRepresentation(newImage, 1.0);
 //        [imageData writeToFile:imageFile atomically:YES];
 
-        NSData *imageData = UIImageJPEGRepresentation(selectedImage, 1.0);
+        ALog(@"Image scale: %f", selectedImage.scale);
+        
+        CGFloat scale = [[UIScreen mainScreen] scale];
+        ALog(@"Screen scale %f", scale);
+        
+        NSData *imageData = UIImageJPEGRepresentation(selectedImage, 1.0 / scale);
         NSNumber *fileSize = [NSNumber numberWithUnsignedInteger:imageData.length];
         NSString *md5 = [imageData md5];
         NSString *file = [NSTemporaryDirectory() stringByAppendingPathComponent:@"_selectedImage_.jpg"];
         NSString *fileName = [[[[NSUUID UUID] UUIDString] lowercaseString] stringByAppendingPathExtension:@"jpg"];
-        [imageData writeToFile:file atomically:YES];
+        [imageData writeToFile:file atomically:NO];
+        unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:file error:nil] fileSize];
+        NSNumber *_size = [NSNumber numberWithUnsignedLongLong:size];
+        ALog(@"File size %tu/%lld", [fileSize integerValue], [_size longLongValue]);
         self.dictionary = [NSMutableDictionary dictionary];
         [_dictionary setValue:[[OT dateFormatter] stringFromDate:[NSDate date]] forKey:@"documentDate"];
         [_dictionary setValue:@"image/jpeg" forKey:@"mimeType"];

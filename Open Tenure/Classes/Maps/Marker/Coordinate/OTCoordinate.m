@@ -25,46 +25,33 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-#import <Foundation/Foundation.h>
+#import "OTCoordinate.h"
 
-@class Claim;
-@interface FileSystemUtilities : NSObject
+@implementation OTCoordinate
 
-#define _CLAIMS_FOLDER @"claims"
-#define _CLAIMANTS_FOLDER @"claimants"
-#define _CLAIM_PREFIX @"claim_"
-#define _CLAIMANT_PREFIX @"claimant_"
-#define _ATTACHMENT_FOLDER @"attachments"
-#define _OPEN_TENURE_FOLDER @"Open Tenure"
+- (id)initWithLatitude:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude {
+    if (self = [super init]) {
+        _latitude = latitude;
+        _longitude = longitude;
+        _isDragging = NO;
+    }
+    return self;
+}
 
-+ (BOOL)createFolder:(NSString *)folderName;
-+ (BOOL)createClaimsFolder;
-+ (BOOL)createOpenTenureFolder;
-+ (BOOL)createClaimantsFolder;
-+ (BOOL)createClaimFolder:(NSString *)claimId;
-+ (BOOL)createClaimantFolder:(NSString *)personId;
-+ (BOOL)removeClaimantFolder:(NSString *)personId;
-+ (BOOL)deleteClaim:(NSString *)claimId;
-+ (BOOL)deleteClaimant:(NSString *)personId;
-+ (BOOL)deleteFile:(NSString *)file;
-+ (BOOL)deleteCompressedClaim:(NSString *)claimId;
-+ (int)getUploadProgress:(Claim *)claim;
-+ (NSString *)getClaimsFolder;
-+ (NSString *)getClaimantsFolder;
-+ (NSString *)getClaimFolder:(NSString *)claimId;
-+ (NSString *)getAttachmentFolder:(NSString *)claimId;
-+ (NSString *)getCompressClaim:(NSString *)claimId;
-+ (NSString *)getOpentenureFolder;
-+ (BOOL)copyFileInAttachFolder:(NSString *)claimId source:(NSString *)source;
-+ (NSString *)getJsonClaim:(NSString *)claimId;
-+ (NSString *)getJsonAttachment:(NSString *)attachmentId;
-+ (NSString *)matchTypeCode:(NSString *)original;
+- (CLLocationCoordinate2D)coordinate {
+    return CLLocationCoordinate2DMake([self latitude], [self longitude]);
+}
 
-+ (NSString *)getClaimantImagePath:(NSString *)personId;
+- (NSString *)locationAsString {
+    return [NSString stringWithFormat:@"%f, %f", self.latitude, self.longitude];
+}
 
-+ (NSURL *)applicationDocumentsDirectory;
-+ (NSURL *)applicationHiddenDocumentsDirectory;
-
-+ (BOOL)copyFileFromSource:(NSURL *)source toDestination:(NSURL *)destination;
+- (BOOL)isEqual:(id)object{
+    if ([object respondsToSelector:@selector(latitude)] && [object respondsToSelector:@selector(longitude)]) {
+        return [object latitude] == [self latitude] && [object longitude] == [self longitude];
+    }
+    
+    return NO;
+}
 
 @end

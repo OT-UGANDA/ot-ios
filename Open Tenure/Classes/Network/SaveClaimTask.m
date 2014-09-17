@@ -28,8 +28,9 @@
 
 #import "SaveClaimTask.h"
 #import "SaveAttachmentTask.h"
+#import "UploadChunkTask.h"
 
-@interface SaveClaimTask () <SaveAttachmentTaskDelegate>
+@interface SaveClaimTask ()
 
 @property (nonatomic, strong) Claim *claim;
 
@@ -38,16 +39,19 @@
 @property (nonatomic, assign) NSUInteger totalAttachment;
 @property (nonatomic, assign) NSUInteger totalAttachmentDownloaded;
 
+@property (nonatomic, strong) id viewHolder;
+
 @end
 
 static NSURLSessionUploadTask *uploadTask;
 
 @implementation SaveClaimTask
 
-- (id)initWithClaim:(Claim *)claim {
+- (id)initWithClaim:(Claim *)claim viewHolder:(id)viewHolder {
     if (self = [super init]) {
         _claim = claim;
         _claim.lodgementDate = [[OT dateFormatter] stringFromDate:[NSDate date]];
+        _viewHolder = viewHolder;
     }
     return self;
 }
@@ -61,7 +65,7 @@ static NSURLSessionUploadTask *uploadTask;
         self.saveAttachmentQueue = [NSOperationQueue new];
         //[self.saveAttachmentQueue addObserver:self forKeyPath:@"attachmentCount" options:0 context:NULL];
         
-        NSLog(@"%@", jsonObject.description);
+        ALog(@"%@", jsonObject.description);
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonObject options:NSJSONWritingPrettyPrinted error:nil];
         
         [CommunityServerAPI saveClaim:jsonData completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
@@ -75,6 +79,7 @@ static NSURLSessionUploadTask *uploadTask;
                     if (!returnedData) {
                         [OT handleError:parseError];
                     } else {
+                        ALog(@"Response code: %tu; Error: %@", httpResponse.statusCode, error.localizedDescription);
                         switch (httpResponse.statusCode) {
                             case 100: /* UnknownHostException: */
                                 if (([_claim.statusCode isEqualToString:kClaimStatusCreated]
@@ -119,7 +124,7 @@ static NSURLSessionUploadTask *uploadTask;
                                 break;
                                 
                             case 200: { /* OK */
-                                NSLog(@"return: %@", [returnedData description]);
+                                ALog(@"return: %@", [returnedData description]);
                                 NSDateFormatter *dateFormatter = [NSDateFormatter new];
                                 [dateFormatter setDateFormat:[[OT dateFormatter] dateFormat]];
                                 NSTimeZone *utc = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
@@ -133,8 +138,9 @@ static NSURLSessionUploadTask *uploadTask;
                                 
                                 _claim.recorderName = [OTAppDelegate userName];
                                 
-                                [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_submitted", nil)];
-                                
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_submitted", nil)];
+                                });
                                 break;
                             }
                                 
@@ -144,14 +150,12 @@ static NSURLSessionUploadTask *uploadTask;
                                 [OT login];
                                 break;
                             }
-                                
+
                             case 452: { /* Missing Attachments */
-                                
-                                [SVProgressHUD showProgress:0.0 status:NSLocalizedString(@"message_uploading", nil)];
                                 
                                 if (([_claim.statusCode isEqualToString:kClaimStatusCreated]
                                      || [_claim.statusCode isEqualToString:kClaimStatusUploadIncomplete])
-                                    && [_claim.statusCode isEqualToString:kClaimStatusUploadError]) {
+                                     && [_claim.statusCode isEqualToString:kClaimStatusUploadError]) {
                                     _claim.statusCode = kClaimStatusUploading;
                                 }
                                 if ([_claim.statusCode isEqualToString:kClaimStatusUnmoderated]
@@ -162,20 +166,32 @@ static NSURLSessionUploadTask *uploadTask;
                                 if ([_claim.managedObjectContext hasChanges])
                                     [_claim.managedObjectContext save:nil];
                                 
-                                NSLog(@"Uploading attachments");
+                                ALog(@"Uploading attachments");
                                 
+                                NSInteger totalChunks = 0;
+                                NSInteger totalAttachments = 0;
                                 NSMutableArray *saveAttachmentTaskList = [NSMutableArray array];
                                 for (Attachment *attachment in _claim.attachments) {
-                                    if (attachment.statusCode != kAttachmentStatusUploaded
-                                        && attachment.statusCode != kAttachmentStatusUploading) {
-                                        SaveAttachmentTask *saveAttachmentTask = [[SaveAttachmentTask alloc] initWithAttachment:attachment];
-                                        saveAttachmentTask.delegate = self;
+                                    if (![attachment.statusCode isEqualToString:kAttachmentStatusUploaded]) {
+                                        totalAttachments++;
+                                        // calculate total chunks
+                                        NSString *attachmentFolder = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
+                                        NSString *attachmentPath = [attachmentFolder stringByAppendingPathComponent:attachment.fileName];
+
+                                        NSData *fileData = [NSData dataWithContentsOfFile:attachmentPath];
+                                        NSUInteger totalFileSize = [fileData length];
+                                        totalChunks += round((totalFileSize/kChunkSize)+0.5);
+
+                                        SaveAttachmentTask *saveAttachmentTask = [[SaveAttachmentTask alloc] initWithAttachment:attachment viewHolder:_viewHolder];
+                                        saveAttachmentTask.delegate = _viewHolder;
                                         [saveAttachmentTaskList addObject:saveAttachmentTask];
                                     }
                                 }
+                                
+                                [_delegate saveClaimTask:self didSaveWithTotalChunksTobeUploaded:totalChunks totalAttachments:totalAttachments];
+                                
                                 _totalAttachment = saveAttachmentTaskList.count;
                                 [self.saveAttachmentQueue addOperations:saveAttachmentTaskList waitUntilFinished:NO];
-
                                 break;
                             }
                             case 450: {
@@ -192,7 +208,7 @@ static NSURLSessionUploadTask *uploadTask;
                                 break;
                             }
                             case 400:
-                                NSLog(@"%@", [returnedData description]);
+                                ALog(@"%@", [returnedData description]);
                                 if ([_claim.statusCode isEqualToString:kClaimStatusCreated]
                                     || [_claim.statusCode isEqualToString:kClaimStatusUploading]
                                     || [_claim.statusCode isEqualToString:kClaimStatusUploadIncomplete]
@@ -219,29 +235,6 @@ static NSURLSessionUploadTask *uploadTask;
             }
         }];
     }
-}
-
-// observe the queue's operationCount, stop activity indicator if there is no operatation ongoing.
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object == self.saveAttachmentQueue && [keyPath isEqualToString:@"attachmentCount"]) {
-        if (self.saveAttachmentQueue.operationCount == 0) {
-            [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_submitted", nil)];
-            [self removeObserver:self forKeyPath:@"attachmentCount" context:nil];
-        }
-    }
-    else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
-#pragma SaveAttachmentTaskDelegate method
-
-- (void)saveAttachment:(SaveAttachmentTask *)controller didFinishTask:(id)task {
-    _totalAttachmentDownloaded++;
-    double progress = (double)_totalAttachmentDownloaded / (double)_totalAttachment;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [SVProgressHUD showProgress:progress status:NSLocalizedString(@"message_uploading", nil)];
-    });
 }
 
 @end

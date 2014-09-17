@@ -53,7 +53,7 @@
         {
             // Replace this implementation with code to handle the error appropriately.
             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            ALog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
     }
@@ -135,7 +135,7 @@
          Lightweight migration will only work for a limited set of schema changes; consult "Core Data Model Versioning and Data Migration Programming Guide" for details.
          
          */
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        ALog(@"Unresolved error %@, %@", error, [error userInfo]);
         abort();
     }
     
@@ -144,16 +144,16 @@
 
 // merge changes to main context,fetchedRequestController will automatically monitor the changes and update tableview.
 - (void)updateMainContext:(NSNotification *)notification {
-    NSLog(@"OK, merge changes");
+    ALog(@"OK, merge changes");
     assert([NSThread isMainThread]);
     [self.managedObjectContext mergeChangesFromContextDidSaveNotification:notification];
 }
 
 // this is called via observing "NSManagedObjectContextDidSaveNotification" from our APLParseOperation
 - (void)mergeChanges:(NSNotification *)notification {
-    NSLog(@"Checking merge changes...");
+    ALog(@"Checking merge changes...");
     if (notification.object != self.managedObjectContext) {
-        NSLog(@"OK, merging...");
+        ALog(@"OK, merging...");
         [self performSelectorOnMainThread:@selector(updateMainContext:) withObject:notification waitUntilDone:NO];
     }
 }

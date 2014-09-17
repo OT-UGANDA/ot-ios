@@ -25,7 +25,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-
 #import "NSDictionary+OT.h"
 
 @implementation NSDictionary (OT)

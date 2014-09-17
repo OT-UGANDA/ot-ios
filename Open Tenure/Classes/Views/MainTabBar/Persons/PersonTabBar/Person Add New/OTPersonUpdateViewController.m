@@ -25,7 +25,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-
 #import "OTPersonUpdateViewController.h"
 #import "OTFormInfoCell.h"
 #import "OTFormInputTextFieldCell.h"
@@ -87,13 +86,15 @@
     CGFloat cellSpace = 15;
     CGRect rect = CGRectMake(self.view.frame.size.width - imageWith - cellSpace, 5, imageWith, imageWith);
     UIView *headerView = [[UIView alloc] initWithFrame:rect];
+    rect.origin.x = -cellSpace;
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:rect];
+    imageView.autoresizingMask =  UIViewAutoresizingFlexibleLeftMargin;
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showImagePickerAlert:)];
     singleTap.numberOfTapsRequired = 1;
     [imageView addGestureRecognizer:singleTap];
     imageView.userInteractionEnabled = YES;
-    NSLog(@"%@", _person.personId);
+    ALog(@"%@", _person.personId);
     NSString *imageFile = [FileSystemUtilities getClaimantImagePath:_person.personId];
     UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
     if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];

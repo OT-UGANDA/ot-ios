@@ -25,6 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import "ParseOperation.h"
 #import "ClaimParser.h"
 
@@ -108,7 +109,7 @@
             // during development. If it is not possible to recover from the error, display an alert
             // panel that instructs the user to quit the application by pressing the Home button.
             //
-            NSLog(@"Unresolved error");
+            ALog(@"Unresolved error");
             abort();
         }
     }
@@ -141,11 +142,11 @@
 }
 
 - (void)processClaimData:(NSData *)data {
-    NSLog(@"string");
+    ALog(@"string");
 }
 
 - (void)claimParser:(ClaimParser *)claimParser didEndElement:(NSData *)data {
-    NSLog(@"didEndElement");
+    ALog(@"didEndElement");
 }
 
 @end

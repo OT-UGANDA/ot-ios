@@ -41,7 +41,6 @@
 @dynamic challengeExpiryDate;
 @dynamic claimId;
 @dynamic claimName;
-@dynamic nr;
 @dynamic decisionDate;
 @dynamic eastAdjacency;
 @dynamic gpsGeometry;
@@ -49,11 +48,12 @@
 @dynamic mappedGeometry;
 @dynamic northAdjacency;
 @dynamic notes;
+@dynamic nr;
+@dynamic recorderName;
 @dynamic southAdjacency;
 @dynamic startDate;
 @dynamic statusCode;
 @dynamic westAdjacency;
-@dynamic recorderName;
 @dynamic additionalInfo;
 @dynamic attachments;
 @dynamic challenged;

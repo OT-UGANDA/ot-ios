@@ -39,4 +39,6 @@
 
 - (void)importFromJSON:(NSDictionary *)keyedValues;
 
+- (BOOL)canBeUploaded;
+
 @end

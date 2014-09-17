@@ -25,7 +25,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-
 #import "Owner+OT.h"
 
 @implementation Owner (OT)
@@ -54,6 +53,44 @@
         [dict setObject:@[] forKey:@"owners"];
     
     return dict;
+}
+
+- (void)importFromJSON:(NSDictionary *)keyedValues {
+    [self entityWithDictionary:keyedValues];
+    
+    NSDictionary * const matching = @{
+                                      @"ownerId": @"id",
+                                      
+                                      };
+    
+    NSDictionary *attributes = [[self entity] attributesByName];
+    for (NSString *key in matching.allKeys) {
+        id value = [keyedValues objectForKey:[matching objectForKey:key]];
+        if (value == nil || [value isKindOfClass:[NSNull class]]) {
+            continue;
+        }
+        NSAttributeType attributeType = [[attributes objectForKey:key] attributeType];
+        if ((attributeType == NSStringAttributeType) && ([value isKindOfClass:[NSNumber class]])) {
+            value = [value stringValue];
+        } else if (((attributeType == NSInteger16AttributeType) || (attributeType == NSInteger32AttributeType) || (attributeType == NSInteger64AttributeType) || (attributeType == NSBooleanAttributeType)) && ([value isKindOfClass:[NSString class]])) {
+            value = [NSNumber numberWithInteger:[value integerValue]];
+        } else if ((attributeType == NSFloatAttributeType) &&  ([value isKindOfClass:[NSString class]])) {
+            value = [NSNumber numberWithDouble:[value doubleValue]];
+        }
+        [self setValue:value forKey:key];
+    }
+    
+    // Add person
+    NSArray *owners = [keyedValues objectForKey:@"owners"];
+    if (owners.count > 0) {
+        PersonEntity *personEntity = [PersonEntity new];
+        [personEntity setManagedObjectContext:self.managedObjectContext];
+        for (NSDictionary *personDict in owners) {
+            Person *person = [personEntity create];
+            [person importFromJSON:personDict];
+            self.person = person;
+        }
+    }
 }
 
 @end

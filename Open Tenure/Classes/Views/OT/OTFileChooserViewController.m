@@ -287,7 +287,7 @@
         NSError* error;
         if ([fileManager removeItemAtURL:[self.documentURLs objectAtIndex:indexPath.row]  error:&error]) {
             if (error) {
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                ALog(@"Unresolved error %@, %@", error, [error userInfo]);
             } else {
                 [self.documentURLs removeObjectAtIndex:indexPath.row];
             }

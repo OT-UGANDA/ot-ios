@@ -25,7 +25,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-
 #import "OTFormFloatInputTextFieldCell.h"
 #import "OTFormFloatLabelTextField.h"
 #import "OTFormInfoCell.h"

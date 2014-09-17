@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8A2C29A519B46E1D002498C7 /* ChunkPayLoad.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C29A419B46E1D002498C7 /* ChunkPayLoad.m */; };
 		DE0D2CA3197FAECD00D248B9 /* Popover+iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0D2CA2197FAECD00D248B9 /* Popover+iPhone.m */; };
 		DE0D2CAB198156B200D248B9 /* CommunityServerAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0D2CA8198156B200D248B9 /* CommunityServerAPI.m */; };
 		DE0D2CAC198156B200D248B9 /* CommunityServerAPIUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0D2CAA198156B200D248B9 /* CommunityServerAPIUtilities.m */; };
@@ -38,9 +37,8 @@
 		DE5448DB198AA62F00221700 /* OTMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5448DA198AA62F00221700 /* OTMapViewController.m */; };
 		DE5448DE198AA63E00221700 /* OTPersonsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5448DD198AA63E00221700 /* OTPersonsViewController.m */; };
 		DE5448E4198AA66000221700 /* OTClaimsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5448E3198AA66000221700 /* OTClaimsViewController.m */; };
-		DE5A68F019AF942A00D15B08 /* Claim.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5A68EF19AF942A00D15B08 /* Claim.m */; };
 		DE5A68F319B0944C00D15B08 /* SaveAttachmentTask.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5A68F219B0944C00D15B08 /* SaveAttachmentTask.m */; };
-		DE5A68F619B0F00900D15B08 /* UploadChunk.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5A68F519B0F00900D15B08 /* UploadChunk.m */; };
+		DE5A68FE19B8271400D15B08 /* UploadChunkTask.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5A68FB19B80E0900D15B08 /* UploadChunkTask.m */; };
 		DE5CFBEA19AB101A00E253B0 /* SaveClaimTask.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5CFBE919AB101A00E253B0 /* SaveClaimTask.m */; };
 		DE5CFBED19AB52D200E253B0 /* Attachment+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5CFBEC19AB52D200E253B0 /* Attachment+OT.m */; };
 		DE5CFBF019AB567E00E253B0 /* AdditionalInfo+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5CFBEF19AB567E00E253B0 /* AdditionalInfo+OT.m */; };
@@ -78,6 +76,8 @@
 		DE7F647719895BFF0063047F /* ShapeKitGeometry+Topology.m in Sources */ = {isa = PBXBuildFile; fileRef = DE7F6447198889000063047F /* ShapeKitGeometry+Topology.m */; };
 		DE7F68EA19896CF10063047F /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE7F68E919896CF10063047F /* libc++.dylib */; };
 		DE8B327B1993C61A0013A83E /* PersonEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = DE8B327A1993C61A0013A83E /* PersonEntity.m */; };
+		DE94CBD719B950BC00636189 /* Claim.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94CBD619B950BC00636189 /* Claim.m */; };
+		DE94CBDA19B950BD00636189 /* LandUse.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94CBD919B950BD00636189 /* LandUse.m */; };
 		DE97F4DB19868B9800F3B0B5 /* ResponseClaim.m in Sources */ = {isa = PBXBuildFile; fileRef = DE97F4DA19868B9800F3B0B5 /* ResponseClaim.m */; };
 		DE97F4E1198778B400F3B0B5 /* OpenTenure.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE97F4DF198778B400F3B0B5 /* OpenTenure.xcdatamodeld */; };
 		DEA1379B1976B82E00C0C232 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEA137991976B82E00C0C232 /* Localizable.strings */; };
@@ -104,7 +104,6 @@
 		DEB89CF1199DFEA300BBC9D3 /* AdditionalInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89CF0199DFEA300BBC9D3 /* AdditionalInfo.m */; };
 		DEB89CF7199DFEA400BBC9D3 /* Attachment.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89CF6199DFEA400BBC9D3 /* Attachment.m */; };
 		DEB89CFA199DFEA400BBC9D3 /* IdType.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89CF9199DFEA400BBC9D3 /* IdType.m */; };
-		DEB89CFD199DFEA500BBC9D3 /* LandUse.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89CFC199DFEA500BBC9D3 /* LandUse.m */; };
 		DEB89D00199DFEA500BBC9D3 /* Owner.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89CFF199DFEA500BBC9D3 /* Owner.m */; };
 		DEB89D03199DFEA600BBC9D3 /* DocumentType.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89D02199DFEA600BBC9D3 /* DocumentType.m */; };
 		DEC18F99198BF5FA00CCEF37 /* ViewPagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC18F98198BF5FA00CCEF37 /* ViewPagerController.m */; };
@@ -140,6 +139,10 @@
 		DED37504198E8A1900B48E7A /* View+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = DED374E8198E8A1900B48E7A /* View+MASAdditions.m */; };
 		DED37505198E8A1900B48E7A /* UITextField+BPForms.m in Sources */ = {isa = PBXBuildFile; fileRef = DED374EC198E8A1900B48E7A /* UITextField+BPForms.m */; };
 		DED37506198E8A1900B48E7A /* UITextView+BPForms.m in Sources */ = {isa = PBXBuildFile; fileRef = DED374EE198E8A1900B48E7A /* UITextView+BPForms.m */; };
+		DEEB936D19C2943300CBE16E /* OTCoordinate.m in Sources */ = {isa = PBXBuildFile; fileRef = DEEB936C19C2943300CBE16E /* OTCoordinate.m */; };
+		DEEB937519C2A96A00CBE16E /* OTGeometry.m in Sources */ = {isa = PBXBuildFile; fileRef = DEEB937419C2A96A00CBE16E /* OTGeometry.m */; };
+		DEEB937A19C2F15D00CBE16E /* OTGeometryCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = DEEB937919C2F15D00CBE16E /* OTGeometryCollection.m */; };
+		DEEB938619C3578100CBE16E /* OTPointAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = DEEB938519C3578100CBE16E /* OTPointAnnotationView.m */; };
 		DEEE28C4199117FF00B69E94 /* PickListController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEEE28C3199117FF00B69E94 /* PickListController.m */; };
 		DEEE28CC1991316E00B69E94 /* OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DEEE28CB1991316E00B69E94 /* OT.m */; };
 		DEEE28CF1991372D00B69E94 /* AbstractEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = DEEE28CE1991372D00B69E94 /* AbstractEntity.m */; };
@@ -166,8 +169,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		8A2C29A319B46E1D002498C7 /* ChunkPayLoad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChunkPayLoad.h; sourceTree = "<group>"; };
-		8A2C29A419B46E1D002498C7 /* ChunkPayLoad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChunkPayLoad.m; sourceTree = "<group>"; };
 		DE0D2CA1197FAECD00D248B9 /* Popover+iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Popover+iPhone.h"; path = "Overrides/Popover+iPhone.h"; sourceTree = "<group>"; };
 		DE0D2CA2197FAECD00D248B9 /* Popover+iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Popover+iPhone.m"; path = "Overrides/Popover+iPhone.m"; sourceTree = "<group>"; };
 		DE0D2CA7198156B200D248B9 /* CommunityServerAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CommunityServerAPI.h; path = Classes/Network/API/CommunityServerAPI.h; sourceTree = "<group>"; };
@@ -227,12 +228,10 @@
 		DE5448DD198AA63E00221700 /* OTPersonsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTPersonsViewController.m; path = Classes/Views/MainTabBar/Persons/OTPersonsViewController.m; sourceTree = "<group>"; };
 		DE5448E2198AA66000221700 /* OTClaimsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTClaimsViewController.h; path = Classes/Views/MainTabBar/Claims/OTClaimsViewController.h; sourceTree = "<group>"; };
 		DE5448E3198AA66000221700 /* OTClaimsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTClaimsViewController.m; path = Classes/Views/MainTabBar/Claims/OTClaimsViewController.m; sourceTree = "<group>"; };
-		DE5A68EE19AF942A00D15B08 /* Claim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Claim.h; path = Classes/Model/Claim.h; sourceTree = "<group>"; };
-		DE5A68EF19AF942A00D15B08 /* Claim.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Claim.m; path = Classes/Model/Claim.m; sourceTree = "<group>"; };
 		DE5A68F119B0944C00D15B08 /* SaveAttachmentTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SaveAttachmentTask.h; path = Classes/Network/SaveAttachmentTask.h; sourceTree = "<group>"; };
 		DE5A68F219B0944C00D15B08 /* SaveAttachmentTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SaveAttachmentTask.m; path = Classes/Network/SaveAttachmentTask.m; sourceTree = "<group>"; };
-		DE5A68F419B0F00900D15B08 /* UploadChunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UploadChunk.h; path = Classes/Network/UploadChunk.h; sourceTree = "<group>"; };
-		DE5A68F519B0F00900D15B08 /* UploadChunk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UploadChunk.m; path = Classes/Network/UploadChunk.m; sourceTree = "<group>"; };
+		DE5A68FA19B80E0900D15B08 /* UploadChunkTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UploadChunkTask.h; path = Classes/Network/UploadChunkTask.h; sourceTree = "<group>"; };
+		DE5A68FB19B80E0900D15B08 /* UploadChunkTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UploadChunkTask.m; path = Classes/Network/UploadChunkTask.m; sourceTree = "<group>"; };
 		DE5CFBE819AB101A00E253B0 /* SaveClaimTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SaveClaimTask.h; path = Classes/Network/SaveClaimTask.h; sourceTree = "<group>"; };
 		DE5CFBE919AB101A00E253B0 /* SaveClaimTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SaveClaimTask.m; path = Classes/Network/SaveClaimTask.m; sourceTree = "<group>"; };
 		DE5CFBEB19AB52D200E253B0 /* Attachment+OT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Attachment+OT.h"; path = "Classes/Model/Attachment+OT.h"; sourceTree = "<group>"; };
@@ -291,6 +290,10 @@
 		DE7F68E919896CF10063047F /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		DE8B32791993C61A0013A83E /* PersonEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PersonEntity.h; path = Classes/Model/DataController/PersonEntity.h; sourceTree = "<group>"; };
 		DE8B327A1993C61A0013A83E /* PersonEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PersonEntity.m; path = Classes/Model/DataController/PersonEntity.m; sourceTree = "<group>"; };
+		DE94CBD519B950BC00636189 /* Claim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Claim.h; path = Classes/Model/Claim.h; sourceTree = "<group>"; };
+		DE94CBD619B950BC00636189 /* Claim.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Claim.m; path = Classes/Model/Claim.m; sourceTree = "<group>"; };
+		DE94CBD819B950BD00636189 /* LandUse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LandUse.h; path = Classes/Model/LandUse.h; sourceTree = "<group>"; };
+		DE94CBD919B950BD00636189 /* LandUse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LandUse.m; path = Classes/Model/LandUse.m; sourceTree = "<group>"; };
 		DE97F4CB1986711A00F3B0B5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main_iPad.strings; sourceTree = "<group>"; };
 		DE97F4CD1986711E00F3B0B5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Main_iPad.strings; sourceTree = "<group>"; };
 		DE97F4CF1986712100F3B0B5 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Main_iPad.strings; sourceTree = "<group>"; };
@@ -348,8 +351,6 @@
 		DEB89CF6199DFEA400BBC9D3 /* Attachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Attachment.m; path = Classes/Model/Attachment.m; sourceTree = "<group>"; };
 		DEB89CF8199DFEA400BBC9D3 /* IdType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IdType.h; path = Classes/Model/IdType.h; sourceTree = "<group>"; };
 		DEB89CF9199DFEA400BBC9D3 /* IdType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IdType.m; path = Classes/Model/IdType.m; sourceTree = "<group>"; };
-		DEB89CFB199DFEA500BBC9D3 /* LandUse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LandUse.h; path = Classes/Model/LandUse.h; sourceTree = "<group>"; };
-		DEB89CFC199DFEA500BBC9D3 /* LandUse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LandUse.m; path = Classes/Model/LandUse.m; sourceTree = "<group>"; };
 		DEB89CFE199DFEA500BBC9D3 /* Owner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Owner.h; path = Classes/Model/Owner.h; sourceTree = "<group>"; };
 		DEB89CFF199DFEA500BBC9D3 /* Owner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Owner.m; path = Classes/Model/Owner.m; sourceTree = "<group>"; };
 		DEB89D01199DFEA600BBC9D3 /* DocumentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DocumentType.h; path = Classes/Model/DocumentType.h; sourceTree = "<group>"; };
@@ -426,6 +427,14 @@
 		DED374EE198E8A1900B48E7A /* UITextView+BPForms.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+BPForms.m"; sourceTree = "<group>"; };
 		DEDD9FD8198A44E400900345 /* SSZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SSZipArchive.h; path = Dependencies/include/SSZipArchive/SSZipArchive.h; sourceTree = "<group>"; };
 		DEDD9FD9198A451D00900345 /* proj_api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = proj_api.h; path = Dependencies/include/PROJ.4/proj_api.h; sourceTree = "<group>"; };
+		DEEB936B19C2943300CBE16E /* OTCoordinate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTCoordinate.h; path = Classes/Maps/Marker/Coordinate/OTCoordinate.h; sourceTree = "<group>"; };
+		DEEB936C19C2943300CBE16E /* OTCoordinate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTCoordinate.m; path = Classes/Maps/Marker/Coordinate/OTCoordinate.m; sourceTree = "<group>"; };
+		DEEB937319C2A96A00CBE16E /* OTGeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTGeometry.h; path = Classes/Maps/Geometry/OTGeometry.h; sourceTree = "<group>"; };
+		DEEB937419C2A96A00CBE16E /* OTGeometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTGeometry.m; path = Classes/Maps/Geometry/OTGeometry.m; sourceTree = "<group>"; };
+		DEEB937819C2F15D00CBE16E /* OTGeometryCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTGeometryCollection.h; path = Classes/Maps/Geometry/OTGeometryCollection.h; sourceTree = "<group>"; };
+		DEEB937919C2F15D00CBE16E /* OTGeometryCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTGeometryCollection.m; path = Classes/Maps/Geometry/OTGeometryCollection.m; sourceTree = "<group>"; };
+		DEEB938419C3578100CBE16E /* OTPointAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTPointAnnotationView.h; path = Classes/Maps/Marker/PointAnnotationView/OTPointAnnotationView.h; sourceTree = "<group>"; };
+		DEEB938519C3578100CBE16E /* OTPointAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTPointAnnotationView.m; path = Classes/Maps/Marker/PointAnnotationView/OTPointAnnotationView.m; sourceTree = "<group>"; };
 		DEEE28C2199117FF00B69E94 /* PickListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PickListController.h; sourceTree = "<group>"; };
 		DEEE28C3199117FF00B69E94 /* PickListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PickListController.m; sourceTree = "<group>"; };
 		DEEE28CA1991316E00B69E94 /* OT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OT.h; path = Classes/Views/OT/OT.h; sourceTree = "<group>"; };
@@ -494,16 +503,19 @@
 		DE0D2C94197F9E5E00D248B9 /* Maps */ = {
 			isa = PBXGroup;
 			children = (
-				DE0D2C95197F9E7B00D248B9 /* Markers */,
+				DEEB937219C2A91E00CBE16E /* Geometry */,
+				DE0D2C95197F9E7B00D248B9 /* Marker */,
 			);
 			name = Maps;
 			sourceTree = "<group>";
 		};
-		DE0D2C95197F9E7B00D248B9 /* Markers */ = {
+		DE0D2C95197F9E7B00D248B9 /* Marker */ = {
 			isa = PBXGroup;
 			children = (
+				DEEB938319C356FF00CBE16E /* PointAnnotationView */,
+				DEEB936A19C293DE00CBE16E /* Coordinate */,
 			);
-			name = Markers;
+			name = Marker;
 			sourceTree = "<group>";
 		};
 		DE0D2C96197F9EA500D248B9 /* JSON */ = {
@@ -537,9 +549,11 @@
 			isa = PBXGroup;
 			children = (
 				DE1F364A199078F60035F7D7 /* DataController */,
-				DE5A68EE19AF942A00D15B08 /* Claim.h */,
-				DE5A68EF19AF942A00D15B08 /* Claim.m */,
 				DE97F4DF198778B400F3B0B5 /* OpenTenure.xcdatamodeld */,
+				DE94CBD519B950BC00636189 /* Claim.h */,
+				DE94CBD619B950BC00636189 /* Claim.m */,
+				DE94CBD819B950BD00636189 /* LandUse.h */,
+				DE94CBD919B950BD00636189 /* LandUse.m */,
 				DE5CFC0019ABBD9D00E253B0 /* Person.h */,
 				DE5CFC0119ABBD9D00E253B0 /* Person.m */,
 				DE5CFBFD19ABADD400E253B0 /* NSManagedObject+OT.h */,
@@ -548,8 +562,6 @@
 				DEB89D02199DFEA600BBC9D3 /* DocumentType.m */,
 				DEB89CFE199DFEA500BBC9D3 /* Owner.h */,
 				DEB89CFF199DFEA500BBC9D3 /* Owner.m */,
-				DEB89CFB199DFEA500BBC9D3 /* LandUse.h */,
-				DEB89CFC199DFEA500BBC9D3 /* LandUse.m */,
 				DEB89CF8199DFEA400BBC9D3 /* IdType.h */,
 				DEB89CF9199DFEA400BBC9D3 /* IdType.m */,
 				DEB89CF5199DFEA400BBC9D3 /* Attachment.h */,
@@ -568,8 +580,6 @@
 				DE5CFBF219AB580B00E253B0 /* Owner+OT.m */,
 				DE1F360D198EB95E0035F7D7 /* Person+OT.h */,
 				DE1F360E198EB95E0035F7D7 /* Person+OT.m */,
-				8A2C29A319B46E1D002498C7 /* ChunkPayLoad.h */,
-				8A2C29A419B46E1D002498C7 /* ChunkPayLoad.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -583,8 +593,8 @@
 				DE5CFBE919AB101A00E253B0 /* SaveClaimTask.m */,
 				DE5A68F119B0944C00D15B08 /* SaveAttachmentTask.h */,
 				DE5A68F219B0944C00D15B08 /* SaveAttachmentTask.m */,
-				DE5A68F419B0F00900D15B08 /* UploadChunk.h */,
-				DE5A68F519B0F00900D15B08 /* UploadChunk.m */,
+				DE5A68FA19B80E0900D15B08 /* UploadChunkTask.h */,
+				DE5A68FB19B80E0900D15B08 /* UploadChunkTask.m */,
 				DE5CFC2219AC914700E253B0 /* DownloadClaimTask.h */,
 				DE5CFC2319AC914700E253B0 /* DownloadClaimTask.m */,
 			);
@@ -1255,6 +1265,35 @@
 			name = include;
 			sourceTree = "<group>";
 		};
+		DEEB936A19C293DE00CBE16E /* Coordinate */ = {
+			isa = PBXGroup;
+			children = (
+				DEEB936B19C2943300CBE16E /* OTCoordinate.h */,
+				DEEB936C19C2943300CBE16E /* OTCoordinate.m */,
+			);
+			name = Coordinate;
+			sourceTree = "<group>";
+		};
+		DEEB937219C2A91E00CBE16E /* Geometry */ = {
+			isa = PBXGroup;
+			children = (
+				DEEB937319C2A96A00CBE16E /* OTGeometry.h */,
+				DEEB937419C2A96A00CBE16E /* OTGeometry.m */,
+				DEEB937819C2F15D00CBE16E /* OTGeometryCollection.h */,
+				DEEB937919C2F15D00CBE16E /* OTGeometryCollection.m */,
+			);
+			name = Geometry;
+			sourceTree = "<group>";
+		};
+		DEEB938319C356FF00CBE16E /* PointAnnotationView */ = {
+			isa = PBXGroup;
+			children = (
+				DEEB938419C3578100CBE16E /* OTPointAnnotationView.h */,
+				DEEB938519C3578100CBE16E /* OTPointAnnotationView.m */,
+			);
+			name = PointAnnotationView;
+			sourceTree = "<group>";
+		};
 		DEEE28C1199117FF00B69E94 /* PickListController */ = {
 			isa = PBXGroup;
 			children = (
@@ -1396,7 +1435,6 @@
 				DED374F5198E8A1900B48E7A /* BPFormButtonCell.m in Sources */,
 				DEB89C331996477E00BBC9D3 /* OTAdjacenciesUpdateViewController.m in Sources */,
 				DEB89C4A199A13B200BBC9D3 /* OTFileChooserViewController.m in Sources */,
-				DE5A68F019AF942A00D15B08 /* Claim.m in Sources */,
 				DE7F64541988AA540063047F /* TBClusterAnnotation.m in Sources */,
 				DE1F362E198F9A1B0035F7D7 /* OTFormInfoCell.m in Sources */,
 				DE5CFBEA19AB101A00E253B0 /* SaveClaimTask.m in Sources */,
@@ -1418,6 +1456,7 @@
 				DE1F361D198F41B70035F7D7 /* BPFormFloatInputTextFieldCell.m in Sources */,
 				DED374FA198E8A1900B48E7A /* JVFloatLabeledTextView.m in Sources */,
 				DEB89C9E199B6DBB00BBC9D3 /* NSData+OT.m in Sources */,
+				DE94CBDA19B950BD00636189 /* LandUse.m in Sources */,
 				DEC1AC5F19A26327001A8ECC /* ParseOperation.m in Sources */,
 				DE97F4DB19868B9800F3B0B5 /* ResponseClaim.m in Sources */,
 				DEEE28C4199117FF00B69E94 /* PickListController.m in Sources */,
@@ -1426,6 +1465,7 @@
 				DEB89CEB199DFEA200BBC9D3 /* ClaimType.m in Sources */,
 				DEEE28DE1991FBE200B69E94 /* ResponseLandUse.m in Sources */,
 				DED374F4198E8A1900B48E7A /* BPFormInfoCell.m in Sources */,
+				DE94CBD719B950BC00636189 /* Claim.m in Sources */,
 				DEEE28CF1991372D00B69E94 /* AbstractEntity.m in Sources */,
 				DED374F3198E8A1900B48E7A /* BPFormCell.m in Sources */,
 				DEB89CA6199DA65000BBC9D3 /* OTAppearance.m in Sources */,
@@ -1447,23 +1487,24 @@
 				DEB89CA3199DA5F500BBC9D3 /* OTFormFloatLabelTextField.m in Sources */,
 				DE1F361E198F41B70035F7D7 /* BPFormFloatInputTextViewCell.m in Sources */,
 				DE5CFBF019AB567E00E253B0 /* AdditionalInfo+OT.m in Sources */,
-				8A2C29A519B46E1D002498C7 /* ChunkPayLoad.m in Sources */,
 				DE1F3620198F41B70035F7D7 /* BPFormFloatLabelTextView.m in Sources */,
 				DED37500198E8A1900B48E7A /* MASViewAttribute.m in Sources */,
 				DED374F9198E8A1900B48E7A /* JVFloatLabeledTextField.m in Sources */,
+				DEEB938619C3578100CBE16E /* OTPointAnnotationView.m in Sources */,
 				DEEE28CC1991316E00B69E94 /* OT.m in Sources */,
-				DEB89CFD199DFEA500BBC9D3 /* LandUse.m in Sources */,
 				DEB89C1F199616FC00BBC9D3 /* Claim+OT.m in Sources */,
 				DE1F3642198FF4D20035F7D7 /* UIAlertView+Blocks.m in Sources */,
 				DE5448DE198AA63E00221700 /* OTPersonsViewController.m in Sources */,
 				DEB89CF1199DFEA300BBC9D3 /* AdditionalInfo.m in Sources */,
 				DE5CFBFF19ABADD400E253B0 /* NSManagedObject+OT.m in Sources */,
+				DE5A68FE19B8271400D15B08 /* UploadChunkTask.m in Sources */,
 				DEB89CF7199DFEA400BBC9D3 /* Attachment.m in Sources */,
 				DED37502198E8A1900B48E7A /* NSArray+MASAdditions.m in Sources */,
 				DEB89C39199647D600BBC9D3 /* OTSharesUpdateViewController.m in Sources */,
 				DEC58250198D25FD00C21824 /* OTClaimTabBarController.m in Sources */,
 				DEEE28F91992241000B69E94 /* ResponseDocumentType.m in Sources */,
 				DE7F64561988AA540063047F /* TBCoordinateQuadTree.m in Sources */,
+				DEEB937519C2A96A00CBE16E /* OTGeometry.m in Sources */,
 				DE97F4E1198778B400F3B0B5 /* OpenTenure.xcdatamodeld in Sources */,
 				DE5CFC0219ABBD9D00E253B0 /* Person.m in Sources */,
 				DEB89C9B199B6D9D00BBC9D3 /* NSString+OT.m in Sources */,
@@ -1487,12 +1528,12 @@
 				DEB89C301996473A00BBC9D3 /* OTAdditionalUpdateViewController.m in Sources */,
 				DEEE28E419920B3E00B69E94 /* ResponseClaimType.m in Sources */,
 				DEB89C4E199A14B300BBC9D3 /* DirectoryWatcher.m in Sources */,
+				DEEB937A19C2F15D00CBE16E /* OTGeometryCollection.m in Sources */,
 				DE1F360F198EB95E0035F7D7 /* Person+OT.m in Sources */,
 				DEEE28F6199223D700B69E94 /* DocumentTypeEntity.m in Sources */,
 				DED374F1198E8A1900B48E7A /* BPFormTextView.m in Sources */,
 				DEEE28D81991D21000B69E94 /* ClaimEntity.m in Sources */,
 				DED374FE198E8A1900B48E7A /* MASConstraintMaker.m in Sources */,
-				DE5A68F619B0F00900D15B08 /* UploadChunk.m in Sources */,
 				DED374F7198E8A1900B48E7A /* BPFormInputTextFieldCell.m in Sources */,
 				DE0D2CAC198156B200D248B9 /* CommunityServerAPIUtilities.m in Sources */,
 				DE1F362B198F99320035F7D7 /* OTFormViewController.m in Sources */,
@@ -1501,6 +1542,7 @@
 				DE0D2CAB198156B200D248B9 /* CommunityServerAPI.m in Sources */,
 				DEEE28F019921BC100B69E94 /* NSDictionary+OT.m in Sources */,
 				DE5448D8198AA62100221700 /* OTNewsViewController.m in Sources */,
+				DEEB936D19C2943300CBE16E /* OTCoordinate.m in Sources */,
 				DE5CFC2419AC914700E253B0 /* DownloadClaimTask.m in Sources */,
 				DE1F365419907F5D0035F7D7 /* OTAbstractListViewController.m in Sources */,
 				DECBE89D19854BD600D475F6 /* ZipUtilities.m in Sources */,
@@ -1618,7 +1660,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dependencies",
@@ -1666,7 +1708,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dependencies",
@@ -1686,8 +1728,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Open Tenure/Open Tenure-Prefix.pch";
@@ -1701,7 +1743,7 @@
 					"$(PROJECT_DIR)/Dependencies/TestFlightSDK3.0.2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "79EECB71-D723-44A6-B85E-9C0FCA82D7CC";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1711,8 +1753,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Open Tenure/Open Tenure-Prefix.pch";
@@ -1726,7 +1768,7 @@
 					"$(PROJECT_DIR)/Dependencies/TestFlightSDK3.0.2",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "79EECB71-D723-44A6-B85E-9C0FCA82D7CC";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

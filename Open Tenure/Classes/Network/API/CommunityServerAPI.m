@@ -149,7 +149,7 @@ static NSString *destinationPath;
 
 + (void)getAttachment:(NSString *)attachmentId saveToPath:(NSString *)path {
     downloadingStatus = NSLocalizedString(@"message_downloading_attachment", @"Downloading the attachment");
-    successfulStatus = NSLocalizedString(@"message_attachment_downloaded", @"Downloaded attachment");
+    successfulStatus = [NSString stringWithFormat:NSLocalizedString(@"message_attachment_downloaded", @"Downloaded attachment"), [[path pathComponents] lastObject]];
     destinationPath = path;
     _session = [[self controller] backgroundSession];
     
@@ -218,7 +218,7 @@ static NSString *destinationPath;
 + (void)saveClaim:(NSData *)jsonData completionHandler:(CompletionHandler)completionHandler {
     NSURL *url = [NSURL URLWithString:HTTPS_SAVECLAIM];
     
-    NSString *postLength = [NSString stringWithFormat:@"%d",[jsonData length]];
+    NSString *postLength = [NSString stringWithFormat:@"%lu",(unsigned long)[jsonData length]];
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
@@ -240,7 +240,11 @@ static NSString *destinationPath;
 + (void)saveAttachment:(NSData *)jsonData completionHandler:(CompletionHandler)completionHandler {
     NSURL *url = [NSURL URLWithString:HTTPS_SAVEATTACHMENT];
     
-    NSString *postLength = [NSString stringWithFormat:@"%d", [jsonData length]];
+    NSString *postLength = [NSString stringWithFormat:@"%tu", [jsonData length]];
+    ALog(@"File size: %tu (%@)", [jsonData length], postLength);
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    postLength = [NSString stringWithFormat:@"%tu", [jsonString length]];
+    ALog(@"String size: %tu (%@)", [jsonString length], jsonString);
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
@@ -259,35 +263,68 @@ static NSString *destinationPath;
     }];
 }
 
-+ (void)uploadChunk:(NSData *)payload chunk:(NSData *)chunk completionHandler:(CompletionHandler)completionHandler {
++ (void)uploadChunk:(NSDictionary *)payload chunk:(NSData *)chunk completionHandler:(CompletionHandler)completionHandler {
+    /*
+     POST /ws/claim/it-IT/uploadChunk HTTP/1.1
+     Host: ot.flossola.org:443
+     Connection: keep-alive
+     Content-Type: multipart/form-data; boundary=---------------------------41184676334
+     Content-Length: (according to actual content)
+     
+     -----------------------------41184676334
+     Content-Disposition: form-data; name="descriptor"
+     Content-Type: application/json
+     {
+     "id":"74c166ba-cf58-11e3-9ccc-f7ef76b09620",
+     "attachmentId":"63528f80-cf58-11e3-8ca3-07ca7b0c8647",
+     "claimId":"6ac47e0e-cf58-11e3-b644-a373dca3cc04",
+     "startPosition":0,
+     "size":1622293,
+     "md5":"a106695a4fe8020fb27c745b340cd7b3"
+     }
+     -----------------------------41184676334
+     Content-Disposition: form-data; name="chunk";
+     Content-Type: application/octet-stream
+     
+     (Binary data not shown)
+     -----------------------------41184676334--
+     */
+
     NSURL *url = [NSURL URLWithString:HTTPS_UPLOADCHUNK];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    NSString *boundaryStringPrefix =  @"\r\n-----------------------------41184676334\r\n";
+    NSString *boundaryStringPostfix = @"\r\n-----------------------------41184676334--";
+
+    NSString *contentType = @"multipart/form-data; boundary=---------------------------41184676334";
+//    NSString *postLength = [NSString stringWithFormat:@"%d",[chunk length]];
     
-    NSString *boundary = [self generateBoundaryString];
-    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
-    NSString *postLength = [NSString stringWithFormat:@"%d",[chunk length]];
-    
+
     [request setValue:[[self controller] getCoockieStore] forHTTPHeaderField:@"Cookie"];
     [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
-    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+//    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
     [request setHTTPMethod:@"POST"];
     
     NSMutableData *body = [NSMutableData data];
     
-    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"descriptor\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-    [body appendData:[NSData dataWithData:payload]];
+    [body appendData:[boundaryStringPrefix dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[@"Content-Disposition: form-data; name=\"descriptor\"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[@"Content-Type: application/json\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    NSData *payloadData = [NSJSONSerialization dataWithJSONObject:payload options:NSJSONWritingPrettyPrinted error:nil];
+    [body appendData:payloadData];
     
-    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    [body appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"chunk\"\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-    [body appendData:[NSData dataWithData:chunk]];
+    [body appendData:[boundaryStringPrefix dataUsingEncoding:NSUTF8StringEncoding]];
     
-    [body appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[@"Content-Disposition: form-data; name=\"chunk\"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    [body appendData:chunk];
+    [body appendData:[boundaryStringPostfix dataUsingEncoding:NSUTF8StringEncoding]];
 
     // setting the body of the post to the reqeust
     [request setHTTPBody:body];
 
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        ALog(@"Upload Start Position: %tu", [[payload objectForKey:@"startPosition"] integerValue]);
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
         dispatch_async(dispatch_get_main_queue(), ^{
             completionHandler(error, httpResponse, data);
@@ -413,7 +450,7 @@ static NSString *destinationPath;
 	
 //    double progress = (double)task.countOfBytesReceived / (double)task.countOfBytesExpectedToReceive;
 //	dispatch_async(dispatch_get_main_queue(), ^{
-//        NSLog(@"NSURLSessionTaskDelegate %f", progress);
+//        ALog(@"NSURLSessionTaskDelegate %f", progress);
 //        //[SVProgressHUD showProgress:progress status:downloadingStatus];
 //	});
 //    
@@ -438,7 +475,7 @@ static NSString *destinationPath;
         completionHandler();
     }
     
-    NSLog(@"All tasks are finished");
+    ALog(@"All tasks are finished");
 }
 
 

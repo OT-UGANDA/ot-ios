@@ -24,7 +24,7 @@ NSString * const SVProgressHUDStatusUserInfoKey = @"SVProgressHUDStatusUserInfoK
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
 static const CGFloat SVProgressHUDRingRadius = 14;
-static const CGFloat SVProgressHUDRingThickness = 1;
+static const CGFloat SVProgressHUDRingThickness = 4;
 static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
 #else
 static const CGFloat SVProgressHUDRingRadius = 14;
@@ -606,8 +606,8 @@ static const CGFloat SVProgressHUDRingThickness = 6;
                              }
 #endif
                              // uncomment to make sure UIWindow is gone from app.windows
-                             //NSLog(@"%@", [UIApplication sharedApplication].windows);
-                             //NSLog(@"keyWindow = %@", [UIApplication sharedApplication].keyWindow);
+                             //ALog(@"%@", [UIApplication sharedApplication].windows);
+                             //ALog(@"keyWindow = %@", [UIApplication sharedApplication].keyWindow);
                          }
                      }];
 }

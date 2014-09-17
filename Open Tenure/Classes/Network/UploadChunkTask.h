@@ -25,34 +25,28 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-#import "UploadChunk.h"
 
-@interface UploadChunk ()
+#import <Foundation/Foundation.h>
 
-@property (nonatomic, strong) NSData *payload;
-@property (nonatomic, strong) NSData *chunk;
+#define kChunkSize 500000
+
+@class UploadChunkTask;
+
+@protocol UploadChunkTaskDelegate <NSObject>
+
+@optional
+
+- (void)uploadChunk:(UploadChunkTask *)controller didFinishChunkCount:(NSInteger)chunkCount;
+- (void)uploadChunk:(UploadChunkTask *)controller didFinishWithSuccess:(BOOL)success;
 
 @end
 
-@implementation UploadChunk
+@interface UploadChunkTask : NSOperation
 
-- (id)initWithPayload:(NSData *)payload chunk:(NSData *)chunk {
-    if (self = [super init]) {
-        _payload = payload;
-        _chunk = chunk;
-    }
-    return self;
-}
+@property (weak, nonatomic) id <UploadChunkTaskDelegate> delegate;
 
-- (void)main {
-    [CommunityServerAPI uploadChunk:_payload chunk:_chunk completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
-        switch (httpResponse.statusCode) {
-            case 200:
-                NSLog(@"Uploading chunk ok");
-            default:
-                NSLog(@"Uploading chunk failed %d",httpResponse.statusCode);
-        }
-    }];
-}
+@property (nonatomic) Attachment *attachment;
+
+- (id)initWithAttachment:(Attachment *)attachment;
 
 @end

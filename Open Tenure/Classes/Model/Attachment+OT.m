@@ -24,7 +24,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
- */#import "Attachment+OT.h"
+ */
+
+#import "Attachment+OT.h"
 
 @implementation Attachment (OT)
 
@@ -73,6 +75,14 @@
         }
         [self setValue:value forKey:key];
     }
+    //
+    DocumentTypeEntity *documentTypeEntity = [DocumentTypeEntity new];
+    [documentTypeEntity setManagedObjectContext:self.managedObjectContext];
+    NSArray *documentTypeCollection = [documentTypeEntity getCollection];
+    NSString *docType = [keyedValues objectForKey:@"typeCode"];
+    NSPredicate *landUsePredicate = [NSPredicate predicateWithFormat:@"(code == %@)", docType];
+    DocumentType *documentType = [[documentTypeCollection filteredArrayUsingPredicate:landUsePredicate] firstObject];
+    self.typeCode = documentType;
 }
 
 @end

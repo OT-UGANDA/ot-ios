@@ -160,7 +160,7 @@
 - (CGFloat)viewPager:(ViewPagerController *)viewPager valueForOption:(ViewPagerOption)option withDefault:(CGFloat)value {
     switch (option) {
         case ViewPagerOptionStartFromSecondTab:
-            return 0.0;
+            return 1.0;
         case ViewPagerOptionCenterCurrentTab:
             return 0.0;
         case ViewPagerOptionTabLocation:
@@ -227,8 +227,8 @@
             
         case 2: {
             self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _addPerson, _flexibleSpace];
-            UIBarButtonItem *item = [_views[index] editButtonItem];
-            [self setToolbarItems:@[item]];
+            //UIBarButtonItem *item = [_views[index] editButtonItem];
+            //[self setToolbarItems:@[item]];
             break;
         }
         case 3:
@@ -237,8 +237,8 @@
             } else {
                 self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _login, _fixedSpace, _addClaim, _flexibleSpace];
             }
-            UIBarButtonItem *item = [_views[index] editButtonItem];
-            [self setToolbarItems:@[item]];
+            //UIBarButtonItem *item = [_views[index] editButtonItem];
+            //[self setToolbarItems:@[item]];
             break;
     }
 }

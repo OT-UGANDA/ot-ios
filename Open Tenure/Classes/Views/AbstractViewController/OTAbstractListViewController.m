@@ -83,7 +83,7 @@
         [_tableView reloadData];
     }
     else {
-        NSLog(@"%@", error);
+        ALog(@"%@", error);
         abort();
     }
 }
@@ -193,7 +193,7 @@
     if (![self isEditing]) {
         NSError *error = nil;
 		if (![self.managedObjectContext save:&error]) {
-			NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+			ALog(@"Unresolved error %@, %@", error, [error userInfo]);
 			abort();
 		}
     }

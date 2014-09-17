@@ -25,7 +25,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-
 #import "OT.h"
 
 NSString * const kLoginSuccessNotificationName = @"LoginSuccessNotificationName";
@@ -64,11 +63,15 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
 
 + (void)handleError:(NSError *)error {
     NSString *errorMessage = [error localizedDescription];
-    [SVProgressHUD showErrorWithStatus:errorMessage];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [SVProgressHUD showErrorWithStatus:errorMessage];
+    });
 }
 
 + (void)handleErrorWithMessage:(NSString *)message {
-    [SVProgressHUD showErrorWithStatus:message];
+    dispatch_async(dispatch_get_main_queue(), ^{
+       [SVProgressHUD showErrorWithStatus:message];
+    });
 }
 
 + (NSDateFormatter *)dateFormatter {

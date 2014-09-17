@@ -28,23 +28,15 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ChunkPayLoad : NSObject{
-    NSString*  chunkId_;
-    NSString* attachmentId_;
-    NSString* claimId_;
-    NSString* startPosition_;
-    NSString* size_;
-    NSString * md5_;
-    
-}
+@interface OTCoordinate : NSObject
 
-@property (nonatomic, retain) NSString*  chunkId;
-@property (nonatomic, retain) NSString* attachmentId;
-@property (nonatomic, retain) NSString* claimId;
-@property (nonatomic, retain) NSString* startPosition;
-@property (nonatomic, retain) NSString* size;
-@property (nonatomic, retain) NSString * md5;
+@property CLLocationDegrees latitude;
+@property CLLocationDegrees longitude;
+@property BOOL isDragging;
 
+- (id)initWithLatitude:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude;
+- (CLLocationCoordinate2D)coordinate;
 
-- (NSDictionary *)dictionary;
+- (NSString *)locationAsString;
+
 @end

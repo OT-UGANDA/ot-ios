@@ -25,7 +25,6 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
@@ -37,6 +36,14 @@
 @property (nonatomic, retain) NSString * displayValue;
 @property (nonatomic, retain) NSString * note;
 @property (nonatomic, retain) NSString * status;
-@property (nonatomic, retain) Claim *claims;
+@property (nonatomic, retain) NSSet *claims;
+@end
+
+@interface LandUse (CoreDataGeneratedAccessors)
+
+- (void)addClaimsObject:(Claim *)value;
+- (void)removeClaimsObject:(Claim *)value;
+- (void)addClaims:(NSSet *)values;
+- (void)removeClaims:(NSSet *)values;
 
 @end

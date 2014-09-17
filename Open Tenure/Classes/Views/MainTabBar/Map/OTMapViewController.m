@@ -25,15 +25,19 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-
 #import "OTMapViewController.h"
 #import "ShapeKit.h"
 #import "TBCoordinateQuadTree.h"
 #import "TBClusterAnnotationView.h"
 
+#import "OTCoordinate.h"
+#import "OTGeometry.h"
+#import "OTGeometryCollection.h"
+#import "OTPointAnnotationView.h"
+
 #import "DownloadClaimTask.h"
 
-@interface OTMapViewController ()
+@interface OTMapViewController () <DownloadClaimTaskDelegate>
 
 // Quad tree coordinate for handle cluster annotations
 @property (strong, nonatomic) TBCoordinateQuadTree *coordinateQuadTree;
@@ -41,21 +45,27 @@
 // Managing annotations on the mapView
 @property (nonatomic) NSMutableArray *annotations;
 
-// Managing claims. TODO: using core data
-@property (nonatomic) NSMutableArray *claims;
+@property (nonatomic, strong) OTGeometryCollection *geometryCollection;
+@property (nonatomic, assign, getter = isDragging) BOOL dragging;
 
 // Progress handle
 @property (nonatomic, assign) NSInteger totalItemsToDownload;
 @property (nonatomic, assign) NSInteger totalItemsDownloaded;
+@property (nonatomic, assign) NSInteger totalItemsDownloadError;
+@property (nonatomic, assign, getter = isDownloading) BOOL downloading;
 
 @property (assign) OTViewType viewType;
 
 // Dữ liệu tọa độ dùng hiển thị polygon (new & edit)
 // Quản lý các annotations tại các đỉnh của polygon, không bị xóa bỏ cũng không tham gia tạo cluster
-@property (nonatomic) NSMutableArray *polygonAnnotations;
-@property (nonatomic) MKPolygon *polygonOverlay;
+@property (nonatomic) NSMutableArray *workingAnnotations;
+@property (nonatomic) MKPolygon *workingOverlay;
 
 @property (nonatomic) NSOperationQueue *parseQueue;
+
+@property (nonatomic, strong) NSMutableArray *handleDeletedClaims;
+@property (nonatomic, strong) NSMutableArray *handleDeletedAttachments;
+@property (nonatomic, strong) NSMutableArray *handleDeletedPersons;
 
 @end
 
@@ -88,18 +98,36 @@
 
     }
     
+    // Khởi tạo geometryCollection
+    _geometryCollection = [[OTGeometryCollection alloc] init];
+    
+    // Tạo mới một Geometry
+    [_geometryCollection newGeometryWithName:_claim.claimId];
+    
+    self.workingAnnotations = [NSMutableArray array];
+    
     if (_claim.mappedGeometry != nil) {
         // Lấy dữ liệu polygon
         ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:_claim.mappedGeometry];
         // Zoom đến polygon
         [_mapView setRegion:MKCoordinateRegionForMapRect(polygon.geometry.boundingMapRect) animated:YES];
-        // Chuyển các đỉnh vào _polygonAnnotations
+        // Chuyển các đỉnh vào _workingAnnotation
+        NSMutableArray *points = [NSMutableArray array];
         for (NSInteger i = 0; i < polygon.geometry.pointCount; i++) {
-            MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
-            point.coordinate = MKCoordinateForMapPoint(polygon.geometry.points[i]);
-            point.isAccessibilityElement = YES;
-            [self updatePolygonAnnotations:point remove:NO];
+            CLLocationCoordinate2D coordinate = MKCoordinateForMapPoint(polygon.geometry.points[i]);
+            MKPointAnnotation *pointAnnotation = [[MKPointAnnotation alloc] init];
+            pointAnnotation.coordinate = coordinate;
+            [_workingAnnotations addObject:pointAnnotation];
+            
+            OTCoordinate *coord = [[OTCoordinate alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
+            
+            [points addObject:coord];
         }
+        [[_geometryCollection workingGeometry] setPoints:points];
+        
+        _workingOverlay = polygon.geometry;
+        
+        [self renderAnnotations];
     } else {
         
     }
@@ -112,6 +140,12 @@
     _annotations = [NSMutableArray array];
     
     [self drawMappedGeometry];
+}
+
+// Chuyển qua tab khác
+- (void)viewWillDisappear:(BOOL)animated{
+    // TODO: Lưu mapedGeometry trong trường hợp tạo mới hoặc sửa
+    [super viewWillDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -161,6 +195,10 @@
     
     // Add a observer to receive notification when the CommunityServerAPI get one claim successful
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getClaimActionSuccessful:) name:kGetClaimSuccessNotificationName object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(databaseDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:dataContext];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(databaseDidSave:) name:NSManagedObjectContextDidSaveNotification object:dataContext];
 }
 
 /*!
@@ -196,45 +234,45 @@
 }
 
 - (void)updatePolygonAnnotations:(MKPointAnnotation *)pointAnnotation remove:(BOOL)remove {
-    if (self.polygonAnnotations == nil)
-        self.polygonAnnotations = [NSMutableArray array];
-    
-    if (!remove) {
-        [_polygonAnnotations addObject:pointAnnotation];
+    CLLocationCoordinate2D coordinate = pointAnnotation.coordinate;
+    if (remove) {
+        ALog(@"Remove point");
+        [_geometryCollection removePointFromWorkingGeometry:coordinate];
     } else {
-        if (_polygonAnnotations.count > 0) {
-            [_polygonAnnotations removeObject:pointAnnotation];
-        }
+        ALog(@"Add point");
+        MKZoomScale currentZoomScale = _mapView.bounds.size.width / _mapView.visibleMapRect.size.width;
+        [_geometryCollection addPointToWorkingGeometry:coordinate currentZoomScale:currentZoomScale];
     }
-    
+    ALog(@"N Point: %tu", [[[_geometryCollection workingGeometry] points] count]);
     [self renderAnnotations];
 }
 
-- (void)renderAnnotations{
+- (void)renderAnnotations {
     
     // Gỡ polygon cũ khỏi map
-    if (_polygonOverlay != nil)
-        [self.mapView removeOverlay:_polygonOverlay];
+    if (_workingOverlay != nil)
+        [self.mapView removeOverlay:_workingOverlay];
     
     // Xóa polygon khỏi bộ nhớ
-    _polygonOverlay = nil;
+    _workingOverlay = nil;
     
     // Gỡ các đỉnh của polygon khỏi map
-    if (_polygonAnnotations.count > 0)
-        [self.mapView removeAnnotations:_polygonAnnotations];
-    
-    NSInteger n = _polygonAnnotations.count;
-    
-    if (n > 2) {
-        CLLocationCoordinate2D *points = calloc(n, sizeof(CLLocationCoordinate2D));
-        
-        for (NSInteger i = 0; i < _polygonAnnotations.count; i++) {
-            points[at(i, n)] = ((MKPointAnnotation *)_polygonAnnotations[at(i, n)]).coordinate;
+    for (id <MKAnnotation>object in [self.workingAnnotations copy]) {
+        if ([object conformsToProtocol:@protocol(MKAnnotation)]) {
+            [self.mapView removeAnnotation:object];
+            [self.workingAnnotations removeObject:object];
         }
-        ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithCoordinates:points count:n];
-        _polygonOverlay = polygon.geometry;
-        _claim.mappedGeometry = polygon.wktGeom;
-        
+    }
+
+    OTGeometry *otGeometry = [self.geometryCollection workingGeometry];
+    if (otGeometry.points.count > 2) {
+        NSUInteger pointCount = otGeometry.polygon.pointCount;
+        CLLocationCoordinate2D coords[pointCount];
+        for (NSUInteger i = 0; i < pointCount; i++) {
+            coords[i] = MKCoordinateForMapPoint(otGeometry.polygon.points[i]);
+        }
+        ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithCoordinates:coords count:(unsigned int)pointCount];
+
         // Tạo điểm và nhãn cho polygon theo tâm của đường bao.
         ShapeKitPoint *point = [[ShapeKitPoint alloc] initWithGeosGeometry:[polygon centroid].geosGeom];
         
@@ -244,19 +282,29 @@
             point = [[ShapeKitPoint alloc] initWithGeosGeometry:[polygon pointOnSurface].geosGeom];
         }
         _claim.gpsGeometry = point.wktGeom;
+        _claim.mappedGeometry = polygon.wktGeom;
         
-        [_mapView addOverlay:_polygonOverlay];
-        
-        if (points) {
-            free(points);
-            points = NULL;
-        }
+        [self.mapView addOverlay:polygon.geometry];
+        self.workingOverlay = polygon.geometry;
+    } else {
+        _claim.gpsGeometry = nil;
+        _claim.mappedGeometry = nil;
     }
-    [_mapView addAnnotations:_polygonAnnotations];
+
+    [self renderActiveGeometry];
 }
 
-static inline long at(long i, long count) {
-    return i < 0 ? count - (-i % count) : i % count;
+- (void)renderActiveGeometry {
+    NSUInteger n = [[[self.geometryCollection workingGeometry] points] count];
+    for (NSUInteger i = 0; i < n; i++) {
+        OTCoordinate *otCoordinate = [[[self.geometryCollection workingGeometry] points] objectAtIndex:i];
+        MKPointAnnotation *mapPointAnnotation = [[MKPointAnnotation alloc] init];
+        mapPointAnnotation.coordinate = otCoordinate.coordinate;
+        mapPointAnnotation.title = [NSString stringWithFormat:@"(%tu), %@", i, otCoordinate.locationAsString];
+        mapPointAnnotation.isAccessibilityElement = YES;
+        [self.mapView addAnnotation:mapPointAnnotation];
+        [self.workingAnnotations addObject:mapPointAnnotation];
+    }
 }
 
 #pragma handler notifications
@@ -271,12 +319,20 @@ static inline long at(long i, long count) {
     if (objects.count > 0) {
         _totalItemsToDownload = objects.count;
         _totalItemsDownloaded = 0;
+        _totalItemsDownloadError = 0;
+        [self setDownloading:YES];
         [SVProgressHUD showProgress:0.0
                              status:NSLocalizedString(@"title_claim_downloading_map", nil)
                            maskType:SVProgressHUDMaskTypeGradient];
-        for (ResponseClaim *claim in objects) {
-            [self getClaim:claim];
+        // <
+        NSMutableArray *operations = [NSMutableArray array];
+        for (NSString *claimId in objects) {
+            DownloadClaimTask *downloadClaimTask = [[DownloadClaimTask alloc] initWithClaimId:claimId];
+            downloadClaimTask.delegate = self;
+            [operations addObject:downloadClaimTask];
         }
+        [self.parseQueue addOperations:operations waitUntilFinished:NO];
+        // >
     } else {
         [SVProgressHUD dismiss];
     }
@@ -303,14 +359,72 @@ static inline long at(long i, long count) {
     }
 }
 
+- (void)databaseDidChange:(NSNotification *)notification {
+    if (_handleDeletedClaims == nil) _handleDeletedClaims = [NSMutableArray array];
+    [_handleDeletedClaims removeAllObjects];
+    if (_handleDeletedAttachments == nil) _handleDeletedAttachments = [NSMutableArray array];
+    [_handleDeletedAttachments removeAllObjects];
+    if (_handleDeletedPersons == nil) _handleDeletedPersons = [NSMutableArray array];
+    [_handleDeletedPersons removeAllObjects];
+    NSMutableArray *deletedObjects = [NSMutableArray arrayWithArray:[[dataContext deletedObjects] allObjects]];
+    NSUInteger n = [deletedObjects count];
+    if (n > 0) {
+        for (NSManagedObject *object in deletedObjects) {
+            if ([object isKindOfClass:[Claim class]]) {
+                [_handleDeletedClaims addObject:object];
+            }
+            if ([object isKindOfClass:[Attachment class]]) {
+                [_handleDeletedAttachments addObject:object];
+            }
+            if ([object isKindOfClass:[Person class]]) {
+                [_handleDeletedPersons addObject:object];
+            }
+        }
+    }
+}
+
+- (void)databaseDidSave:(NSNotification *)notification {
+    for (Person *person in _handleDeletedPersons) {
+        BOOL success = [FileSystemUtilities deleteClaimant:person.personId];
+        ALog(@"Delete claimamt folder: %d", success);
+    }
+    for (Claim *claim in _handleDeletedClaims) {
+        // Xóa annotation
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"uuid CONTAINS[cd] %@", claim.claimId];
+        TBClusterAnnotation *annotation = [[_annotations filteredArrayUsingPredicate:predicate] firstObject];
+        if (annotation != nil) {
+            [_annotations removeObject:annotation];
+        }
+        annotation = nil;
+        annotation = [[_mapView.annotations filteredArrayUsingPredicate:predicate] firstObject];
+        if (annotation != nil) {
+            [_mapView removeAnnotation:annotation];
+        }
+        // Xóa boundary
+        predicate = [NSPredicate predicateWithFormat:@"title CONTAINS[cd] %@", claim.claimId];
+        id overlay = [[_mapView.overlays filteredArrayUsingPredicate:predicate] firstObject];
+        if (overlay != nil)
+            [_mapView removeOverlay:overlay];
+        
+        BOOL success = [FileSystemUtilities deleteClaim:claim.claimId];
+        ALog(@"Delete claim folder: %d", success);
+    }
+    [_handleDeletedClaims removeAllObjects];
+    [_handleDeletedAttachments removeAllObjects];
+    [_handleDeletedPersons removeAllObjects];
+    [_coordinateQuadTree buildTreeFromAnnotations:_annotations];
+}
+
 /*!
  Vẽ tất cả các mappedGeometrys của claim đang có lên map. Gọi một lần ở viewDidload
  */
 - (void)drawMappedGeometry {
     [SVProgressHUD show];
     id collection = [ClaimEntity getCollection];
+    
     for (Claim *object in collection) {
         if (object.mappedGeometry == nil) continue;
+        if ([object.claimId isEqualToString:_claim.claimId]) continue;
         // Tạo polygon. Phải đảm bảo dữ liệu geometry của claim không có lỗi
         ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:object.mappedGeometry];
         
@@ -358,6 +472,14 @@ static inline long at(long i, long count) {
  Send broadcasting information
  */
 - (IBAction)downloadClaims:(id)sender {
+    
+    if ([self isDownloading]) return;
+    
+    self.parseQueue = [NSOperationQueue new];
+    
+    // observe the keypath change to get notified of the end of the parser operation to hide the activity indicator
+    [self.parseQueue addObserver:self forKeyPath:@"operationCount" options:0 context:NULL];
+
     MKMapRect mRect = _mapView.visibleMapRect;
     MKMapPoint neMapPoint = MKMapPointMake(MKMapRectGetMaxX(mRect), mRect.origin.y);
     MKMapPoint swMapPoint = MKMapPointMake(mRect.origin.x, MKMapRectGetMaxY(mRect));
@@ -377,14 +499,11 @@ static inline long at(long i, long count) {
             if ((([httpResponse statusCode]/100) == 2) && [[httpResponse MIMEType] isEqual:@"application/json"]) {
                 NSMutableArray *objects = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
                 NSArray *newClaimIds = [self getValidClaimsToDownload:objects];
-                // <
-                NSMutableArray *operations = [NSMutableArray array];
-                for (NSString *claimId in newClaimIds) {
-                    DownloadClaimTask *downloadClaimTask = [[DownloadClaimTask alloc] initWithClaimId:claimId];
-                    [operations addObject:downloadClaimTask];
+                if (newClaimIds.count > 0) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kGetAllClaimsSuccessNotificationName object:newClaimIds];
+                } else {
+                    [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_no_claim_to_download", nil)];
                 }
-                [self.parseQueue addOperations:operations waitUntilFinished:NO];
-                // >
             } else {
                 NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
                 NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
@@ -395,11 +514,6 @@ static inline long at(long i, long count) {
             }
         }
     }];
-
-    self.parseQueue = [NSOperationQueue new];
-    
-    // observe the keypath change to get notified of the end of the parser operation to hide the activity indicator
-    [self.parseQueue addObserver:self forKeyPath:@"operationCount" options:0 context:NULL];
 }
 
 - (IBAction)mapSnapshot:(id)sender {
@@ -540,7 +654,7 @@ static inline long at(long i, long count) {
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (object == self.parseQueue && [keyPath isEqualToString:@"operationCount"]) {
         if (self.parseQueue.operationCount == 0) {
-            NSLog(@"Dismiss");
+            ALog(@"Dismiss");
             dispatch_async(dispatch_get_main_queue(), ^{
                [SVProgressHUD dismiss];
             });
@@ -592,6 +706,7 @@ static inline long at(long i, long count) {
  @result
  New claims list to add or update
  */
+/*
 - (void)getClaim:(ResponseClaim *)responseObject {
     [CommunityServerAPI getClaim:responseObject.claimId completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
         if (error != nil) {
@@ -627,7 +742,7 @@ static inline long at(long i, long count) {
                             [person.managedObjectContext save:nil];
                             
                             // Chuyển xử lý để vẽ
-                            [self processClaim:object];
+                            //[self processClaim:object];
                         }
                     });
                 }
@@ -642,14 +757,15 @@ static inline long at(long i, long count) {
         }
     }];
 }
-
+*/
 /*!
  Receive notification when the CommunityServerAPI get one claim successful
  */
-- (void)processClaim:(NSDictionary *)object {
+- (void)processClaim:(Claim *)claim {
     
     // Create polygon
-    ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:[object objectForKey:@"mappedGeometry"]];
+    ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:claim.mappedGeometry];
+    polygon.geometry.title = claim.claimId;
     [_mapView addOverlay:polygon.geometry];
     
     // Create point
@@ -657,14 +773,10 @@ static inline long at(long i, long count) {
     if (![point isWithinGeometry:polygon])
         point = [[ShapeKitPoint alloc] initWithGeosGeometry:[polygon pointOnSurface].geosGeom];
     
-    point.geometry.title = [object objectForKey:@"description"];
-    point.geometry.subtitle = [object objectForKey:@"id"];
+    point.geometry.title = claim.claimName;
+    point.geometry.subtitle = claim.claimId;
     point.geometry.icon = @"centroid";
-    point.geometry.uuid = [object objectForKey:@"id"];
-    
-    if (point.geometry == nil) {
-        NSLog(@"Geometry nil %@", point.description);
-    }
+    point.geometry.uuid = claim.claimId;
 
     // Add claim's centroid to mapView annotations
     [_annotations addObject:point.geometry];
@@ -688,11 +800,10 @@ static inline long at(long i, long count) {
     [view.layer addAnimation:bounceAnimation forKey:@"bounce"];
 }
 
-- (void)updateMapViewAnnotationsWithAnnotations:(NSArray *)annotations
-{
+- (void)updateMapViewAnnotationsWithAnnotations:(NSArray *)annotations {
     NSMutableSet *before = [NSMutableSet setWithArray:self.mapView.annotations];
     // Không cho cluster đối với các đỉnh của polygon
-    for (id object in _polygonAnnotations)
+    for (id object in _workingAnnotations)
         [before removeObject:object];
     
     [before removeObject:[self.mapView userLocation]];
@@ -751,30 +862,24 @@ static inline long at(long i, long count) {
     if ([annotation isKindOfClass:[MKPointAnnotation class]]) {
         if ([((MKPointAnnotation *)annotation) isAccessibilityElement]) {
             static NSString * const annotationIdentifier = @"CustomAnnotation";
-            MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
-            if (annotationView) {
-                annotationView.annotation = annotation;
-            } else {
-                annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
-
-                annotationView.image = [UIImage imageNamed:@"ot_blue_marker"];
+            OTPointAnnotationView *pin = (OTPointAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
+            
+            if (!pin) {
+                pin = [[OTPointAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
+                
+                pin.draggable = (_viewType == OTViewTypeView) ? NO : YES;
+                pin.canShowCallout = YES;
             }
-
-            // 29x29
-            // |-------|
-            // |-------|
-            // |---x---|
-            // |-------|
-            // |---x---|
             
-            //Offset vị trí vào giữa
-            annotationView.centerOffset = CGPointMake(0, -15);
+            [pin setSelected:YES animated:YES];
             
-            annotationView.draggable = (_viewType == OTViewTypeView) ? NO : YES;
-
-            annotationView.canShowCallout = NO;
-            
-            return annotationView;
+            if (_viewType == OTViewTypeAdd || _viewType == OTViewTypeEdit) {
+                UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(1, 0, 25, 25)];
+                UIImage *btnImage = [UIImage imageNamed:@"Icon-remove"];
+                [deleteButton setImage:btnImage forState:UIControlStateNormal];
+                pin.rightCalloutAccessoryView = deleteButton;
+            }
+            return pin;
         }
         
         static NSString *defaultPinID = @"DropedPin";
@@ -840,9 +945,82 @@ static inline long at(long i, long count) {
     }
 }
 
-- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
-    if (newState == MKAnnotationViewDragStateEnding)
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
+    
+    if ([view isKindOfClass:[OTPointAnnotationView class]]) {
+        if([[view rightCalloutAccessoryView] isEqual:control]){
+            [self updatePolygonAnnotations:[view annotation] remove:YES];
+            [self renderAnnotations];
+        }
+    }
+}
+
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState{
+    
+    CLLocationCoordinate2D annotationCoordinate = [view.annotation coordinate];
+    
+    OTCoordinate *tempCoordinate = [[OTCoordinate alloc] initWithLatitude:annotationCoordinate.latitude longitude:annotationCoordinate.longitude];
+    
+    if (newState == MKAnnotationViewDragStateStarting) {
+        
+        [self setDragging:YES];
+
+        for (OTCoordinate *coordinate in [[self.geometryCollection workingGeometry] points]) {
+            if ([coordinate isEqual:tempCoordinate]) {
+                [coordinate setIsDragging:YES];
+            }
+        }
+        
+    } else if (newState == MKAnnotationViewDragStateEnding) {
+        
+        for (OTCoordinate *coordinate in [[self.geometryCollection workingGeometry] points]) {
+            if ([coordinate isDragging]) {
+                [coordinate setIsDragging:NO];
+                coordinate.latitude = annotationCoordinate.latitude;
+                coordinate.longitude = annotationCoordinate.longitude;
+                break;
+            }
+        }
+        
+    } else if (newState == MKAnnotationViewDragStateNone && oldState == MKAnnotationViewDragStateEnding) {
         [self renderAnnotations];
+        [self setDragging:NO];
+    }
+}
+
+#pragma DownloadClaimTaskDelegate method
+
+- (void)downloadClaimTask:(DownloadClaimTask *)controller didFinishWithSuccess:(BOOL)success {
+    _totalItemsDownloaded += 1;
+    double progress = (double)_totalItemsDownloaded / (double)_totalItemsToDownload;
+    ALog(@"downloadClaimTask didFinishWithSuccess %d, progress: %f", success, progress);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [SVProgressHUD showProgress:progress
+                             status:NSLocalizedString(@"title_claim_downloading_map", nil)
+                           maskType:SVProgressHUDMaskTypeGradient];
+    });
+    if (progress >= 1.0 || _totalItemsDownloaded == _totalItemsToDownload) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_claims_downloaded", @"Claims correctly downloaded")];
+            
+            ALog(@"Claim correctly downloaded %tu/%tu.", _totalItemsDownloaded - _totalItemsDownloadError, _totalItemsToDownload);
+            
+            _totalItemsToDownload = 0;
+            _totalItemsDownloaded = 0;
+            _totalItemsDownloadError = 0;
+            [self setDownloading:NO];
+        });
+        // Update quad tree for clustering
+        [_coordinateQuadTree buildTreeFromAnnotations:_annotations];
+        [self mapView:_mapView regionDidChangeAnimated:NO];
+        saveTemporaryContext;
+    }
+    
+    if (success) {
+        [self processClaim:controller.claim];
+    } else {
+        _totalItemsDownloadError++;
+    }
 }
 
 @end

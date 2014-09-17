@@ -29,12 +29,17 @@
 #import "OTClaimsViewController.h"
 #import "OTClaimTabBarController.h"
 #import "SaveClaimTask.h"
+#import "UploadChunkTask.h"
+#import "SaveAttachmentTask.h"
 
-@interface OTClaimsViewController ()
+@interface OTClaimsViewController () <UploadChunkTaskDelegate, SaveClaimTaskDelegate, SaveAttachmentTaskDelegate, UploadChunkTaskDelegate>
 
 @property (nonatomic, strong) NSString *rootViewClassName;
 
-@property (nonatomic) NSOperationQueue *saveClaimQueue;
+@property (nonatomic, assign, getter = isUploading) BOOL uploading;
+@property (nonatomic, assign) NSInteger totalChunksTobeUploaded;
+@property (nonatomic, assign) NSInteger chunksUploadedSuccessfully;
+@property (nonatomic, assign) NSInteger totalAttachmentsTobeUploaded;
 
 @end
 
@@ -83,8 +88,8 @@
     } else if (_managedObjectContext != nil) {
         return _managedObjectContext;
     }
-    
-    return dataContext;
+    _managedObjectContext = dataContext;
+    return _managedObjectContext;
 }
 
 - (NSString *)mainTableSectionNameKeyPath {
@@ -286,9 +291,8 @@
 #pragma Bar Buttons Action
 
 - (IBAction)addClaim:(id)sender {
-    NSManagedObjectContext *context = [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] temporaryContext];
     ClaimEntity *claimEntity = [ClaimEntity new];
-    [claimEntity setManagedObjectContext:context];
+    [claimEntity setManagedObjectContext:temporaryContext];
     Claim *claim = [claimEntity create];
     
     [claim setToTemporary];
@@ -304,45 +308,85 @@
     [OT login];
 }
 
-- (void)submitClaim:(Claim *)claim {
+- (IBAction)submitClaim:(Claim *)claim {
     
     if (![OTAppDelegate authenticated]) {
         [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"message_login_before", @"Do login before")];
         return;
     }
-
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"message_uploading", nil)];
-    SaveClaimTask *saveClaimTask = [[SaveClaimTask alloc] initWithClaim:claim];
-    self.saveClaimQueue = [NSOperationQueue new];
-    [_saveClaimQueue addOperation:saveClaimTask];
-/*
-    NSError * err;
-    NSData * jsonData = [NSJSONSerialization dataWithJSONObject:claim.dictionary options:NSJSONWritingPrettyPrinted error:&err];
-    NSString * jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     
-    [CommunityServerAPI saveClaim:jsonString completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
-        NSLog(@"HTTP Response: %tu", httpResponse.statusCode);
-        NSMutableArray *objects = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
-        NSLog(@"%@", objects.description);
-        
-        if (error != nil) {
-            [OT handleError:error];
-        } else {
-            
-            if ((([httpResponse statusCode]/100) == 2) && [[httpResponse MIMEType] isEqual:@"application/json"]) {
+    if (!claim.canBeUploaded) return;
 
-            } else {
-                NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
-                NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
-                NSError *reportError = [NSError errorWithDomain:@"HTTP"
-                                                           code:[httpResponse statusCode]
-                                                       userInfo:userInfo];
-                [OT handleError:reportError];
+    ALog(@"Submitting claim");
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"message_uploading", nil)];
+
+    claim.recorderName = [OTAppDelegate userName];
+    [claim.managedObjectContext save:nil];
+    
+    [self saveClaim:claim];
+}
+
+// Save claim to server
+- (void)saveClaim:(Claim *)claim {
+    SaveClaimTask *saveClaimTask = [[SaveClaimTask alloc] initWithClaim:claim viewHolder:self];
+    saveClaimTask.delegate = self;
+    NSOperationQueue *saveClaimQueue = [NSOperationQueue new];
+    [saveClaimQueue addOperation:saveClaimTask];
+}
+
+- (void)saveAttachment:(Attachment *)attachment {
+    SaveAttachmentTask *saveAttachmentTask = [[SaveAttachmentTask alloc] initWithAttachment:attachment viewHolder:self];
+    saveAttachmentTask.delegate = self;
+    NSOperationQueue *saveAttachmentTaskQueue = [NSOperationQueue new];
+    [saveAttachmentTaskQueue addOperation:saveAttachmentTask];
+}
+
+#pragma UploadChunkTaskDelegate method
+// Kết thúc thành công một chunk
+- (void)uploadChunk:(UploadChunkTask *)controller didFinishChunkCount:(NSInteger)chunkCount {
+    if (_totalChunksTobeUploaded == 0) return;
+    _chunksUploadedSuccessfully++;
+    double progress = (double)_chunksUploadedSuccessfully / (double)_totalChunksTobeUploaded;
+    ALog(@"Upload progress: %f", progress);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [SVProgressHUD showProgress:progress status:NSLocalizedString(@"message_uploading", nil)];
+    });
+}
+
+#pragma SaveClaimTaskDelegate method
+// Tổng số chunks của attachments
+- (void)saveClaimTask:(SaveClaimTask *)controller didSaveWithTotalChunksTobeUploaded:(NSInteger)totalChunks totalAttachments:(NSInteger)totalAttachments {
+    _totalChunksTobeUploaded = totalChunks;
+    _totalAttachmentsTobeUploaded = totalAttachments;
+    ALog(@"Total chunks: %tu", totalChunks);
+}
+
+#pragma UploadChunkTaskDelegate method
+// Kết thúc việc upload một attachment thành công
+- (void)uploadChunk:(UploadChunkTask *)controller didFinishWithSuccess:(BOOL)success {
+    Attachment *attachment = controller.attachment;
+    if (success) {
+        ALog(@"Kết quả trả về 454 là đã tồn tại attachment, đặt lại thuộc tính cho attachment là uploaded?");
+        [self performSelector:@selector(saveAttachment:) withObject:attachment afterDelay:0.2];
+    }
+}
+
+#pragma SaveAttachmentTaskDelegate method 
+
+- (void)saveAttachment:(SaveAttachmentTask *)controller didSaveSuccess:(BOOL)success {
+    if (success) {
+        _totalAttachmentsTobeUploaded--;
+        if (_totalAttachmentsTobeUploaded == 0) {
+            // Nếu đã upload hết chunks
+            if (_chunksUploadedSuccessfully == _totalChunksTobeUploaded) {
+                _chunksUploadedSuccessfully = 0;
+                _totalChunksTobeUploaded = 0;
+                _totalAttachmentsTobeUploaded = 0;
+                // Sau khi upload thành công các attachments, chờ 0.3 giây để server làm việc :D rồi saveClaim lần nữa
+                [self performSelector:@selector(submitClaim:) withObject:controller.attachment.claim afterDelay:0.3];
             }
         }
-    }];
-*/
-    
+    }
 }
 
 @end

@@ -26,6 +26,9 @@
  * *********************************************************************************************
  */
 
+#define temporaryContext [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] managedObjectContext]
+#define saveTemporaryContext [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] saveContext]
+
 #import <UIKit/UIKit.h>
 
 @class Person, Claim;
@@ -38,13 +41,15 @@
 @property (copy) void (^backgroundSessionCompletionHandler)();
 
 // For template storage
-@property (readonly, strong, nonatomic) NSManagedObjectContext *temporaryContext;
+@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @property (nonatomic) Person *person;
 @property (nonatomic) Claim *claim;
 
 @property (nonatomic) BOOL authenticated;
 @property (nonatomic, strong) NSString *userName;
+
+- (void)saveContext;
 
 + (BOOL)authenticated;
 + (NSString *)userName;

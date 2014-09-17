@@ -25,6 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import <Foundation/Foundation.h>
 
 @class SaveAttachmentTask;
@@ -33,14 +34,16 @@
 
 @required
 
-- (void)saveAttachment:(SaveAttachmentTask *)controller didFinishTask:(id)task;
+- (void)saveAttachment:(SaveAttachmentTask *)controller didSaveSuccess:(BOOL)success;
 
 @end
 
 @interface SaveAttachmentTask : NSOperation
 
+@property (nonatomic) Attachment *attachment;
+
 @property (weak, nonatomic) id <SaveAttachmentTaskDelegate> delegate;
 
-- (id)initWithAttachment:(Attachment *)attachment;
+- (id)initWithAttachment:(Attachment *)attachment viewHolder:(id)viewHolder;
 
 @end

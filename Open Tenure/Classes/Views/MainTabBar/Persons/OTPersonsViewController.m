@@ -112,7 +112,7 @@
 - (NSPredicate *)frcPredicate {
     if ([_rootViewClassName isEqualToString:@"OTSelectionTabBarViewController"]) {
         // for claim select person
-        return [NSPredicate predicateWithFormat:@"(claim = nil)"];
+        return [NSPredicate predicateWithFormat:@"(claim = nil) AND (owner = nil)"];
     }
     return nil;
 }
@@ -120,7 +120,7 @@
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
     if ([_rootViewClassName isEqualToString:@"OTSelectionTabBarViewController"]) {
         // for claim select person
-        return [NSPredicate predicateWithFormat:@"(lastName CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) AND (claim = nil)", searchText, searchText];
+        return [NSPredicate predicateWithFormat:@"(lastName CONTAINS[cd] %@) OR (name CONTAINS[cd] %@) AND (claim = nil) AND (owner = nil)", searchText, searchText];
     } else {
         // Default
         return [NSPredicate predicateWithFormat:@"(lastName CONTAINS[cd] %@) OR (name CONTAINS[cd] %@)", searchText, searchText];
@@ -183,9 +183,8 @@
 
 - (void)insertNewPersonWithType:(BOOL)physical {
 
-    NSManagedObjectContext *context = [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] temporaryContext];
     PersonEntity *personEntity = [PersonEntity new];
-    [personEntity setManagedObjectContext:context];
+    [personEntity setManagedObjectContext:temporaryContext];
     Person *newPerson = [personEntity create];
     newPerson.personId = [[[NSUUID UUID] UUIDString] lowercaseString];
     newPerson.person = [NSNumber numberWithBool:physical];
@@ -213,7 +212,7 @@
     if (sections.count <= section)
         return nil;
     
-    return [[[sections objectAtIndex:section] name] boolValue] ? @"Group" : @"Person";
+    return [[[sections objectAtIndex:section] name] boolValue] ? @"Person" : @"Group";
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {

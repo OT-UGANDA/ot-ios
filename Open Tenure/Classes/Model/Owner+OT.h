@@ -25,10 +25,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import "Owner.h"
 
 @interface Owner (OT)
 
 - (NSDictionary *)dictionary;
+
+- (void)importFromJSON:(NSDictionary *)keyedValues;
 
 @end

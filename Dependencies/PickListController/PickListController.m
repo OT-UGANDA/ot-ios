@@ -251,10 +251,10 @@
     keyboardFrameEndInContainerViewCoordinates = [self.tableView.superview convertRect:keyboardFrameEnd fromView:nil];
 
     if (self.debug) {
-        NSLog(@"-keyboardDidShow:");
-        NSLog(@"   keyboard in screen coordinates %@", NSStringFromCGRect(keyboardFrameEnd));
-        NSLog(@"keyboard in container coordinates %@", NSStringFromCGRect(keyboardFrameEndInContainerViewCoordinates));
-        NSLog(@"                table view bounds %@", NSStringFromCGRect(self.tableView.bounds));
+        ALog(@"-keyboardDidShow:");
+        ALog(@"   keyboard in screen coordinates %@", NSStringFromCGRect(keyboardFrameEnd));
+        ALog(@"keyboard in container coordinates %@", NSStringFromCGRect(keyboardFrameEndInContainerViewCoordinates));
+        ALog(@"                table view bounds %@", NSStringFromCGRect(self.tableView.bounds));
     }
     
     if ( CGRectIntersectsRect(self.tableView.frame, keyboardFrameEndInContainerViewCoordinates) ) {
@@ -262,8 +262,8 @@
         newTableViewFrame.size.height = keyboardFrameEndInContainerViewCoordinates.origin.y - newTableViewFrame.origin.y;
 
         if (self.debug) {
-            NSLog(@"           table view frame start %@", NSStringFromCGRect(self.tableView.frame));
-            NSLog(@"             table view frame end %@", NSStringFromCGRect(newTableViewFrame));
+            ALog(@"           table view frame start %@", NSStringFromCGRect(self.tableView.frame));
+            ALog(@"             table view frame end %@", NSStringFromCGRect(newTableViewFrame));
         }
         animated = [self beginAnimationFromKeyboardNotification:note];
         self.tableView.frame = newTableViewFrame;
@@ -285,9 +285,9 @@
     newTableViewFrame = [self tableViewFrame];
     
     if (self.debug) {
-        NSLog(@"-keyboardWillHide:");
-        NSLog(@"           table view frame start %@", NSStringFromCGRect(self.tableView.frame));
-        NSLog(@"             table view frame end %@", NSStringFromCGRect(newTableViewFrame));
+        ALog(@"-keyboardWillHide:");
+        ALog(@"           table view frame start %@", NSStringFromCGRect(self.tableView.frame));
+        ALog(@"             table view frame end %@", NSStringFromCGRect(newTableViewFrame));
     }
     animated = [self beginAnimationFromKeyboardNotification:note];
     self.tableView.frame = newTableViewFrame;

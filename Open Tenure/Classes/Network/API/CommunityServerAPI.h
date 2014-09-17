@@ -25,6 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import <Foundation/Foundation.h>
 #import "CommunityServerAPIUtilities.h"
 
@@ -46,7 +47,7 @@ typedef void (^CompletionHandler)(NSError *error, NSHTTPURLResponse *httpRespons
 + (void)getDocumentTypesWithCompletionHandler:(CompletionHandler)completionHandler;
 + (void)saveClaim:(NSData *)jsonData completionHandler:(CompletionHandler)completionHandler;
 + (void)saveAttachment:(NSData *)jsonData completionHandler:(CompletionHandler)completionHandler;
-+ (void)uploadChunk:(NSData *)payload chunk:(NSData *)chunk completionHandler:(CompletionHandler)completionHandler;
++ (void)uploadChunk:(NSDictionary *)payload chunk:(NSData *)chunk completionHandler:(CompletionHandler)completionHandler;
 
 - (void)getClaim:(NSString *)claimId completionHandler:(CompletionHandler)completionHandler;
 + (void)getCommunityArea:(CompletionHandler)completionHandler;

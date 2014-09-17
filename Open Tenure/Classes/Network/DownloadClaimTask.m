@@ -44,7 +44,51 @@
 }
 
 - (void)main {
-    NSLog(@"Downloading %@", _claimId);
+    ALog(@"Downloading %@", _claimId);
+    [CommunityServerAPI getClaim:_claimId completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
+        if (error != nil) {
+            [OT handleError:error];
+            [_delegate downloadClaimTask:self didFinishWithSuccess:NO];
+        } else {
+            if ((([httpResponse statusCode]/100) == 2) && [[httpResponse MIMEType] isEqual:@"application/json"]) {
+                NSError *errorJSON = nil;
+                NSDictionary *object = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&errorJSON];
+                if (errorJSON != nil) {
+                    [OT handleError:errorJSON];
+                    [_delegate downloadClaimTask:self didFinishWithSuccess:NO];
+                } else {
+                    ClaimEntity *claimEntity = [ClaimEntity new];
+                    [claimEntity setManagedObjectContext:temporaryContext];
+                    Claim *claim = [claimEntity create];
+                    [claim importFromJSON:object];
+                    
+                    
+                    
+                    // Tạo
+/*
+                    @property (nonatomic, retain) NSSet *additionalInfo;
+OK                    @property (nonatomic, retain) NSSet *attachments;
+OK                    @property (nonatomic, retain) NSSet *owners;
+OK                    @property (nonatomic, retain) ClaimType *claimType;
+OK                    @property (nonatomic, retain) LandUse *landUse;
+OK                    @property (nonatomic, retain) Person *person;
+                    @property (nonatomic, retain) Claim *challenged;
+*/
+                    _claim = claim;
+                    
+                    [_delegate downloadClaimTask:self didFinishWithSuccess:YES];
+                }
+            } else {
+                NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
+                NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
+                NSError *reportError = [NSError errorWithDomain:@"HTTP"
+                                                           code:[httpResponse statusCode]
+                                                       userInfo:userInfo];
+                [OT handleError:reportError];
+                [_delegate downloadClaimTask:self didFinishWithSuccess:NO];
+            }
+        }
+    }];
 }
 
 @end

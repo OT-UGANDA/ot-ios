@@ -43,7 +43,7 @@
         <relationship name="claimType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ClaimType" inverseName="claims" inverseEntity="ClaimType" syncable="YES"/>
         <relationship name="landUse" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LandUse" inverseName="claims" inverseEntity="LandUse" syncable="YES"/>
         <relationship name="owners" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Owner" inverseName="claim" inverseEntity="Owner" syncable="YES"/>
-        <relationship name="person" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="claim" inverseEntity="Person" syncable="YES"/>
+        <relationship name="person" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Person" inverseName="claim" inverseEntity="Person" syncable="YES"/>
     </entity>
     <entity name="ClaimType" representedClassName="ClaimType" syncable="YES">
         <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
@@ -77,14 +77,14 @@
         <attribute name="displayValue" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="claims" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Claim" inverseName="landUse" inverseEntity="Claim" syncable="YES"/>
+        <relationship name="claims" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Claim" inverseName="landUse" inverseEntity="Claim" syncable="YES"/>
     </entity>
     <entity name="Owner" representedClassName="Owner" syncable="YES">
         <attribute name="denominator" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="nominator" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="ownerId" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="claim" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Claim" inverseName="owners" inverseEntity="Claim" syncable="YES"/>
-        <relationship name="person" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Person" inverseName="owner" inverseEntity="Person" syncable="YES"/>
+        <relationship name="person" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Person" inverseName="owner" inverseEntity="Person" syncable="YES"/>
     </entity>
     <entity name="Person" representedClassName="Person" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>

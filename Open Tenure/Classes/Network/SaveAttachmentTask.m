@@ -25,44 +25,41 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-#import "SaveAttachmentTask.h"
-#import "ChunkPayLoad.h"
-#import "UploadChunk.h"
 
-#define kChunkSize 500000
+#import "SaveAttachmentTask.h"
+#import "UploadChunkTask.h"
 
 @interface SaveAttachmentTask ()
 
-@property (nonatomic) NSOperationQueue *uploadChunkQueue;
+@property (nonatomic) NSOperationQueue *uploadChunkTaskQueue;
+@property (nonatomic) UploadChunkTask *uploadChunkTask;
 
-@property (nonatomic, strong) Attachment *attachment;
-@property (nonatomic, strong) ChunkPayLoad* payload;
-
+@property (nonatomic, strong) id viewHolder;
 
 @end
 
 @implementation SaveAttachmentTask
 
-- (id)initWithAttachment:(Attachment *)attachment {
+- (id)initWithAttachment:(Attachment *)attachment viewHolder:(id)viewHolder {
     if (self = [super init]) {
         _attachment = attachment;
+        _uploadChunkTaskQueue = [NSOperationQueue new];
+        _viewHolder = viewHolder;
+        _uploadChunkTask = [[UploadChunkTask alloc] initWithAttachment:attachment];
+        _uploadChunkTask.delegate = _viewHolder;
     }
     return self;
 }
 
-- (void)main {
-    NSDictionary *jsonObject = _attachment.dictionary;
-    
+- (void)saveAttachment:(Attachment *)attachment {
+    NSDictionary *jsonObject = attachment.dictionary;
     
     if ([NSJSONSerialization isValidJSONObject:jsonObject]) {
         
-        //self.uploadChunkQueue = [NSOperationQueue new];
-        
-        NSLog(@"%@", jsonObject.description);
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonObject options:NSJSONWritingPrettyPrinted error:nil];
         
         [CommunityServerAPI saveAttachment:jsonData completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
-            NSLog(@"Response code: %tu; Error: %@", httpResponse.statusCode, error.localizedDescription);
+            ALog(@"Response code: %tu; Error: %@", httpResponse.statusCode, error.localizedDescription);
             if (error != nil) {
                 [OT handleError:error];
             } else {
@@ -77,18 +74,40 @@
                             case 100: /* UnknownHostException: */
                             case 105: /* IOException: */
                             case 110:
-                                if ([_attachment.statusCode isEqualToString:kAttachmentStatusUploading])
-                                    _attachment.statusCode = kAttachmentStatusUploadIncomplete;
-                                if ([_attachment.claim.statusCode isEqualToString:kClaimStatusUploading])
-                                    _attachment.claim.statusCode = kClaimStatusUploadIncomplete;
-                                if ([_attachment.claim.statusCode isEqualToString:kClaimStatusUpdating])
-                                    _attachment.claim.statusCode = kClaimStatusUpdateIncomplete;
+                                if ([attachment.statusCode isEqualToString:kAttachmentStatusUploading])
+                                    attachment.statusCode = kAttachmentStatusUploadIncomplete;
+                                if ([attachment.claim.statusCode isEqualToString:kClaimStatusUploading])
+                                    attachment.claim.statusCode = kClaimStatusUploadIncomplete;
+                                if ([attachment.claim.statusCode isEqualToString:kClaimStatusUpdating])
+                                    attachment.claim.statusCode = kClaimStatusUpdateIncomplete;
                                 
                                 [OT handleErrorWithMessage:[returnedData message]];
                                 break;
                                 
                             case 200: { /* OK */
-                                
+                                int action = 0;
+                                for (Attachment *att in attachment.claim.attachments) {
+                                    if ([att.statusCode isEqualToString:kAttachmentStatusUploaded]) {
+                                        action = 1;
+                                    }
+                                    if ([att.statusCode isEqualToString:kAttachmentStatusUploadIncomplete]) {
+                                        action = 2;
+                                        break;
+                                    }
+                                }
+                                if (action == 2) {
+                                    if ([attachment.claim.statusCode isEqualToString:kClaimStatusUploading]) {
+                                        attachment.claim.statusCode = kClaimStatusUploadIncomplete;
+                                    }
+                                    if ([attachment.claim.statusCode isEqualToString:kClaimStatusUpdating]) {
+                                        attachment.claim.statusCode = kClaimStatusUpdateIncomplete;
+                                    }
+                                } else {
+                                    // DO NOTHING
+                                }
+                                attachment.statusCode = kAttachmentStatusUploaded;
+                                [attachment.managedObjectContext save:nil];
+                                [_delegate saveAttachment:self didSaveSuccess:YES];
                                 break;
                             }
                                 
@@ -98,90 +117,34 @@
                                 [OT login];
                                 break;
                             }
+                            
+                            case 454: { /* Object already exists */
+                                ALog(@"Object already exists");
+                                attachment.statusCode = kAttachmentStatusUploaded;
+                                [attachment.managedObjectContext save:nil];
+                                [_delegate saveAttachment:self didSaveSuccess:YES];
+                                break;
+                            }
                                 
                             case 456: { /* Attachment chunks not found. */
                                 
-                                [SVProgressHUD showProgress:0.0 status:NSLocalizedString(@"message_uploading", nil)];
-                                NSLog(@"Uploading chunk");
+                                ALog(@"Uploading chunk");
                                 
-                                NSString *attachmentFolder = [FileSystemUtilities getAttachmentFolder:_attachment.claim.claimId];
-                                NSString *attachmentPath = [attachmentFolder stringByAppendingPathComponent:_attachment.fileName];
-                                NSLog(@"attachment file %@", attachmentPath);
-                                NSInputStream *fileStream = [NSInputStream inputStreamWithFileAtPath:attachmentPath];
-                                NSLog(@"input stream %@", fileStream.description);
-                                [fileStream open];
-                                uint8_t *buffer = malloc(kChunkSize);
-                                NSInteger bytesRead = [fileStream read:buffer maxLength:kChunkSize];
-                                NSInteger startPos = 0;
-                                NSLog(@"%tu", bytesRead);
-                                 NSLog(@"Keys:");
-                                //NSLog(@"Keys: %@ %@ %@",[[[NSUUID UUID] UUIDString] lowercaseString],_attachment.claim.claimId,_attachment.attachmentId);
-                                while (bytesRead != 0) {
-                                    NSData *data = [NSData dataWithBytes:(const void *)buffer length:kChunkSize];
-                                    
-                                   // NSLog(@"%@", data.description);
-                                    //TODO: create a ChunkPayLoad
-                                    
-                                    NSLog(@"Keys: %@ %@ %@",[[[NSUUID UUID] UUIDString] lowercaseString],_attachment.claim.claimId,_attachment.attachmentId);
-                                    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-                                    [dict setObject:[[[NSUUID UUID] UUIDString] lowercaseString] forKey:@"id"];
-                                    [dict setObject:_attachment.claim.claimId forKey:@"claimId"];
-                                    [dict setObject:_attachment.attachmentId  forKey:@"attachmentId"];
-                                    [dict setObject:[NSString stringWithFormat: @"%d", (int)startPos] forKey:@"startPosition"];
-                                    [dict setObject:[NSString stringWithFormat: @"%d", (int)bytesRead]forKey:@"size"];
-                                    [dict setObject:data.md5 forKey:@"md5"];
-                                     NSLog(@"Dict: %@",dict);
-                                    
-                                    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:kNilOptions error:nil];
-                                    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-                                    NSLog(@"JSON String: %@",jsonString);
-                                    
-                                   /* _payload = [[ChunkPayLoad alloc] init];
-                                    _payload.chunkId = [[[NSUUID UUID] UUIDString] lowercaseString];
-                                    _payload.claimId = _attachment.claim.claimId;
-                                    _payload.attachmentId = _attachment.attachmentId;
-                                    _payload.startPosition = [NSString stringWithFormat: @"%d", (int)startPos];
-                                    _payload.size = [NSString stringWithFormat: @"%d", (int)bytesRead];
-                                    _payload.md5 = data.md5;
-                                    NSLog(@"%@%@", @"claim ID: ",_payload.claimId);
-                                    //test JSON of PayLoad
-                                    NSDictionary *jsonObject = _payload.dictionary;
-                                    
-                                    if ([NSJSONSerialization isValidJSONObject:jsonObject]) {
-                                        NSLog(@"%@", jsonObject.description);
-                                    }
-                                    */
-                                    //use UploadChunk to send
-                                    UploadChunk* uploadChunk = [[UploadChunk alloc] initWithPayload:jsonData chunk:data];
-                                   
-                                    self.uploadChunkQueue = [NSOperationQueue new];
-                                    [_uploadChunkQueue addOperation:uploadChunk];
-                                    
-                                    //read the next chunk
-                                    startPos +=  bytesRead;
-                                    bytesRead = [fileStream read:buffer maxLength:kChunkSize];
-                                    
-                                }
-                                
-//                                NSMutableArray *chunkList = [NSMutableArray array];
-//                                for (Attachment *attachment in _attachment.attachments) {
-//                                    if (attachment.status != kAttachmentStatusUploaded
-//                                        && attachment.status != kAttachmentStatusUploading) {
-//                                        SaveAttachmentTask *saveAttachmentTask = [[SaveAttachmentTask alloc] initWithAttachment:attachment];
-//                                        saveAttachmentTask.delegate = self;
-//                                        [saveAttachmentTaskList addObject:saveAttachmentTask];
-//                                    }
-//                                }
-//                                _totalAttachment = saveAttachmentTaskList.count;
-//                                [self.saveAttachmentQueue addOperations:saveAttachmentTaskList waitUntilFinished:NO];
+                                [_uploadChunkTaskQueue addOperation:_uploadChunkTask];
                                 
                                 break;
                             }
                             default:
-                                NSLog(@"Default: %@", [returnedData description]);
+                                ALog(@"Default: %@", [returnedData description]);
+                                ALog(@"Attachment %@", attachment);
+                                NSString *message = [returnedData objectForKey:@"message"];
+                                if (message == nil) message = [returnedData description];
+                                if (message == nil) message = @"Unknow error";
+                                [OT handleErrorWithMessage:message];
                                 break;
                         }
                     }
+                    if ([attachment.managedObjectContext hasChanges]) [attachment.managedObjectContext save:nil];
                 } else {
                     NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
                     NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
@@ -190,23 +153,14 @@
                                                            userInfo:userInfo];
                     [OT handleError:reportError];
                 }
-                if ([_attachment.managedObjectContext hasChanges]) [_attachment.managedObjectContext save:nil];
             }
         }];
     }
 }
 
-// observe the queue's operationCount, stop activity indicator if there is no operatation ongoing.
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object == self.uploadChunkQueue && [keyPath isEqualToString:@"uploadChunkCount"]) {
-        if (self.uploadChunkQueue.operationCount == 0) {
-            [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_uploaded", nil)];
-            [self removeObserver:self forKeyPath:@"uploadChunkCount" context:nil];
-        }
-    }
-    else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
+- (void)main {
+    [self saveAttachment:_attachment];
 }
+
 
 @end

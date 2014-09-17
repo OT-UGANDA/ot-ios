@@ -25,6 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import "BPFormFloatInputTextFieldCell.h"
 
 @interface OTFormFloatInputTextFieldCell : BPFormFloatInputTextFieldCell

@@ -25,6 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
@@ -35,7 +36,6 @@
 @property (nonatomic, retain) NSString * challengeExpiryDate;
 @property (nonatomic, retain) NSString * claimId;
 @property (nonatomic, retain) NSString * claimName;
-@property (nonatomic, retain) NSString * nr;
 @property (nonatomic, retain) NSString * decisionDate;
 @property (nonatomic, retain) NSString * eastAdjacency;
 @property (nonatomic, retain) NSString * gpsGeometry;
@@ -43,11 +43,12 @@
 @property (nonatomic, retain) NSString * mappedGeometry;
 @property (nonatomic, retain) NSString * northAdjacency;
 @property (nonatomic, retain) NSString * notes;
+@property (nonatomic, retain) NSString * nr;
+@property (nonatomic, retain) NSString * recorderName;
 @property (nonatomic, retain) NSString * southAdjacency;
 @property (nonatomic, retain) NSString * startDate;
 @property (nonatomic, retain) NSString * statusCode;
 @property (nonatomic, retain) NSString * westAdjacency;
-@property (nonatomic, retain) NSString * recorderName;
 @property (nonatomic, retain) NSSet *additionalInfo;
 @property (nonatomic, retain) NSSet *attachments;
 @property (nonatomic, retain) Claim *challenged;
