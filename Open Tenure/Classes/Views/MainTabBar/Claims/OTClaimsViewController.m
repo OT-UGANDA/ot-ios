@@ -151,7 +151,12 @@
         object = [_filteredObjects objectAtIndex:indexPath.row];
     
     cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"claim_status_%@", object.statusCode]];
-    cell.textLabel.text = [NSString stringWithFormat:@"%@, By: %@", object.claimName, [object.person fullNameType:OTFullNameTypeDefault]];
+    if([object.recorderName isEqual:@""] == true || (object.recorderName==nil) )
+        cell.textLabel.text = [NSString stringWithFormat:@"%@, Created by:%@ ", object.claimName, [object.person fullNameType:OTFullNameTypeDefault]];
+
+    else
+    cell.textLabel.text = [NSString stringWithFormat:@"%@, Created by:%@ Uploaded by: %@", object.claimName, [object.person fullNameType:OTFullNameTypeDefault],object.recorderName];
+    
     cell.detailTextLabel.text = object.notes;
 }
 
