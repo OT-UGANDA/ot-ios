@@ -473,6 +473,16 @@
  */
 - (IBAction)downloadClaims:(id)sender {
     
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle: @"Underconstruction"
+                                                   message: @"Bugs is fixing"
+                                                  delegate: self
+                                         cancelButtonTitle:@"Cancel"
+                                         otherButtonTitles:@"OK",nil];
+    
+    
+    [alert show];
+    return;
+    
     if ([self isDownloading]) return;
     
     self.parseQueue = [NSOperationQueue new];
@@ -666,10 +676,9 @@
 
 #pragma handler download result
 
-/*!
- Kiểm tra sự tồn tại của claim trên local (những claim đã tải về). Cập nhật trạng thái cho các claims đã tải về nếu có sự thay đổi từ phía server.
- @result
- Danh sách các claim mới tải về
+
+/*
+ Check the exisitence of a claim in local. Update status of downloaded claims if there is any change
  */
 - (NSArray *)getValidClaimsToDownload:(NSArray *)objects {
     
