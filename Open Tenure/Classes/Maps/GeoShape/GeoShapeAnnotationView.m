@@ -26,10 +26,9 @@
  * *********************************************************************************************
  */
 
-#import "OTPointAnnotationView.h"
+#import "GeoShapeAnnotationView.h"
 
-@implementation OTPointAnnotationView
-
+@implementation GeoShapeAnnotationView
 
 - (id)initWithAnnotation:(id<MKAnnotation>)annotation reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier]) {
@@ -55,16 +54,17 @@
         }
         
     } else if (newDragState == MKAnnotationViewDragStateEnding || newDragState == MKAnnotationViewDragStateCanceling) {
-//        if (animated) {
-//            [UIView animateWithDuration:0.3 animations:^ {
-//                [self configureUIForStationary];
-//            } completion:^(BOOL finished) {
-//                self.dragState = MKAnnotationViewDragStateNone;
-//            }];
-//        } else {
-        [self configureUIForStationary];
-        self.dragState = MKAnnotationViewDragStateNone;
-//        }
+        if (animated) {
+            [UIView animateWithDuration:0.3 animations:^ {
+                [self configureUIForDragging];
+            } completion:^(BOOL finished) {
+                [self configureUIForStationary];
+                self.dragState = MKAnnotationViewDragStateNone;
+            }];
+        } else {
+            [self configureUIForStationary];
+            self.dragState = MKAnnotationViewDragStateNone;
+        }
     }
 }
 
@@ -75,6 +75,7 @@
 }
 
 - (void) configureUIForStationary{
+    
     //Cho ảnh kích thước 29x29 @2x:58x58
     self.image = [UIImage imageNamed:@"ot_blue_marker"];
     

@@ -26,36 +26,25 @@
  * *********************************************************************************************
  */
 
-#import "ClaimParser.h"
-#import "ParseOperation.h"
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 
-@interface ClaimParser ()
+@class Claim, Person;
 
-@property (nonatomic) NSArray *responseClaims;
+@interface Share : NSManagedObject
 
+@property (nonatomic, retain) NSNumber * denominator;
+@property (nonatomic, retain) NSNumber * nominator;
+@property (nonatomic, retain) NSString * shareId;
+@property (nonatomic, retain) Claim *claim;
+@property (nonatomic, retain) NSSet *owners;
 @end
 
-@implementation ClaimParser
+@interface Share (CoreDataGeneratedAccessors)
 
-- (id)initWithResponseClaims:(NSArray *)objects {
-    if (self = [super init]) {
-        _responseClaims = objects;
-    }
-    return self;
-}
-
-- (void)parse {
-    NSOperationQueue *operationQueue = [[NSOperationQueue alloc]init];
-    [operationQueue setMaxConcurrentOperationCount:1];
-    [operationQueue waitUntilAllOperationsAreFinished];
-    
-    for (ResponseClaim *responseClaim in _responseClaims) {
-        CommunityServerAPI *com = [[CommunityServerAPI alloc] init];
-        [com getClaim:responseClaim.claimId completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
-            [_delegate claimParser:self didEndElement:data];
-        }];
-        [operationQueue addOperation:com];
-    }
-}
+- (void)addOwnersObject:(Person *)value;
+- (void)removeOwnersObject:(Person *)value;
+- (void)addOwners:(NSSet *)values;
+- (void)removeOwners:(NSSet *)values;
 
 @end

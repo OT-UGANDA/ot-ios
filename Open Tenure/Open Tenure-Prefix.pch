@@ -72,7 +72,7 @@
 #import "DataController.h"
 #import "IdTypeEntity.h"
 #import "LandUseEntity.h"
-#import "OwnerEntity.h"
+#import "ShareEntity.h"
 #import "ClaimTypeEntity.h"
 #import "DocumentTypeEntity.h"
 #import "ClaimEntity.h"
@@ -85,7 +85,7 @@
  */
 #import "Person.h"
 #import "ClaimType.h"
-#import "Owner.h"
+#import "Share.h"
 #import "Claim.h"
 #import "LandUse.h"
 #import "IdType.h"
@@ -99,6 +99,6 @@
 #import "Claim+OT.h"
 #import "Attachment+OT.h"
 #import "AdditionalInfo+OT.h"
-#import "Owner+OT.h"
+#import "Share+OT.h"
 
 #endif

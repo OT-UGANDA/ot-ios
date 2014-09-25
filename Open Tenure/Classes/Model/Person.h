@@ -25,26 +25,27 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Claim, Owner;
+@class Claim, Share;
 
 @interface Person : NSManagedObject
 
-@property (nonatomic, retain) NSString * phone;
+@property (nonatomic, retain) NSString * address;
 @property (nonatomic, retain) NSString * birthDate;
 @property (nonatomic, retain) NSString * email;
-@property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSString * genderCode;
 @property (nonatomic, retain) NSString * idNumber;
+@property (nonatomic, retain) NSString * idTypeCode;
 @property (nonatomic, retain) NSString * lastName;
 @property (nonatomic, retain) NSString * mobilePhone;
-@property (nonatomic, retain) NSString * personId;
+@property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * person;
-@property (nonatomic, retain) NSString * address;
-@property (nonatomic, retain) NSString * idTypeCode;
+@property (nonatomic, retain) NSString * personId;
+@property (nonatomic, retain) NSString * phone;
 @property (nonatomic, retain) Claim *claim;
-@property (nonatomic, retain) Owner *owner;
+@property (nonatomic, retain) Share *owner;
 
 @end

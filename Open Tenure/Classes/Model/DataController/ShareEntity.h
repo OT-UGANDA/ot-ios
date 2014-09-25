@@ -25,8 +25,17 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-#import <MapKit/MapKit.h>
 
-@interface OTPointAnnotationView : MKAnnotationView
+#import "AbstractEntity.h"
+
+@class Share;
+
+@interface ShareEntity : AbstractEntity
+
+- (Share *)create;
+
++ (Share *)create;
+
++ (Share *)createFromDictionary:(NSDictionary *)dictionary;
 
 @end

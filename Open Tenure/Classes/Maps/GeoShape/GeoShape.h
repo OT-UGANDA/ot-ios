@@ -26,16 +26,47 @@
  * *********************************************************************************************
  */
 
-#import "AbstractEntity.h"
+#import <MapKit/MapKit.h>
 
-@class Owner;
+MK_EXTERN long at(long i, long n);
 
-@interface OwnerEntity : AbstractEntity
+/*!
+ Determining whether a given point P is inside or outside of segment A-B
+ */
+MK_EXTERN bool isPointInsideAB(MKMapPoint A, MKMapPoint B, MKMapPoint P);
+MK_EXTERN MKMapPoint MKMapPointPerpendicular(MKMapPoint point, MKMapPoint A, MKMapPoint B);
 
-- (Owner *)create;
+@interface GeoShape : MKShape {
+    NSString *_title;
+    NSString *_subtitle;
+    NSUInteger _pointCount;
+    MKMapPoint *_points;
+    MKCoordinateRegion _region;
+    MKMapRect _boundingMapRect;
+    NSMutableArray *_vertexes;
+    CLLocationCoordinate2D _centroid;
+    BOOL _isCW;
+}
 
-+ (Owner *)create;
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *subtitle;
 
-+ (Owner *)createFromDictionary:(NSDictionary *)dictionary;
+- (id)initWithTitle:(NSString *)newTitle subtitle:(NSString *)newSubtitle;
+- (id)initWithCenterCoordinate:(CLLocationCoordinate2D)coordinate;
+- (void)addCoordinate:(CLLocationCoordinate2D)coordinate currentZoomScale:(double)currentZoomScale;
+- (void)removeCoordinate:(CLLocationCoordinate2D)coordinate;
+
+- (CLLocationCoordinate2D)coordinate;
+- (CLLocationCoordinate2D *)coordinates;
+- (MKCoordinateRegion)region;
+- (MKMapPoint *)points;
+- (NSUInteger)pointCount;
+- (MKMapRect)boundingMapRect;
+- (void)updatePoints;
+- (NSMutableArray *)vertexs;
+/*!
+ Determining whether A given point is inside or outside of A polygon O(n)
+ */
+- (BOOL)isPointInside:(MKMapPoint)point;
 
 @end

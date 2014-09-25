@@ -28,23 +28,23 @@
 
 #import "Person.h"
 #import "Claim.h"
-#import "Owner.h"
+#import "Share.h"
 
 
 @implementation Person
 
-@dynamic phone;
+@dynamic address;
 @dynamic birthDate;
 @dynamic email;
-@dynamic name;
 @dynamic genderCode;
 @dynamic idNumber;
+@dynamic idTypeCode;
 @dynamic lastName;
 @dynamic mobilePhone;
-@dynamic personId;
+@dynamic name;
 @dynamic person;
-@dynamic address;
-@dynamic idTypeCode;
+@dynamic personId;
+@dynamic phone;
 @dynamic claim;
 @dynamic owner;
 

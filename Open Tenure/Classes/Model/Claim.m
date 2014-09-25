@@ -32,8 +32,8 @@
 #import "Claim.h"
 #import "ClaimType.h"
 #import "LandUse.h"
-#import "Owner.h"
 #import "Person.h"
+#import "Share.h"
 
 
 @implementation Claim
@@ -60,7 +60,7 @@
 @dynamic challenges;
 @dynamic claimType;
 @dynamic landUse;
-@dynamic owners;
+@dynamic shares;
 @dynamic person;
 
 @end

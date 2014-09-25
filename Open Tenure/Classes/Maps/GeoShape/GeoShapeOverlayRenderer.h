@@ -26,17 +26,8 @@
  * *********************************************************************************************
  */
 
-#import <Foundation/Foundation.h>
+#import <MapKit/MapKit.h>
 
-@interface OTCoordinate : NSObject
-
-@property CLLocationDegrees latitude;
-@property CLLocationDegrees longitude;
-@property BOOL isDragging;
-
-- (id)initWithLatitude:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude;
-- (CLLocationCoordinate2D)coordinate;
-
-- (NSString *)locationAsString;
+@interface GeoShapeOverlayRenderer : MKOverlayRenderer
 
 @end

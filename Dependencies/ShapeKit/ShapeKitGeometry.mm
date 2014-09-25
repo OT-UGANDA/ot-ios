@@ -172,8 +172,8 @@ void log_and_exit(const char *fmt,...) {
 -(id)initWithCoordinate:(CLLocationCoordinate2D)coordinate {
     if (self = [super init]) {
         GEOSCoordSequence *seq = GEOSCoordSeq_create_r(handle, 1, 2);
-        GEOSCoordSeq_setX_r(handle, seq, coordinate.longitude, 0);
-        GEOSCoordSeq_setY_r(handle, seq, coordinate.latitude, 0);
+        GEOSCoordSeq_setX_r(handle, seq, 0, coordinate.longitude);
+        GEOSCoordSeq_setY_r(handle, seq, 0, coordinate.latitude);
         self.geosGeom = GEOSGeom_createPoint_r(handle, seq);
 
         // TODO: Move the destroy into the dealloc method

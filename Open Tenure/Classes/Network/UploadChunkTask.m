@@ -35,8 +35,9 @@
 
 @property (nonatomic, strong) NSInputStream *fileStream;
 @property (nonatomic, assign) uint8_t *buffer;
-
-- (void)uploadChunkData:(NSData*)chunkData withPayload:(NSMutableDictionary *)payloadDict;
+@property (nonatomic, strong) NSMutableArray *chunks;
+@property (nonatomic, strong) NSMutableArray *payloads;
+@property (nonatomic, assign) NSUInteger resendingCounter;
 
 @end
 
@@ -46,11 +47,16 @@
     if (self = [super init]) {
         _attachment = attachment;
         _buffer = malloc(kChunkSize);
+        _chunks = [@[] mutableCopy];
+        _payloads = [@[] mutableCopy];
     }
     return self;
 }
 
-- (void)uploadChunkData:(NSData *)chunkData withPayload:(NSMutableDictionary *)payloadDict {
+- (void)uploadChunksAndPayloads {
+    if (_chunks.count == 0) return;
+    NSData *chunkData = [_chunks objectAtIndex:0];
+    NSMutableDictionary *payloadDict = [_payloads objectAtIndex:0];
     [CommunityServerAPI uploadChunk:payloadDict chunk:chunkData completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
         ALog(@"descriptor %@", payloadDict.description);
         ALog(@"Response: %tu", httpResponse.statusCode);
@@ -58,27 +64,18 @@
         ALog(@"Result: %@", [returnedData description]);
         switch (httpResponse.statusCode) {
             case 200: {
+                _resendingCounter = 0;
+                [_chunks removeObject:[[_chunks objectAtIndex:0] copy]];
+                [_payloads removeObject:[[_payloads objectAtIndex:0] copy]];
+                
                 chunksUploadedSuccessfully++;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     ALog(@"Delegate gửi về viewHolder để xử lý progress");
                     [_delegate uploadChunk:self didFinishChunkCount:chunksUploadedSuccessfully];
                 });
-                NSInteger bytesRead = [_fileStream read:_buffer maxLength:kChunkSize];
-                NSInteger rsz = [[payloadDict valueForKey:@"startPosition"] integerValue];
-                NSInteger size = [[payloadDict valueForKey:@"size"] integerValue];
-                rsz += size;
-                if (bytesRead > 0) {
-                    ALog(@"send next Chunck To server");
-                    NSMutableDictionary *payload = [NSMutableDictionary dictionary];
-                    NSData *chunk = [NSData dataWithBytes:(const void *)_buffer length:bytesRead];
-                    [payload setObject:_attachment.attachmentId forKey:@"attachmentId"];
-                    [payload setObject:_attachment.claim.claimId forKey:@"claimId"];
-                    [payload setObject:[NSNumber numberWithInteger:rsz] forKey:@"startPosition"];
-                    [payload setObject:chunk.md5 forKey:@"md5"];
-                    [payload setObject:[[[NSUUID UUID] UUIDString] lowercaseString]  forKey:@"id"];
-                    [payload setObject:[NSNumber numberWithInteger:bytesRead] forKey:@"size"];
-                    
-                    [self uploadChunkData:chunk withPayload:[payload mutableCopy]];
+                ALog(@"Chunk count: %tu", _chunks.count);
+                if (_chunks.count > 0) {
+                    [self uploadChunksAndPayloads];
                 } else {
                     ALog(@"stop no more data to upload");
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -90,8 +87,11 @@
             default:
                 ALog(@"Retry resending same chuck");
                 // TODO set timeout
-                [self uploadChunkData:chunkData withPayload:payloadDict];
-                
+                _resendingCounter++;
+                if (_resendingCounter < 3)
+                    [self uploadChunksAndPayloads];
+                else
+                    [OT handleErrorWithMessage:@"Timeout"];
                 break;
         }
     }];
@@ -107,22 +107,28 @@
     totalChunksTobeUploaded = totalChunks;
     chunksUploadedSuccessfully = 0;
 
-    _fileStream = [NSInputStream inputStreamWithFileAtPath:attachmentPath];
+    NSURL *fileUrl = [[NSURL alloc] initFileURLWithPath:attachmentPath];
+    _fileStream = [[NSInputStream alloc] initWithURL:fileUrl];
     [_fileStream open];
-    
-    NSInteger bytesRead = [_fileStream read:_buffer maxLength:kChunkSize];
 
-    NSMutableDictionary *payload = [NSMutableDictionary dictionary];
-    NSData *chunk = [NSData dataWithBytes:(const void *)_buffer length:bytesRead];
-    [payload setObject:_attachment.attachmentId forKey:@"attachmentId"];
-    [payload setObject:_attachment.claim.claimId forKey:@"claimId"];
-    [payload setObject:[NSNumber numberWithInteger:0] forKey:@"startPosition"];
-    [payload setObject:chunk.md5 forKey:@"md5"];
-    [payload setObject:[[[NSUUID UUID] UUIDString] lowercaseString]  forKey:@"id"];
-    [payload setObject:[NSNumber numberWithInteger:bytesRead] forKey:@"size"];
-    
-    ALog(@"send first Chunck To server");
-    [self uploadChunkData:chunk withPayload:payload];
+    NSInteger bytesRead = [_fileStream read:_buffer maxLength:kChunkSize];
+    NSInteger startPosition = 0;
+    while (bytesRead > 0) {
+        NSMutableDictionary *payload = [NSMutableDictionary dictionary];
+        NSData *chunk = [NSData dataWithBytes:(const void *)_buffer length:bytesRead];
+        [payload setObject:_attachment.attachmentId forKey:@"attachmentId"];
+        [payload setObject:_attachment.claim.claimId forKey:@"claimId"];
+        [payload setObject:[NSNumber numberWithInteger:startPosition] forKey:@"startPosition"];
+        [payload setObject:chunk.md5 forKey:@"md5"];
+        [payload setObject:[[[NSUUID UUID] UUIDString] lowercaseString]  forKey:@"id"];
+        [payload setObject:[NSNumber numberWithInteger:bytesRead] forKey:@"size"];
+        
+        [_chunks addObject:chunk];
+        [_payloads addObject:payload];
+        startPosition += bytesRead;
+        bytesRead = [_fileStream read:_buffer maxLength:kChunkSize];
+    }
+    [self uploadChunksAndPayloads];
     
     free(_buffer);
 }

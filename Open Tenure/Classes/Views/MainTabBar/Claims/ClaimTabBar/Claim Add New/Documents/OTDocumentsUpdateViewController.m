@@ -381,61 +381,50 @@
         UIImage *selectedImage = [info objectForKey:UIImagePickerControllerOriginalImage];
         if (!selectedImage) return;
         // TODO: Chưa hiểu tại sao khi chụp ảnh từ thiết bị, lưu vào file, khi submit nó lại báo sai kích thước. Mặc dù đã kiểm tra kích thước đúng?
-//        
-//        // Create a thumbnail version of the image for the recipe object.
-//        CGFloat newSize = 150.0;
-//        CGSize size = selectedImage.size;
-//        CGFloat ratio = (size.width > size.height) ? newSize / size.width : newSize / size.height;
-//        CGRect rect = CGRectMake(0.0, 0.0, ratio * size.width, ratio * size.height);
-//        
-//        UIGraphicsBeginImageContext(rect.size);
-//        [selectedImage drawInRect:rect];
-//        UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-//        UIGraphicsEndImageContext();
-//        _personImageView.image = newImage;
-//        
-//        NSString *imageFile = [FileSystemUtilities getClaimantImagePath:_person.personId];
-//        NSData *imageData = UIImageJPEGRepresentation(newImage, 1.0);
-//        [imageData writeToFile:imageFile atomically:YES];
 
-        ALog(@"Image scale: %f", selectedImage.scale);
-        
-        CGFloat scale = [[UIScreen mainScreen] scale];
-        ALog(@"Screen scale %f", scale);
-        
-        NSData *imageData = UIImageJPEGRepresentation(selectedImage, 1.0 / scale);
-        NSNumber *fileSize = [NSNumber numberWithUnsignedInteger:imageData.length];
-        NSString *md5 = [imageData md5];
-        NSString *file = [NSTemporaryDirectory() stringByAppendingPathComponent:@"_selectedImage_.jpg"];
+        NSData *imageData = UIImageJPEGRepresentation(selectedImage, 1);
+
+        NSString *temporaryFileName = @"_selectedImage_.png";
+        NSString *temporaryFilePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:@"Open Tenure"];
+        temporaryFilePath = [temporaryFilePath stringByAppendingPathComponent:temporaryFileName];
         NSString *fileName = [[[[NSUUID UUID] UUIDString] lowercaseString] stringByAppendingPathExtension:@"jpg"];
-        [imageData writeToFile:file atomically:NO];
-        unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:file error:nil] fileSize];
-        NSNumber *_size = [NSNumber numberWithUnsignedLongLong:size];
-        ALog(@"File size %tu/%lld", [fileSize integerValue], [_size longLongValue]);
-        self.dictionary = [NSMutableDictionary dictionary];
-        [_dictionary setValue:[[OT dateFormatter] stringFromDate:[NSDate date]] forKey:@"documentDate"];
-        [_dictionary setValue:@"image/jpeg" forKey:@"mimeType"];
-        [_dictionary setValue:fileName  forKey:@"fileName"];
-        [_dictionary setValue:@"jpg" forKey:@"fileExtension"];
-        [_dictionary setValue:[[[NSUUID UUID] UUIDString] lowercaseString] forKey:@"id"];
-        [_dictionary setValue:fileSize forKey:@"size"];
-        [_dictionary setValue:md5 forKey:@"md5"];
-        [_dictionary setValue:kAttachmentStatusCreated forKey:@"status"];
-        [_dictionary setValue:file forKey:@"filePath"];
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"new_file", nil)
-                                                            message:nil
-                                                           delegate:self
-                                                  cancelButtonTitle:NSLocalizedString(@"cancel", nil)
-                                                  otherButtonTitles:NSLocalizedString(@"confirm", nil), nil];
+        BOOL success = [imageData writeToFile:temporaryFilePath atomically:YES];
+        NSDictionary *dict = [[NSFileManager defaultManager] attributesOfItemAtPath:temporaryFilePath error:nil];
+        ALog(@"dict %@\nData size: %tu", dict.description, imageData.length);
         
-        [alertView setAlertViewStyle:UIAlertViewStyleLoginAndPasswordInput];
-        
-        // Alert style customization
-        [[alertView textFieldAtIndex:1] setSecureTextEntry:NO];
-        [[alertView textFieldAtIndex:0] setPlaceholder:NSLocalizedString(@"message_enter_description", nil)];
-        [[alertView textFieldAtIndex:1] setPlaceholder:NSLocalizedString(@"message_select_document_type", nil)];
-        [[alertView textFieldAtIndex:1] setDelegate:self];
-        [alertView show];
+        if (success) {
+            unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:temporaryFilePath error:nil] fileSize];
+            NSNumber *fileSize = [NSNumber numberWithUnsignedLongLong:size];
+            NSData *fileData = [NSData dataWithContentsOfFile:temporaryFilePath];
+            NSString *md5 = [fileData md5];
+            
+            self.dictionary = [NSMutableDictionary dictionary];
+            [_dictionary setValue:[[OT dateFormatter] stringFromDate:[NSDate date]] forKey:@"documentDate"];
+            [_dictionary setValue:@"image/jpg" forKey:@"mimeType"];
+            [_dictionary setValue:fileName  forKey:@"fileName"];
+            [_dictionary setValue:@"jpg" forKey:@"fileExtension"];
+            [_dictionary setValue:[[[NSUUID UUID] UUIDString] lowercaseString] forKey:@"id"];
+            [_dictionary setValue:fileSize forKey:@"size"];
+            [_dictionary setValue:md5 forKey:@"md5"];
+            [_dictionary setValue:kAttachmentStatusCreated forKey:@"status"];
+            [_dictionary setValue:temporaryFilePath forKey:@"filePath"];
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"new_file", nil)
+                                                                message:nil
+                                                               delegate:self
+                                                      cancelButtonTitle:NSLocalizedString(@"cancel", nil)
+                                                      otherButtonTitles:NSLocalizedString(@"confirm", nil), nil];
+            
+            [alertView setAlertViewStyle:UIAlertViewStyleLoginAndPasswordInput];
+            
+            // Alert style customization
+            [[alertView textFieldAtIndex:1] setSecureTextEntry:NO];
+            [[alertView textFieldAtIndex:0] setPlaceholder:NSLocalizedString(@"message_enter_description", nil)];
+            [[alertView textFieldAtIndex:1] setPlaceholder:NSLocalizedString(@"message_select_document_type", nil)];
+            [[alertView textFieldAtIndex:1] setDelegate:self];
+            [alertView show];
+        } else {
+            [OT handleErrorWithMessage:@"Error"];
+        }
     }];
 }
 

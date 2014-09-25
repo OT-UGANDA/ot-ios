@@ -26,17 +26,32 @@
  * *********************************************************************************************
  */
 
-#import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
+#import "GeoShapeVertex.h"
 
-@class Claim, Person;
+@implementation GeoShapeVertex
 
-@interface Owner : NSManagedObject
+- (id)initWithLatitude:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude {
+    if (self = [super init]) {
+        _latitude = latitude;
+        _longitude = longitude;
+        _dragging = NO;
+    }
+    return self;
+}
 
-@property (nonatomic, retain) NSString * ownerId;
-@property (nonatomic, retain) NSNumber * nominator;
-@property (nonatomic, retain) NSNumber * denominator;
-@property (nonatomic, retain) Person *person;
-@property (nonatomic, retain) Claim *claim;
+- (CLLocationCoordinate2D)coordinate {
+    return CLLocationCoordinate2DMake([self latitude], [self longitude]);
+}
+
+- (NSString *)locationAsString {
+    return [NSString stringWithFormat:@"{Lat: %f, Lon: %f}", self.latitude, self.longitude];
+}
+
+- (BOOL)isEqual:(id)object{
+    if ([object respondsToSelector:@selector(latitude)] && [object respondsToSelector:@selector(longitude)]) {
+        return [object latitude] == [self latitude] && [object longitude] == [self longitude];
+    }
+    return NO;
+}
 
 @end

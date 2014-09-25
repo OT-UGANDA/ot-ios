@@ -26,12 +26,42 @@
  * *********************************************************************************************
  */
 
-#import "ZipUtilities.h"
+#import <Foundation/Foundation.h>
+#import <pthread.h>
+#import "GeoShape.h"
 
-@implementation ZipUtilities
+typedef NS_ENUM(NSInteger, SnapMode) {
+    SnapModeEndPoint = 0,
+    SnapModeMiddPoint,
+    SnapModeNearest
+};
 
-+ (BOOL)addFilesWithAESEncryption:(NSString *)password claimId:(NSString *)claimId {
-    NSString *zipFile = [FileSystemUtilities getCompressClaim:claimId];
-    return [SSZipArchive createZipFileAtPath:zipFile withContentsOfDirectory:[FileSystemUtilities getClaimFolder:claimId] password:password];}
-                                                      
+@interface GeoShapeCollection : NSObject <MKOverlay> {
+    @package
+    NSMutableArray *_overlays;
+    MKCoordinateRegion _region;
+    MKMapRect _boundingMapRect;
+    CLLocationCoordinate2D _snappedCoordinate;
+    pthread_rwlock_t _rwLock;
+}
+
+@property (nonatomic, strong) GeoShape *workingOverlay;
+
+- (GeoShape *)createShapeWithTitle:(NSString *)title subtitle:(NSString *)subtitle;
+- (GeoShape *)createShapeWithCenterCoordinate:(CLLocationCoordinate2D)coordinate;
+- (GeoShape *)createShapeFromPolygon:(MKPolygon *)polygon;
+- (void)addShape:(GeoShape *)shape;
+- (void)addPointToWorkingOverlay:(CLLocationCoordinate2D)point currentZoomScale:(double)currentZoomScale;
+- (void)removePointFromWorkingOverlay:(CLLocationCoordinate2D)point;
+
+- (MKMapRect)boundingMapRect;
+- (NSArray *)shapesInMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale;
+- (void)lockForReading;
+- (void)unlockForReading;
+- (void)updateOverlays;
+- (NSArray *)overlays;
+- (GeoShape *)getOverlayByMapPoint:(MKMapPoint)mapPoint;
+- (CLLocationCoordinate2D)snappedCoordinate;
+- (BOOL)getSnapFromMapPoint:(CLLocationCoordinate2D)coordinate mapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale snapMode:(SnapMode)mode;
+
 @end

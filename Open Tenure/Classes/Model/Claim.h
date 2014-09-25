@@ -29,7 +29,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class AdditionalInfo, Attachment, Claim, ClaimType, LandUse, Owner, Person;
+@class AdditionalInfo, Attachment, Claim, ClaimType, LandUse, Person, Share;
 
 @interface Claim : NSManagedObject
 
@@ -55,7 +55,7 @@
 @property (nonatomic, retain) NSSet *challenges;
 @property (nonatomic, retain) ClaimType *claimType;
 @property (nonatomic, retain) LandUse *landUse;
-@property (nonatomic, retain) NSSet *owners;
+@property (nonatomic, retain) NSSet *shares;
 @property (nonatomic, retain) Person *person;
 @end
 
@@ -76,9 +76,9 @@
 - (void)addChallenges:(NSSet *)values;
 - (void)removeChallenges:(NSSet *)values;
 
-- (void)addOwnersObject:(Owner *)value;
-- (void)removeOwnersObject:(Owner *)value;
-- (void)addOwners:(NSSet *)values;
-- (void)removeOwners:(NSSet *)values;
+- (void)addSharesObject:(Share *)value;
+- (void)removeSharesObject:(Share *)value;
+- (void)addShares:(NSSet *)values;
+- (void)removeShares:(NSSet *)values;
 
 @end

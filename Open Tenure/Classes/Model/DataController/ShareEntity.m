@@ -26,9 +26,9 @@
  * *********************************************************************************************
  */
 
-#import "OwnerEntity.h"
+#import "ShareEntity.h"
 
-@implementation OwnerEntity
+@implementation ShareEntity
 
 #pragma mark - Data
 
@@ -45,9 +45,9 @@
 /*!
  Tạo sharedEntity chia sẻ thông tin trong static class
  */
-+ (OwnerEntity *)sharedEntity {
++ (ShareEntity *)sharedEntity {
     static dispatch_once_t once;
-    __strong static OwnerEntity *sharedEntity = nil;
+    __strong static ShareEntity *sharedEntity = nil;
     dispatch_once(&once, ^{
         sharedEntity = [self new];
     });
@@ -69,7 +69,7 @@
  Override tên bảng dữ liệu vào abstract class
  */
 - (NSString *)entityName {
-    return @"Owner";
+    return @"Share";
 }
 
 /*!
@@ -83,7 +83,7 @@
  Override cache cho table
  */
 - (NSString *)mainTableCache {
-    return @"OwnerCache";
+    return @"ShareCache";
 }
 
 /*!
@@ -111,25 +111,25 @@
  Override định nghĩa câu truy vấn
  */
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
-    return [NSPredicate predicateWithFormat:@"(ownerId == %@)", searchText];
+    return [NSPredicate predicateWithFormat:@"(shareId == %@)", searchText];
 }
 
-- (Owner *)create {
-    Owner *newObject = [NSEntityDescription insertNewObjectForEntityForName:[self entityName] inManagedObjectContext:[self managedObjectContext]];
+- (Share *)create {
+    Share *newObject = [NSEntityDescription insertNewObjectForEntityForName:[self entityName] inManagedObjectContext:[self managedObjectContext]];
     return newObject;
 }
 
-+ (Owner *)create {
-    Owner *newObject = [NSEntityDescription insertNewObjectForEntityForName:[[self sharedEntity] entityName] inManagedObjectContext:[[self sharedEntity] managedObjectContext]];
++ (Share *)create {
+    Share *newObject = [NSEntityDescription insertNewObjectForEntityForName:[[self sharedEntity] entityName] inManagedObjectContext:[[self sharedEntity] managedObjectContext]];
     return newObject;
 }
 
-+ (Owner *)createFromDictionary:(NSDictionary *)dictionary {
++ (Share *)createFromDictionary:(NSDictionary *)dictionary {
     dictionary = dictionary.deserialize;
     
-    Owner *newObject = [self create];
-
-    newObject.ownerId = [dictionary objectForKey:@"ownerId"];
+    Share *newObject = [self create];
+    
+    newObject.ShareId = [dictionary objectForKey:@"shareId"];
     newObject.nominator = [dictionary objectForKey:@"nominator"];
     newObject.denominator = [dictionary objectForKey:@"denominator"];
     
@@ -142,11 +142,14 @@
         }
     }
     
-    NSString *personId = [dictionary objectForKey:@"personId"];
-    if (personId != nil) {
-        Person *person = [PersonEntity getPersonByPersonId:personId];
-        if (person) {
-            newObject.person = person;
+    NSArray *owners = [dictionary objectForKey:@"owners"];
+    if (owners.count > 0) {
+        for (NSDictionary *personDict in owners) {
+            NSString *personId = [personDict objectForKey:@"id"];
+            Person *person = [PersonEntity getPersonByPersonId:personId];
+            if (person) {
+                person.owner = newObject;
+            }
         }
     }
     return newObject;

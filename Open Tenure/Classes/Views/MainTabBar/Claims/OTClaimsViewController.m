@@ -143,7 +143,21 @@
     Claim *object;
     
     cell.tintColor = [UIColor otDarkBlue];
-    cell.accessoryType = UITableViewCellAccessoryDetailButton;
+
+    UIButton *actionBtn = [UIButton  buttonWithType:UIButtonTypeCustom];
+    actionBtn.frame = CGRectMake(0, 0, 50, 40);
+    [actionBtn setBackgroundImage:[UIImage imageNamed:@"ic_submit_big"]
+                            forState:UIControlStateNormal];
+    actionBtn.backgroundColor = [UIColor clearColor];
+    
+    actionBtn.layer.borderColor = [UIColor otDarkBlue].CGColor;
+    actionBtn.layer.borderWidth = 0.2;
+    actionBtn.layer.cornerRadius = 5;
+    
+    actionBtn.tag = indexPath.row;
+    [actionBtn addTarget:self action:@selector(claimAction:) forControlEvents:UIControlEventTouchUpInside];
+    cell.accessoryView = actionBtn;
+    
     
     if (_filteredObjects == nil)
         object = [_fetchedResultsController objectAtIndexPath:indexPath];
@@ -151,13 +165,34 @@
         object = [_filteredObjects objectAtIndex:indexPath.row];
     
     cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"claim_status_%@", object.statusCode]];
+   // cell.textLabel.text = [NSString stringWithFormat:@"%@, By: %@", object.claimName, [object.person fullNameType:OTFullNameTypeDefault]];
     if([object.recorderName isEqual:@""] == true || (object.recorderName==nil) )
         cell.textLabel.text = [NSString stringWithFormat:@"%@, Created by:%@ ", object.claimName, [object.person fullNameType:OTFullNameTypeDefault]];
-
+    
     else
-    cell.textLabel.text = [NSString stringWithFormat:@"%@, Created by:%@ Uploaded by: %@", object.claimName, [object.person fullNameType:OTFullNameTypeDefault],object.recorderName];
+        cell.textLabel.text = [NSString stringWithFormat:@"%@, Created by:%@, Uploaded by: %@", object.claimName, [object.person fullNameType:OTFullNameTypeDefault],object.recorderName];
     
     cell.detailTextLabel.text = object.notes;
+}
+
+- (IBAction)claimAction:(id)sender {
+    UITableViewCell *cell = (UITableViewCell *)[[sender superview] superview];
+    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
+
+    if (cell != nil) {
+        Claim *claim;
+        
+        if (_filteredObjects == nil)
+            claim = [_fetchedResultsController objectAtIndexPath:indexPath];
+        else
+            claim = [_filteredObjects objectAtIndex:indexPath.row];
+        
+        [UIActionSheet showFromRect:cell.accessoryView.frame inView:cell.contentView animated:YES withTitle:@"Claim Actions" cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@[@"Submit claim", @"Action 2", @"Action 3"] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+            if (buttonIndex == 0) {
+                [self submitClaim:claim];
+            }
+        }];
+    }
 }
 
 #pragma Bar Buttons Action

@@ -26,12 +26,16 @@
  * *********************************************************************************************
  */
 
-#import "Owner.h"
+#import <Foundation/Foundation.h>
 
-@interface Owner (OT)
+@interface GeoShapeVertex : NSObject
 
-- (NSDictionary *)dictionary;
+@property (nonatomic, assign) CLLocationDegrees latitude;
+@property (nonatomic, assign) CLLocationDegrees longitude;
+@property (nonatomic, assign, getter = isDragging) BOOL dragging;
 
-- (void)importFromJSON:(NSDictionary *)keyedValues;
+- (id)initWithLatitude:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude;
+- (CLLocationCoordinate2D)coordinate;
+- (NSString *)locationAsString;
 
 @end

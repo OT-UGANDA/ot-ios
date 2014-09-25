@@ -390,14 +390,14 @@ static bool allCellChecked = false;
     _claimantBlock.textField.text = [person fullNameType:OTFullNameTypeDefault];
     _claimantBlock.validationState = BPFormValidationStateValid;
     
-    OwnerEntity *ownerEntity = [OwnerEntity new];
-    [ownerEntity setManagedObjectContext:_claim.managedObjectContext];
-    Owner *owner = [ownerEntity create];
-    owner.ownerId = [[[NSUUID UUID] UUIDString] lowercaseString];
-    owner.person = [person clone];
-    owner.denominator = [NSNumber numberWithInteger:100];
-    owner.nominator = [NSNumber numberWithInteger:100];
-    owner.claim = _claim;
+    ShareEntity *shareEntity = [ShareEntity new];
+    [shareEntity setManagedObjectContext:_claim.managedObjectContext];
+    Share *share = [shareEntity create];
+    share.shareId = [[[NSUUID UUID] UUIDString] lowercaseString];
+    [share addOwnersObject:[person clone]];
+    share.denominator = [NSNumber numberWithInteger:100];
+    share.nominator = [NSNumber numberWithInteger:100];
+    share.claim = _claim;
     
     [controller.navigationController dismissViewControllerAnimated:YES completion:nil];
 }

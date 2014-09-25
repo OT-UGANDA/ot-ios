@@ -29,7 +29,7 @@
 #import "OTSelectionTabBarViewController.h"
 #import "PickerView.h"
 
-@interface OTSharesUpdateViewController () <OTSelectionTabBarViewControllerDelegate>
+@interface OTSharesUpdateViewController () <OTSelectionTabBarViewControllerDelegate, UITextFieldDelegate>
 @property (nonatomic, strong) PickerView *pickerView;
 
 @property  NSInteger *selectedRow;
@@ -80,7 +80,7 @@
 }
 
 - (NSString *)mainTableCache {
-    return @"OwnerCache";
+    return @"ShareCache";
 }
 
 - (NSArray *)sortKeys {
@@ -88,7 +88,7 @@
 }
 
 - (NSString *)entityName {
-    return @"Owner";
+    return @"Share";
 }
 
 - (BOOL)showIndexes {
@@ -112,16 +112,40 @@
 }
 
 - (void)configureCell:(UITableViewCell *)cell forTableView:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath {
+    [super configureCell:cell forTableView:tableView atIndexPath:indexPath];
+
+    cell.tintColor = [UIColor otDarkBlue];
     
-    Owner *owner;
+    Share *share;
     
     if (_filteredObjects == nil)
-        owner = [_fetchedResultsController objectAtIndexPath:indexPath];
+        share = [_fetchedResultsController objectAtIndexPath:indexPath];
     else
-        owner = [_filteredObjects objectAtIndex:indexPath.row];
+        share = [_filteredObjects objectAtIndex:indexPath.row];
+    
+    ///
+    UITextField *textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 64, 32)];
+    textField.text = [@([share.nominator integerValue]) stringValue];
+    textField.delegate = self;
+//    textField.layer.borderColor = [UIColor otDarkBlue].CGColor;
+//    textField.backgroundColor = [UIColor clearColor];
+//    textField.layer.borderWidth = 0.5;
+    CALayer *bottomBorder = [CALayer layer];
+    bottomBorder.borderColor = [UIColor otDarkBlue].CGColor;
+    bottomBorder.borderWidth = 1;
+    bottomBorder.frame = CGRectMake(0, textField.frame.size.height-1, textField.frame.size.width, 1);
+    [textField.layer addSublayer:bottomBorder];
+    UIImageView *comboView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"combo"]];
+    textField.rightView = comboView;
+    textField.rightViewMode = UITextFieldViewModeAlways;
+    cell.accessoryView = textField;
+    
+    ///
+
     cell.textLabel.numberOfLines = 0;
-    cell.textLabel.text = [NSString stringWithFormat:@"%@\n%@", owner.person.personId, [owner.person fullNameType:OTFullNameTypeDefault]];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%tu", [owner.nominator integerValue]];
+    cell.textLabel.text = [NSString stringWithFormat:@"Share %tu : %tu/%tu", indexPath.row + 1, [share.nominator integerValue], [share.denominator integerValue]];
+    cell.detailTextLabel.numberOfLines = 0;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\nOwners : %tu", share.shareId, share.owners.count];
 }
 
 #pragma Bar Buttons Action
@@ -160,8 +184,8 @@
 
 - (NSInteger)getFreeShare {
     double scale = 0.0;
-    for (Owner *owner in _claim.owners) {
-        scale += ([owner.nominator doubleValue] / [owner.denominator doubleValue]);
+    for (Share *share in _claim.shares) {
+        scale += ([share.nominator doubleValue] / [share.denominator doubleValue]);
     }
     return (1 - scale) * 100;
 }
@@ -174,7 +198,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (!cell)
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     cell.accessoryType = UITableViewCellAccessoryDetailButton;
     cell.tintColor = [UIColor otDarkBlue];
     
@@ -184,17 +208,20 @@
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 64;
+}
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     // TODO: Free share
     // Test
     [UIAlertView showWithTitle:@"New share percentage" message:nil style:UIAlertViewStylePlainTextInput cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"OK", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
         if (buttonIndex == 1) {
-            Owner *owner = [_fetchedResultsController objectAtIndexPath:indexPath];
+            Share *share = [_fetchedResultsController objectAtIndexPath:indexPath];
             NSString *s = [[alertView textFieldAtIndex:0] text];
             NSInteger num = [s integerValue];
             // TODO check valid
-            [owner setNominator:[NSNumber numberWithInteger:num]];
+            [share setNominator:[NSNumber numberWithInteger:num]];
         }
     }];
 //    
@@ -224,8 +251,8 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        Owner *owner = [_fetchedResultsController objectAtIndexPath:indexPath];
-        [self.managedObjectContext deleteObject:owner];
+        Share *share = [_fetchedResultsController objectAtIndexPath:indexPath];
+        [self.managedObjectContext deleteObject:share];
     }
 }
 //
@@ -259,18 +286,20 @@
    // _claim.person = person;
    // _claimantBlock.textField.text = [person fullNameType:OTFullNameTypeDefault];
    // _claimantBlock.validationState = BPFormValidationStateValid;
-    
-    OwnerEntity *ownerEntity = [OwnerEntity new];
-    [ownerEntity setManagedObjectContext:_claim.managedObjectContext];
-    Owner *owner = [ownerEntity create];
-    owner.ownerId = [[[NSUUID UUID] UUIDString] lowercaseString];
-    owner.person = person;
-    owner.denominator = [NSNumber numberWithInteger:100];
-    owner.nominator = [NSNumber numberWithInteger:[self getFreeShare]];
-    owner.claim = _claim;
+    NSInteger nominator = [self getFreeShare];
+    if (nominator < 100) {
+        ShareEntity *shareEntity = [ShareEntity new];
+        [shareEntity setManagedObjectContext:_claim.managedObjectContext];
+        Share *share = [shareEntity create];
+        share.shareId = [[[NSUUID UUID] UUIDString] lowercaseString];
+        [share addOwnersObject:person];
+        share.denominator = [NSNumber numberWithInteger:100];
+        share.nominator = [NSNumber numberWithInteger:nominator];
+        share.claim = _claim;
 
-    [_claim.managedObjectContext save:nil];
-    [controller.navigationController dismissViewControllerAnimated:YES completion:nil];
+        [_claim.managedObjectContext save:nil];
+        [controller.navigationController dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 @end

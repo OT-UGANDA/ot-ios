@@ -26,23 +26,10 @@
  * *********************************************************************************************
  */
 
-#import <Foundation/Foundation.h>
+#import <MapKit/MapKit.h>
 
-@class ClaimParser;
+@interface GeoShapeAnnotationView : MKAnnotationView
 
-@protocol ClaimParserDelegate <NSObject>
-
-@optional
-
-- (void)claimParser:(ClaimParser *)claimParser didEndElement:(NSData *)data;
-
-@end
-
-@interface ClaimParser : NSObject
-
-@property (weak, nonatomic) id <ClaimParserDelegate> delegate;
-
-- (id)initWithResponseClaims:(NSArray *)objects;
-- (void)parse;
+@property (nonatomic, assign, getter = isDragging) BOOL dragging;
 
 @end

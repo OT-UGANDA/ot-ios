@@ -5,36 +5,36 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>F4427965-9C66-4826-9D8C-78346446F4A5</string>
+	<string>BA7A2877-3252-462F-87A1-B8285A28C049</string>
 	<key>IDESourceControlProjectName</key>
 	<string>Open Tenure</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>BE483F1A-BF7E-4156-A27C-F55FF75E13C2</key>
-		<string>https://github.com/OpenTenure/ot-ios.git</string>
+		<key>2E98E54B-A260-40D8-BD87-995EF2B92FEA</key>
+		<string>https://github.com/chuyentt/ot-ios.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>Open Tenure.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>BE483F1A-BF7E-4156-A27C-F55FF75E13C2</key>
+		<key>2E98E54B-A260-40D8-BD87-995EF2B92FEA</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/OpenTenure/ot-ios.git</string>
+	<string>https://github.com/chuyentt/ot-ios.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>BE483F1A-BF7E-4156-A27C-F55FF75E13C2</string>
+	<string>2E98E54B-A260-40D8-BD87-995EF2B92FEA</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>BE483F1A-BF7E-4156-A27C-F55FF75E13C2</string>
+			<string>2E98E54B-A260-40D8-BD87-995EF2B92FEA</string>
 			<key>IDESourceControlWCCName</key>
-			<string>ot-ios</string>
+			<string>Open Tenure</string>
 		</dict>
 	</array>
 </dict>

@@ -111,9 +111,9 @@
     } else
         [dict setObject:@[] forKey:@"additionalInfos"];
 */
-    if (self.owners.count > 0) {
+    if (self.shares.count > 0) {
         NSMutableArray *array = [NSMutableArray array];
-        for (Owner *obj in self.owners) {
+        for (Share *obj in self.shares) {
             [array addObject:obj.dictionary];
         }
         [dict setObject:array forKey:@"shares"];
@@ -192,12 +192,12 @@
     // create owners
     NSArray *shares = [keyedValues objectForKey:@"shares"];
     if (shares.count > 0) {
-        OwnerEntity *ownerEntity = [OwnerEntity new];
-        [ownerEntity setManagedObjectContext:self.managedObjectContext];
-        for (NSDictionary *share in shares) {
-            Owner *owner = [ownerEntity create];
-            [owner importFromJSON:share];
-            owner.claim = self;
+        ShareEntity *shareEntity = [ShareEntity new];
+        [shareEntity setManagedObjectContext:self.managedObjectContext];
+        for (NSDictionary *shareDict in shares) {
+            Share *share = [shareEntity create];
+            [share importFromJSON:shareDict];
+            share.claim = self;
         }
     }
 }

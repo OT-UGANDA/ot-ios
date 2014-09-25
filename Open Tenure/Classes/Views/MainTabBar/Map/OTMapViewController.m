@@ -30,14 +30,19 @@
 #import "TBCoordinateQuadTree.h"
 #import "TBClusterAnnotationView.h"
 
-#import "OTCoordinate.h"
-#import "OTGeometry.h"
-#import "OTGeometryCollection.h"
-#import "OTPointAnnotationView.h"
+#import "GeoShape.h"
+#import "GeoShapeVertex.h"
+#import "GeoShapeCollection.h"
+#import "GeoShapeOverlayRenderer.h"
+#import "GeoShapeAnnotationView.h"
 
 #import "DownloadClaimTask.h"
 
-@interface OTMapViewController () <DownloadClaimTaskDelegate>
+@interface OTMapViewController () <DownloadClaimTaskDelegate> {
+    MKAnnotationView *workingAnnotationView;
+    GeoShapeVertex *workingVertex;
+    BOOL snapped;
+}
 
 // Quad tree coordinate for handle cluster annotations
 @property (strong, nonatomic) TBCoordinateQuadTree *coordinateQuadTree;
@@ -45,8 +50,10 @@
 // Managing annotations on the mapView
 @property (nonatomic) NSMutableArray *annotations;
 
-@property (nonatomic, strong) OTGeometryCollection *geometryCollection;
+@property (nonatomic, strong) GeoShapeCollection *shapes;
 @property (nonatomic, assign, getter = isDragging) BOOL dragging;
+
+@property (nonatomic) NSMutableArray *workingAnnotations;
 
 // Progress handle
 @property (nonatomic, assign) NSInteger totalItemsToDownload;
@@ -55,11 +62,6 @@
 @property (nonatomic, assign, getter = isDownloading) BOOL downloading;
 
 @property (assign) OTViewType viewType;
-
-// Dữ liệu tọa độ dùng hiển thị polygon (new & edit)
-// Quản lý các annotations tại các đỉnh của polygon, không bị xóa bỏ cũng không tham gia tạo cluster
-@property (nonatomic) NSMutableArray *workingAnnotations;
-@property (nonatomic) MKPolygon *workingOverlay;
 
 @property (nonatomic) NSOperationQueue *parseQueue;
 
@@ -98,46 +100,45 @@
 
     }
     
-    // Khởi tạo geometryCollection
-    _geometryCollection = [[OTGeometryCollection alloc] init];
+    // Init Quad tree coordinate
+    _coordinateQuadTree = [[TBCoordinateQuadTree alloc] init];
+    _coordinateQuadTree.mapView = _mapView;
     
-    // Tạo mới một Geometry
-    [_geometryCollection newGeometryWithName:_claim.claimId];
-    
+    // Init annotations array
+    _annotations = [NSMutableArray array];
+
+    _shapes = [[GeoShapeCollection alloc] init];
+    [_mapView addOverlay:_shapes level:MKOverlayLevelAboveLabels];
+
     self.workingAnnotations = [NSMutableArray array];
-    
+
     if (_claim.mappedGeometry != nil) {
         // Lấy dữ liệu polygon
         ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:_claim.mappedGeometry];
         // Zoom đến polygon
         [_mapView setRegion:MKCoordinateRegionForMapRect(polygon.geometry.boundingMapRect) animated:YES];
-        // Chuyển các đỉnh vào _workingAnnotation
-        NSMutableArray *points = [NSMutableArray array];
-        for (NSInteger i = 0; i < polygon.geometry.pointCount; i++) {
+        
+        // Tạo workingOverlay
+        GeoShape *shape = [_shapes createShapeWithTitle:_claim.claimName subtitle:nil];
+        [_shapes setWorkingOverlay:shape];
+        shape.isAccessibilityElement = YES;
+        
+        // Chuyển các đỉnh vào workingOverlay
+        for (NSInteger i = 0; i < polygon.geometry.pointCount-1; i++) {
             CLLocationCoordinate2D coordinate = MKCoordinateForMapPoint(polygon.geometry.points[i]);
+            [_shapes addPointToWorkingOverlay:coordinate currentZoomScale:CGFLOAT_MIN];
             MKPointAnnotation *pointAnnotation = [[MKPointAnnotation alloc] init];
+            pointAnnotation.title = [@(i) stringValue];
+            pointAnnotation.subtitle = [NSString stringWithFormat:@"{Lat: %.10f, Lon: %.10f}", coordinate.latitude, coordinate.longitude];
+            pointAnnotation.isAccessibilityElement = YES;
             pointAnnotation.coordinate = coordinate;
             [_workingAnnotations addObject:pointAnnotation];
-            
-            OTCoordinate *coord = [[OTCoordinate alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
-            
-            [points addObject:coord];
+
+            [_mapView addAnnotation:pointAnnotation];
         }
-        [[_geometryCollection workingGeometry] setPoints:points];
-        
-        _workingOverlay = polygon.geometry;
-        
-        [self renderAnnotations];
     } else {
         
     }
-    
-    // Init Quad tree coordinate
-    _coordinateQuadTree = [[TBCoordinateQuadTree alloc] init];
-    _coordinateQuadTree.mapView = _mapView;
-
-    // Init annotations array
-    _annotations = [NSMutableArray array];
     
     [self drawMappedGeometry];
 }
@@ -145,6 +146,26 @@
 // Chuyển qua tab khác
 - (void)viewWillDisappear:(BOOL)animated{
     // TODO: Lưu mapedGeometry trong trường hợp tạo mới hoặc sửa
+    if ([_claim getViewType] == OTViewTypeView) return;
+    
+    if (_shapes.workingOverlay.vertexs.count > 2) {
+        GeoShape *shape = _shapes.workingOverlay;
+        NSUInteger pointCount = shape.pointCount;
+        ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithCoordinates:shape.coordinates count:(unsigned int)pointCount];
+        
+        // Tạo điểm và nhãn cho polygon theo tâm của đường bao.
+        ShapeKitPoint *point = [[ShapeKitPoint alloc] initWithCoordinate:shape.coordinate];
+        
+        _claim.gpsGeometry = point.wktGeom;
+        _claim.mappedGeometry = polygon.wktGeom;
+        
+    } else {
+        _claim.gpsGeometry = nil;
+        _claim.mappedGeometry = nil;
+    }
+    if (_claim.isSaved && [_claim.managedObjectContext hasChanges]) {
+        [_claim.managedObjectContext save:nil];
+    }
     [super viewWillDisappear:animated];
 }
 
@@ -183,10 +204,6 @@
             }
         }
     }];
-}
-
-- (void)configureOperation {
-    
 }
 
 - (void)configureNotifications {
@@ -228,83 +245,54 @@
         CLLocationCoordinate2D touchMapCoordinate = [_mapView convertPoint:touchPoint toCoordinateFromView:_mapView];
         MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
         point.coordinate = touchMapCoordinate;
+        point.title = [NSString stringWithFormat:@"{Lat: %f, Lon: %f}", point.coordinate.latitude, point.coordinate.longitude];
         point.isAccessibilityElement = YES;
         [self updatePolygonAnnotations:point remove:NO];
     }
 }
 
-- (void)updatePolygonAnnotations:(MKPointAnnotation *)pointAnnotation remove:(BOOL)remove {
-    CLLocationCoordinate2D coordinate = pointAnnotation.coordinate;
-    if (remove) {
-        ALog(@"Remove point");
-        [_geometryCollection removePointFromWorkingGeometry:coordinate];
+- (void)updatePolygonAnnotations:(MKPointAnnotation *)point remove:(BOOL)remove {
+    if (_shapes.workingOverlay == nil) {
+        // Tạo mới shape
+        GeoShape *shape = [_shapes createShapeWithCenterCoordinate:point.coordinate];
+        [_shapes setWorkingOverlay:shape];
+        shape.title = [[NSUUID UUID] UUIDString];
+        shape.subtitle = [[NSDate date] description];
+        [_mapView addAnnotation:point];
+        [_workingAnnotations addObject:point];
     } else {
-        ALog(@"Add point");
         MKZoomScale currentZoomScale = _mapView.bounds.size.width / _mapView.visibleMapRect.size.width;
-        [_geometryCollection addPointToWorkingGeometry:coordinate currentZoomScale:currentZoomScale];
+        if (!remove) {
+            [_shapes addPointToWorkingOverlay:point.coordinate currentZoomScale:currentZoomScale];
+            [_mapView addAnnotation:point];
+            [_workingAnnotations addObject:point];
+        } else {
+            [_shapes removePointFromWorkingOverlay:point.coordinate];
+            [_mapView removeAnnotation:point];
+            [self updateOverlay:_shapes];
+            [_workingAnnotations removeObject:point];
+            ALog(@"Working annotations count : %tu", _workingAnnotations.count);
+        }
     }
-    ALog(@"N Point: %tu", [[[_geometryCollection workingGeometry] points] count]);
-    [self renderAnnotations];
+    [self updateOverlay:_shapes];
 }
 
-- (void)renderAnnotations {
-    
-    // Gỡ polygon cũ khỏi map
-    if (_workingOverlay != nil)
-        [self.mapView removeOverlay:_workingOverlay];
-    
-    // Xóa polygon khỏi bộ nhớ
-    _workingOverlay = nil;
-    
-    // Gỡ các đỉnh của polygon khỏi map
-    for (id <MKAnnotation>object in [self.workingAnnotations copy]) {
-        if ([object conformsToProtocol:@protocol(MKAnnotation)]) {
-            [self.mapView removeAnnotation:object];
-            [self.workingAnnotations removeObject:object];
-        }
-    }
-
-    OTGeometry *otGeometry = [self.geometryCollection workingGeometry];
-    if (otGeometry.points.count > 2) {
-        NSUInteger pointCount = otGeometry.polygon.pointCount;
-        CLLocationCoordinate2D coords[pointCount];
-        for (NSUInteger i = 0; i < pointCount; i++) {
-            coords[i] = MKCoordinateForMapPoint(otGeometry.polygon.points[i]);
-        }
-        ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithCoordinates:coords count:(unsigned int)pointCount];
-
-        // Tạo điểm và nhãn cho polygon theo tâm của đường bao.
-        ShapeKitPoint *point = [[ShapeKitPoint alloc] initWithGeosGeometry:[polygon centroid].geosGeom];
-        
-        // Nếu là đa giác lõm (điểm nhãn không nằm trong polygon) thì thực hiện việc xác định lại điểm nhãn
-        if (![point isWithinGeometry:polygon]) {
-            // Tạo điểm nhãn cho polygon theo phương pháp khác
-            point = [[ShapeKitPoint alloc] initWithGeosGeometry:[polygon pointOnSurface].geosGeom];
-        }
-        _claim.gpsGeometry = point.wktGeom;
-        _claim.mappedGeometry = polygon.wktGeom;
-        
-        [self.mapView addOverlay:polygon.geometry];
-        self.workingOverlay = polygon.geometry;
-    } else {
-        _claim.gpsGeometry = nil;
-        _claim.mappedGeometry = nil;
-    }
-
-    [self renderActiveGeometry];
+- (void)updateOverlay:(id<MKOverlay>)overlay {
+    [[NSOperationQueue new] addOperationWithBlock:^{
+        [_shapes.workingOverlay updatePoints]; // Cập nhật lại điểm cho workingOverlay
+        GeoShapeOverlayRenderer *overlayRenderer = (GeoShapeOverlayRenderer *)[_mapView rendererForOverlay:overlay];
+        MKMapRect mapRect = [_shapes.workingOverlay boundingMapRect];
+        [overlayRenderer setNeedsDisplayInMapRect:mapRect];
+    }];
+    TBClusterAnnotation *label = [[TBClusterAnnotation alloc] initWithCoordinate:_shapes.workingOverlay.coordinate count:1];
+    label.title = _claim.claimName;
 }
 
-- (void)renderActiveGeometry {
-    NSUInteger n = [[[self.geometryCollection workingGeometry] points] count];
-    for (NSUInteger i = 0; i < n; i++) {
-        OTCoordinate *otCoordinate = [[[self.geometryCollection workingGeometry] points] objectAtIndex:i];
-        MKPointAnnotation *mapPointAnnotation = [[MKPointAnnotation alloc] init];
-        mapPointAnnotation.coordinate = otCoordinate.coordinate;
-        mapPointAnnotation.title = [NSString stringWithFormat:@"(%tu), %@", i, otCoordinate.locationAsString];
-        mapPointAnnotation.isAccessibilityElement = YES;
-        [self.mapView addAnnotation:mapPointAnnotation];
-        [self.workingAnnotations addObject:mapPointAnnotation];
-    }
+- (void)addAnnotation:(MKPointAnnotation *)annotation {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_mapView addAnnotation:annotation];
+        [_workingAnnotations addObject:annotation];
+    });
 }
 
 #pragma handler notifications
@@ -425,38 +413,23 @@
     for (Claim *object in collection) {
         if (object.mappedGeometry == nil) continue;
         if ([object.claimId isEqualToString:_claim.claimId]) continue;
+        
         // Tạo polygon. Phải đảm bảo dữ liệu geometry của claim không có lỗi
         ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:object.mappedGeometry];
         
-        // Gán uuid của claim cho overlay để phục vụ tìm kiếm polygon overlay trên bản đồ
-        polygon.geometry.title = object.claimId;
-        
-        // Đưa polygon geometry (overlay) lên bản đồ
-        [_mapView addOverlay:polygon.geometry];
-        
+        GeoShape *shape = [_shapes createShapeFromPolygon:polygon.geometry];
+        shape.title = object.claimId;
+
         // Tạo điểm và nhãn cho polygon theo tâm của đường bao.
-        ShapeKitPoint *point = [[ShapeKitPoint alloc] initWithGeosGeometry:[polygon centroid].geosGeom];
-        
-        // Nếu là đa giác lõm (điểm nhãn không nằm trong polygon) thì thực hiện việc xác định lại điểm nhãn
-        if (![point isWithinGeometry:polygon]) {
-            // Tạo điểm nhãn cho polygon theo phương pháp khác
-            point = [[ShapeKitPoint alloc] initWithGeosGeometry:[polygon pointOnSurface].geosGeom];
-        }
-        
-        // Gán nhãn của điểm là tên của claim
-        point.geometry.title = object.claimName;
-        
-        // Gán nhãn phụ của điểm là uuid của claim
-        point.geometry.subtitle = object.claimId;
-        
-        // Gán kiển ký hiệu điểm
-        point.geometry.icon = @"centroid";
-        
+        TBClusterAnnotation *center = [[TBClusterAnnotation alloc] initWithCoordinate:shape.coordinate count:1];
+        center.title = object.claimName;
+        center.subtitle = object.claimId;
+        center.icon = @"centroid";
         // Gán uuid của claim cho MKPointAnnotation để phục vụ tìm kiếm theo annotation trên bản đồ
-        point.geometry.uuid = object.claimId;
-        
+        center.uuid = object.claimId;
+
         // Thêm điểm vào mảng annotations dùng chung
-        [_annotations addObject:point.geometry];
+        [_annotations addObject:center];
     }
     // Cập nhật hiển thị điểm
     [_coordinateQuadTree buildTreeFromAnnotations:_annotations];
@@ -472,16 +445,6 @@
  Send broadcasting information
  */
 - (IBAction)downloadClaims:(id)sender {
-    
-    UIAlertView *alert = [[UIAlertView alloc]initWithTitle: @"Underconstruction"
-                                                   message: @"Bugs is fixing"
-                                                  delegate: self
-                                         cancelButtonTitle:@"Cancel"
-                                         otherButtonTitles:@"OK",nil];
-    
-    
-    [alert show];
-    return;
     
     if ([self isDownloading]) return;
     
@@ -527,15 +490,28 @@
 }
 
 - (IBAction)mapSnapshot:(id)sender {
-    ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:_claim.mappedGeometry];
+    GeoShape *shape = _shapes.workingOverlay;
     // Zoom đến polygon
-    [_mapView setRegion:MKCoordinateRegionForMapRect(polygon.geometry.boundingMapRect) animated:NO];
+    [_mapView setRegion:shape.region animated:YES];
     MKMapSnapshotOptions *options = [[MKMapSnapshotOptions alloc] init];
-    options.region = self.mapView.region;
+    options.region = shape.region;
     options.scale = [UIScreen mainScreen].scale;
     options.size = self.mapView.frame.size;
     
     MKMapSnapshotter *snapshotter = [[MKMapSnapshotter alloc] initWithOptions:options];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [SVProgressHUD show];
+    });
+
+    // Kiểm tra phiên bản map attached. Xóa nếu tồn tại bản cũ
+    for (Attachment *attachment in _claim.attachments) {
+        if ([attachment.typeCode.code isEqualToString:@"cadastralMap"] &&
+            [attachment.note isEqualToString:@"Map"]) {
+            [_claim.managedObjectContext deleteObject:attachment];
+        }
+    }
+    
     [snapshotter startWithQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) completionHandler:^(MKMapSnapshot *snapshot, NSError *error) {
         
         // get the image associated with the snapshot
@@ -546,42 +522,6 @@
         
         CGRect finalImageRect = CGRectMake(0, 0, image.size.width, image.size.height);
         
-        // Get a standard annotation view pin. Clearly, Apple assumes that we'll only want to draw standard annotation pins!
-        
-//        static NSString * const annotationIdentifier = @"CustomAnnotation";
-//        MKAnnotationView *annotationView = [_mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
-//        if (annotationView) {
-//            annotationView.annotation = annotation;
-//        } else {
-//            annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
-//            
-//            annotationView.image = [UIImage imageNamed:@"ot_blue_marker"];
-//        }
-//        
-//        // 29x29
-//        // |-------|
-//        // |-------|
-//        // |---x---|
-//        // |-------|
-//        // |---x---|
-//        
-//        //Offset vị trí vào giữa
-//        annotationView.centerOffset = CGPointMake(0, -15);
-//        
-//        annotationView.draggable = (_viewType == OTViewTypeView) ? NO : YES;
-//        
-//        annotationView.canShowCallout = NO;
-//        
-//        return annotationView;
-//        
-//        
-//        
-//        
-        MKAnnotationView *pin = [[MKPinAnnotationView alloc] initWithAnnotation:nil reuseIdentifier:@""];
-        UIImage *pinImage = [UIImage imageNamed:@"ot_blue_marker"];
-        
-        pin.centerOffset = CGPointMake(0, -15);
-        
         // ok, let's start to create our final image
         
         UIGraphicsBeginImageContextWithOptions(image.size, YES, image.scale);
@@ -589,24 +529,84 @@
         // first, draw the image from the snapshotter
         
         [image drawAtPoint:CGPointMake(0, 0)];
+        MKZoomScale currentZoomScale = _mapView.bounds.size.width / _mapView.visibleMapRect.size.width;
+        NSMutableArray *overlays = [NSMutableArray arrayWithArray:[_shapes shapesInMapRect:_mapView.visibleMapRect zoomScale:currentZoomScale]];
+        [overlays removeObject:shape];
         
-        // now, let's iterate through the annotations and draw them, too
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        CGContextSetStrokeColorWithColor(context, [[UIColor otEarth] CGColor]);
+        CGContextSetLineWidth(context, 2.0f);
+        CGContextBeginPath(context);
         
-        for (id<MKAnnotation>annotation in self.mapView.annotations)
-        {
-            CGPoint point = [snapshot pointForCoordinate:annotation.coordinate];
-            if (CGRectContainsPoint(finalImageRect, point)) // this is too conservative, but you get the idea
-            {
-                CGPoint pinCenterOffset = pin.centerOffset;
-                point.x -= pin.bounds.size.width / 2.0;
-                point.y -= pin.bounds.size.height / 2.0;
-                point.x += pinCenterOffset.x;
-                point.y += pinCenterOffset.y;
-                
+        // Vẽ các thửa liền kề
+        for (GeoShape *aShape in overlays) {
+            CLLocationCoordinate2D *coordinates = aShape.coordinates;
+            CGPoint point = [snapshot pointForCoordinate:coordinates[0]];
+            CGContextMoveToPoint(context, point.x, point.y);
+            for (int i = 1; i < aShape.pointCount; i++) {
+                CGPoint point = [snapshot pointForCoordinate:coordinates[i]];
+                CGContextAddLineToPoint(context, point.x, point.y);
+            }
+            CGContextClosePath(context);
+        }
+        CGContextStrokePath(context);
+        
+        // Vẽ thửa chính
+        CGContextSetStrokeColorWithColor(context, [[UIColor otDarkBlue] CGColor]);
+        CLLocationCoordinate2D *coordinates = shape.coordinates;
+        for (int i = 0; i < shape.pointCount; i++) {
+            CGPoint point = [snapshot pointForCoordinate:coordinates[i]];
+            if (i == 0) {
+                CGContextMoveToPoint(context, point.x, point.y);
+            } else {
+                CGContextAddLineToPoint(context, point.x, point.y);
+            }
+        }
+        CGContextClosePath(context);
+        
+        CGContextStrokePath(context);
+
+        // Vẽ đỉnh của thửa
+        MKAnnotationView *pin = [[MKPinAnnotationView alloc] initWithAnnotation:nil reuseIdentifier:@"CustomAnnotation"];
+        UIImage *pinImage = [UIImage imageNamed:@"ot_blue_marker"];
+        
+        pin.centerOffset = CGPointMake(0, -14);
+        
+        for (int i = 0; i < shape.pointCount; i++) {
+            CGPoint point = [snapshot pointForCoordinate:coordinates[i]];
+            if (CGRectContainsPoint(finalImageRect, point)) { // this is too conservative, but you get the idea
+                point.x -= 14.5;
+                point.y -= 29.0;
                 [pinImage drawAtPoint:point];
             }
         }
+
+        // Tạo điểm và nhãn cho polygon theo tâm của đường bao.
+        TBClusterAnnotation *center = [[TBClusterAnnotation alloc] initWithCoordinate:shape.coordinate count:1];
+        center.title = _claim.claimName;
+        pinImage = [UIImage imageNamed:@"centroid"];
+        CGPoint point = [snapshot pointForCoordinate:center.coordinate];
+        if (CGRectContainsPoint(finalImageRect, point)) { // this is too conservative, but you get the idea
+            point.x -= 14.5;
+            point.y -= 14.5;
+            [pinImage drawAtPoint:point];
+            
+            // Vẽ nhãn
+            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
+            //Set line break mode
+            paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+            //Set text alignment
+            paragraphStyle.alignment = NSTextAlignmentCenter;
+            NSShadow *shadow = [[NSShadow alloc] init];
+            shadow.shadowColor = [UIColor lightGrayColor];
+            shadow.shadowBlurRadius = 0.0;
+            shadow.shadowOffset = CGSizeMake(0.5, 0.5);
+            NSDictionary *attributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:12], NSForegroundColorAttributeName:[UIColor otDarkBlue], NSShadowAttributeName:shadow, NSParagraphStyleAttributeName:paragraphStyle};
+            point.y += 30;
+            [_claim.claimName drawAtPoint:point withAttributes:attributes];
+        }
         
+
         // grab the final image
         
         UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -614,17 +614,17 @@
         
         // and save it
         
-        NSData *imageData = UIImageJPEGRepresentation(finalImage, 1.0);
+        NSData *imageData = UIImagePNGRepresentation(finalImage);
         NSNumber *fileSize = [NSNumber numberWithUnsignedInteger:imageData.length];
         NSString *md5 = [imageData md5];
-        NSString *fileName = @"_map_.jpg";
+        NSString *fileName = @"_map_.png";
         NSString *file = [[FileSystemUtilities getAttachmentFolder:_claim.claimId] stringByAppendingPathComponent:fileName];
         [imageData writeToFile:file atomically:YES];
         NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
         [dictionary setValue:[[OT dateFormatter] stringFromDate:[NSDate date]] forKey:@"documentDate"];
-        [dictionary setValue:@"image/jpeg" forKey:@"mimeType"];
+        [dictionary setValue:@"image/png" forKey:@"mimeType"];
         [dictionary setValue:fileName  forKey:@"fileName"];
-        [dictionary setValue:@"jpg" forKey:@"fileExtension"];
+        [dictionary setValue:@"png" forKey:@"fileExtension"];
         [dictionary setValue:[[[NSUUID UUID] UUIDString] lowercaseString] forKey:@"id"];
         [dictionary setValue:fileSize forKey:@"size"];
         [dictionary setValue:md5 forKey:@"md5"];
@@ -652,7 +652,9 @@
         attachment.typeCode = docType;
         
         [attachment.managedObjectContext save:nil];
-        [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"saved", nil)];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"saved", nil)];
+        });
     }];
 }
 
@@ -676,9 +678,10 @@
 
 #pragma handler download result
 
-
-/*
- Check the exisitence of a claim in local. Update status of downloaded claims if there is any change
+/*!
+ Kiểm tra sự tồn tại của claim trên local (những claim đã tải về). Cập nhật trạng thái cho các claims đã tải về nếu có sự thay đổi từ phía server.
+ @result
+ Danh sách các claim mới tải về
  */
 - (NSArray *)getValidClaimsToDownload:(NSArray *)objects {
     
@@ -710,63 +713,6 @@
     return newClaimIds;
 }
 
-/*!
- Receive notification when the CommunityServerAPI get all new claims successful.
- @result
- New claims list to add or update
- */
-/*
-- (void)getClaim:(ResponseClaim *)responseObject {
-    [CommunityServerAPI getClaim:responseObject.claimId completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
-        if (error != nil) {
-            [OT handleError:error];
-        } else {
-            if ((([httpResponse statusCode]/100) == 2) && [[httpResponse MIMEType] isEqual:@"application/json"]) {
-                NSError *errorJSON = nil;
-                NSDictionary *object = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&errorJSON];
-                if (errorJSON != nil) {
-                    [OT handleError:errorJSON];
-                } else {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        
-                        // Gửi thông báo để xử lý progress nếu cần
-                        [[NSNotificationCenter defaultCenter] postNotificationName:kGetClaimSuccessNotificationName object:object userInfo:nil];
-                        
-                        // Tạo ResponseClaim từ JSON
-                        ResponseClaim *responseObject = [ResponseClaim claimDetailWithDictionary:object];
-                        
-                        // Kiểm tra việc cập nhật chi tiết cho claim
-                        Claim *claim = [ClaimEntity updateDetailFromResponseObject:responseObject];
-                        
-                        if (claim != nil) {
-                            
-                            // Lấy thông tin person
-                            NSDictionary *dict = [object objectForKey:@"claimant"];
-                            
-                            // Tạo mới person từ JSON
-                            Person *person = [PersonEntity createFromDictionary:dict];
-                            
-                            // Gán claim cho person và lưu
-                            [person setClaim:claim];
-                            [person.managedObjectContext save:nil];
-                            
-                            // Chuyển xử lý để vẽ
-                            //[self processClaim:object];
-                        }
-                    });
-                }
-            } else {
-                NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
-                NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
-                NSError *reportError = [NSError errorWithDomain:@"HTTP"
-                                                           code:[httpResponse statusCode]
-                                                       userInfo:userInfo];
-                [OT handleError:reportError];
-            }
-        }
-    }];
-}
-*/
 /*!
  Receive notification when the CommunityServerAPI get one claim successful
  */
@@ -812,8 +758,10 @@
 - (void)updateMapViewAnnotationsWithAnnotations:(NSArray *)annotations {
     NSMutableSet *before = [NSMutableSet setWithArray:self.mapView.annotations];
     // Không cho cluster đối với các đỉnh của polygon
-    for (id object in _workingAnnotations)
-        [before removeObject:object];
+    for (id <MKAnnotation>object in [self.workingAnnotations copy])
+        if ([object conformsToProtocol:@protocol(MKAnnotation)]) {
+            [before removeObject:object];
+        }
     
     [before removeObject:[self.mapView userLocation]];
     NSSet *after = [NSSet setWithArray:annotations];
@@ -860,6 +808,9 @@
         //polygonView.fillColor = [UIColor otLightGreen];
         
         return polygonView;
+    } else if ([overlay isKindOfClass:[GeoShapeCollection class]]) {
+        GeoShapeOverlayRenderer *overlayRenderer = [[GeoShapeOverlayRenderer alloc] initWithOverlay:overlay];
+        return overlayRenderer;
     }
 	
 	return nil;
@@ -871,23 +822,18 @@
     if ([annotation isKindOfClass:[MKPointAnnotation class]]) {
         if ([((MKPointAnnotation *)annotation) isAccessibilityElement]) {
             static NSString * const annotationIdentifier = @"CustomAnnotation";
-            OTPointAnnotationView *pin = (OTPointAnnotationView *)[self.mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
-            
+            GeoShapeAnnotationView *pin = (GeoShapeAnnotationView *)[_mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
             if (!pin) {
-                pin = [[OTPointAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
+                pin = [[GeoShapeAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
                 
-                pin.draggable = (_viewType == OTViewTypeView) ? NO : YES;
+                pin.draggable = (_viewType == OTViewTypeView) ? NO : YES;;
                 pin.canShowCallout = YES;
-            }
-            
-            [pin setSelected:YES animated:YES];
-            
-            if (_viewType == OTViewTypeAdd || _viewType == OTViewTypeEdit) {
                 UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(1, 0, 25, 25)];
                 UIImage *btnImage = [UIImage imageNamed:@"Icon-remove"];
                 [deleteButton setImage:btnImage forState:UIControlStateNormal];
                 pin.rightCalloutAccessoryView = deleteButton;
             }
+            [pin setSelected:YES animated:YES];
             return pin;
         }
         
@@ -919,10 +865,10 @@
         // |---x---|
         
         //Cho ảnh kích thước 29x29 @2x:58x58
-        view.center = CGPointMake(14, -14);
+        view.center = CGPointMake(14.5, -14.5);
         
         //Offset vị trí xuống chân
-        view.centerOffset = CGPointMake(0, -14);
+        view.centerOffset = CGPointMake(0, -14.5);
         
         //Offset vị trí vào giữa
         view.centerOffset = CGPointMake(0, 0);
@@ -956,45 +902,88 @@
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control{
     
-    if ([view isKindOfClass:[OTPointAnnotationView class]]) {
+    if ([view isKindOfClass:[GeoShapeAnnotationView class]]) {
         if([[view rightCalloutAccessoryView] isEqual:control]){
             [self updatePolygonAnnotations:[view annotation] remove:YES];
-            [self renderAnnotations];
         }
     }
 }
 
-- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState{
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
     
-    CLLocationCoordinate2D annotationCoordinate = [view.annotation coordinate];
-    
-    OTCoordinate *tempCoordinate = [[OTCoordinate alloc] initWithLatitude:annotationCoordinate.latitude longitude:annotationCoordinate.longitude];
+    CLLocationCoordinate2D coordinate = [view.annotation coordinate];
+    GeoShapeVertex *templateVertex = [[GeoShapeVertex alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
     
     if (newState == MKAnnotationViewDragStateStarting) {
-        
         [self setDragging:YES];
-
-        for (OTCoordinate *coordinate in [[self.geometryCollection workingGeometry] points]) {
-            if ([coordinate isEqual:tempCoordinate]) {
-                [coordinate setIsDragging:YES];
-            }
-        }
+        workingAnnotationView = view;
         
-    } else if (newState == MKAnnotationViewDragStateEnding) {
-        
-        for (OTCoordinate *coordinate in [[self.geometryCollection workingGeometry] points]) {
-            if ([coordinate isDragging]) {
-                [coordinate setIsDragging:NO];
-                coordinate.latitude = annotationCoordinate.latitude;
-                coordinate.longitude = annotationCoordinate.longitude;
+        // Duyệt các vertex của workingOverlay để xác định điểm nào sẽ di chuyển
+        // sau đó [vertex setDragging:YES];
+        // workingVertex = vertex
+        for (GeoShapeVertex *vertex in _shapes.workingOverlay.vertexs) {
+            if ([vertex isEqual:templateVertex]) {
+                [vertex setDragging:YES];
+                workingVertex = vertex;
                 break;
             }
         }
+    } else if (newState == MKAnnotationViewDragStateEnding) {
+        if (snapped) {
+            CLLocationCoordinate2D snappedCoord = [_shapes snappedCoordinate];
+            workingVertex.latitude = snappedCoord.latitude;
+            workingVertex.longitude = snappedCoord.longitude;
+        } else {
+            // Trả lại trạng thái cho workingVertex
+            workingVertex.latitude = coordinate.latitude;
+            workingVertex.longitude = coordinate.longitude;
+        }
+        [self updateOverlay:_shapes];
+        [workingVertex setDragging:NO];
+        [_mapView removeAnnotation:view.annotation];
+        [_workingAnnotations removeObject:view.annotation];
         
-    } else if (newState == MKAnnotationViewDragStateNone && oldState == MKAnnotationViewDragStateEnding) {
-        [self renderAnnotations];
+        // Làm cho annotation không select
+        MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
+        point.coordinate = workingVertex.coordinate;
+        point.title = workingVertex.locationAsString;
+        point.isAccessibilityElement = YES;
+        [self addAnnotation:point];
+    } else if (newState == MKAnnotationViewDragStateNone && oldState == MKAnnotationViewDragStateCanceling) {
+        workingVertex.latitude = coordinate.latitude;
+        workingVertex.longitude = coordinate.longitude;
+        [self updateOverlay:_shapes];
         [self setDragging:NO];
+    } else if (newState == MKAnnotationViewDragStateDragging) {
+        [self setDragging:YES];
     }
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    if ([self isDragging]) {
+        CGPoint draggingPoint = workingAnnotationView.frame.origin;
+        draggingPoint.y += 29;
+        draggingPoint.x += 14;
+        CLLocationCoordinate2D currentCoord = [_mapView convertPoint:draggingPoint toCoordinateFromView:_mapView];
+        workingVertex.latitude = currentCoord.latitude;
+        workingVertex.longitude = currentCoord.longitude;
+        if (snapped) {
+            workingVertex.latitude = _shapes.snappedCoordinate.latitude;
+            workingVertex.longitude = _shapes.snappedCoordinate.longitude;
+        }
+        [self updateOverlay:_shapes];
+        [self updateSnapFromCoordinate:currentCoord];
+    } else
+        [super touchesMoved:touches withEvent:event];
+}
+
+- (void)updateSnapFromCoordinate:(CLLocationCoordinate2D)cooordinate {
+    //    [[NSOperationQueue new] addOperationWithBlock:^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        MKZoomScale currentZoomScale = _mapView.bounds.size.width / _mapView.visibleMapRect.size.width;
+        snapped = [_shapes getSnapFromMapPoint:cooordinate mapRect:_mapView.visibleMapRect zoomScale:currentZoomScale snapMode:SnapModeEndPoint];
+    });
+    //    }];
 }
 
 #pragma DownloadClaimTaskDelegate method

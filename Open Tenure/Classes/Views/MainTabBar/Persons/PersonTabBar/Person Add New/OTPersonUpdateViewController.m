@@ -546,7 +546,6 @@ static bool allCellChecked = false;
             [FileSystemUtilities createClaimantFolder:_person.personId];
             [_person.managedObjectContext save:nil];
             [self setupView];
-            [self.tableView reloadData];
         }
         [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_saved", nil)];
     } else {

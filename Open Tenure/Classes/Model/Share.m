@@ -25,17 +25,18 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-#import "Owner.h"
+
+#import "Share.h"
 #import "Claim.h"
 #import "Person.h"
 
 
-@implementation Owner
+@implementation Share
 
-@dynamic ownerId;
-@dynamic nominator;
 @dynamic denominator;
-@dynamic person;
+@dynamic nominator;
+@dynamic shareId;
 @dynamic claim;
+@dynamic owners;
 
 @end
