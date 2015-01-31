@@ -33,25 +33,20 @@
 
 @implementation JVFloatLabeledTextField
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-	    [self commonInit];
+        [self commonInit];
     }
     return self;
 }
 
-- (id)initWithCoder:(NSCoder *)aDecoder 
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
         [self commonInit];
-        
-        // force setter to be called on a placeholder defined in a NIB/Storyboard
-    	if (self.placeholder) {
-        	self.placeholder = self.placeholder;
-    	}
     }
     return self;
 }
@@ -63,16 +58,20 @@
     [self addSubview:_floatingLabel];
 	
     // some basic default fonts/colors
-    _floatingLabel.font = [UIFont boldSystemFontOfSize:12.0f];
-    _floatingLabelTextColor = [UIColor blackColor];
+    _floatingLabelFont = [UIFont boldSystemFontOfSize:12.0f];
+    _floatingLabel.font = _floatingLabelFont;
+    _floatingLabelTextColor = [UIColor grayColor];
+    _floatingLabel.textColor = _floatingLabelTextColor;
+    _floatingLabelActiveTextColor = self.tintColor;
     _animateEvenIfNotFirstResponder = NO;
     _floatingLabelShowAnimationDuration = kFloatingLabelShowAnimationDuration;
     _floatingLabelHideAnimationDuration = kFloatingLabelHideAnimationDuration;
+    [self setFloatingLabelText:self.placeholder];
 }
 
 #pragma mark -
 
-- (UIColor *)getLabelActiveColor
+- (UIColor *)labelActiveColor
 {
     if (_floatingLabelActiveTextColor) {
         return _floatingLabelActiveTextColor;
@@ -87,7 +86,7 @@
 {
     _floatingLabelFont = floatingLabelFont;
     _floatingLabel.font = (_floatingLabelFont ? _floatingLabelFont : [UIFont boldSystemFontOfSize:12.0f]);
-    self.placeholder = self.placeholder; // Force the label to lay itself out with the new font.
+    [self setFloatingLabelText:self.placeholder];
 }
 
 - (void)showFloatingLabel:(BOOL)animated
@@ -95,7 +94,7 @@
     void (^showBlock)() = ^{
         _floatingLabel.alpha = 1.0f;
         _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x,
-                                          2.0f,
+                                          _floatingLabelYPadding,
                                           _floatingLabel.frame.size.width,
                                           _floatingLabel.frame.size.height);
     };
@@ -103,7 +102,7 @@
     if (animated || _animateEvenIfNotFirstResponder) {
         [UIView animateWithDuration:_floatingLabelShowAnimationDuration
                               delay:0.0f
-                            options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseOut
+                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut
                          animations:showBlock
                          completion:nil];
     }
@@ -117,7 +116,7 @@
     void (^hideBlock)() = ^{
         _floatingLabel.alpha = 0.0f;
         _floatingLabel.frame = CGRectMake(_floatingLabel.frame.origin.x,
-                                          _floatingLabel.font.lineHeight + _floatingLabelYPadding.floatValue,
+                                          _floatingLabel.font.lineHeight + _placeholderYPadding,
                                           _floatingLabel.frame.size.width,
                                           _floatingLabel.frame.size.height);
 
@@ -126,7 +125,7 @@
     if (animated || _animateEvenIfNotFirstResponder) {
         [UIView animateWithDuration:_floatingLabelHideAnimationDuration
                               delay:0.0f
-                            options:UIViewAnimationOptionBeginFromCurrentState|UIViewAnimationOptionCurveEaseIn
+                            options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseIn
                          animations:hideBlock
                          completion:nil];
     }
@@ -146,7 +145,8 @@
     }
     else if (self.textAlignment == NSTextAlignmentRight) {
         originX = textRect.origin.x + textRect.size.width - _floatingLabel.frame.size.width;
-    } else if (self.textAlignment == NSTextAlignmentNatural) {
+    }
+    else if (self.textAlignment == NSTextAlignmentNatural) {
         JVTextDirection baseDirection = [_floatingLabel.text getBaseDirection];
         if (baseDirection == JVTextDirectionRightToLeft) {
             originX = textRect.origin.x + textRect.size.width - _floatingLabel.frame.size.width;
@@ -157,53 +157,73 @@
                                       _floatingLabel.frame.size.width, _floatingLabel.frame.size.height);
 }
 
+- (void)setFloatingLabelText:(NSString *)text
+{
+    _floatingLabel.text = text;
+    [self setNeedsLayout];
+}
+
 #pragma mark - UITextField
 
 - (void)setPlaceholder:(NSString *)placeholder
 {
     [super setPlaceholder:placeholder];
-
-    _floatingLabel.text = placeholder;
-    [_floatingLabel sizeToFit];
+    [self setFloatingLabelText:placeholder];
 }
 
 - (void)setAttributedPlaceholder:(NSAttributedString *)attributedPlaceholder
 {
     [super setAttributedPlaceholder:attributedPlaceholder];
-	
-    _floatingLabel.text = attributedPlaceholder.string;
-    [_floatingLabel sizeToFit];
+    [self setFloatingLabelText:attributedPlaceholder.string];
 }
 
 - (void)setPlaceholder:(NSString *)placeholder floatingTitle:(NSString *)floatingTitle
 {
     [super setPlaceholder:placeholder];
-
-    _floatingLabel.text = floatingTitle;
-    [_floatingLabel sizeToFit];
+    [self setFloatingLabelText:floatingTitle];
 }
 
 - (CGRect)textRectForBounds:(CGRect)bounds
 {
-    return UIEdgeInsetsInsetRect([super textRectForBounds:bounds], UIEdgeInsetsMake(ceilf(_floatingLabel.font.lineHeight+_floatingLabelYPadding.floatValue), 0.0f, 0.0f, 0.0f));
+    CGRect rect = [super textRectForBounds:bounds];
+    if ([self.text length]) {
+        CGFloat topInset = ceilf(_floatingLabel.font.lineHeight + _placeholderYPadding);
+        topInset = MIN(topInset, [self maxTopInset]);
+        rect = UIEdgeInsetsInsetRect(rect, UIEdgeInsetsMake(topInset, 0.0f, 0.0f, 0.0f));
+    }
+    return CGRectIntegral(rect);
 }
 
 - (CGRect)editingRectForBounds:(CGRect)bounds
 {
-    return UIEdgeInsetsInsetRect([super editingRectForBounds:bounds], UIEdgeInsetsMake(ceilf(_floatingLabel.font.lineHeight+_floatingLabelYPadding.floatValue), 0.0f, 0.0f, 0.0f));
+    CGRect rect = [super editingRectForBounds:bounds];
+    if ([self.text length]) {
+        CGFloat topInset = ceilf(_floatingLabel.font.lineHeight + _placeholderYPadding);
+        topInset = MIN(topInset, [self maxTopInset]);
+        rect = UIEdgeInsetsInsetRect(rect, UIEdgeInsetsMake(topInset, 0.0f, 0.0f, 0.0f));
+    }
+    return CGRectIntegral(rect);
 }
 
 - (CGRect)clearButtonRectForBounds:(CGRect)bounds
 {
     CGRect rect = [super clearButtonRectForBounds:bounds];
-    rect = CGRectMake(rect.origin.x, rect.origin.y + (_floatingLabel.font.lineHeight / 2.0) + (_floatingLabelYPadding.floatValue / 2.0f), rect.size.width, rect.size.height);
-    return rect;
+    if ([self.text length]) {
+        CGFloat topInset = ceilf(_floatingLabel.font.lineHeight + _placeholderYPadding);
+        topInset = MIN(topInset, [self maxTopInset]);
+        rect = CGRectMake(rect.origin.x, rect.origin.y + topInset / 2.0f, rect.size.width, rect.size.height);
+    }
+    return CGRectIntegral(rect);
+}
+
+- (CGFloat)maxTopInset
+{
+    return MAX(0, floorf(self.bounds.size.height - self.font.lineHeight - 4.0f));
 }
 
 - (void)setTextAlignment:(NSTextAlignment)textAlignment
 {
     [super setTextAlignment:textAlignment];
-    
     [self setNeedsLayout];
 }
 
@@ -217,27 +237,17 @@
         _floatingLabel.font = self.floatingLabelFont;
     }
     
+    [_floatingLabel sizeToFit];
+    
     BOOL firstResponder = self.isFirstResponder;
-    _floatingLabel.textColor = (firstResponder && self.text && self.text.length > 0 ? self.getLabelActiveColor : self.floatingLabelTextColor);
+    _floatingLabel.textColor = (firstResponder && self.text && self.text.length > 0 ?
+                                self.labelActiveColor : self.floatingLabelTextColor);
     if (!self.text || 0 == [self.text length]) {
         [self hideFloatingLabel:firstResponder];
     }
     else {
         [self showFloatingLabel:firstResponder];
     }
-}
-
-#pragma mark - Accessibility
-
-- (NSString *)accessibilityLabel
-{
-    NSString *accessibilityLabel;
-    if ([self.text isEqualToString:@""] == NO) {
-        accessibilityLabel = [self.floatingLabel accessibilityLabel];
-    } else {
-        accessibilityLabel = self.text;
-    }
-    return accessibilityLabel;
 }
 
 @end

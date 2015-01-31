@@ -28,6 +28,12 @@
 
 #import "BPFormCell.h"
 
+typedef NS_ENUM(NSInteger, OTFormCellType) {
+    OTFormCellTypeBoolean = 1000,
+    OTFormCellTypePicker,
+    OTFormCellTypeDatePicker
+};
+
 @interface OTFormCell : BPFormCell
 
 @end

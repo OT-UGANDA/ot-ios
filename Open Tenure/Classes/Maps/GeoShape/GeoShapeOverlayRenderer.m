@@ -64,10 +64,14 @@ CGRect GMCenterRect(CGRect rect, CGPoint center) {
     GeoShapeCollection *shapes = (GeoShapeCollection *)self.overlay;
     NSArray *objects = [shapes shapesInMapRect:mapRect zoomScale:zoomScale];
     if (objects.count == 0) return;
-    CGMutablePathRef path = CGPathCreateMutable();
+
+    // Lọc các objects có cùng thuộc tính strokeColor, fillColor và lineWidth
+    
+    
     [shapes lockForReading];
     for (GeoShape *overlay in objects) {
         if (overlay.pointCount == 0) continue;
+        CGMutablePathRef path = CGPathCreateMutable();
         MKMapPoint point, lastPoint = overlay.points[0];
         CGPoint lastCGPoint = [self pointForMapPoint:lastPoint];
         CGPathMoveToPoint(path, NULL, lastCGPoint.x, lastCGPoint.y);
@@ -78,22 +82,19 @@ CGRect GMCenterRect(CGRect rect, CGPoint center) {
             lastPoint = point;
         }
         CGPathCloseSubpath(path);
-        if (overlay.isAccessibilityElement) {
-            [self drawLabel:context at:MKMapPointForCoordinate(overlay.coordinate) text:overlay.title rotate:0 bgColor:[UIColor otDarkBlue] color:[UIColor otDarkBlue] zoomScale:zoomScale];
+        if (path != NULL) {
+            CGContextAddPath(context, path);
+            CGContextSetStrokeColorWithColor(context, [overlay.strokeColor CGColor]);
+            CGContextSetLineCap(context, kCGLineCapRound);
+            CGContextSetLineJoin(context, kCGLineJoinRound);
+            CGContextSetLineWidth(context, overlay.lineWidth * lineWidth);
+            CGContextSetFillColorWithColor(context, [[UIColor clearColor] CGColor]);
+            CGContextClosePath(context);
+            CGContextDrawPath(context, kCGPathFillStroke);
+            CGPathRelease(path);
         }
     }
     [shapes unlockForReading];
-    if (path != NULL) {
-        CGContextAddPath(context, path);
-        CGContextSetStrokeColorWithColor(context, [[UIColor otDarkBlue] CGColor]);
-        CGContextSetLineCap(context, kCGLineCapRound);
-        CGContextSetLineJoin(context, kCGLineJoinRound);
-        CGContextSetLineWidth(context, lineWidth);
-        CGContextSetFillColorWithColor(context, [[UIColor clearColor] CGColor]);
-        CGContextClosePath(context);
-        CGContextDrawPath(context, kCGPathFillStroke);
-        CGPathRelease(path);
-    }
 }
 
 - (void)drawVertex:(CGContextRef)context point:(MKMapPoint)point text:(NSString *)text rotate:(double)theta bgColor:(UIColor *)bgColor color:(UIColor *)color zoomScale:(double)zoomScale {

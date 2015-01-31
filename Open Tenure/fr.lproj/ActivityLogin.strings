@@ -1,0 +1,21 @@
+/* Strings related to login */
+"action_forgot_password"="Récupérer le dernier mot de passe";
+"action_log_in_register"="Se connecter";
+"action_sign_in_short"="Se connecter";
+"error_connection"="La connection n'est pas disponible";
+"error_field_required"="Ce champ est requis";
+"error_generic_conection"="Une erreur s'est produite pendant la connexion";
+"error_generic_login"="Une erreur s'est produite pendant la connexion";
+"error_incorrect_password"="L'identifiant ou le mot de passe est incorrect";
+"error_invalid_password"="Ce mot de passe est trop court";
+"error_invalid_username"="Cet identifiant est trop court";
+"login_progress_signing_in"="Connexion…";
+"message_login_before"="Connectez-vous avant";
+"message_login_ok"="Vous êtes connectés";
+"message_logout_error"="Erreur de déconnexion";
+"message_logout_not_ok"="La déconnexion a échoué";
+"message_logout_ok"="Vous êtes déconnecté";
+"message_timeout_exception"="Exception de temps d'attente à la déconnection";
+"message_unknowhost_error"="Erreur d'hébergment inconnue. Le seveur est-il disponible?";
+"prompt_password"="Mot de passe";
+"prompt_username"="Identifiant";

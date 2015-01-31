@@ -28,6 +28,7 @@
 
 #import "OTFormViewController.h"
 #import "UIColor+OT.h"
+#import "OTAppearance.h"
 
 @interface OTFormViewController ()
 
@@ -47,7 +48,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.tableView.backgroundColor = [UIColor otLightGreen];
 }
 
 - (void)didReceiveMemoryWarning
@@ -55,5 +55,28 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+- (void)setupTableView {
+    [super setupTableView];
+    self.tableView.backgroundColor = [OTAppearance sharedInstance].tableViewBackGroundColor;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    NSString *headerTitle = self.sectionHeaderTitles[@(section)];
+    if (headerTitle) {
+        CGFloat headerHeight = self.customSectionHeaderHeight ?: [self.tableView sectionHeaderHeight];
+        UILabel *bgLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 0.0, self.tableView.frame.size.width, headerHeight)];
+        CGRect frame = CGRectMake(16.0, 0.0, self.tableView.frame.size.width - 16.0, headerHeight);
+        UILabel *infoLabel = [[UILabel alloc] initWithFrame:frame];
+        infoLabel.text = headerTitle;
+        infoLabel.textColor = [OTAppearance sharedInstance].headerFooterLabelTextColor;
+        infoLabel.font = [OTAppearance sharedInstance].headerFooterLabelFont;
+        infoLabel.textAlignment = NSTextAlignmentLeft;
+        [bgLabel addSubview:infoLabel];
+        return bgLabel;
+    }
+    return [[UIView alloc] initWithFrame:CGRectZero];
+}
+
 
 @end

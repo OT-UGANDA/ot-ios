@@ -36,9 +36,8 @@
 }
 
 @property (nonatomic, readonly) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 
-- (void)setManagedObjectContext:(id)context;
-- (NSManagedObjectContext *)managedObjectContext;
 - (void)displayData;
 - (void)filterContentForSearchText:(NSString *)searchText scope:(NSInteger)scope;
 - (NSString *)entityName;

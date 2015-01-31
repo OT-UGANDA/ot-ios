@@ -33,5 +33,6 @@
 @property (strong, nonatomic) Claim *claim;
 
 - (IBAction)addShare:(id)sender;
+- (IBAction)done:(id)sender;
 
 @end

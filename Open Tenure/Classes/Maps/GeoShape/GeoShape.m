@@ -257,24 +257,40 @@ NS_INLINE MKMapPoint intersectPoint(MKMapPoint A, MKMapPoint B, MKMapPoint C, MK
 
 @synthesize title = _title;
 @synthesize subtitle = _subtitle;
+@synthesize pointCount = _pointCount;
+@synthesize coordinate = _coordinate;
+@synthesize points = _points;
+@synthesize region = _region;
+@synthesize boundingMapRect = _boundingMapRect;
+@synthesize vertices = _vertices;
+
+- (id)init {
+    if (self = [super init]) {
+        _strokeColor = [UIColor otDarkBlue];
+        _fillColor = [UIColor clearColor];
+        _lineWidth = 1.0;
+    }
+    return self;
+}
 
 - (id)initWithTitle:(NSString *)newTitle subtitle:(NSString *)newSubtitle {
-    if (self = [super init]) {
+    if (self = [self init]) {
         _title = newTitle;
         _subtitle = newSubtitle;
         _points = NULL;
         _pointCount = 0;
         _boundingMapRect = MKMapRectWorld;
-        _vertexes = [@[] mutableCopy];
+        _vertices = [@[] mutableCopy];
+        _currentIndex = 0;
     }
     return self;
 }
 
 - (id)initWithCenterCoordinate:(CLLocationCoordinate2D)coordinate {
-    if (self = [super init]) {
+    if (self = [self init]) {
         _pointCount = 0;
         _boundingMapRect = MKMapRectWorld;
-        _vertexes = [@[] mutableCopy];
+        _vertices = [@[] mutableCopy];
         _region.center = coordinate;
         _region.span = MKCoordinateSpanMake(1, 1);
         GeoShapeVertex *vertex = [[GeoShapeVertex alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
@@ -283,9 +299,11 @@ NS_INLINE MKMapPoint intersectPoint(MKMapPoint A, MKMapPoint B, MKMapPoint C, MK
     return self;
 }
 
-- (void)addCoordinate:(CLLocationCoordinate2D)coordinate currentZoomScale:(double)currentZoomScale {
+- (NSInteger)addCoordinate:(CLLocationCoordinate2D)coordinate currentZoomScale:(double)currentZoomScale {
     GeoShapeVertex *vertex = [[GeoShapeVertex alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
+
     [self insertVertex:vertex currentZoomScale:currentZoomScale];
+    return _currentIndex;
 }
 
 - (void)removeCoordinate:(CLLocationCoordinate2D)coordinate {
@@ -293,40 +311,19 @@ NS_INLINE MKMapPoint intersectPoint(MKMapPoint A, MKMapPoint B, MKMapPoint C, MK
     [self removeVertex:vertex];
 }
 
-- (CLLocationCoordinate2D)coordinate {
-    if (_pointCount < 4) return _region.center;
-    return _centroid;
-}
-
-- (MKCoordinateRegion)region {
-    return _region;
-}
-
 - (CLLocationCoordinate2D *)coordinates {
     CLLocationCoordinate2D *coords = malloc(sizeof(CLLocationCoordinate2D) * _pointCount);
     for (int i = 0; i < _pointCount; i++) {
-        GeoShapeVertex *vertex = [_vertexes objectAtIndex:i];
+        GeoShapeVertex *vertex = [_vertices objectAtIndex:i];
         coords[i] = vertex.coordinate;
     }
     return coords;
 }
 
-- (MKMapPoint *)points {
-    return _points;
-}
-
-- (NSUInteger)pointCount {
-    return _pointCount;
-}
-
-- (MKMapRect)boundingMapRect {
-    return _boundingMapRect;
-}
-
 - (void)removeVertex:(GeoShapeVertex *)vertex {
-    for (GeoShapeVertex *storedVertex in [_vertexes copy]) {
+    for (GeoShapeVertex *storedVertex in [_vertices copy]) {
         if ([storedVertex isEqual:vertex]) {
-            [_vertexes removeObject:vertex];
+            [_vertices removeObject:vertex];
             _pointCount--;
         }
     }
@@ -334,22 +331,28 @@ NS_INLINE MKMapPoint intersectPoint(MKMapPoint A, MKMapPoint B, MKMapPoint C, MK
 }
 
 - (void)insertVertex:(GeoShapeVertex *)vertex currentZoomScale:(double)currentZoomScale {
-    for (GeoShapeVertex *storedVertex in _vertexes)
+    for (GeoShapeVertex *storedVertex in _vertices)
         if ([storedVertex isEqual:vertex]) return;
-    if (_vertexes.count < 3 || currentZoomScale == CGFLOAT_MIN) {
-        [_vertexes addObject:vertex];
+    if (_vertices.count < 3 || currentZoomScale == CGFLOAT_MIN) {
+        [_vertices addObject:vertex];
         _pointCount++;
+        _currentIndex++;
+        vertex.tag = _currentIndex;
         [self updatePoints];
         return;
     }
     MKMapPoint point = MKMapPointForCoordinate(vertex.coordinate);
     NSUInteger insertionIndex = [self getInsertionIndex:point currentZoomScale:currentZoomScale];
     if (insertionIndex != NSUIntegerMax) {
-        [_vertexes insertObject:vertex atIndex:insertionIndex+1];
+        [_vertices insertObject:vertex atIndex:insertionIndex+1];
         _pointCount++;
+        _currentIndex++;
+        vertex.tag = _currentIndex;
     } else {
-        [_vertexes addObject:vertex];
+        [_vertices addObject:vertex];
         _pointCount++;
+        _currentIndex++;
+        vertex.tag = _currentIndex;
     }
     [self updatePoints];
 }
@@ -382,17 +385,13 @@ NS_INLINE MKMapPoint intersectPoint(MKMapPoint A, MKMapPoint B, MKMapPoint C, MK
     return insertionIndex;
 }
 
-- (NSMutableArray *)vertexs {
-    return _vertexes;
-}
-
 - (void)updatePoints {
     MKMapPoint *pts = malloc(sizeof(MKMapPoint) * _pointCount);
     for (int i = 0; i < _pointCount; i++) {
-        GeoShapeVertex *vertex = [_vertexes objectAtIndex:i];
+        GeoShapeVertex *vertex = [_vertices objectAtIndex:i];
         pts[i] = MKMapPointForCoordinate(vertex.coordinate);
     }
-    _region = MKCoordinateRegionFromPoints([_vertexes copy]);
+    _region = MKCoordinateRegionFromPoints([_vertices copy]);
     _boundingMapRect = MKMapRectForCoordinateRegion(_region);
     _points = pts;
     [self updateCW];
@@ -402,9 +401,9 @@ NS_INLINE MKMapPoint intersectPoint(MKMapPoint A, MKMapPoint B, MKMapPoint C, MK
 - (void)updateCentroid {
     if (_pointCount >= 4) {
         MKMapPoint centroid = [self getCentroid];
-        _centroid = MKCoordinateForMapPoint(centroid);
+        _coordinate = MKCoordinateForMapPoint(centroid);
     } else {
-        _centroid = _region.center;
+        _coordinate = _region.center;
     }
 }
 
@@ -427,7 +426,7 @@ NS_INLINE MKMapRect MKMapRectForCoordinateRegion(MKCoordinateRegion region) {
     return MKMapRectMake(MIN(a.x,b.x), MIN(a.y,b.y), ABS(a.x-b.x), ABS(a.y-b.y));
 }
 
-NS_INLINE MKCoordinateRegion MKCoordinateRegionFromPoints(NSArray *vertexes) {
+NS_INLINE MKCoordinateRegion MKCoordinateRegionFromPoints(NSArray *vertices) {
     CLLocationCoordinate2D topLeftCoord;
     topLeftCoord.latitude = -90;
     topLeftCoord.longitude = 180;
@@ -436,7 +435,7 @@ NS_INLINE MKCoordinateRegion MKCoordinateRegionFromPoints(NSArray *vertexes) {
     bottomRightCoord.latitude = 90;
     bottomRightCoord.longitude = -180;
     
-    for (GeoShapeVertex *vertex in vertexes) {
+    for (GeoShapeVertex *vertex in vertices) {
         topLeftCoord.longitude = fmin(topLeftCoord.longitude, vertex.coordinate.longitude);
         topLeftCoord.latitude = fmax(topLeftCoord.latitude, vertex.coordinate.latitude);
         

@@ -111,7 +111,7 @@
  Override định nghĩa câu truy vấn
  */
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
-    return [NSPredicate predicateWithFormat:@"(claimId == %@)", searchText];
+    return [NSPredicate predicateWithFormat:@"(claimId CONTAINS[cd] %@)", searchText];
 }
 
 #pragma ClaimEntity methods
@@ -141,68 +141,6 @@
     entityObject.challengeExpiryDate = [[OT dateFormatter] stringFromDate:challengeExpiryDate];
     entityObject.nr = @"0001";
     return entityObject;
-}
-
-+ (BOOL)insertFromResponseObject:(ResponseClaim *)responseObject {
-    NSManagedObjectContext *context = [[[self sharedClaimEntity] fetchedResultsController] managedObjectContext];
-    NSEntityDescription *entity = [[[[self sharedClaimEntity] fetchedResultsController] fetchRequest] entity];
-    
-    Claim *entityObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-    
-    entityObject.claimId = responseObject.claimId;
-    entityObject.statusCode = responseObject.statusCode;
-    NSError *error = nil;
-    return [entityObject.managedObjectContext save:&error];
-}
-
-+ (BOOL)updateFromResponseObject:(ResponseClaim *)responseObject {
-    [[self sharedClaimEntity] filterContentForSearchText:responseObject.claimId scope:0];
-    if ([self sharedClaimEntity]->_filteredObjects.count > 0) {
-        
-        Claim *entityObject = [[self sharedClaimEntity]->_filteredObjects firstObject];
-        
-        if (![entityObject.statusCode isEqualToString:responseObject.statusCode])
-            entityObject.statusCode = responseObject.statusCode;
-        
-        if ([entityObject.managedObjectContext hasChanges]) {
-            return [entityObject.managedObjectContext save:nil];
-        }
-        // Trường hợp lỗi cập nhật của lần trước đó
-        if (entityObject.claimName == nil) return YES;
-        
-        return NO;
-    } else {
-        return [self insertFromResponseObject:responseObject];
-    }
-}
-
-+ (Claim *)updateDetailFromResponseObject:(ResponseClaim *)responseObject {
-    // Delete last filtered results
-    [self sharedClaimEntity]->_filteredResults = nil;
-    
-    [[self sharedClaimEntity] filterContentForSearchText:responseObject.claimId scope:0];
-    if ([self sharedClaimEntity]->_filteredObjects.count > 0) {
-        Claim *entityObject = [[self sharedClaimEntity]->_filteredObjects firstObject];
-        
-        entityObject.mappedGeometry = responseObject.mappedGeometry;
-        entityObject.claimName = responseObject.claimName;
-        entityObject.gpsGeometry = responseObject.gpsGeometry;
-        entityObject.startDate = responseObject.startDate;
-        entityObject.nr = responseObject.nr;
-        entityObject.northAdjacency = responseObject.northAdjacency;
-        entityObject.southAdjacency = responseObject.southAdjacency;
-        entityObject.eastAdjacency = responseObject.eastAdjacency;
-        entityObject.westAdjacency = responseObject.westAdjacency;
-        entityObject.notes = responseObject.notes;
- 
-        if ([entityObject.managedObjectContext hasChanges]) {
-            if ([entityObject.managedObjectContext save:nil]) return entityObject;
-        }
-        return nil;
-    } else {
-        // Error
-        return nil;
-    }
 }
 
 + (NSArray *)getCollection {

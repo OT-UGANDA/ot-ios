@@ -2,13 +2,7 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "ot_blue_marker_draging.png"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "2x",
-      "filename" : "ot_blue_marker_draging@2x.png"
+      "filename" : "ot_blue_marker_dragging.pdf"
     }
   ],
   "info" : {

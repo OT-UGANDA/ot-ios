@@ -29,7 +29,6 @@
 #import "OTPersonTabBarController.h"
 #import "CommunityServerAPI.h"
 #import "OTPersonUpdateViewController.h"
-#import "OTPersonsViewController.h"
 #import "Person+OT.h"
 
 @interface OTPersonTabBarController () <ViewPagerDataSource, ViewPagerDelegate>
@@ -62,7 +61,6 @@
     [super viewDidLoad];
     
     _person = [Person getFromTemporary];
-    ALog(@"%@", [_person.managedObjectContext description]);
 
     self.dataSource = self;
     self.delegate = self;
@@ -70,29 +68,6 @@
     // Keeps tab bar below navigation bar on iOS 7.0+
     if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
-    }
-    
-    // Set title and view
-    if ([_person isSaved]) { // View person/group
-        if (_person.claim == nil || [_person.claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local person/group
-            if (![_person.person boolValue]) { // Local group
-                self.title = NSLocalizedString(@"title_group_details", @"Group Detail");
-            } else { // Local person
-                self.title = NSLocalizedString(@"title_person_details", @"Person Detail");
-            }
-        } else { // Readonly person/group
-            if (![_person.person boolValue]) { // Readonly group
-                self.title = NSLocalizedString(@"title_group_details", @"Group Detail");
-            } else { // Readonly person
-                self.title = NSLocalizedString(@"title_person_details", @"Person Detail");
-            }
-        }
-    } else { // Add person/group
-        if (![_person.person boolValue]) { // Add group
-            self.title = NSLocalizedString(@"title_activity_group", @"New group");
-        } else { // Add person
-            self.title = NSLocalizedString(@"title_activity_person", @"New person");
-        }
     }
     
     OTPersonUpdateViewController *personViewController = [OTPersonUpdateViewController new];
@@ -129,9 +104,8 @@
 
 #pragma mark - Interface Orientation Changes
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
-    // Update changes after screen rotates
-    [self performSelector:@selector(setNeedsReloadOptions) withObject:nil afterDelay:duration];
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [self performSelector:@selector(setNeedsReloadOptions) withObject:nil];
 }
 
 #pragma mark - ViewPagerDataSource
@@ -143,32 +117,16 @@
 - (UIView *)viewPager:(ViewPagerController *)viewPager viewForTabAtIndex:(NSUInteger)index {
     
     NSArray *titles;
-    if ([_person isSaved]) { // View person/group
-        if (_person.claim == nil || [_person.claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local person/group
-            if (![_person.person boolValue]) { // Local group
-                titles = @[NSLocalizedString(@"title_group_details", @"Group Detail")];
-            } else { // Local person
-                titles = @[NSLocalizedString(@"title_person_details", @"Person Detail")];
-            }
-        } else { // Readonly person/group
-            if (![_person.person boolValue]) { // Readonly group
-                titles = @[NSLocalizedString(@"title_group_details", @"Group Detail")];
-            } else { // Readonly person
-                titles = @[NSLocalizedString(@"title_person_details", @"Person Detail")];;
-            }
-        }
-    } else { // Add person/group
-        if (![_person.person boolValue]) { // Add group
-            titles = @[NSLocalizedString(@"title_activity_group", @"New group")];
-        } else { // Add person
-            titles = @[NSLocalizedString(@"title_activity_person", @"New person")];
-        }
+    if (![_person.person boolValue]) { // Local group
+        titles = @[NSLocalizedString(@"title_group_details", @"Group Detail")];
+    } else { // Local person
+        titles = @[NSLocalizedString(@"title_person_details", @"Person Detail")];
     }
 
     UILabel *label = [UILabel new];
     label.backgroundColor = [UIColor clearColor];
     label.font = [UIFont systemFontOfSize:14.0];
-    label.text = titles[index];
+    label.text = [titles[index] uppercaseString];
     label.textAlignment = NSTextAlignmentCenter;
     label.textColor = [UIColor blackColor];
     [label sizeToFit];
@@ -198,7 +156,7 @@
         case ViewPagerOptionTabOffset:
             return 36.0;
         case ViewPagerOptionTabWidth:
-            return UIInterfaceOrientationIsLandscape(self.interfaceOrientation) ? 128.0 : 96.0;
+            return UIInterfaceOrientationIsLandscape(self.interfaceOrientation) ? 128.0 : 128.0;
         case ViewPagerOptionFixFormerTabsPositions:
             return 0.0;
         case ViewPagerOptionFixLatterTabsPositions:
@@ -232,29 +190,24 @@
 }
 
 - (void)setBarButtonItemsForTabBarIndex:(NSInteger)index {
+    NSString *title = @"";
+    if (![_person.person boolValue]) { // Add group
+        title = NSLocalizedString(@"title_activity_group", @"New group");
+    } else { // Add person
+        title = NSLocalizedString(@"title_activity_person", @"New person");
+    }
+    
+    if ([_person isSaved])
+        title = [_person fullNameType:OTFullNameTypeDefault];
+    
+    NSString *buttonTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"app_name", nil), title];
+    UIBarButtonItem *logo = [OT logoButtonWithTitle:buttonTitle];
+    self.navigationItem.leftBarButtonItems = @[logo];
+    
     switch (index) {
         case 0:
-            if ([_person isSaved]) { // View person/group
-                if (_person.claim == nil || [_person.claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local person/group
-                    if (![_person.person boolValue]) { // Local group
-                        self.navigationItem.rightBarButtonItems = @[_cancel, _fixedSpace, _save, _flexibleSpace];
-                    } else { // Local person
-                        self.navigationItem.rightBarButtonItems = @[_cancel, _fixedSpace, _save, _flexibleSpace];
-                    }
-                } else { // Readonly person/group
-                    if (![_person.person boolValue]) { // Readonly group
-                        self.navigationItem.rightBarButtonItems = @[_cancel, _flexibleSpace];
-                    } else { // Readonly person
-                        self.navigationItem.rightBarButtonItems = @[_cancel, _flexibleSpace];
-                    }
-                }
-            } else { // Add person/group
-                if (![_person.person boolValue]) { // Add group
-                    self.navigationItem.rightBarButtonItems = @[_cancel, _fixedSpace, _save, _flexibleSpace];
-                } else { // Add person
-                    self.navigationItem.rightBarButtonItems = @[_cancel, _fixedSpace, _save, _flexibleSpace];
-                }
-            }
+            self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
+            break;
     }
 }
 

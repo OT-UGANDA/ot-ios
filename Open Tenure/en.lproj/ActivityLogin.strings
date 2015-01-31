@@ -1,0 +1,21 @@
+/* Strings related to login */
+"action_forgot_password"="Recover lost password";
+"action_log_in_register"="Log in";
+"action_sign_in_short"="Log in";
+"error_connection"="The connection is not available";
+"error_field_required"="This field is required";
+"error_generic_conection"="An error has occurred during connection";
+"error_generic_login"="An error has occurred during login";
+"error_incorrect_password"="Username or Password is incorrect";
+"error_invalid_password"="This password is too short";
+"error_invalid_username"="This username is too short";
+"login_progress_signing_in"="Logging in...";
+"message_login_before"="Do login before";
+"message_login_ok"="You have successfully logged in";
+"message_logout_error"="Logout error";
+"message_logout_not_ok"="Logout failed";
+"message_logout_ok"="You have successfully logged out";
+"message_timeout_exception"="Timeout exception";
+"message_unknowhost_error"="Unknown Host Error. Is the network available?";
+"prompt_password"="Password";
+"prompt_username"="Username";

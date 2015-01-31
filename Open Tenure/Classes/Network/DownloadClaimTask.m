@@ -44,7 +44,6 @@
 }
 
 - (void)main {
-    ALog(@"Downloading %@", _claimId);
     [CommunityServerAPI getClaim:_claimId completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
         if (error != nil) {
             [OT handleError:error];
@@ -61,20 +60,10 @@
                     [claimEntity setManagedObjectContext:temporaryContext];
                     Claim *claim = [claimEntity create];
                     [claim importFromJSON:object];
-                    
-                    
-                    
-                    // Tạo
-/*
-                    @property (nonatomic, retain) NSSet *additionalInfo;
-OK                    @property (nonatomic, retain) NSSet *attachments;
-OK                    @property (nonatomic, retain) NSSet *owners;
-OK                    @property (nonatomic, retain) ClaimType *claimType;
-OK                    @property (nonatomic, retain) LandUse *landUse;
-OK                    @property (nonatomic, retain) Person *person;
-                    @property (nonatomic, retain) Claim *challenged;
-*/
                     _claim = claim;
+                    
+                    NSDictionary *d = [object objectForKey:@"dynamicForm"];
+                    if (d != nil) ALog(@"DynamicForm:\n%@", d.description);
                     
                     [_delegate downloadClaimTask:self didFinishWithSuccess:YES];
                 }

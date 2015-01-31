@@ -120,7 +120,17 @@
     } else
         [dict setObject:@[] forKey:@"shares"];
 
-    [dict setObject:@[] forKey:@"locations"];
+    if (self.locations.count > 0) {
+        NSMutableArray *array = [NSMutableArray array];
+        for (Location *obj in self.locations) {
+            [array addObject:obj.dictionary];
+        }
+        [dict setObject:array forKey:@"locations"];
+    } else
+        [dict setObject:@[] forKey:@"locations"];
+    
+    // Dynamic Form
+    [dict setObject:self.dynamicForm.dictionary forKey:@"dynamicForm"];
     
     return dict;
 }
@@ -156,7 +166,7 @@
     [claimTypeEntity setManagedObjectContext:self.managedObjectContext];
     NSArray *claimTypeCollection = [claimTypeEntity getCollection];
     NSString *typeCode = [keyedValues objectForKey:@"typeCode"];
-    NSPredicate *claimTypePredicate = [NSPredicate predicateWithFormat:@"(code == %@)", typeCode];
+    NSPredicate *claimTypePredicate = [NSPredicate predicateWithFormat:@"(code CONTAINS[cd] %@)", typeCode];
     ClaimType *claimType = [[claimTypeCollection filteredArrayUsingPredicate:claimTypePredicate] firstObject];
     self.claimType = claimType;
     
@@ -165,7 +175,7 @@
     [landUseEntity setManagedObjectContext:self.managedObjectContext];
     NSArray *landUseCollection = [landUseEntity getCollection];
     NSString *landUseCode = [keyedValues objectForKey:@"landUseCode"];
-    NSPredicate *landUsePredicate = [NSPredicate predicateWithFormat:@"(code == %@)", landUseCode];
+    NSPredicate *landUsePredicate = [NSPredicate predicateWithFormat:@"(code CONTAINS[cd] %@)", landUseCode];
     LandUse *landUse = [[landUseCollection filteredArrayUsingPredicate:landUsePredicate] firstObject];
     self.landUse = landUse;
     
@@ -200,6 +210,29 @@
             share.claim = self;
         }
     }
+    
+    // create locations
+    NSArray *locations = [keyedValues objectForKey:@"locations"];
+    if (locations.count > 0) {
+        LocationEntity *locationEntity = [LocationEntity new];
+        [locationEntity setManagedObjectContext:self.managedObjectContext];
+        for (NSDictionary *locationDict in locations) {
+            Location *location = [locationEntity create];
+            [location importFromJSON:locationDict];
+            location.claim = self;
+        }
+    }
+    
+    // create dynamicForm
+    NSDictionary *dynamicFormJSON = [keyedValues objectForKey:@"dynamicForm"];
+    ALog(@"dy: %@", dynamicFormJSON.description);
+    if (dynamicFormJSON != nil && ![dynamicFormJSON isKindOfClass:[NSNull class]]) {
+        FormPayloadEntity *entity = [FormPayloadEntity new];
+        [entity setManagedObjectContext:self.managedObjectContext];
+        FormPayload *entityObject = [entity createObject];
+        [entityObject importFromJSON:dynamicFormJSON];
+        self.dynamicForm = entityObject;
+    }
 }
 
 - (BOOL)canBeUploaded {
@@ -212,6 +245,21 @@
                              kClaimStatusUpdateError
                              ];
     return [conditional containsObject:self.statusCode];
+}
+- (void)withDraw{
+    if (self.getViewType != OTViewTypeView) return;
+    [CommunityServerAPI withdrawClaim:[self claimId] completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
+        if (error != nil) {
+            [OT handleError:error];
+        } else {
+            ALog("Withdraw sucessfully");
+            self.statusCode = kClaimStatusWithdrawn;
+            [self.managedObjectContext save:nil];
+            //[OT handleErrorWithMessage:NSLocalizedString(@"message_login_no_more_valid", nil)];
+           [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"You have succefully withdrawn the claim", @"You have succefully withdrawn the claim")];
+        }
+    }
+     ];
 }
 
 @end

@@ -13,13 +13,11 @@
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 #import "geos_c.h"
-#import "proj_api.h"
 #import "TBClusterAnnotation.h"
 
 @interface ShapeKitGeometry : NSObject {
     NSString *wktGeom;
     NSString *geomType;
-	NSString *projDefinition;
     GEOSGeometry *geosGeom;
     GEOSContextHandle_t handle;
 	unsigned int numberOfCoords;
@@ -27,14 +25,12 @@
 
 @property (nonatomic, retain) NSString *wktGeom;
 @property (nonatomic, retain) NSString *geomType;
-@property (nonatomic, retain) NSString *projDefinition;
 @property (nonatomic) GEOSGeometry *geosGeom;
 @property (nonatomic) unsigned int numberOfCoords;
 
 - (id)initWithWKB:(const unsigned char *)wkb size:(size_t)wkb_size;
 - (id)initWithWKT:(NSString *)wkt;
 - (id)initWithGeosGeometry:(GEOSGeometry *)geom;
-- (void)reprojectTo:(NSString *)newProjectionDefinition;
 
 void notice(const char *fmt,...);
 void log_and_exit(const char *fmt,...);

@@ -110,7 +110,7 @@
  Override định nghĩa câu truy vấn
  */
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
-    return [NSPredicate predicateWithFormat:@"(personId == %@)", searchText];
+    return [NSPredicate predicateWithFormat:@"(personId CONTAINS[cd] %@)", searchText];
 }
 
 #pragma PersonEntity methods

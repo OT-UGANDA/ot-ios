@@ -1,0 +1,938 @@
+/*
+ * Loco ios export: iOS Localizable.strings
+ * Project: Localizable
+ * Release: Working copy
+ * Locale: km_ZZ, Khmer
+ * Exported by: chuyentt
+ * Exported at: Sun, 25 Jan 2015 18:40:30 +0000
+ */
+
+/* loco:54c52dfe14d725972b8b4587 */
+"action_add_claimant" = "បញ្ចូលអ្នកទាមទា";
+
+/* loco:54c52dfe14d725972b8b4577 */
+"action_backup_db" = "រក្សាទុកទិន្នន័យក្នុងស្រុក";
+
+/* loco:54c52dfe14d725972b8b4572 */
+"action_camera" = "កាមេរ៉ា";
+
+/* loco:54c52dfe14d725972b8b457a */
+"action_center" = "កណ្តាល";
+
+/* loco:54c52dfe14d725972b8b4589 */
+"action_claim_map_snapshot" = "ភ្ជាប់រូបភាពនៃផែនទីដែលទាមទា";
+
+/* loco:54c52dfe14d725972b8b456c */
+"action_done" = "រួចរាល់";
+
+/* loco:54c52dfe14d725972b8b457e */
+"action_download_claims" = "ទាញយកអ្នកទាមទា";
+
+/* loco:54c52dfe14d725972b8b457d */
+"action_download_file" = "ទាញយកឯកសារ";
+
+/* loco:54c52dfe14d725972b8b4575 */
+"action_download_tiles" = "ទាញយករូបភាពទៅកាន់ទិន្នន័យក្នុងស្រុកសម្រាប់ប្រើនៅពេលគ្មានសេវា";
+
+/* loco:54c52dfe14d725972b8b4583 */
+"action_export" = "នាំចេញ";
+
+/* loco:54c52dfe14d725972b8b4582 */
+"action_lock_db" = "រៀបចំទិន្នន័យអោយមានលំដាប់លំដោយ";
+
+/* loco:54c52dfe14d725972b8b4574 */
+"action_login" = "ចូលទៅក្នុង";
+
+/* loco:54c52dfe14d725972b8b4576 */
+"action_logout" = "ចាកចេញ";
+
+/* loco:54c52dfe14d725972b8b4573 */
+"action_map" = "ផែនទី";
+
+/* loco:54c52dfe14d725972b8b4586 */
+"action_modify_claimant" = "កែរប្រែអ្នកទាមទា";
+
+/* loco:54c52dfe14d725972b8b456b */
+"action_new" = "ថ្មី";
+
+/* loco:54c52dfe14d725972b8b4580 */
+"action_new_additional_info" = "បញ្ជូលព័ត៌មាន";
+
+/* loco:54c52dfe14d725972b8b4581 */
+"action_new_attachment" = "ឯកសារថ្មី";
+
+/* loco:54c52dfe14d725972b8b457f */
+"action_new_picture" = "រូបភាពថ្មី";
+
+/* loco:54c52dfe14d725972b8b4578 */
+"action_print" = "បោះពុម្ភ";
+
+/* loco:54c52dfe14d725972b8b456f */
+"action_remove_additional_info" = "លុបព័ត៌មាន";
+
+/* loco:54c52dfe14d725972b8b456d */
+"action_remove_attachment" = "លុបឯកសារដែលបានភ្ជាប់";
+
+/* loco:54c52dfe14d725972b8b4570 */
+"action_remove_claim" = "លុចការទាមទា";
+
+/* loco:54c52dfe14d725972b8b456e */
+"action_remove_owner" = "លុបម្ចាស់កម្មសិទ្ធិ";
+
+/* loco:54c52dfe14d725972b8b4571 */
+"action_remove_section_element" = "លុបធាតុតូចៗ";
+
+/* loco:54c52dfe14d725972b8b4584 */
+"action_rotate" = "បង្វែរផែនទីដោយប្រើត្រីវិស័យ";
+
+/* loco:54c52dfe14d725972b8b4579 */
+"action_save" = "រក្សាទុក";
+
+/* loco:54c52dfe14d725972b8b456a */
+"action_search" = "ស្វែងរក";
+
+/* loco:54c52dfe14d725972b8b4588 */
+"action_select_challenge" = "ជ្រើសរើសការទាមទាចំពោះអជំលោះ";
+
+/* loco:54c52dfe14d725972b8b4569 */
+"action_settings" = "ការរៀបចំទុកដាក់";
+
+/* loco:54c52dfe14d725972b8b4585 */
+"action_stop_rotating" = "បញ្ឈប់ការបង្វែរផែនទី";
+
+/* loco:54c52dfe14d725972b8b457c */
+"action_submit" = "ផ្ញើរ";
+
+/* loco:54c52dfe14d725972b8b457b */
+"action_view_community_area" = "បង្ហាញតំបន់សហគមន៍";
+
+/* loco:54c52dfe14d725972b8b4660 */
+"add_description" = "ពិពណ៌នា?";
+
+/* loco:54c52dfe14d725972b8b4661 */
+"add_key" = "កូនសោរ?";
+
+/* loco:54c52dfe14d725972b8b45c0 */
+"add_owner" = "បន្ថែមម្ចាស់កម្មសិទ្ធិ ";
+
+/* loco:54c52dfe14d725972b8b4662 */
+"add_value" = "តំលៃ?";
+
+/* loco:54c52dfe14d725972b8b45c1 */
+"additional_info" = "ព័ត៌មានបន្ថែម";
+
+/* loco:54c52dfe14d725972b8b45e5 */
+"additional_info_removed" = "ព័ត៌មានបានលុបចោលរួចហើយ";
+
+/* loco:54c52dfe14d725972b8b45c3 */
+"adjacencies" = "ភាពជិតគ្នា";
+
+/* loco:54c52dfe14d725972b8b45c2 */
+"adjacency" = "ភាពជិគត្នា";
+
+/* loco:54c52dfe14d725972b8b4688 */
+"adjacent_claims" = "តំបន់ទាមទាដែរនៅក្បែរ";
+
+/* loco:54c52dfe14d725972b8b4689 */
+"adjacent_properties" = "របស់របដែលនៅក្បែរៗនោះ";
+
+/* loco:54c52dfe14d725972b8b464d */
+"all_tiles_downloaded" = "ទិន្នន័យទាំអស់ដែលមាននៅក្នុងបញ្ជីដែលបានទាញយករួចហើយ";
+
+/* loco:54c52dfe14d725972b8b4567 */
+"app_name" = "កម្មសិទ្ធិបើកបចំហរ ";
+
+/* loco:54c52dfe14d725972b8b45e1 */
+"attachment_removed" = "ឯកសារភ្ជាប់ត្រូវបានលុចចេញហើយ";
+
+/* loco:54c52dfe14d725972b8b45e2 */
+"attachment_updated" = "The attachment has been updated";
+
+/* loco:54c52dfe14d725972b8b45c6 */
+"by" = "ដោយ";
+
+/* loco:54c52dfe14d725972b8b4687 */
+"calculated_adjacencies" = "តំបន់ទាមទាដែរនៅក្បែរ";
+
+/* loco:54c52dfe14d725972b8b4659 */
+"cancel" = "លុបចោល";
+
+/* loco:54c52dfe14d725972b8b45c4 */
+"cardinal_direction" = "ទិនដៅសំខាន់";
+
+/* loco:54c52dfe14d725972b8b4669 */
+"challenge_to" = "បង្កជំលោះទៅកាន់";
+
+/* loco:54c52dfe14d725972b8b466a */
+"challenged_by" = "បង្កជំលោះដោយ";
+
+/* loco:54c52dfe14d725972b8b464a */
+"check_location_service" = "គ្មានព័ត៌មានទីតាំង។ ពិនិត្យថា សេវាទីតាំងជាកើលាក់ អាចអនុញ្ញាត្តិនៅក្នុងការរៀបចំរបស់អ្នក";
+
+/* loco:54c52dfe14d725972b8b45b2 */
+"choose_file" = "ជ្រើសរើសកម្មវិធីមួយដើម្បីជ្រើសរើសឯកសារមួយ";
+
+/* loco:54c52dfe14d725972b8b45bd */
+"claim" = "ការទាមទា";
+
+/* loco:54c52dfe14d725972b8b45cd */
+"claim_date" = "ការបរិច្ឆេទទាមទា";
+
+/* loco:54c52dfe14d725972b8b45ce */
+"claim_name" = "ឈ្មោះអ្នកទាមទា";
+
+/* loco:54c52dfe14d725972b8b45cf */
+"claim_name_label" = "ឈ្មោះអ្នកទាមទា*";
+
+/* loco:54c52dfe14d725972b8b466c */
+"claim_notes" = "កំណត់ចំណាំ";
+
+/* loco:54c52dfe14d725972b8b4699 */
+"claim_statuses[0]" = "មិនល្មម";
+
+/* loco:54c52dfe14d725972b8b469a */
+"claim_statuses[1]" = "ល្មម";
+
+/* loco:54c52dfe14d725972b8b469b */
+"claim_statuses[2]" = "ច្រានចោល";
+
+/* loco:54c52dfe14d725972b8b469c */
+"claim_statuses[3]" = "ក្នុងស្រុក";
+
+/* loco:54c52dfe14d725972b8b45d0 */
+"claim_type" = "ប្រភេទទាមទា *";
+
+/* loco:54c52dfe14d725972b8b4666 */
+"claimant" = "អ្នកទាមទា *";
+
+/* loco:54c52dfe14d725972b8b4665 */
+"claimant_picture" = "រូបភាពអ្នកទាមទា";
+
+/* loco:54c52dfe14d725972b8b45b4 */
+"community_recorder_name" = "អ្នកកត់ត្រាសហគមន៍";
+
+/* loco:54c52dfe14d725972b8b4658 */
+"confirm" = "បញ្ជាក់";
+
+/* loco:54c52dfe14d725972b8b45df */
+"contact_phone_number" = "លេខទូរសព្ទទំនាក់ទំនង";
+
+/* loco:54c52dfe14d725972b8b4679 */
+"cs_url_pref_dialog_title" = "បញ្ចូល URL កន្លែងផ្ទុកទិន្នន័កម្មសិទ្ធិបើចំហររបស់សហគមន៍";
+
+/* loco:54c52dfe14d725972b8b4678 */
+"cs_url_pref_summary" = "អាស័យដ្ឋាននៃ កន្លែងផ្ទុកទិន្នន័កម្មសិទ្ធិបើចំហររបស់សហគមន៍";
+
+/* loco:54c52dfe14d725972b8b4677 */
+"cs_url_pref_title" = "កន្លែងផ្ទុកទិន្នន័កម្មសិទ្ធ Server URL";
+
+/* loco:54c52dfe14d725972b8b45be */
+"date" = "ការបរិច្ឆេទ";
+
+/* loco:54c52dfe14d725972b8b45d6 */
+"date_of_birth" = "ថ្ងៃខែឆ្នាំកំណើត (ឆ្នាំ-ខែ-ថ្ងៃ)";
+
+/* loco:54c52dfe14d725972b8b45d7 */
+"date_of_birth_label" = "ថ្ងៃខែឆ្នាំកំណើត * (ឆ្នាំ-ខែ-ថ្ងៃ)";
+
+/* loco:54c52dfe14d725972b8b45dc */
+"date_of_establishment_label" = "ការបរិច្ឆេទនៃការបង្កើត";
+
+/* loco:54c52dfe14d725972b8b45d8 */
+"date_of_start" = "ឆ្នាំ-ខែ-ថ្ងៃ";
+
+/* loco:54c52dfe14d725972b8b45d9 */
+"date_of_start_label" = "ការបរិច្ឆេទនៃការទាមទាដែលគិចពី(ឆ្នាំ-ខែ-ថ្ងៃ)";
+
+/* loco:54c52dfe14d725972b8b45d1 */
+"default_claim_name" = "ការទាមទាថ្មី";
+
+/* loco:54c52dfe14d725972b8b4667 */
+"delete_locally" = "លុបព័ត៌មានខាងក្នុង";
+
+/* loco:54c52dfe14d725972b8b4655 */
+"down" = "ចុះក្រោម";
+
+/* loco:54c52dfe14d725972b8b4663 */
+"draggable_marker" = "ទាញចេញកំណត់ចំណាំ";
+
+/* loco:54c52dfe14d725972b8b4690 */
+"east" = "ទិសខាងកើត";
+
+/* loco:54c52dfe14d725972b8b468c */
+"east_adjacency" = "តំបន់ក្បែរទិសខាងកើត";
+
+/* loco:54c52dfe14d725972b8b45b6 */
+"email_address" = "អីម៉ែល";
+
+/* loco:54c52dfe14d725972b8b45d2 */
+"first_name" = "ត្រកូល";
+
+/* loco:54c52dfe14d725972b8b45d3 */
+"first_name_label" = "ត្រកូល *";
+
+/* loco:54c52dfe14d725972b8b4682 */
+"form_template_url_pref_dialog_title" = "បញ្ចូល URL សម្រាប់ទម្រង់សិក្សាស្រាវជ្រាវ";
+
+/* loco:54c52dfe14d725972b8b4681 */
+"form_template_url_pref_summary" = "URL សម្រាប់សិក្សាស្រាវជ្រាវ";
+
+/* loco:54c52dfe14d725972b8b4680 */
+"form_template_url_pref_title" = "ទម្រង់URL";
+
+/* loco:54c52dfe14d725972b8b45bb */
+"gender" = "ភេទ *";
+
+/* loco:54c52dfe14d725972b8b45b8 */
+"gender_feminine" = "ស្រី";
+
+/* loco:54c52dfe14d725972b8b45b7 */
+"gender_masculine" = "ប្រុស";
+
+/* loco:54c52dfe14d725972b8b467f */
+"geoserver_layer_pref_dialog_title" = "បញ្ចូលឈ្មោះនៃស្រទាប់ WMS";
+
+/* loco:54c52dfe14d725972b8b467e */
+"geoserver_layer_pref_summary" = "ស្រទាប់ WMS នឹងត្រូវបានមកវិញពី GeoServer (សួររដ្ឋបាលរបស់អ្នក)";
+
+/* loco:54c52dfe14d725972b8b467d */
+"geoserver_layer_pref_title" = "ស្រទាប់ GeoServer";
+
+/* loco:54c52dfe14d725972b8b467c */
+"geoserver_url_pref_dialog_title" = "បញ្ចូល​ URL នៃ GeoServer របស់អ្នក";
+
+/* loco:54c52dfe14d725972b8b467b */
+"geoserver_url_pref_summary" = "ផ្អែកលើ URL នៃ GeoServer ឯកជនរបស់អ្នក web map នឹងផ្តល់អោយអ្នកជំនួយវិញ";
+
+/* loco:54c52dfe14d725972b8b467a */
+"geoserver_url_pref_title" = "GeoServer URL";
+
+/* loco:54c52dfe14d725972b8b4652 */
+"group" = "ក្រុម";
+
+/* loco:54c52dfe14d725972b8b45c9 */
+"group_name" = "ឈ្មោះ";
+
+/* loco:54c52dfe14d725972b8b4697 */
+"hint_type_to_filter" = "សរសេរអក្សរដើម្បីបំពេញនៅក្នុងបញ្ជី";
+
+/* loco:54c52dfe14d725972b8b4685 */
+"id_number" = "លេខសំគាល់";
+
+/* loco:54c52dfe14d725972b8b4684 */
+"id_type" = "ប្រភេទលេខសំគាល់";
+
+/* loco:54c52dfe14d725972b8b466d */
+"insert_claim_notes" = "បញ្ចូលតំបន់ទាមទា's កំណត់ចំណាំ";
+
+/* loco:54c52dfe14d725972b8b4686 */
+"land_use" = "ការប្រើប្រាស់ដី";
+
+/* loco:54c52dfe14d725972b8b45d4 */
+"last_name" = "ឈ្មោះបុគ្គល";
+
+/* loco:54c52dfe14d725972b8b45d5 */
+"last_name_label" = "ឈ្មោះបុគ្គល *";
+
+/* loco:54c52dfe14d725972b8b4656 */
+"left" = "ស្តាំ";
+
+/* loco:54c52dfe14d725972b8b45ba */
+"legal_person" = "ភាពស្របច្បាប់នៃបុគ្គល";
+
+/* loco:54c52dfe14d725972b8b4676 */
+"map_provider_geoserver" = "GeoServer";
+
+/* loco:54c52dfe14d725972b8b4671 */
+"map_provider_google_hybrid" = "Google Hybrid";
+
+/* loco:54c52dfe14d725972b8b466f */
+"map_provider_google_normal" = "ផែនទី Google";
+
+/* loco:54c52dfe14d725972b8b4670 */
+"map_provider_google_satellite" = "ផែនដី Google";
+
+/* loco:54c52dfe14d725972b8b4672 */
+"map_provider_google_terrain" = "តំបន់លើដី Google";
+
+/* loco:54c52dfe14d725972b8b4675 */
+"map_provider_local_tiles" = "ទិន្នន័យក្នុងស្រុក";
+
+/* loco:54c52dfe14d725972b8b4673 */
+"map_provider_osm_mapnik" = "បើកផែនទីផ្លូវ​ MapNik";
+
+/* loco:54c52dfe14d725972b8b4674 */
+"map_provider_osm_mapquest" = "បើកផែនទីផ្លូវ​​ MapQuest";
+
+/* loco:54c52dfe14d725972b8b461f */
+"message_add_marker" = "តើចង់លុបបន្ថែ​​មកំណត់ចំណាំទៅលើព្រំប្រទល់ទេ?";
+
+/* loco:54c52dfe14d725972b8b4601 */
+"message_added_attachment" = "ឯកសារភ្ជាប់ត្រូវបានគេបន្ថែមទៅលើការទាមទា";
+
+/* loco:54c52dfe14d725972b8b4602 */
+"message_adding_attachment_not_ok" = "មានកំហុសនៅអំឡុងពេលបន្ថែមឯកសារភ្ជាប់ជូន";
+
+/* loco:54c52dfe14d725972b8b45f8 */
+"message_adjacencies_not_saved" = "កន្លែងដែលនៅជិតៗនៅមិនទាន់បានរក្សាទុកទេ";
+
+/* loco:54c52dfe14d725972b8b45f7 */
+"message_adjacencies_saved" = "កន្លែងដែលនៅជិតៗបានរក្សាទុកហើយ";
+
+/* loco:54c52dfe14d725972b8b462d */
+"message_already_owner" = "ជ្រើសរើសបុគ្គលដែលបានចូលរួមចែករំលែកការទាមទានេះ";
+
+/* loco:54c52dfe14d725972b8b4649 */
+"message_app_initialized" = "កម្មវិធី គឺរួចរាល់សម្រាប់ធ្វើការ និងទំនាក់ទំនងទៅកាន់កន្លែងផ្ទុកទិន្ន័យកម្មសិទ្ធិសហគមន៍បើកចំហរ";
+
+/* loco:54c52dfe14d725972b8b4648 */
+"message_app_initialized_default" = "កម្មវិធី គឺរួចរាល់សម្រាប់ធ្វើការ និងទំនាក់ទំនងទៅកាន់កន្លែងផ្ទុកទទិន្នន័យយកម្មសិទ្ធិសហគមន៍បើកចំហរដែលបានកំណត់ទុកមុន";
+
+/* loco:54c52dfe14d725972b8b4641 */
+"message_app_initializing" = "សូម, រងចាំ…";
+
+/* loco:54c52dfe14d725972b8b4646 */
+"message_app_not_initialized" = "ត្រួតពិនិត្យចូល 'ការរៀបចំ' ដែរការរៀបចំនៃកន្លែងផ្ទុកនិន្នន័យកម្មសិទ្ធិបើចំហររបស់សហគមន៍ គឺត្រឹមត្រូវ និងចាប់ផ្តើមដំណើការម្តងទៀត";
+
+/* loco:54c52dfe14d725972b8b4643 */
+"message_app_not_initialized_network" = "ប្រព័ន្ធ's តភ្ជាប់នៅមិនទាន់បានចាប់ផ្តើម";
+
+/* loco:54c52dfe14d725972b8b4644 */
+"message_app_not_yet_initialized" = "កម្មវិធីនៅមិនទាន់ចាប់ផ្តើមនៅឡើយទេ";
+
+/* loco:54c52dfe14d725972b8b45f0 */
+"message_attachment_download_failed" = "ការទាញយកឯកសារដែលជូនភ្ជាប់%sមិនបានសម្រេច";
+
+/* loco:54c52dfe14d725972b8b45f1 */
+"message_attachment_download_not_complete" = "ការទាញយកឯកសារដែលជូនភ្ជាប់%sនៅមិនទាន់បានបញ្ជប់";
+
+/* loco:54c52dfe14d725972b8b45ee */
+"message_attachment_downloaded" = "ទាញយកសារដែលបានភ្ជាប់%s";
+
+/* loco:54c52dfe14d725972b8b45ef */
+"message_attachment_downloading" = "ឯកសាភ្ជាប់%sបានទាញយកតួចហើយ";
+
+/* loco:54c52dfe14d725972b8b4610 */
+"message_cant_open_db" = "មិនអាចចូលទៅទទួលទិន្នន័យបានទេ";
+
+/* loco:54c52dfe14d725972b8b4611 */
+"message_check_upgrade_db" = "ធ្វើអោយប្រសើឡើងទិន្នន័យក្នុងស្រុក";
+
+/* loco:54c52dfe14d725972b8b45ed */
+"message_claim_exported" = "បណ្តឹងតវ៉ា%បាននាំយកចេញ";
+
+/* loco:54c52dfe14d725972b8b45ec */
+"message_claim_exported_error" = "បណ្តឹងតវ៉ា%គឺមិនទាន់បាននាំយកចេញ";
+
+/* loco:54c52dfe14d725972b8b463e */
+"message_claim_modified" = "ការផ្លាស់ប្តូរការទាមទា";
+
+/* loco:54c52dfe14d725972b8b460a */
+"message_claims_downloaded" = "ការទាមទាត្រូវបានទាញយកមកប្រើប្រាស់ត្រឹមត្រូវ";
+
+/* loco:54c52dfe14d725972b8b461d */
+"message_confirm_new_db_password" = "បញ្ជាក់ពីលេខសំងាត់ថ្មី";
+
+/* loco:54c52dfe14d725972b8b45eb */
+"message_connection_error" = "ការតភ្ជាប់នៅមិនទាន់មាន";
+
+/* loco:54c52dfe14d725972b8b4627 */
+"message_create_before_edit" = "បង្កើតការទាមទាមួយដោយបញ្ជាក់ព័ត៌មានលំអិតរបស់វាមុនពេលបន្ថែមព័ត៌មាន";
+
+/* loco:54c52dfe14d725972b8b4616 */
+"message_data_over_mobile" = "អ្នកអាចផ្ទេរទិន្នន័យដែលមានទំហំធំ តាមរយៈការភ្ជាប់អឺធឺនេតចល័ត។ ទាក់ទងការចំណាយអាចថ្លៃអាស្រ័យលើទិនន័យជាក់ស្តែង";
+
+/* loco:54c52dfe14d725972b8b461b */
+"message_data_unencrypted" = "ការព្រមាន៖ ទិន្នន័យក្នុងស្រុករបស់អ្នកមិនត្រូវបានបញ្ចូល";
+
+/* loco:54c52dfe14d725972b8b4645 */
+"message_db_backed_up" = "ទិន្នន័យគ្រឹះថតចំលងបានបង្កើតហើយ";
+
+/* loco:54c52dfe14d725972b8b460e */
+"message_db_locked" = "ទិន្នន័យត្រូវការពារដោយលេសំងាត់";
+
+/* loco:54c52dfe14d725972b8b460f */
+"message_db_password" = "តើចង់បានលេខសំងាត់ដើម្បីចូលទៅទទួលទិន្នន័យទេ?";
+
+/* loco:54c52dfe14d725972b8b4613 */
+"message_default_initialization" = "អ្នកគួរចាប់ផ្តើមកម្មវិធីដោយ​ ការកំណត់យកន្លែងផ្ទុកឯកសារសហគមន៍។ ការកំណត់យកន្លែងផ្ទុកឯកសារសហគមន៍គួរតែត្រូវបានប្រើ សម្រាប់គោលបំណងបង្ហាញប៉ុណ្ណោះ។ តើអ្នកចង់បន្តទេ? បើមិនចង់អញ្ចឹងទេ សូមចុងលុចចោល និងដាក់កន្លែងផ្ទុកឯកសារ URLនៅក្នុងការរៀបចំមួយ ";
+
+/* loco:54c52dfe14d725972b8b463a */
+"message_deleted_claim" = "ការទាមទា បានលុបយ៉ាងត្រឹមត្រូវ";
+
+/* loco:54c52dfe14d725972b8b463d */
+"message_discard_changes" = "តើអ្នកចង់ចាកចេញ ដោយមិនចង់រក្សាទុកទិន្នន័យ?";
+
+/* loco:54c52dfe14d725972b8b45f9 */
+"message_downloading_attachment" = "កំពុងទាញយក៝កសារដែលមានភ្ជាប់";
+
+/* loco:54c52dfe14d725972b8b461a */
+"message_encryption_failed" = "មិនអាចបញ្ចូលទិន្នន័យក្នុងស្រុក";
+
+/* loco:54c52dfe14d725972b8b461c */
+"message_encryption_set" = "ទិន្នន័យក្នុងស្រុករបស់អ្នកត្រូវបានបញ្ចូល។ សូមផ្តល់លេខសំងាត់នៃការបញ្ជូលទិន្នន័យពេលបន្ទាប់ទៀតអ្នកអាចចាប់ផ្តើមកម្មវិធី កម្មសិទ្ធិបើកចំហរ";
+
+/* loco:54c52dfe14d725972b8b461e */
+"message_enter_description" = "ការបញ្ចូលការពិព៍ណនា";
+
+/* loco:54c52dfe14d725972b8b463f */
+"message_entity_type" = "តើប្រភេទ ផ្នែកមួយណា ?";
+
+/* loco:54c52dfe14d725972b8b463b */
+"message_error_deleting_claim" = "មានកំហុសនៅក្នុងលុបការទាមទា";
+
+/* loco:54c52dfe14d725972b8b460b */
+"message_error_downloading_claims" = "បានទាញយកការទាមទា%s។ ការទាមទាទាំងអស់មិនត្រូវបានទាញយកមកទាំងអស់ទេ";
+
+/* loco:54c52dfe14d725972b8b4634 */
+"message_error_mandatory_birthdate" = "ការបរិច្ឆេទថ្ងៃកំណើតមិនត្រូវតាមទម្រង់ ឬទទេ";
+
+/* loco:54c52dfe14d725972b8b4631 */
+"message_error_mandatory_field_first_name" = "សូមបំពេញនូវឈ្មោះមេដឹកនាំទីវាលមុនរក្សាទុក";
+
+/* loco:54c52dfe14d725972b8b4633 */
+"message_error_mandatory_field_gender" = "សូមបំពេញនូវ តួនាទីមេដឹកនាំនៅទីវាលមុនធ្វើការរក្សាទុក";
+
+/* loco:54c52dfe14d725972b8b4632 */
+"message_error_mandatory_field_last_name" = "សូមបំពេញនូវឈ្មោះមេដឹកនាំទីវាលមុនរក្សាទុក";
+
+/* loco:54c52dfe14d725972b8b4630 */
+"message_error_mandatory_fields" = "សូមបំពេញនូវឈ្មោះមេដឹកនាំទីវាលទាំងអស់មុនរក្សាទុក";
+
+/* loco:54c52dfe14d725972b8b4614 */
+"message_error_opening_file" = "មានកំហុសពេលបើកឯកសារ: ";
+
+/* loco:54c52dfe14d725972b8b45f4 */
+"message_error_remove_person" = "%sនៃបុគ្គលនៅមិនទាន់បានលុប";
+
+/* loco:54c52dfe14d725972b8b4635 */
+"message_error_startdate" = "ការបរិច្ឆេទនៃសិទ្ធិកាន់កាប់'s ចាប់ផើ្តមដោយមិនត្រឹមត្រូវតាមទម្រង់ ឬ ទទេរ";
+
+/* loco:54c52dfe14d725972b8b4638 */
+"message_error_withdraw_claim" = "មានកំហុស ដោយមិនបានដកនូវការទាមទាចេញ: ";
+
+/* loco:54c52dfe14d725972b8b4626 */
+"message_exit_dialog" = "តើអ្នកចង់ចាកចេញពីកម្មវិធីនេះទេ?";
+
+/* loco:54c52dfe14d725972b8b4608 */
+"message_export" = "ការនាំចេញទៅខាងក្រៅ";
+
+/* loco:54c52dfe14d725972b8b460d */
+"message_initialize_before" = "សូមធ្វើការផ្តួចផ្តើមជាមុន";
+
+/* loco:54c52dfe14d725972b8b45fb */
+"message_invalid_url" = "URLនៅមានសុពលភាព";
+
+/* loco:54c52dfe14d725972b8b460c */
+"message_login_no_more_valid" = "ផ្នែកនេះហួសសុពលភាព។ ធ្វើការចូលសាជាថ្មី";
+
+/* loco:54c52dfe14d725972b8b4628 */
+"message_map_not_yet_draw" = "ផែនទីនៃការទាមទាគឺមិនទាន់បំពេញរួចរាល់ទេ";
+
+/* loco:54c52dfe14d725972b8b45f6 */
+"message_map_snapshot_saved" = "រូបភាពផែនទីបានរក្សាទុកហើយ";
+
+/* loco:54c52dfe14d725972b8b4618 */
+"message_new_db_password" = "លេខសំងាត់ថ្មី (ទុកកន្លែងចន្លោះសម្រាប់បញ្ចូលទិន្នន័យទេ)?";
+
+/* loco:54c52dfe14d725972b8b4612 */
+"message_no_application" = "មិនអាចស្វែងរកកម្មវិធីដើម្បីបើកឯកសារ";
+
+/* loco:54c52dfe14d725972b8b4629 */
+"message_no_available_shares" = "ទុកកន្លែងទំនេរសម្រាប់ការការចូលរួមចំណែកចំពោះការទាមទានេះមុននឹងថ្វើការផ្លាស់ប្តូតំលៃនៃការចូលរួមចំណែក នេះ";
+
+/* loco:54c52dfe14d725972b8b462a */
+"message_no_available_shares_adding_new" = "ទុកកន្លែងទំនេរសម្រាប់ការការចូលរួមចំណែកចំពោះការទាមទានេះមុននឹងបន្ថែមការចូលរួមចំណែកថ្មី";
+
+/* loco:54c52dfe14d725972b8b4609 */
+"message_no_claim_to_download" = "មិនមានការទាមទាដើម្បីទាញយកប្រើបានឡើយ";
+
+/* loco:54c52dfe14d725972b8b4617 */
+"message_no_connection_at_startup" = "គ្មានការភ្ជាប់អីធឺនេត។ ដំណើការមិនអាចបញ្ជាក់ពីការផ្លាស់ ប្តូរ​ និងអ្នកមិនអាចបញ្ជូល ឬទាញយកព័ត៌មាន។ ភ្ជាប់អីនធឺនេតប្រសិនបើអ្នកចង់ផ្ទេទរិន្នន័យប្រើប្រាស់ក្នុងកម្មវិធីកម្មសិទ្ធិបើកចំហរ";
+
+/* loco:54c52dfe14d725972b8b4625 */
+"message_not_supported_on_this_device" = "មិនស្គាល់កម្មវិធីនេះទេ";
+
+/* loco:54c52dfe14d725972b8b4615 */
+"message_old_db_password" = "តើប្រើលេខសំងាត់បច្ចុប្បន្នឬ?";
+
+/* loco:54c52dfe14d725972b8b45e7 */
+"message_password_character_is_wrong" = "លេខសំងាត់ត្រូវតែមានជាតួរលេខ និងតួរអក្ស";
+
+/* loco:54c52dfe14d725972b8b4619 */
+"message_password_dont_match" = "លេខសំងាត់ថ្មីមិនត្រឹមត្រូវ។ សូមព្យាយាមម្តងទៀត";
+
+/* loco:54c52dfe14d725972b8b45e6 */
+"message_password_too_short" = "លេខសំងាត់ត្រូវតែមានយ៉ាងហោចណាស់ %d តួរអក្ស";
+
+/* loco:54c52dfe14d725972b8b45f5 */
+"message_remaining_days" = "ចំនួនថ្ងៃដែលនៅសេសសល់ចំពោះជំលោះទាមទា:";
+
+/* loco:54c52dfe14d725972b8b4624 */
+"message_remove_additional_info" = "តើចង់លុបព័ត៌មានទេ?";
+
+/* loco:54c52dfe14d725972b8b4621 */
+"message_remove_attachment" = "តើចង់លុបដែលបានភ្ជាប់ទេ?";
+
+/* loco:54c52dfe14d725972b8b4637 */
+"message_remove_claim" = "តើអ្នកចង់លុចចោលការទាមទាទេ?";
+
+/* loco:54c52dfe14d725972b8b4620 */
+"message_remove_marker" = "តើចង់លុបកំណត់ចំណាំទេ?";
+
+/* loco:54c52dfe14d725972b8b4622 */
+"message_remove_owner" = "តើចង់លុបម្ចាស់កម្មសិទ្ធិចេញទេ?";
+
+/* loco:54c52dfe14d725972b8b45f2 */
+"message_remove_person" = "%s នៃបុគ្គលបានលុបរួចរាល់ហើយ";
+
+/* loco:54c52dfe14d725972b8b45f3 */
+"message_remove_person_dialog" = "តើអ្នកចង់លុប%sឬទេ?";
+
+/* loco:54c52dfe14d725972b8b4636 */
+"message_remove_quest" = "តើអ្នកចង់លុបចោលការទាមទាទេ?";
+
+/* loco:54c52dfe14d725972b8b4623 */
+"message_remove_section_element" = "តើចង់លុបធាតុតូចៗចេញទេ?";
+
+/* loco:54c52dfe14d725972b8b463c */
+"message_save_changes" = "តើអ្នកចង់ផ្លាស់ប្តូការរក្សាទុកទេ?";
+
+/* loco:54c52dfe14d725972b8b4606 */
+"message_save_claim_before_adding_content" = "ការទាមទាត្រូវតែរក្សាទុកមុនពេលដាក់បន្ថែមបន្ថែមមាតិការថ្មីៗ  ";
+
+/* loco:54c52dfe14d725972b8b4604 */
+"message_save_claim_before_submit" = "ការទាមទាត្រូវតែរក្សាទុកមុនពេលបញ្ជូនចេញ";
+
+/* loco:54c52dfe14d725972b8b4607 */
+"message_save_person_before_adding_content" = "បុគ្គលត្រូវបានគេរក្សាទុកមុនពេលបន្ថែមមាតិការថ្មី";
+
+/* loco:54c52dfe14d725972b8b4605 */
+"message_save_snapshot_before_printing" = "សូមភ្ជាប់រូបភាពផែនទីមុនពេលធ្វើការបោះពុម្ពចេញ";
+
+/* loco:54c52dfe14d725972b8b45e8 */
+"message_saved" = "បានរក្សាទុក";
+
+/* loco:54c52dfe14d725972b8b45e9 */
+"message_server_error_saving_claim" = "មានកំហុសនៅកន្លែងផ្ទុកឯកសារ";
+
+/* loco:54c52dfe14d725972b8b45ea */
+"message_service_not_available" = "មិនទាន់មានសេវា";
+
+/* loco:54c52dfe14d725972b8b462c */
+"message_share_not_saved" = "មានកំហុសនៅពេលរក្សាការចូលរួមចែករំលែក";
+
+/* loco:54c52dfe14d725972b8b462b */
+"message_share_saved" = "ការចូលរួមចែករំលែកបានរក្សាទុក";
+
+/* loco:54c52dfe14d725972b8b4603 */
+"message_submission_error" = "មានកំហុសនៅអំឡុងពេលបញ្ជូនការទាមទា";
+
+/* loco:54c52dfe14d725972b8b45ff */
+"message_submitted" = "ការទាមទាត្រូវបានដាក់បញ្ជូនហើយ";
+
+/* loco:54c52dfe14d725972b8b4647 */
+"message_title_app_initialized" = "កម្មវិធីកំពុងផ្តួចផ្តើម";
+
+/* loco:54c52dfe14d725972b8b4640 */
+"message_title_app_initializing" = "កម្មវិធី កម្មសិទ្ធិបើកចំហររបស់សហគមន៍ កំពុងចាប់ផ្តើម";
+
+/* loco:54c52dfe14d725972b8b4642 */
+"message_title_app_not_initialized" = "កម្មវិធីនៅមិនទាន់បានតភ្ជាប់";
+
+/* loco:54c52dfe14d725972b8b462f */
+"message_touch_to_select_a_claim" = "សូមចុចជ្រើសរើសការទាមទា";
+
+/* loco:54c52dfe14d725972b8b462e */
+"message_touch_to_select_a_person" = "សូមចុចជ្រើសរើសបុគ្គល";
+
+/* loco:54c52dfe14d725972b8b45fc */
+"message_unable_to_save" = "មិនអាចរក្សាទុក។ សូមពិនិត្យ និងព្យាយាមម្តងទៀត";
+
+/* loco:54c52dfe14d725972b8b45fd */
+"message_unable_to_save_missing_claim_name" = "មិនអាចរក្សាទុក។ មានការបាត់ការទាមទា";
+
+/* loco:54c52dfe14d725972b8b45fe */
+"message_unable_to_save_missing_person" = "មិនអាចរក្សាទុក។ មានការបាត់ឈ្មោះអ្នកទាមទា";
+
+/* loco:54c52dfe14d725972b8b4600 */
+"message_uploading" = "ការទាមទាគឺនៅក្នុងឯកសារដាក់បញ្ជូល";
+
+/* loco:54c52dfe14d725972b8b45fa */
+"message_uploading_attachment" = "កំពុងដាក់បញ្ចូលដែលសារដែលបានភ្ជាប់";
+
+/* loco:54c52dfe14d725972b8b4639 */
+"message_withdrawn_claim" = "ការទាមទាត្រូវបានដកចេញយ៉ាងត្រឹមត្រូវ";
+
+/* loco:54c52dfe14d725972b8b45de */
+"mobile_phone_number" = "លេខទូរសព្ទដៃរ";
+
+/* loco:54c52dfe14d725972b8b45c8 */
+"na" = "មិនទាន់មាន";
+
+/* loco:54c52dfe14d725972b8b465f */
+"new_additional_info" = "បញចូលព័ត៌មាន";
+
+/* loco:54c52dfe14d725972b8b45c5 */
+"new_entity" = "អង្គភាពថ្មី";
+
+/* loco:54c52dfe14d725972b8b465c */
+"new_file" = "ឯកសារថ្មី";
+
+/* loco:54c52dfe14d725972b8b465d */
+"new_multipage" = "ឯកសារនៃទំព័រថ្មីចម្រុះ";
+
+/* loco:54c52dfe14d725972b8b465b */
+"new_snapshot" = "រូបថថ្មី";
+
+/* loco:54c52dfe14d725972b8b4653 */
+"no" = "ទេ";
+
+/* loco:54c52dfe14d725972b8b468e */
+"north" = "ទិសខាងជើង";
+
+/* loco:54c52dfe14d725972b8b468a */
+"north_adjacency" = "តំបន់ក្បែរទិសខាងជើង";
+
+/* loco:54c52dfe14d725972b8b4693 */
+"north_east" = "ទិសឥសាន";
+
+/* loco:54c52dfe14d725972b8b4694 */
+"north_west" = "ទិសពាយព្យ";
+
+/* loco:54c52dfe14d725972b8b464e */
+"not_all_tiles_downloaded" = "ភាគរយ d ទិន្នន័យសម្រាប់ផែនតំបន់នេះមិនទាន់បានទាញយក ។ ពិនិត្យ ថាតើអ្នកទទួលយកលទ្ធផល ឬធ្វើការទាញយកម្តងទៀត";
+
+/* loco:54c52dfe14d725972b8b465a */
+"not_boundary" = "មិនមែនព្រំប្រទល់";
+
+/* loco:54c52dfe14d725972b8b4668 */
+"owner" = "ម្ចាស់កម្មសិទ្ធិ";
+
+/* loco:54c52dfe14d725972b8b45e3 */
+"owner_removed" = "ម្ខាស់កម្មសិទ្ធិត្រូវបានលុបចេញហើយ";
+
+/* loco:54c52dfe14d725972b8b466b */
+"owners" = "ម្ចាស់កម្មសិទ្ធិ";
+
+/* loco:54c52dfe14d725972b8b45e0 */
+"password" = "លេខសំងាត់";
+
+/* loco:54c52dfe14d725972b8b4651 */
+"person" = "បុគ្គល";
+
+/* loco:54c52dfe14d725972b8b45b3 */
+"person_name" = "ឈ្មោះបុគ្គល";
+
+/* loco:54c52dfe14d725972b8b466e */
+"person_picture" = "រូបភាពបុគ្គល";
+
+/* loco:54c52dfe14d725972b8b45bc */
+"person_type" = "ប្រភេទបុគ្គល *";
+
+/* loco:54c52dfe14d725972b8b45b9 */
+"physical_person" = "រូបរាងបុគ្គល";
+
+/* loco:54c52dfe14d725972b8b45da */
+"place_of_birth" = "ទីកន្លែងកំណើត";
+
+/* loco:54c52dfe14d725972b8b45db */
+"place_of_birth_label" = "ទីកន្លែងកំណើត *";
+
+/* loco:54c52dfe14d725972b8b45b5 */
+"postal_address" = "អាស័យដ្ឋាន";
+
+/* loco:54c52dfe14d725972b8b4568 */
+"preload" = "បើករូបភាព";
+
+/* loco:54c52dfe14d725972b8b4683 */
+"property" = "របស់របប";
+
+/* loco:54c52dfe14d725972b8b45dd */
+"recorded_by" = "កត់ត្រាដោយ : ";
+
+/* loco:54c52dfe14d725972b8b4657 */
+"right" = "ធ្វេង";
+
+/* loco:54c52dfe14d725972b8b45e4 */
+"section_element_removed" = "ធាតុតូចៗបានលុចបោលរួចហើយ";
+
+/* loco:54c52dfe14d725972b8b45bf */
+"share_value" = "តំលៃគិតជាភាគរយ : ";
+
+/* loco:54c52dfe14d725972b8b4698 */
+"shares_prompt" = "ជ្រើរើសរូបរាង";
+
+/* loco:54c52dfe14d725972b8b45ca */
+"signature" = "ហត្ថលេខា";
+
+/* loco:54c52dfe14d725972b8b45cc */
+"software_version" = "0.9.4";
+
+/* loco:54c52dfe14d725972b8b45cb */
+"software_version_title" = "សេរីកម្មវិធី";
+
+/* loco:54c52dfe14d725972b8b468f */
+"south" = "ទិសខាងត្បូង";
+
+/* loco:54c52dfe14d725972b8b468b */
+"south_adjacency" = "តំបន់ក្បែរទិសខាងត្បូង";
+
+/* loco:54c52dfe14d725972b8b4695 */
+"south_east" = "ទិសទក្សិណ";
+
+/* loco:54c52dfe14d725972b8b4696 */
+"south_west" = "ទិសនារតី";
+
+/* loco:54c52dfe14d725972b8b4692 */
+"status" = "ស្ថានភាព : ";
+
+/* loco:54c52dfe14d725972b8b4664 */
+"sticky_marker" = "បិទរូបចំណាំ";
+
+/* loco:54c52dfe14d725972b8b464b */
+"tiles_queued" = "មាន ទិន្នន័យ %d នៅក្នុងបញ្ជីដែលបានទាញយករួចហើយ";
+
+/* loco:54c52dfe14d725972b8b45a0 */
+"title_activity_claim" = "កម្មសិទ្ធិបើចំហរ: ការទាមទាថ្មី";
+
+/* loco:54c52dfe14d725972b8b45a7 */
+"title_activity_file_chooser" = "ជ្រើរើសឯកសារ";
+
+/* loco:54c52dfe14d725972b8b45a3 */
+"title_activity_group" = "កម្មសិទ្ធិបើចំហរ: ក្រុមថ្មី";
+
+/* loco:54c52dfe14d725972b8b45a2 */
+"title_activity_person" = "កម្មសិទ្ធិបើចំហរ: បុគ្គលថ្មី";
+
+/* loco:54c52dfe14d725972b8b45a4 */
+"title_activity_select_claim" = "កម្មសិទ្ធិបើចំហរ: ជ្រើសរើសការទាមទា";
+
+/* loco:54c52dfe14d725972b8b45a5 */
+"title_activity_select_person" = "កម្មសិទ្ធិបើចំហរ: ជ្រើសរើសបុគ្គល";
+
+/* loco:54c52dfe14d725972b8b459f */
+"title_activity_settings" = "ការរៀបចំ";
+
+/* loco:54c52dfe14d725972b8b45a6 */
+"title_activity_share_details" = "កម្មសិទ្ធិបើចំហរ: ចែងរំលែកព័ត៌មានលំអិត";
+
+/* loco:54c52dfe14d725972b8b45aa */
+"title_add_non_boundary" = "បន្ថែមទីតាំងដែលគ្មានព្រំប្រទល់";
+
+/* loco:54c52dfe14d725972b8b458f */
+"title_challenged_claim" = "ទាមទាជំលោះ : ";
+
+/* loco:54c52dfe14d725972b8b458e */
+"title_challenged_claims" = "ទាមទាជំលោះ";
+
+/* loco:54c52dfe14d725972b8b4590 */
+"title_claim" = "ទាមទា";
+
+/* loco:54c52dfe14d725972b8b4597 */
+"title_claim__downloading_map" = "ទាញយកការទាមទា";
+
+/* loco:54c52dfe14d725972b8b4593 */
+"title_claim_additional_info" = "បន្ថែមព័ត៌មាន";
+
+/* loco:54c52dfe14d725972b8b4598 */
+"title_claim_adjacencies" = "នៅក្បែរៗ";
+
+/* loco:54c52dfe14d725972b8b459b */
+"title_claim_challenges" = "ជំលោះ";
+
+/* loco:54c52dfe14d725972b8b4594 */
+"title_claim_documents" = "ឯកសារ";
+
+/* loco:54c52dfe14d725972b8b4596 */
+"title_claim_map" = "ផែនទី";
+
+/* loco:54c52dfe14d725972b8b4599 */
+"title_claim_owners" = "ចែករំលែក";
+
+/* loco:54c52dfe14d725972b8b4595 */
+"title_claim_photos" = "រូបភាពទាមទា";
+
+/* loco:54c52dfe14d725972b8b458c */
+"title_claims" = "បញ្ជីឈ្មោះទាមទា";
+
+/* loco:54c52dfe14d725972b8b45a9 */
+"title_confirm_data_transfer" = "បញ្ជាក់ពីការផ្ទេរទិន្នន័យ";
+
+/* loco:54c52dfe14d725972b8b45ab */
+"title_exit_dialog" = "ចាកចេញ";
+
+/* loco:54c52dfe14d725972b8b459c */
+"title_export" = "ការនាំទិន្នន័យទាមទាចេញ ទម្រង់ជាឯកសារបង្រួម";
+
+/* loco:54c52dfe14d725972b8b4592 */
+"title_group_details" = "ព័ត៌មានលំអិតរបស់ក្រុម";
+
+/* loco:54c52dfe14d725972b8b45a1 */
+"title_i_m_here" = "ទីតាំងរបស់លោកអ្នក";
+
+/* loco:54c52dfe14d725972b8b45ac */
+"title_initialization_process" = "ដំណើការកំពុងចាប់ផ្តើម";
+
+/* loco:54c52dfe14d725972b8b459e */
+"title_item" = "មុខ";
+
+/* loco:54c52dfe14d725972b8b45a8 */
+"title_lock_db" = "បញ្ជូលលេខកូដទិន្នន័យ";
+
+/* loco:54c52dfe14d725972b8b458b */
+"title_map" = "ផែនទីសហគមន៍";
+
+/* loco:54c52dfe14d725972b8b458a */
+"title_news" = "ព័ត៌មាន";
+
+/* loco:54c52dfe14d725972b8b45b1 */
+"title_no_connection" = "គ្មាការភត្ជាប់";
+
+/* loco:54c52dfe14d725972b8b4591 */
+"title_person_details" = "ព័ត៌មានលំអិតរបស់បុគ្គល";
+
+/* loco:54c52dfe14d725972b8b458d */
+"title_persons" = "បុគ្គល";
+
+/* loco:54c52dfe14d725972b8b45ad */
+"title_remove_person_dialog" = "លុបចោលបុគ្គល";
+
+/* loco:54c52dfe14d725972b8b45ae */
+"title_save_claim_dialog" = "ការទាមទាមត្រូវបានផ្លាស់ប្តូរ";
+
+/* loco:54c52dfe14d725972b8b45b0 */
+"title_save_group_dialog" = "ក្រុមត្រូវបានផ្លាស់ប្តូរ";
+
+/* loco:54c52dfe14d725972b8b45af */
+"title_save_person_dialog" = "បុគ្គលត្រូវបានផ្លាស់ប្តូរ";
+
+/* loco:54c52dfe14d725972b8b459d */
+"title_section" = "ផ្នែក";
+
+/* loco:54c52dfe14d725972b8b459a */
+"title_share" = "ចែករំលែក";
+
+/* loco:54c52dfe14d725972b8b464c */
+"too_many_tiles_queued" = "មាន ទិន្នន័យ %d នៅក្នងបណ្ជីដែលបានទាញយក។ សូម រងចាំមុនពេលទាញយកទិន្នន័បន្ថែម";
+
+/* loco:54c52dfe14d725972b8b45c7 */
+"type" = "ប្រភេទ";
+
+/* loco:54c52dfe14d725972b8b4654 */
+"up" = "ឡើងលើ";
+
+/* loco:54c52dfe14d725972b8b4691 */
+"west" = "ទិសខាងលិច";
+
+/* loco:54c52dfe14d725972b8b468d */
+"west_adjacency" = "តំបន់ក្បែរទិសខាងលិច";
+
+/* loco:54c52dfe14d725972b8b465e */
+"withdraw_claim" = "អ្នកការទាមទាចេញ";
+
+/* loco:54c52dfe14d725972b8b4650 */
+"yes" = "បាទ";
+
+/* loco:54c52dfe14d725972b8b464f */
+"zoom_level_too_low" = "តំបន់ធំពេក។ បង្កើនកម្រិតទំហំមុនទាញយកទិន្នន័យក្នុងស្រុកសម្រាប់ផែនទី";

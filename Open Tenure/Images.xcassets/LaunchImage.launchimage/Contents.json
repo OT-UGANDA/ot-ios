@@ -5,14 +5,14 @@
       "idiom" : "iphone",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "OT-Logo-(By-Sola)---XL-iPhone2x.png",
+      "filename" : "preload_iphone_portrait.png",
       "scale" : "2x"
     },
     {
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "retina4",
-      "filename" : "OT-Logo-(By-Sola)---XL-iPhoneR4.png",
+      "filename" : "preload_iphone_portrait@2x.png",
       "minimum-system-version" : "7.0",
       "orientation" : "portrait",
       "scale" : "2x"
@@ -22,7 +22,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "OT-Logo-(By-Sola)---XL-PT-1.png",
+      "filename" : "preload_ipad_portrait.png",
       "scale" : "1x"
     },
     {
@@ -30,7 +30,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "OT-Logo-(By-Sola)---XL-LC.png",
+      "filename" : "preload_ipad_landscape.png",
       "scale" : "1x"
     },
     {
@@ -38,7 +38,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "OT-Logo-(By-Sola)---XL-PT@2x.png",
+      "filename" : "preload_ipad_portrait@2x.png",
       "scale" : "2x"
     },
     {
@@ -46,7 +46,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "OT-Logo-(By-Sola)---XL-LC@2x.png",
+      "filename" : "preload_ipad_landscape@2x.png",
       "scale" : "2x"
     }
   ],

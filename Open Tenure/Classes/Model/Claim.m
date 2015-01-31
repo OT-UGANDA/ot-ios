@@ -39,6 +39,7 @@
 @implementation Claim
 
 @dynamic challengeExpiryDate;
+@dynamic challengedClaimId;
 @dynamic claimId;
 @dynamic claimName;
 @dynamic decisionDate;
@@ -62,5 +63,7 @@
 @dynamic landUse;
 @dynamic shares;
 @dynamic person;
+@dynamic locations;
+@dynamic dynamicForm;
 
 @end

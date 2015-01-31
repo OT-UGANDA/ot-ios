@@ -30,6 +30,10 @@
 NSString * const kLoginSuccessNotificationName = @"LoginSuccessNotificationName";
 NSString * const kLogoutSuccessNotificationName = @"LogoutSuccessNotificationName";
 NSString * const kGetAllClaimsSuccessNotificationName = @"GetAllClaimsSuccessNotificationName";
+NSString * const kInitializedNotificationName = @"InitializedNotificationName";
+NSString * const kMapZoomLevelNotificationName = @"MapZoomLevelNotificationName";
+NSString * const kSetMainTabBarIndexNotificationName = @"SetMainTabBarIndexNotificationName";
+NSString * const kSetClaimTabBarIndexNotificationName = @"SetClaimTabBarIndexNotificationName";
 
 NSString * const kResponseClaimsErrorNotificationName = @"ResponseClaimsErrorNotificationName";
 NSString * const kResponseClaimsMessageErrorKey = @"ResponseClaimsMessageErrorKey";
@@ -76,10 +80,23 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
 
 + (NSDateFormatter *)dateFormatter {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-    [dateFormatter setTimeZone:gmt];
+//    NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+//    [dateFormatter setTimeZone:gmt];
     [dateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
     return dateFormatter;
+}
+
++ (UIBarButtonItem *)logoButtonWithTitle:(NSString *)title {
+    NSString *buttonTitle = title;
+    CGSize size = [buttonTitle sizeWithAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:16.0f]}];
+    CGRect frame = CGRectMake(0, 0, size.width + 64, 32);
+    UIButton *logoButton = [[UIButton alloc] initWithFrame:frame];
+    UIImage *logoImage = [UIImage imageNamed:@"sola_logo"];
+    [logoButton setImage:logoImage forState:UIControlStateNormal];
+    [logoButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, size.width)];
+    [logoButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, -5.0, 0.0)];
+    [logoButton setTitle:buttonTitle forState:UIControlStateNormal];
+    return [[UIBarButtonItem alloc] initWithCustomView:logoButton];
 }
 
 + (void)updateIdType {
@@ -94,9 +111,15 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
                     [OT handleError:errorJSON];
                 } else {
                     for (NSDictionary *object in objects) {
-                        ResponseIdType *responseObject = [[ResponseIdType alloc] initWithDictionary:object];
-                        [IdTypeEntity updateFromResponseObject:responseObject];
+                        IdType *idType = [IdTypeEntity getIdTypeByCode:[object objectForKey:@"code"]];
+                        if (idType == nil) {
+                            idType = [IdTypeEntity create];
+                            [idType importFromJSON:object];
+                        }
                     }
+                    if (objects.count > 0)
+                        [self setUpdatedIdType:YES];
+                    saveDataContext;
                 }
             } else {
                 NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
@@ -122,9 +145,15 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
                     [OT handleError:errorJSON];
                 } else {
                     for (NSDictionary *object in objects) {
-                        ResponseLandUse *responseObject = [ResponseLandUse landUseWithDictionary:object];
-                        [LandUseEntity updateFromResponseObject:responseObject];
+                        LandUse *landUse = [LandUseEntity getLandUseByCode:[object objectForKey:@"code"]];
+                        if (landUse == nil) {
+                            landUse = [LandUseEntity create];
+                            [landUse importFromJSON:object];
+                        }
                     }
+                    if (objects.count > 0)
+                        [self setUpdatedLandUse:YES];
+                    saveDataContext;
                 }
             } else {
                 NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
@@ -150,9 +179,15 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
                     [OT handleError:errorJSON];
                 } else {
                     for (NSDictionary *object in objects) {
-                        ResponseClaimType *responseObject = [ResponseClaimType claimTypeWithDictionary:object];
-                        [ClaimTypeEntity updateFromResponseObject:responseObject];
+                        ClaimType *claimType = [ClaimTypeEntity getClaimTypeByCode:[object objectForKey:@"code"]];
+                        if (claimType == nil) {
+                            claimType = [ClaimTypeEntity create];
+                            [claimType importFromJSON:object];
+                        }
                     }
+                    if (objects.count > 0)
+                        [self setUpdatedClaimType:YES];
+                    saveDataContext;
                 }
             } else {
                 NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
@@ -178,9 +213,74 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
                     [OT handleError:errorJSON];
                 } else {
                     for (NSDictionary *object in objects) {
-                        ResponseDocumentType *responseObject = [ResponseDocumentType documentTypeWithDictionary:object.deserialize];
-                        [DocumentTypeEntity updateFromResponseObject:responseObject];
+                        DocumentType *docType = [DocumentTypeEntity getDocTypeByCode:[object objectForKey:@"code"]];
+                        if (docType == nil) {
+                            docType = [DocumentTypeEntity create];
+                            [docType importFromJSON:object];
+                        }
                     }
+                    if (objects.count > 0)
+                        [self setUpdatedDocumentType:YES];
+                    saveDataContext;
+                }
+            } else {
+                NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
+                NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
+                NSError *reportError = [NSError errorWithDomain:@"HTTP"
+                                                           code:[httpResponse statusCode]
+                                                       userInfo:userInfo];
+                [OT handleError:reportError];
+            }
+        }
+    }];
+}
+
++ (void)updateDefaultFormTemplate {
+    [CommunityServerAPI getDefaultFormTemplate:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
+        if (error != nil) {
+            [OT handleError:error];
+        } else {
+            if ((([httpResponse statusCode]/100) == 2) && [[httpResponse MIMEType] isEqual:@"application/json"]) {
+                NSError *errorJSON = nil;
+                NSDictionary *objects = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&errorJSON];
+                if (errorJSON != nil) {
+                    [OT handleError:errorJSON];
+                } else {
+                    FormTemplate *formTepplate = [FormTemplateEntity getEntityByName:[objects objectForKey:@"name"]];
+                    if (formTepplate == nil)
+                        formTepplate = [FormTemplateEntity createObject];
+                    [formTepplate importFromJSON:objects];
+                    if (objects.count > 0)
+                        [self setUpdatedDefaultFormTemplate:YES];
+                    saveDataContext;
+                }
+            } else {
+                NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
+                NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
+                NSError *reportError = [NSError errorWithDomain:@"HTTP"
+                                                           code:[httpResponse statusCode]
+                                                       userInfo:userInfo];
+                [OT handleError:reportError];
+            }
+        }
+    }];
+}
+
++ (void)updateCommunityArea {
+    [CommunityServerAPI getCommunityArea:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
+        if (error != nil) {
+            [OT handleError:error];
+        } else {
+            if ((([httpResponse statusCode]/100) == 2) && [[httpResponse MIMEType] isEqual:@"application/json"]) {
+                NSError *errorJSON = nil;
+                NSMutableArray *objects = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&errorJSON];
+                if (errorJSON != nil) {
+                    [OT handleError:errorJSON];
+                } else {
+                    NSString *communityArea = [objects valueForKey:@"result"];
+                    if (![communityArea isEqualToString:[OTSetting getCommunityArea]])
+                        [OTSetting setCommunityArea:communityArea];
+                    [self setUpdatedCommunityArea:YES];
                 }
             } else {
                 NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
@@ -203,7 +303,7 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
                 [OT handleError:error];
             } else {
                 if ((([httpResponse statusCode]/100) == 2) && [[httpResponse MIMEType] isEqual:@"application/json"]) {
-                    [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_logout_ok", @"You have succefully Logout")];
+                    [SVProgressHUD showSuccessWithStatus:NSLocalizedStringFromTable(@"message_logout_ok", @"ActivityLogin", nil)];
                     // Clear session
                     NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
                     for (NSHTTPCookie *cookie in [cookieStorage cookies])
@@ -223,15 +323,15 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
         }];
     } else {
         // Login        
-        [UIAlertView showWithTitle:NSLocalizedString(@"title_activity_login_activity_test", @"Log in") message:nil style:UIAlertViewStyleLoginAndPasswordInput cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel") otherButtonTitles:@[NSLocalizedString(@"action_sign_in_short", @"Log in")] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+        [UIAlertView showWithTitle:NSLocalizedString(@"app_name", nil) message:nil style:UIAlertViewStyleLoginAndPasswordInput cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel") otherButtonTitles:@[NSLocalizedStringFromTable(@"action_sign_in_short", @"ActivityLogin", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
             if (buttonIndex != [alertView cancelButtonIndex]) {
-                [SVProgressHUD showWithStatus:NSLocalizedString(@"login_progress_signing_in", @"Loggin in...")];
+                [SVProgressHUD showWithStatus:NSLocalizedStringFromTable(@"login_progress_signing_in", @"ActivityLogin", nil)];
                 [CommunityServerAPI loginWithUsername:[[alertView textFieldAtIndex:0] text] andPassword:[[alertView textFieldAtIndex:1] text] completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
                     if (error != nil) {
                         [OT handleError:error];
                     } else {
                         if ((([httpResponse statusCode]/100) == 2) && [[httpResponse MIMEType] isEqual:@"application/json"]) {
-                            [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_login_ok", @"You have succefully Login")];
+                            [SVProgressHUD showSuccessWithStatus:NSLocalizedStringFromTable(@"message_login_ok", @"ActivityLogin", nil)];
                             
                             // Store session
                             [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:[NSHTTPCookie cookieWithProperties:[httpResponse allHeaderFields]]];
@@ -249,6 +349,102 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
             }
         }];
     }
+}
+
++ (BOOL)getInitialized {    
+    //Create folder
+    BOOL success = YES;
+    if (![FileSystemUtilities createOpenTenureFolder]) success = NO;
+    if (![FileSystemUtilities createClaimsFolder]) success = NO;
+    if (![FileSystemUtilities createClaimantsFolder]) success = NO;
+    if (![OT getUpdatedIdType]) success = NO;
+    if (![OT getUpdatedLandUse]) success = NO;
+    if (![OT getUpdatedClaimType]) success = NO;
+    if (![OT getUpdatedDocumentType]) success = NO;
+    if (![OT getUpdatedDefaultFormTemplate]) success = NO;
+    if (![OT getUpdatedCommunityArea]) success = NO;
+    return success;
+}
+
++ (void)setUpdatedIdType:(BOOL)state {
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:state] forKey:@"UpdatedIdType"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (BOOL)getUpdatedIdType {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"UpdatedIdType"];
+}
+
++ (void)setUpdatedLandUse:(BOOL)state {
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:state] forKey:@"UpdatedLandUse"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (BOOL)getUpdatedLandUse {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"UpdatedLandUse"];
+}
+
++ (void)setUpdatedClaimType:(BOOL)state {
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:state] forKey:@"UpdatedClaimType"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (BOOL)getUpdatedClaimType {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"UpdatedClaimType"];
+}
+
++ (void)setUpdatedDocumentType:(BOOL)state {
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:state] forKey:@"UpdatedDocumentType"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (BOOL)getUpdatedDocumentType {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"UpdatedDocumentType"];
+}
+
++ (void)setUpdatedDefaultFormTemplate:(BOOL)state {
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:state] forKey:@"UpdatedDefaultFormTemplate"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (BOOL)getUpdatedDefaultFormTemplate {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"UpdatedDefaultFormTemplate"];
+}
+
++ (void)setUpdatedCommunityArea:(BOOL)state {
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:state] forKey:@"UpdatedCommunityArea"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (BOOL)getUpdatedCommunityArea {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"UpdatedCommunityArea"];
+}
+
++ (NSAttributedString *)getAttributedStringFromText:(NSString *)text {
+    NSMutableParagraphStyle *style =  [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    style.alignment = NSTextAlignmentLeft;
+    style.firstLineHeadIndent = 5.0f;
+    style.headIndent = 5.0f;
+    style.tailIndent = -5.0f;
+    NSAttributedString *attrText = [[NSAttributedString alloc] initWithString:text
+                                                                   attributes:@{ NSParagraphStyleAttributeName:style}];
+    return attrText;
+}
+
++ (UIControl *)findBarButtonItem:(UIBarButtonItem *)barButtonItem fromNavBar:(UINavigationBar *)toolbar {
+    UIControl *button = nil;
+    for (UIView *subview in toolbar.subviews) {
+        if ([subview isKindOfClass:[UIControl class]]) {
+            for (id target in [(UIControl *)subview allTargets]) {
+                if (target == barButtonItem) {
+                    button = (UIControl *)subview;
+                    break;
+                }
+            }
+            if (button != nil) break;
+        }
+    }
+    return button;
 }
 
 @end

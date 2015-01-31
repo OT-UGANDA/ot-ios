@@ -35,6 +35,9 @@ typedef NS_ENUM(NSInteger, BPFormKeyboardMode) {
  */
 @interface BPFormViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UITextViewDelegate>
 
+@property (nonatomic, strong) NSMutableDictionary *sectionHeaderTitles; // dictionary holding (section, title) pairs
+@property (nonatomic, strong) NSMutableDictionary *sectionFooterTitles; // dictionary holding (section, title) pairs
+
 /**
  *  The table view
  */
@@ -91,5 +94,7 @@ typedef NS_ENUM(NSInteger, BPFormKeyboardMode) {
  *  @return the cell (or nil)
  */
 - (BPFormCell *)cellContainingFirstResponder;
+
+- (void)setupTableView;
 
 @end

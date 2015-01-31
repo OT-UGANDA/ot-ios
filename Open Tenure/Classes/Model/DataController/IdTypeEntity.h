@@ -28,12 +28,12 @@
 
 #import "AbstractEntity.h"
 
-@class ResponseIdType, IdType;
+@class IdType;
 
 @interface IdTypeEntity : AbstractEntity
 
-+ (BOOL)insertFromResponseObject:(ResponseIdType *)responseObject;
-+ (BOOL)updateFromResponseObject:(ResponseIdType *)responseObject;
++ (IdType *)create;
++ (IdType *)getIdTypeByCode:(NSString *)code;
 
 - (NSArray *)getCollection;
 + (NSArray *)getCollection;

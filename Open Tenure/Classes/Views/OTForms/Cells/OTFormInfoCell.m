@@ -28,6 +28,7 @@
 
 #import "OTFormInfoCell.h"
 #import "UIColor+OT.h"
+#import "OTAppearance.h"
 
 @implementation OTFormInfoCell
 
@@ -40,13 +41,21 @@
     return self;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
+- (void)setupCell {
+    [super setupCell];
+    self.customCellHeight = [OTAppearance sharedInstance].infoCellHeight;
+    self.backgroundColor = [OTAppearance sharedInstance].infoCellBackgroundColor;
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
 }
-*/
+
+- (void)setupLabel {
+    [super setupLabel];
+    self.label = [[UILabel alloc] init];
+    
+    self.label.textColor = [OTAppearance sharedInstance].infoCellLabelTextColor;
+    self.label.font = [OTAppearance sharedInstance].infoCellLabelFont;
+    self.label.backgroundColor = [OTAppearance sharedInstance].infoCellLabelBackgroundColor;
+    [self.contentView addSubview:self.label];
+}
 
 @end

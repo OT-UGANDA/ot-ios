@@ -31,6 +31,7 @@
 @implementation AbstractEntity
 
 @synthesize fetchedResultsController = _fetchedResultsController;
+@synthesize managedObjectContext = _managedObjectContext;
 
 - (id)init {
     if (self = [super init]) {
@@ -55,10 +56,6 @@
 }
 
 #pragma mark - Getters
-
-- (void)setManagedObjectContext:(id)context {
-    _managedObjectContext = context;
-}
 
 - (NSManagedObjectContext *)managedObjectContext {
     if (_managedObjectContext != nil)

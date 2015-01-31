@@ -1,0 +1,21 @@
+/* Strings related to login */
+"action_forgot_password"="ទាញយកលេខសំងាត់ដែលបានបាត់";
+"action_log_in_register"="<b>ចាក់សោរបញ្ចូល</b>";
+"action_sign_in_short"="ចាក់សោរបញ្ចូល";
+"error_connection"="ការភ្ជាប់នេះមិនមានទេ";
+"error_field_required"="ផ្នែកនេះត្រូវការជាចាំបាច់";
+"error_generic_conection"="មានបញ្ហាកើតឡើងអំឡុងពេលតភ្ជាប់";
+"error_generic_login"="មានបញ្ហាកើតឡើងអំឡុងពេលចាក់សោរបញ្ចូល";
+"error_incorrect_password"="ឈ្មោះអ្នកប្រើប្រាស់ រឺ លេខសំងាត់នេះមិនត្រឹមត្រូវ";
+"error_invalid_password"="លេខសំងាត់នេះខ្លីពេក";
+"error_invalid_username"="ឈ្មោះអ្នកប្រើប្រាស់នេះខ្លីពេក";
+"login_progress_signing_in"="ចាក់សោរបញ្ចូល និង#៨២៣០;";
+"message_login_before"="សូមធ្វើកាតចាក់បញ្ចូលជាមុន";
+"message_login_ok"="អ្នកបានចាក់សោរបញ្ចូលបានជោគជ័យ";
+"message_logout_error"="មានបញ្ហាពេលចាកចេញ";
+"message_logout_not_ok"="ចាកចេញបានបរាជ័យ";
+"message_logout_ok"="អ្នកបានចាក់ចេញបានជោគជ័យ";
+"message_timeout_exception"="អស់ពេលវេលាលើកលែង";
+"message_unknowhost_error"="មានបញ្ហាកន្លែងទទួលមិនស្គាល់។ តើមានបណ្តាញនេះទេ?";
+"prompt_password"="លេខសំងាត់";
+"prompt_username"="ឈ្មោះអ្នកប្រើប្រាស់";

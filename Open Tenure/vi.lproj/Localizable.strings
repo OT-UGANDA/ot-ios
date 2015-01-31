@@ -1,262 +1,938 @@
-/* 
-  Localizable.strings
-  Open Tenure
+/*
+ * Loco ios export: iOS Localizable.strings
+ * Project: Localizable
+ * Release: Working copy
+ * Locale: en_GB, English (UK)
+ * Exported by: chuyentt
+ * Exported at: Sun, 25 Jan 2015 18:06:56 +0000
+ */
 
-  Created by Chuyen Trung Tran on 7/16/14.
-  Copyright (c) 2014 Food and Agriculture Organization of the United Nations (FAO). All rights reserved.
-*/
+/* loco:54c52dfe14d725972b8b4587 */
+"action_add_claimant" = "Add Claimant";
 
-"app_name"="Open Tenure";
-"preload"="Opening image";
-"action_settings"="Settings";
-"action_search"="Search";
-"action_new"="New";
-"action_done"="Done";
-"action_remove_attachment"="Remove attachment";
-"action_remove_owner"="Remove rights owner";
-"action_remove_additional_info"="Remove information";
-"action_remove_claim"="Remove claim";
-"action_camera"="Camera";
-"action_map"="Map";
-"action_login"="Log In";
-"action_logout"="Log Out";
-"action_print"="Print";
-"action_save"="Save";
-"action_center"="Center";
-"action_submit"="Submit";
-"action_download_file"="Download File";
-"action_download_claims"="Download Claims";
-"action_new_picture"="New picture";
-"action_new_additional_info"="Add information";
-"action_new_attachment"="New document";
-"action_lock_db"="Configure data encryption";
-"action_export"="Export";
-"action_rotate"="Rotate map using device compass";
-"action_stop_rotating"="Stop rotating the map";
-"title_news"="News";
-"title_map"="Map";
-"title_claims"="Claims";
-"title_persons"="Persons";
-"title_challenged_claims"="Challenged claims";
-"title_claim"="Claim";
-"title_person_details"="Person details";
-"title_claim_additional_info"="Additional information";
-"title_claim_documents"="Documents";
-"title_claim_photos"="Claim photos";
-"title_claim_map"="Map";
-"title_claim_downloading_map"="Downloading Claim";
-"title_claim_adjacencies"="Adjacencies";
-"title_claim_owners"="Shares";
-"title_claim_challenges"="Challenges";
-"title_export"="Exporting Claim as compressed file";
-"title_section"="Section";
-"title_item"="Item";
-"title_activity_settings"="Settings";
-"title_activity_claim"="New claim";
-"title_i_m_here"="Your location";
-"title_activity_person"="New person";
-"title_activity_group"="New group";
-"title_activity_select_claim"="Select claim";
-"title_activity_select_person"="Select person";
-"title_activity_file_chooser"="Choose a file";
-"title_lock_db"="Encrypt local data";
-"title_add_non_boundary"="Add a non boundary location";
-"title_exit_dialog"="Exit";
-"title_remove_person_dialog"="Remove person";
-"choose_file"="Choose an application to select a file";
-"person_name"="Person Name";
-"community_recorder_name"="Community recorder";
-"postal_address"="Postal Address";
-"email_address"="Email Address";
-"male"="Male";
-"female"="Female";
-"physical_person"="Physical person";
-"legal_person"="Legal person";
-"gender"="Gender *";
-"person_type"="Person Type *";
-"claim"="Claim";
-"date"="Date";
-"additional_info"="Additional information";
-"adjacency"="Adjacency";
-"cardinal_direction"="Cardinal direction";
-"new_entity"="New entity";
-"group_name"="Name";
-"group"="Group";
-"person"="Person";
-"title_group_details"="Group details";
-"date_of_establishment_label"="Date of Establishment";
-"title_save_group_dialog"="The group has been modified";
-"message_entity_type"="Which kind of entity ?";
-"by"="By";
-"type"="Type";
-"na"="N.A.";
-"signature"="Signature";
-"claim_date"="Claim date";
-"claim_name"="Claim name";
-"claim_name_label"="Claim name *";
-"claim_type"="Claim type *";
-"default_claim_name"="New claim";
-"first_name"="First name";
-"first_name_label"="First name *";
-"last_name"="Last name";
-"last_name_label"="Last name *";
-"date_of_birth"="Date of birth (YYYY-MM-DD)";
-"date_of_birth_label"="Date of birth * (YYYY-MM-DD)";
-"date_of_start"="Date of right\'s start (YYYY-MM-DD)";
-"date_of_start_label"="Date of right\'s start (YYYY-MM-DD)";
-"place_of_birth"="Place of birth";
-"place_of_birth_label"="Place of birth *";
-"mobile_phone_number"="Mobile phone number";
-"contact_phone_number"="Contact phone number";
-"password"="Password";
-"attachment_removed"="The attachment has been removed";
-"owner_removed"="The owner has been removed";
-"additional_info_removed"="Information removed";
-"message_saved"="Saved";
-"message_server_error_saving_claim"="Server Internal Error";
-"message_service_not_available"="Service Not Available";
-"message_connection_error"="Connection not available";
-"message_attachment_downloaded"="Downloaded the attachment %@";
-"message_attachment_downloading"="Attachment %@ already downloading ";
-"message_attachment_download_failed"="Download of attachment %@ failed ";
-"message_attachment_download_not_complete"="Download of attachment %@ not completed ";
-"message_remove_person"="Person %@ removed";
-"message_remove_person_dialog"="Do you really want to remove %@?";
-"message_error_remove_person"="Person %@ not removed ";
-"message_remaining_days"="Remaining days to challenge the claim :  ";
-"message_map_snapshot_saved"="Map snapshot saved";
-"message_downloading_attachment"="Downloading the attachment";
-"message_invalid_url"="Invalid URL";
-"message_unable_to_save"="Unable to save. Check details and retry";
-"message_unable_to_save_missing_claim_name"="Unable to save. Missing Claim name";
-"message_unable_to_save_missing_person"="Unable to save. Missing Claimant";
-"message_submitted"="The claim has been submitted";
-"message_uploading"="The claim is in upload";
-"message_submission_error"="Error during submission of the claim";
-"message_save_claim_before_submit"="The claim must be saved before submission";
-"message_save_claim_before_adding_content"="The claim must be saved before adding content";
-"message_save_person_before_adding_content"="The person must be saved before adding content";
-"message_export"="Exporting";
-"message_no_claim_to_download"="There\'s no claim to download";
-"message_claims_downloaded"="Claims correctly downloaded";
-"message_error_downloading_claims"="Error during downloading Claims";
-"message_login_no_more_valid"="Session expired. Do login again";
-"message_db_locked"="Data is password protected";
-"message_db_password"="Password to access data?";
-"message_cant_open_db"="Unable to access data";
-"message_check_upgrade_db"="Checking db upgrade";
-"message_no_application"="Can\'t find an application to open the file ";
-"message_error_opening_file"="Error opening the file : ";
-"message_old_db_password"="Current password?";
-"message_new_db_password"="New password?";
-"message_password_dont_match"="New password not confirmed. Please, retry.";
-"message_encryption_failed"="Unable to encrypt local data";
-"message_confirm_new_db_password"="Confirm new password";
-"message_enter_description"="Enter description";
-"message_add_marker"="Add marker to the boundary?";
-"message_remove_marker"="Remove marker?";
-"message_remove_attachment"="Remove attachment?";
-"message_remove_owner"="Remove owner?";
-"message_remove_additional_info"="Remove information?";
-"message_not_supported_on_this_device"="Not supported on this device";
-"message_exit_dialog"="Do you really want to quit the application?";
-"message_create_before_edit"="Create a claim by specifying its details before adding information";
-"message_map_not_yet_draw"="The map of the claim is not yet complete";
-"message_no_available_shares"="Free some shares on this claim before adding a right owner";
-"message_already_owner"="The selected person already shares this claim";
-"message_touch_to_select_a_person"="Touch to select a person";
-"message_touch_to_select_a_claim"="Touch to select a claim";
-"message_error_mandatory_fields"="Fulfill all the mandatory fields before to save";
-"message_error_mandatory_field_first_name"="Fulfill the mandatory field first name before to save";
-"message_error_mandatory_field_last_name"="Fulfill the mandatory field last name before to save";
-"message_error_mandatory_field_gender"="Fulfill the mandatory field gander before to save";
-"message_error_mandatory_field_place_of_birth"="Fulfill the mandatory field place of birth before to save";
-"message_error_mandatory_birthdate"="Date of birth not in the right format or empty";
-"message_error_startdate"="Date of right\'s start  not in the right format or empty";
-"message_remove_quest"="Do you really want withdraw the Claim ?";
-"message_remove_claim"="Do you really want remove the Claim ?";
-"message_error_withdraw_claim"="Error withdrawing claim : ";
-"message_withdrawn_claim"="Claim correctly withdrawn";
-"message_deleted_claim"="Claim correctly deleted locally";
-"check_location_service"="No location information available. Check that location service is enabled in your settings";
-"yes"="Yes";
-"no"="No";
-"up"="Up";
-"down"="Down";
-"left"="Left";
-"right"="Right";
-"confirm"="Confirm";
-"cancel"="Cancel";
-"not_boundary"="Not boundary";
-"new_snapshot"="New snapshot";
-"new_file"="New file";
-"withdraw_claim"="Withdraw Claim";
-"new_additional_info"="Add information";
-"add_description"="Description?";
-"add_key"="Key?";
-"add_value"="Value?";
-"draggable_marker"="Draggable marker";
-"sticky_marker"="Sticky marker";
-"claimant_picture"="Claimant picture";
-"claimant"="Claimant *";
-"delete_locally"="Delete locally";
-"owner"="Owner";
-"challenge_to"="Challenge to";
-"challenged_by"="Challenged by";
-"owners"="Owners";
-"claim_notes"="Notes";
-"insert_claim_notes"="Insert Claim\'s notes";
-"person_picture"="Person picture";
-"map_provider_google_normal"="Google Maps";
-"map_provider_google_satellite"="Google Earth";
-"map_provider_google_hybrid"="Google Hybrid";
-"map_provider_google_terrain"="Google Terrain";
-"map_provider_osm_mapnik"="Open Street Map MapNik";
-"map_provider_osm_mapquest"="Open Street Map MapQuest";
-"map_provider_local_tiles"="Local data";
-"map_provider_geoserver"="GeoServer";
-"cs_url_pref_title"="Community Server URL";
-"cs_url_pref_summary"="The web address of the OpenTenure Community Server";
-"cs_url_pref_dialog_title"="Enter the URL of your OpenTenure Community Server";
-"geoserver_url_pref_title"="GeoServer URL";
-"geoserver_url_pref_summary"="Base URL of your private GeoServer web map provider instance";
-"geoserver_url_pref_dialog_title"="Enter the URL of your GeoServer";
-"geoserver_layer_pref_title"="GeoServer layer";
-"geoserver_layer_pref_summary"="WMS layer to be retrieved from GeoServer (ask your administrator)";
-"geoserver_layer_pref_dialog_title"="Enter the name of the WMS layer";
-"property"="Property";
-"id_type"="Id Type";
-"id_number"="Id Number";
-"land_use"="Land Use";
-"adjacent_properties"="Adjacent properties";
-"north"="North";
-"south"="South";
-"east"="East";
-"west"="West";
-"north_east"="North-East";
-"north_west"="North-West";
-"south_east"="South-East";
-"south_west"="South-West";
-"hint_type_to_filter"="Type some characters to filter the list";
-"shares_prompt"="Select shares";
+/* loco:54c52dfe14d725972b8b4577 */
+"action_backup_db" = "Backup local data";
 
-"title_activity_login_activity_test"="Log in";
-"prompt_username"="Username";
-"prompt_password"="Password";
-"action_log_in_register"="Log in";
-"action_sign_in_short"="Log in";
-"action_forgot_password"="Recover lost password";
-"login_progress_signing_in"="Loggin in...";
-"error_invalid_username"="This username is too short";
-"error_invalid_password"="This password is too short";
-"error_incorrect_password"="Username or Password is incorrect";
-"error_generic_login"="An error has occurred during login";
-"error_generic_conection"="An error has occurred during connection";
-"error_field_required"="This field is required";
-"message_login_before"="Do login before";
-"message_logout_ok"="You have succefully Logout";
-"message_login_ok"="You have succefully Login";
-"message_logout_not_ok"="Logout failed";
-"message_logout_error"="Logout error. ";
-"message_unknowhost_error"="Errore Unknown Host. Is the network available ?";
-"message_timeout_exception"="Timeout exception";
+/* loco:54c52dfe14d725972b8b4572 */
+"action_camera" = "Camera";
+
+/* loco:54c52dfe14d725972b8b457a */
+"action_center" = "Center";
+
+/* loco:54c52dfe14d725972b8b4589 */
+"action_claim_map_snapshot" = "Attach a snapshot of this claim map";
+
+/* loco:54c52dfe14d725972b8b456c */
+"action_done" = "Done";
+
+/* loco:54c52dfe14d725972b8b457e */
+"action_download_claims" = "Download Claims";
+
+/* loco:54c52dfe14d725972b8b457d */
+"action_download_file" = "Download File";
+
+/* loco:54c52dfe14d725972b8b4575 */
+"action_download_tiles" = "Download images to local data for offline map usage";
+
+/* loco:54c52dfe14d725972b8b4583 */
+"action_export" = "Export";
+
+/* loco:54c52dfe14d725972b8b4582 */
+"action_lock_db" = "Configure data encryption";
+
+/* loco:54c52dfe14d725972b8b4574 */
+"action_login" = "Log In";
+
+/* loco:54c52dfe14d725972b8b4576 */
+"action_logout" = "Log Out";
+
+/* loco:54c52dfe14d725972b8b4573 */
+"action_map" = "Map";
+
+/* loco:54c52dfe14d725972b8b4586 */
+"action_modify_claimant" = "Modify Claimant";
+
+/* loco:54c52dfe14d725972b8b456b */
+"action_new" = "New";
+
+/* loco:54c52dfe14d725972b8b4580 */
+"action_new_additional_info" = "Add information";
+
+/* loco:54c52dfe14d725972b8b4581 */
+"action_new_attachment" = "New document";
+
+/* loco:54c52dfe14d725972b8b457f */
+"action_new_picture" = "New picture";
+
+/* loco:54c52dfe14d725972b8b4578 */
+"action_print" = "Print";
+
+/* loco:54c52dfe14d725972b8b456f */
+"action_remove_additional_info" = "Remove information";
+
+/* loco:54c52dfe14d725972b8b456d */
+"action_remove_attachment" = "Remove attachment";
+
+/* loco:54c52dfe14d725972b8b4570 */
+"action_remove_claim" = "Remove claim";
+
+/* loco:54c52dfe14d725972b8b456e */
+"action_remove_owner" = "Remove rights owner";
+
+/* loco:54c52dfe14d725972b8b4571 */
+"action_remove_section_element" = "Remove element";
+
+/* loco:54c52dfe14d725972b8b4584 */
+"action_rotate" = "Rotate map using device compass";
+
+/* loco:54c52dfe14d725972b8b4579 */
+"action_save" = "Save";
+
+/* loco:54c52dfe14d725972b8b456a */
+"action_search" = "Search";
+
+/* loco:54c52dfe14d725972b8b4588 */
+"action_select_challenge" = "Select Claim to Challenge";
+
+/* loco:54c52dfe14d725972b8b4569 */
+"action_settings" = "Settings";
+
+/* loco:54c52dfe14d725972b8b4585 */
+"action_stop_rotating" = "Stop rotating the map";
+
+/* loco:54c52dfe14d725972b8b457c */
+"action_submit" = "Submit";
+
+/* loco:54c52dfe14d725972b8b457b */
+"action_view_community_area" = "View Community Area";
+
+/* loco:54c52dfe14d725972b8b4660 */
+"add_description" = "Description?";
+
+/* loco:54c52dfe14d725972b8b4661 */
+"add_key" = "Key?";
+
+/* loco:54c52dfe14d725972b8b45c0 */
+"add_owner" = "Add Owner ";
+
+/* loco:54c52dfe14d725972b8b4662 */
+"add_value" = "Value?";
+
+/* loco:54c52dfe14d725972b8b45c1 */
+"additional_info" = "Additional information";
+
+/* loco:54c52dfe14d725972b8b45e5 */
+"additional_info_removed" = "Information removed";
+
+/* loco:54c52dfe14d725972b8b45c3 */
+"adjacencies" = "Adjacent Properties";
+
+/* loco:54c52dfe14d725972b8b45c2 */
+"adjacency" = "Adjacency";
+
+/* loco:54c52dfe14d725972b8b4688 */
+"adjacent_claims" = "Adjacent claims";
+
+/* loco:54c52dfe14d725972b8b4689 */
+"adjacent_properties" = "Adjacent properties";
+
+/* loco:54c52dfe14d725972b8b464d */
+"all_tiles_downloaded" = "All tiles in the download list have been downloaded";
+
+/* loco:54c52dfe14d725972b8b4567 */
+"app_name" = "Open Tenure";
+
+/* loco:54c52dfe14d725972b8b45e1 */
+"attachment_removed" = "The attachment has been removed";
+
+/* loco:54c52dfe14d725972b8b45e2 */
+"attachment_updated" = "The attachment has been updated";
+
+/* loco:54c52dfe14d725972b8b45c6 */
+"by" = "By";
+
+/* loco:54c52dfe14d725972b8b4687 */
+"calculated_adjacencies" = "Adjacent claims";
+
+/* loco:54c52dfe14d725972b8b4659 */
+"cancel" = "Cancel";
+
+/* loco:54c52dfe14d725972b8b45c4 */
+"cardinal_direction" = "Cardinal direction";
+
+/* loco:54c52dfe14d725972b8b4669 */
+"challenge_to" = "Challenge to";
+
+/* loco:54c52dfe14d725972b8b466a */
+"challenged_by" = "Challenged by";
+
+/* loco:54c52dfe14d725972b8b464a */
+"check_location_service" = "No location information available. Check that location service is enabled in your settings";
+
+/* loco:54c52dfe14d725972b8b45b2 */
+"choose_file" = "Choose an application to select a file";
+
+/* loco:54c52dfe14d725972b8b45bd */
+"claim" = "Claim";
+
+/* loco:54c52dfe14d725972b8b45cd */
+"claim_date" = "Claim date";
+
+/* loco:54c52dfe14d725972b8b45ce */
+"claim_name" = "Claim name";
+
+/* loco:54c52dfe14d725972b8b45cf */
+"claim_name_label" = "Claim name *";
+
+/* loco:54c52dfe14d725972b8b466c */
+"claim_notes" = "Notes";
+
+/* loco:54c52dfe14d725972b8b4699 */
+"claim_statuses[0]" = "Unmoderated";
+
+/* loco:54c52dfe14d725972b8b469a */
+"claim_statuses[1]" = "Moderated";
+
+/* loco:54c52dfe14d725972b8b469b */
+"claim_statuses[2]" = "Rejected";
+
+/* loco:54c52dfe14d725972b8b469c */
+"claim_statuses[3]" = "Local";
+
+/* loco:54c52dfe14d725972b8b45d0 */
+"claim_type" = "Claim type *";
+
+/* loco:54c52dfe14d725972b8b4666 */
+"claimant" = "Claimant *";
+
+/* loco:54c52dfe14d725972b8b4665 */
+"claimant_picture" = "Claimant picture";
+
+/* loco:54c52dfe14d725972b8b45b4 */
+"community_recorder_name" = "Community recorder";
+
+/* loco:54c52dfe14d725972b8b4658 */
+"confirm" = "Confirm";
+
+/* loco:54c52dfe14d725972b8b45df */
+"contact_phone_number" = "Contact phone number";
+
+/* loco:54c52dfe14d725972b8b4679 */
+"cs_url_pref_dialog_title" = "Enter the URL of your OpenTenure Community Server";
+
+/* loco:54c52dfe14d725972b8b4678 */
+"cs_url_pref_summary" = "The web address of the OpenTenure Community Server";
+
+/* loco:54c52dfe14d725972b8b4677 */
+"cs_url_pref_title" = "Community Server URL";
+
+/* loco:54c52dfe14d725972b8b45be */
+"date" = "Date";
+
+/* loco:54c52dfe14d725972b8b45d6 */
+"date_of_birth" = "Date of birth (YYYY-MM-DD)";
+
+/* loco:54c52dfe14d725972b8b45d7 */
+"date_of_birth_label" = "Date of birth * (YYYY-MM-DD)";
+
+/* loco:54c52dfe14d725972b8b45dc */
+"date_of_establishment_label" = "Date of Establishment";
+
+/* loco:54c52dfe14d725972b8b45d8 */
+"date_of_start" = "YYYY-MM-DD";
+
+/* loco:54c52dfe14d725972b8b45d9 */
+"date_of_start_label" = "Date claim applies from (YYYY-MM-DD)";
+
+/* loco:54c52dfe14d725972b8b45d1 */
+"default_claim_name" = "New claim";
+
+/* loco:54c52dfe14d725972b8b4667 */
+"delete_locally" = "Delete locally";
+
+/* loco:54c52dfe14d725972b8b4655 */
+"down" = "Down";
+
+/* loco:54c52dfe14d725972b8b4663 */
+"draggable_marker" = "Draggable marker";
+
+/* loco:54c52dfe14d725972b8b4690 */
+"east" = "East";
+
+/* loco:54c52dfe14d725972b8b468c */
+"east_adjacency" = "Describe the property at east of your claim";
+
+/* loco:54c52dfe14d725972b8b45b6 */
+"email_address" = "Email Address";
+
+/* loco:54c52dfe14d725972b8b45d2 */
+"first_name" = "First name";
+
+/* loco:54c52dfe14d725972b8b45d3 */
+"first_name_label" = "First name *";
+
+/* loco:54c52dfe14d725972b8b4682 */
+"form_template_url_pref_dialog_title" = "Enter the URL for the survey form";
+
+/* loco:54c52dfe14d725972b8b4681 */
+"form_template_url_pref_summary" = "URL for the survey form";
+
+/* loco:54c52dfe14d725972b8b4680 */
+"form_template_url_pref_title" = "Form URL";
+
+/* loco:54c52dfe14d725972b8b45bb */
+"gender" = "Gender *";
+
+/* loco:54c52dfe14d725972b8b45b8 */
+"gender_feminine" = "Female";
+
+/* loco:54c52dfe14d725972b8b45b7 */
+"gender_masculine" = "Male";
+
+/* loco:54c52dfe14d725972b8b467f */
+"geoserver_layer_pref_dialog_title" = "Enter the name of the WMS layer";
+
+/* loco:54c52dfe14d725972b8b467e */
+"geoserver_layer_pref_summary" = "WMS layer to be retrieved from GeoServer (ask your administrator)";
+
+/* loco:54c52dfe14d725972b8b467d */
+"geoserver_layer_pref_title" = "GeoServer layer";
+
+/* loco:54c52dfe14d725972b8b467c */
+"geoserver_url_pref_dialog_title" = "Enter the URL of your GeoServer";
+
+/* loco:54c52dfe14d725972b8b467b */
+"geoserver_url_pref_summary" = "Base URL of your private GeoServer web map provider instance";
+
+/* loco:54c52dfe14d725972b8b467a */
+"geoserver_url_pref_title" = "GeoServer URL";
+
+/* loco:54c52dfe14d725972b8b4652 */
+"group" = "Group";
+
+/* loco:54c52dfe14d725972b8b45c9 */
+"group_name" = "Name";
+
+/* loco:54c52dfe14d725972b8b4697 */
+"hint_type_to_filter" = "Type some characters to filter the list";
+
+/* loco:54c52dfe14d725972b8b4685 */
+"id_number" = "Id Number";
+
+/* loco:54c52dfe14d725972b8b4684 */
+"id_type" = "Id Type";
+
+/* loco:54c52dfe14d725972b8b466d */
+"insert_claim_notes" = "Insert Claim's notes";
+
+/* loco:54c52dfe14d725972b8b4686 */
+"land_use" = "Land Use";
+
+/* loco:54c52dfe14d725972b8b45d4 */
+"last_name" = "Last name";
+
+/* loco:54c52dfe14d725972b8b45d5 */
+"last_name_label" = "Last name *";
+
+/* loco:54c52dfe14d725972b8b4656 */
+"left" = "Left";
+
+/* loco:54c52dfe14d725972b8b45ba */
+"legal_person" = "Legal person";
+
+/* loco:54c52dfe14d725972b8b4676 */
+"map_provider_geoserver" = "GeoServer";
+
+/* loco:54c52dfe14d725972b8b4671 */
+"map_provider_google_hybrid" = "Google Hybrid";
+
+/* loco:54c52dfe14d725972b8b466f */
+"map_provider_google_normal" = "Google Maps";
+
+/* loco:54c52dfe14d725972b8b4670 */
+"map_provider_google_satellite" = "Google Earth";
+
+/* loco:54c52dfe14d725972b8b4672 */
+"map_provider_google_terrain" = "Google Terrain";
+
+/* loco:54c52dfe14d725972b8b4675 */
+"map_provider_local_tiles" = "Local data";
+
+/* loco:54c52dfe14d725972b8b4673 */
+"map_provider_osm_mapnik" = "Open Street Map MapNik";
+
+/* loco:54c52dfe14d725972b8b4674 */
+"map_provider_osm_mapquest" = "Open Street Map MapQuest";
+
+/* loco:54c52dfe14d725972b8b461f */
+"message_add_marker" = "Add marker to the boundary?";
+
+/* loco:54c52dfe14d725972b8b4601 */
+"message_added_attachment" = "The attachment has been added to the claim";
+
+/* loco:54c52dfe14d725972b8b4602 */
+"message_adding_attachment_not_ok" = "Error during adding of the attachment";
+
+/* loco:54c52dfe14d725972b8b45f8 */
+"message_adjacencies_not_saved" = "Adjacencies not saved";
+
+/* loco:54c52dfe14d725972b8b45f7 */
+"message_adjacencies_saved" = "Adjacencies saved";
+
+/* loco:54c52dfe14d725972b8b462d */
+"message_already_owner" = "The selected person already shares this claim";
+
+/* loco:54c52dfe14d725972b8b4649 */
+"message_app_initialized" = "The app is ready to work and communicate to the Open Tenure Community Server ";
+
+/* loco:54c52dfe14d725972b8b4648 */
+"message_app_initialized_default" = "The app is ready to work and communicate to the Default Open Tenure Community Server ";
+
+/* loco:54c52dfe14d725972b8b4641 */
+"message_app_initializing" = "Please, wait…";
+
+/* loco:54c52dfe14d725972b8b4646 */
+"message_app_not_initialized" = "Check in 'Settings' that the settings of your Open Tenure Community Server are correct and run again the initialization process";
+
+/* loco:54c52dfe14d725972b8b4643 */
+"message_app_not_initialized_network" = "The network's connection is not available";
+
+/* loco:54c52dfe14d725972b8b4644 */
+"message_app_not_yet_initialized" = "The application is not yet initialized";
+
+/* loco:54c52dfe14d725972b8b45f0 */
+"message_attachment_download_failed" = "Download of attachment %s failed ";
+
+/* loco:54c52dfe14d725972b8b45f1 */
+"message_attachment_download_not_complete" = "Download of attachment %s not completed ";
+
+/* loco:54c52dfe14d725972b8b45ee */
+"message_attachment_downloaded" = "Downloaded the attachment %s";
+
+/* loco:54c52dfe14d725972b8b45ef */
+"message_attachment_downloading" = "Attachment %s already downloading ";
+
+/* loco:54c52dfe14d725972b8b4610 */
+"message_cant_open_db" = "Unable to access data";
+
+/* loco:54c52dfe14d725972b8b4611 */
+"message_check_upgrade_db" = "Upgrading local data";
+
+/* loco:54c52dfe14d725972b8b45ed */
+"message_claim_exported" = "Exported the claim %s";
+
+/* loco:54c52dfe14d725972b8b45ec */
+"message_claim_exported_error" = "The claim %s is not exported";
+
+/* loco:54c52dfe14d725972b8b463e */
+"message_claim_modified" = "Claim modified";
+
+/* loco:54c52dfe14d725972b8b460a */
+"message_claims_downloaded" = "Claims correctly downloaded";
+
+/* loco:54c52dfe14d725972b8b461d */
+"message_confirm_new_db_password" = "Confirm new password";
+
+/* loco:54c52dfe14d725972b8b45eb */
+"message_connection_error" = "Connection not available";
+
+/* loco:54c52dfe14d725972b8b4627 */
+"message_create_before_edit" = "Create a claim by specifying its details before adding information";
+
+/* loco:54c52dfe14d725972b8b4616 */
+"message_data_over_mobile" = "You are about to transfer a possibly large amount of data over a mobile internet connection. The associated cost can be high depending on your actual data plan";
+
+/* loco:54c52dfe14d725972b8b461b */
+"message_data_unencrypted" = "Warning: your local data is not encrypted";
+
+/* loco:54c52dfe14d725972b8b4645 */
+"message_db_backed_up" = "A copy of the local database has been created";
+
+/* loco:54c52dfe14d725972b8b460e */
+"message_db_locked" = "Data is password protected";
+
+/* loco:54c52dfe14d725972b8b460f */
+"message_db_password" = "Password to access data?";
+
+/* loco:54c52dfe14d725972b8b4613 */
+"message_default_initialization" = "You are about to initialize the application with the default Community Server. Default Community Server should be used just for demo purpose. Do you want to continue? Otherwise press Cancel and put a community server URL in settings  ";
+
+/* loco:54c52dfe14d725972b8b463a */
+"message_deleted_claim" = "Claim correctly deleted locally";
+
+/* loco:54c52dfe14d725972b8b463d */
+"message_discard_changes" = "Do you really want exit without save ?";
+
+/* loco:54c52dfe14d725972b8b45f9 */
+"message_downloading_attachment" = "Downloading the attachment";
+
+/* loco:54c52dfe14d725972b8b461a */
+"message_encryption_failed" = "Unable to encrypt local data";
+
+/* loco:54c52dfe14d725972b8b461c */
+"message_encryption_set" = "Your local data is encrypted. Provide the encryption password next time you start OpenTenure";
+
+/* loco:54c52dfe14d725972b8b461e */
+"message_enter_description" = "Enter description";
+
+/* loco:54c52dfe14d725972b8b463f */
+"message_entity_type" = "Which kind of entity ?";
+
+/* loco:54c52dfe14d725972b8b463b */
+"message_error_deleting_claim" = "Error deleting claim locally";
+
+/* loco:54c52dfe14d725972b8b460b */
+"message_error_downloading_claims" = "Downloaded %s claims. Not all claims have been downloaded";
+
+/* loco:54c52dfe14d725972b8b4634 */
+"message_error_mandatory_birthdate" = "Date of birth not in the right format or empty";
+
+/* loco:54c52dfe14d725972b8b4631 */
+"message_error_mandatory_field_first_name" = "Fulfill the mandatory field first name before to save";
+
+/* loco:54c52dfe14d725972b8b4633 */
+"message_error_mandatory_field_gender" = "Fulfill the mandatory field gander before to save";
+
+/* loco:54c52dfe14d725972b8b4632 */
+"message_error_mandatory_field_last_name" = "Fulfill the mandatory field last name before to save";
+
+/* loco:54c52dfe14d725972b8b4630 */
+"message_error_mandatory_fields" = "Fulfill all the mandatory fields before to save";
+
+/* loco:54c52dfe14d725972b8b4614 */
+"message_error_opening_file" = "Error opening the file : ";
+
+/* loco:54c52dfe14d725972b8b45f4 */
+"message_error_remove_person" = "Person %s not removed ";
+
+/* loco:54c52dfe14d725972b8b4635 */
+"message_error_startdate" = "Date of right's start  not in the right format or empty";
+
+/* loco:54c52dfe14d725972b8b4638 */
+"message_error_withdraw_claim" = "Error withdrawing claim : ";
+
+/* loco:54c52dfe14d725972b8b4626 */
+"message_exit_dialog" = "Do you really want to quit the application?";
+
+/* loco:54c52dfe14d725972b8b4608 */
+"message_export" = "Exporting";
+
+/* loco:54c52dfe14d725972b8b460d */
+"message_initialize_before" = " Do initialization before ";
+
+/* loco:54c52dfe14d725972b8b45fb */
+"message_invalid_url" = "Invalid URL";
+
+/* loco:54c52dfe14d725972b8b460c */
+"message_login_no_more_valid" = "Session expired. Do login again";
+
+/* loco:54c52dfe14d725972b8b4628 */
+"message_map_not_yet_draw" = "The map of the claim is not yet complete";
+
+/* loco:54c52dfe14d725972b8b45f6 */
+"message_map_snapshot_saved" = "Map snapshot saved";
+
+/* loco:54c52dfe14d725972b8b4618 */
+"message_new_db_password" = "New password (leave blank for unencrypted data)?";
+
+/* loco:54c52dfe14d725972b8b4612 */
+"message_no_application" = "Can't find an application to open the file";
+
+/* loco:54c52dfe14d725972b8b4629 */
+"message_no_available_shares" = "Free some shares on this claim before modify the value of this share ";
+
+/* loco:54c52dfe14d725972b8b462a */
+"message_no_available_shares_adding_new" = "Free some shares on this claim before ading a new share ";
+
+/* loco:54c52dfe14d725972b8b4609 */
+"message_no_claim_to_download" = "There's no claim to download";
+
+/* loco:54c52dfe14d725972b8b4617 */
+"message_no_connection_at_startup" = "No Internet connection is available. Configuration may not reflect recent changes and you won't be able do upload or download information. Connect to the Internet if you plan to transfer data using OpenTenure";
+
+/* loco:54c52dfe14d725972b8b4625 */
+"message_not_supported_on_this_device" = "Not supported on this device";
+
+/* loco:54c52dfe14d725972b8b4615 */
+"message_old_db_password" = "Current password?";
+
+/* loco:54c52dfe14d725972b8b45e7 */
+"message_password_character_is_wrong" = "The password must only contain digits and letters";
+
+/* loco:54c52dfe14d725972b8b4619 */
+"message_password_dont_match" = "New password not confirmed. Please, retry.";
+
+/* loco:54c52dfe14d725972b8b45e6 */
+"message_password_too_short" = "The password must be at least %d characters long";
+
+/* loco:54c52dfe14d725972b8b45f5 */
+"message_remaining_days" = "Remaining days to challenge the claim :  ";
+
+/* loco:54c52dfe14d725972b8b4624 */
+"message_remove_additional_info" = "Remove information?";
+
+/* loco:54c52dfe14d725972b8b4621 */
+"message_remove_attachment" = "Remove attachment?";
+
+/* loco:54c52dfe14d725972b8b4637 */
+"message_remove_claim" = "Do you really want remove the Claim ?";
+
+/* loco:54c52dfe14d725972b8b4620 */
+"message_remove_marker" = "Remove marker?";
+
+/* loco:54c52dfe14d725972b8b4622 */
+"message_remove_owner" = "Remove owner?";
+
+/* loco:54c52dfe14d725972b8b45f2 */
+"message_remove_person" = "Person %s removed";
+
+/* loco:54c52dfe14d725972b8b45f3 */
+"message_remove_person_dialog" = "Do you really want to remove %s?";
+
+/* loco:54c52dfe14d725972b8b4636 */
+"message_remove_quest" = "Do you really want withdraw the Claim ?";
+
+/* loco:54c52dfe14d725972b8b4623 */
+"message_remove_section_element" = "Remove element?";
+
+/* loco:54c52dfe14d725972b8b463c */
+"message_save_changes" = "Do you want save changes ?";
+
+/* loco:54c52dfe14d725972b8b4606 */
+"message_save_claim_before_adding_content" = "The claim must be saved before adding content";
+
+/* loco:54c52dfe14d725972b8b4604 */
+"message_save_claim_before_submit" = "The claim must be saved before submission";
+
+/* loco:54c52dfe14d725972b8b4607 */
+"message_save_person_before_adding_content" = "The person must be saved before adding content";
+
+/* loco:54c52dfe14d725972b8b4605 */
+"message_save_snapshot_before_printing" = "Attach a map snapshot before printing";
+
+/* loco:54c52dfe14d725972b8b45e8 */
+"message_saved" = "Saved";
+
+/* loco:54c52dfe14d725972b8b45e9 */
+"message_server_error_saving_claim" = "Server Internal Error";
+
+/* loco:54c52dfe14d725972b8b45ea */
+"message_service_not_available" = "Service Not Available";
+
+/* loco:54c52dfe14d725972b8b462c */
+"message_share_not_saved" = "Error saving share ";
+
+/* loco:54c52dfe14d725972b8b462b */
+"message_share_saved" = "Share saved";
+
+/* loco:54c52dfe14d725972b8b4603 */
+"message_submission_error" = "Error during submission of the claim";
+
+/* loco:54c52dfe14d725972b8b45ff */
+"message_submitted" = "The claim has been submitted";
+
+/* loco:54c52dfe14d725972b8b4647 */
+"message_title_app_initialized" = "The application is initialized";
+
+/* loco:54c52dfe14d725972b8b4640 */
+"message_title_app_initializing" = "Initializing OpenTenure";
+
+/* loco:54c52dfe14d725972b8b4642 */
+"message_title_app_not_initialized" = "The application is not initialized";
+
+/* loco:54c52dfe14d725972b8b462f */
+"message_touch_to_select_a_claim" = "Touch to select a claim";
+
+/* loco:54c52dfe14d725972b8b462e */
+"message_touch_to_select_a_person" = "Touch to select a person";
+
+/* loco:54c52dfe14d725972b8b45fc */
+"message_unable_to_save" = "Unable to save. Check details and retry";
+
+/* loco:54c52dfe14d725972b8b45fd */
+"message_unable_to_save_missing_claim_name" = "Unable to save. Missing Claim name";
+
+/* loco:54c52dfe14d725972b8b45fe */
+"message_unable_to_save_missing_person" = "Unable to save. Missing Claimant";
+
+/* loco:54c52dfe14d725972b8b4600 */
+"message_uploading" = "The claim is in upload";
+
+/* loco:54c52dfe14d725972b8b45fa */
+"message_uploading_attachment" = "Uploading the attachment";
+
+/* loco:54c52dfe14d725972b8b4639 */
+"message_withdrawn_claim" = "Claim correctly withdrawn";
+
+/* loco:54c52dfe14d725972b8b45de */
+"mobile_phone_number" = "Mobile phone number";
+
+/* loco:54c52dfe14d725972b8b45c8 */
+"na" = "N.A.";
+
+/* loco:54c52dfe14d725972b8b465f */
+"new_additional_info" = "Add information";
+
+/* loco:54c52dfe14d725972b8b45c5 */
+"new_entity" = "New entity";
+
+/* loco:54c52dfe14d725972b8b465c */
+"new_file" = "New file";
+
+/* loco:54c52dfe14d725972b8b465d */
+"new_multipage" = "New Multipage File";
+
+/* loco:54c52dfe14d725972b8b465b */
+"new_snapshot" = "New snapshot";
+
+/* loco:54c52dfe14d725972b8b4653 */
+"no" = "No";
+
+/* loco:54c52dfe14d725972b8b468e */
+"north" = "North";
+
+/* loco:54c52dfe14d725972b8b468a */
+"north_adjacency" = "Describe the property at north of your claim";
+
+/* loco:54c52dfe14d725972b8b4693 */
+"north_east" = "North-East";
+
+/* loco:54c52dfe14d725972b8b4694 */
+"north_west" = "North-West";
+
+/* loco:54c52dfe14d725972b8b464e */
+"not_all_tiles_downloaded" = "%d tiles for this map area have not been downloaded. Check that you are happy with the result or retry the download";
+
+/* loco:54c52dfe14d725972b8b465a */
+"not_boundary" = "Not boundary";
+
+/* loco:54c52dfe14d725972b8b4668 */
+"owner" = "Owner";
+
+/* loco:54c52dfe14d725972b8b45e3 */
+"owner_removed" = "The owner has been removed";
+
+/* loco:54c52dfe14d725972b8b466b */
+"owners" = "Owners";
+
+/* loco:54c52dfe14d725972b8b45e0 */
+"password" = "Password";
+
+/* loco:54c52dfe14d725972b8b4651 */
+"person" = "Person";
+
+/* loco:54c52dfe14d725972b8b45b3 */
+"person_name" = "Person Name";
+
+/* loco:54c52dfe14d725972b8b466e */
+"person_picture" = "Person picture";
+
+/* loco:54c52dfe14d725972b8b45bc */
+"person_type" = "Person Type *";
+
+/* loco:54c52dfe14d725972b8b45b9 */
+"physical_person" = "Physical person";
+
+/* loco:54c52dfe14d725972b8b45da */
+"place_of_birth" = "Place of birth";
+
+/* loco:54c52dfe14d725972b8b45db */
+"place_of_birth_label" = "Place of birth *";
+
+/* loco:54c52dfe14d725972b8b45b5 */
+"postal_address" = "Postal Address";
+
+/* loco:54c52dfe14d725972b8b4568 */
+"preload" = "Opening image";
+
+/* loco:54c52dfe14d725972b8b4683 */
+"property" = "Property";
+
+/* loco:54c52dfe14d725972b8b45dd */
+"recorded_by" = "Recorded by : ";
+
+/* loco:54c52dfe14d725972b8b4657 */
+"right" = "Right";
+
+/* loco:54c52dfe14d725972b8b45e4 */
+"section_element_removed" = "The element has been removed";
+
+/* loco:54c52dfe14d725972b8b45bf */
+"share_value" = "Percentage value : ";
+
+/* loco:54c52dfe14d725972b8b4698 */
+"shares_prompt" = "Select shares";
+
+/* loco:54c52dfe14d725972b8b45ca */
+"signature" = "Signature";
+
+/* loco:54c52dfe14d725972b8b45cc */
+"software_version" = "0.9.5";
+
+/* loco:54c52dfe14d725972b8b45cb */
+"software_version_title" = "Software Version";
+
+/* loco:54c52dfe14d725972b8b468f */
+"south" = "South";
+
+/* loco:54c52dfe14d725972b8b468b */
+"south_adjacency" = "Describe the property at south of your claim";
+
+/* loco:54c52dfe14d725972b8b4695 */
+"south_east" = "South-East";
+
+/* loco:54c52dfe14d725972b8b4696 */
+"south_west" = "South-West";
+
+/* loco:54c52dfe14d725972b8b4692 */
+"status" = "status : ";
+
+/* loco:54c52dfe14d725972b8b4664 */
+"sticky_marker" = "Sticky marker";
+
+/* loco:54c52dfe14d725972b8b464b */
+"tiles_queued" = "There are %d tiles in the download list";
+
+/* loco:54c52dfe14d725972b8b45a0 */
+"title_activity_claim" = "Open Tenure: New claim";
+
+/* loco:54c52dfe14d725972b8b45a7 */
+"title_activity_file_chooser" = "Choose a file";
+
+/* loco:54c52dfe14d725972b8b45a3 */
+"title_activity_group" = "Open Tenure: New group";
+
+/* loco:54c52dfe14d725972b8b45a2 */
+"title_activity_person" = "Open Tenure: New person";
+
+/* loco:54c52dfe14d725972b8b45a4 */
+"title_activity_select_claim" = "Open Tenure: Select claim";
+
+/* loco:54c52dfe14d725972b8b45a5 */
+"title_activity_select_person" = "Open Tenure: Select person";
+
+/* loco:54c52dfe14d725972b8b459f */
+"title_activity_settings" = "Settings";
+
+/* loco:54c52dfe14d725972b8b45a6 */
+"title_activity_share_details" = "Open Tenure: Share details";
+
+/* loco:54c52dfe14d725972b8b45aa */
+"title_add_non_boundary" = "Add a non boundary location";
+
+/* loco:54c52dfe14d725972b8b458f */
+"title_challenged_claim" = "Challenged claim : ";
+
+/* loco:54c52dfe14d725972b8b458e */
+"title_challenged_claims" = "Challenged claims";
+
+/* loco:54c52dfe14d725972b8b4590 */
+"title_claim" = "Claim";
+
+/* loco:54c52dfe14d725972b8b4597 */
+"title_claim__downloading_map" = "Downloading Claim";
+
+/* loco:54c52dfe14d725972b8b4593 */
+"title_claim_additional_info" = "Additional information";
+
+/* loco:54c52dfe14d725972b8b4598 */
+"title_claim_adjacencies" = "Adjacencies";
+
+/* loco:54c52dfe14d725972b8b459b */
+"title_claim_challenges" = "Challenges";
+
+/* loco:54c52dfe14d725972b8b4594 */
+"title_claim_documents" = "Documents";
+
+/* loco:54c52dfe14d725972b8b4596 */
+"title_claim_map" = "Map";
+
+/* loco:54c52dfe14d725972b8b4599 */
+"title_claim_owners" = "Shares";
+
+/* loco:54c52dfe14d725972b8b4595 */
+"title_claim_photos" = "Claim photos";
+
+/* loco:54c52dfe14d725972b8b458c */
+"title_claims" = "List of Claims";
+
+/* loco:54c52dfe14d725972b8b45a9 */
+"title_confirm_data_transfer" = "Confirm data transfer";
+
+/* loco:54c52dfe14d725972b8b45ab */
+"title_exit_dialog" = "Exit";
+
+/* loco:54c52dfe14d725972b8b459c */
+"title_export" = "Exporting Claim as compressed file";
+
+/* loco:54c52dfe14d725972b8b4592 */
+"title_group_details" = "Group details";
+
+/* loco:54c52dfe14d725972b8b45a1 */
+"title_i_m_here" = "Your location";
+
+/* loco:54c52dfe14d725972b8b45ac */
+"title_initialization_process" = "Initialization Process";
+
+/* loco:54c52dfe14d725972b8b459e */
+"title_item" = "Item";
+
+/* loco:54c52dfe14d725972b8b45a8 */
+"title_lock_db" = "Encrypt local data";
+
+/* loco:54c52dfe14d725972b8b458b */
+"title_map" = "Community Map";
+
+/* loco:54c52dfe14d725972b8b458a */
+"title_news" = "News";
+
+/* loco:54c52dfe14d725972b8b45b1 */
+"title_no_connection" = "No connection";
+
+/* loco:54c52dfe14d725972b8b4591 */
+"title_person_details" = "Person details";
+
+/* loco:54c52dfe14d725972b8b458d */
+"title_persons" = "Persons";
+
+/* loco:54c52dfe14d725972b8b45ad */
+"title_remove_person_dialog" = "Remove person";
+
+/* loco:54c52dfe14d725972b8b45ae */
+"title_save_claim_dialog" = "The claim has been modified";
+
+/* loco:54c52dfe14d725972b8b45b0 */
+"title_save_group_dialog" = "The group has been modified";
+
+/* loco:54c52dfe14d725972b8b45af */
+"title_save_person_dialog" = "The person has been modified";
+
+/* loco:54c52dfe14d725972b8b459d */
+"title_section" = "Section";
+
+/* loco:54c52dfe14d725972b8b459a */
+"title_share" = "Share";
+
+/* loco:54c52dfe14d725972b8b464c */
+"too_many_tiles_queued" = "There are %d tiles in the download list. Please, wait before downloading additional tiles";
+
+/* loco:54c52dfe14d725972b8b45c7 */
+"type" = "Type";
+
+/* loco:54c52dfe14d725972b8b4654 */
+"up" = "Up";
+
+/* loco:54c52dfe14d725972b8b4691 */
+"west" = "West";
+
+/* loco:54c52dfe14d725972b8b468d */
+"west_adjacency" = "Describe the property at west of your claim";
+
+/* loco:54c52dfe14d725972b8b465e */
+"withdraw_claim" = "Withdraw Claim";
+
+/* loco:54c52dfe14d725972b8b4650 */
+"yes" = "Yes";
+
+/* loco:54c52dfe14d725972b8b464f */
+"zoom_level_too_low" = "The area is too large. Increase the zoom level before downloading local data for the map";

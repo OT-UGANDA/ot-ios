@@ -79,15 +79,10 @@ CGFloat TBScaledValueForValue(CGFloat value) {
         _countLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
         self.countLabel.text = [@(_count) stringValue];
     } else {
-        CGRect newBounds = CGRectMake(0, 0, roundf(44 * TBScaledValueForValue(1) + TBScaledValueForValue(1) * [[@(_count) stringValue] length]), roundf(44 * TBScaledValueForValue(1) + TBScaledValueForValue(1) * [[@(_count) stringValue] length]));
-        self.frame = TBCenterRect(newBounds, self.center);
-        CGRect newLabelBounds = CGRectMake(0, 0, newBounds.size.width / 1.3, newBounds.size.height / 1.3);
-        newLabelBounds.size.width = roundf(([[self.annotation title] length] + 1) * 11 * TBScaledValueForValue(count));
-        if (newLabelBounds.size.width == 0)
-            newLabelBounds.size.width = newBounds.size.width;
-        newLabelBounds.size.height = 20;
-        CGRect frame = TBCenterRect(newLabelBounds, TBRectCenter(newBounds));
-        frame.origin.y = 32;
+        CGSize size = [[self.annotation title] sizeWithAttributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:13]}];
+        CGRect frame = CGRectMake(8.0f, 20.0f, size.width, size.height);
+        frame = TBCenterRect(frame, frame.origin);
+        
         self.countLabel.frame = frame;
         self.countLabel.backgroundColor = [UIColor clearColor];
         self.countLabel.layer.cornerRadius = 3;
@@ -101,6 +96,7 @@ CGFloat TBScaledValueForValue(CGFloat value) {
         self.countLabel.font = [UIFont boldSystemFontOfSize:12];
         self.countLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
         self.countLabel.text = [self.annotation title];
+
     }
 
     [self setNeedsDisplay];

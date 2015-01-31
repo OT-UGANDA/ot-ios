@@ -111,7 +111,7 @@
  Override định nghĩa câu truy vấn
  */
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
-    return [NSPredicate predicateWithFormat:@"(attachmentId == %@)", searchText];
+    return [NSPredicate predicateWithFormat:@"(attachmentId CONTAINS[cd] %@)", searchText];
 }
 
 #pragma AttachmentEntity methods

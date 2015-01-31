@@ -70,7 +70,7 @@
       <AdditionalOptions>
       </AdditionalOptions>
       <LocationScenarioReference
-         identifier = "../../../DefaultLocation.gpx"
+         identifier = "../../Open Tenure/DefaultLocation.gpx"
          referenceType = "0">
       </LocationScenarioReference>
    </LaunchAction>

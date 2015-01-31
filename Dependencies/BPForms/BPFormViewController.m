@@ -37,9 +37,6 @@
 
 @interface BPFormViewController ()
 
-@property (nonatomic, strong) NSMutableDictionary *sectionHeaderTitles; // dictionary holding (section, title) pairs
-@property (nonatomic, strong) NSMutableDictionary *sectionFooterTitles; // dictionary holding (section, title) pairs
-
 @end
 
 
@@ -176,7 +173,7 @@
         [self.tableView setSeparatorInset:UIEdgeInsetsZero];
     }
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-//    self.tableView.backgroundColor = [BPAppearance sharedInstance].tableViewBackGroundColor;
+    self.tableView.backgroundColor = [BPAppearance sharedInstance].tableViewBackGroundColor;
 }
 
 - (void)setHeaderTitle:(NSString *)inHeaderTitle forSection:(int)inSection {

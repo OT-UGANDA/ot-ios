@@ -33,8 +33,6 @@
 @interface DocumentTypeEntity : AbstractEntity
 
 + (DocumentType *)create;
-+ (BOOL)insertFromResponseObject:(ResponseDocumentType *)responseObject;
-+ (BOOL)updateFromResponseObject:(ResponseDocumentType *)responseObject;
 
 + (NSArray *)getCollection;
 

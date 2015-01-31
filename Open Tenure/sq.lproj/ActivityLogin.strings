@@ -1,0 +1,21 @@
+/* Strings related to login */
+"action_forgot_password"="Rikthe fjalëkalimin e humbur";
+"action_log_in_register"="Hyrje";
+"action_sign_in_short"="Kyçuni";
+"error_connection"="Lidhja nuk është e disponueshme";
+"error_field_required"="Kjo fushë është e detyruar";
+"error_generic_conection"="Një gabim ka ndodhur gjatë lidhjes";
+"error_generic_login"="Një gabim ka ndodhur gjatë kyçjes ";
+"error_incorrect_password"="Përdoruesi ose Fjalëkalimi është i pa saktë";
+"error_invalid_password"="Fjalëkalimi është shumë i shkurtër";
+"error_invalid_username"="Përdoruesi është shumë i shkurtër";
+"login_progress_signing_in"="Duke u kyçur…";
+"message_login_before"="Kyçuni fillimisht";
+"message_login_ok"="Kyçja u krye me sukses";
+"message_logout_error"="Gabim gjatë daljes";
+"message_logout_not_ok"="Dalja dështoi";
+"message_logout_ok"="Dalja u krye me sukses";
+"message_timeout_exception"="Lidhja e paqëndrueshme";
+"message_unknowhost_error"="Gabim i panjohur. A është rrjeti i disponueshëm?";
+"prompt_password"="Fjalëkalimi";
+"prompt_username"="Përdoruesi";

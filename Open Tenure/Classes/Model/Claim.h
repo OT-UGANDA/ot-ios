@@ -29,11 +29,12 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class AdditionalInfo, Attachment, Claim, ClaimType, LandUse, Person, Share;
+@class AdditionalInfo, Attachment, Claim, ClaimType, LandUse, Person, Share, Location, FormPayload;
 
 @interface Claim : NSManagedObject
 
 @property (nonatomic, retain) NSString * challengeExpiryDate;
+@property (nonatomic, retain) NSString * challengedClaimId;
 @property (nonatomic, retain) NSString * claimId;
 @property (nonatomic, retain) NSString * claimName;
 @property (nonatomic, retain) NSString * decisionDate;
@@ -57,6 +58,9 @@
 @property (nonatomic, retain) LandUse *landUse;
 @property (nonatomic, retain) NSSet *shares;
 @property (nonatomic, retain) Person *person;
+@property (nonatomic, retain) NSSet *locations;
+@property (nonatomic, retain) FormPayload *dynamicForm;
+
 @end
 
 @interface Claim (CoreDataGeneratedAccessors)
@@ -80,5 +84,10 @@
 - (void)removeSharesObject:(Share *)value;
 - (void)addShares:(NSSet *)values;
 - (void)removeShares:(NSSet *)values;
+
+- (void)addLocationsObject:(Location *)value;
+- (void)removeLocationsObject:(Location *)value;
+- (void)addLocations:(NSSet *)values;
+- (void)removeLocations:(NSSet *)values;
 
 @end

@@ -40,5 +40,6 @@
 - (void)importFromJSON:(NSDictionary *)keyedValues;
 
 - (BOOL)canBeUploaded;
+- (void)withDraw;
 
 @end

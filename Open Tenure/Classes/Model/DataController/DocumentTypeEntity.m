@@ -85,46 +85,14 @@
 
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
     if (scope == 0)
-        return [NSPredicate predicateWithFormat:@"(code == %@)", searchText];
+        return [NSPredicate predicateWithFormat:@"(code CONTAINS[cd] %@)", searchText];
     else
-        return [NSPredicate predicateWithFormat:@"(displayValue == %@)", searchText];
+        return [NSPredicate predicateWithFormat:@"(displayValue CONTAINS[cd] %@)", searchText];
 }
 
 + (DocumentType *)create {
     DocumentType *entityObject = [NSEntityDescription insertNewObjectForEntityForName:[[self sharedEntity] entityName] inManagedObjectContext:[[self sharedEntity] managedObjectContext]];
     return entityObject;
-}
-
-+ (BOOL)insertFromResponseObject:(ResponseDocumentType *)responseObject {
-    DocumentType *entityObject = [self create];
-    
-    entityObject.code = responseObject.code;
-    entityObject.displayValue = responseObject.displayValue;
-    entityObject.note = responseObject.description;
-    entityObject.status = responseObject.status;
-    entityObject.forRegistration = responseObject.forRegistration;
-    NSError *error = nil;
-    return [entityObject.managedObjectContext save:&error];
-}
-
-+ (BOOL)updateFromResponseObject:(ResponseDocumentType *)responseObject {
-    [[self sharedEntity] filterContentForSearchText:responseObject.code scope:0];
-    if ([self sharedEntity]->_filteredObjects.count == 1) {
-        DocumentType *entityObject = [[self sharedEntity]->_filteredObjects firstObject];
-        if (![entityObject.displayValue isEqualToString:responseObject.displayValue])
-            entityObject.displayValue = responseObject.displayValue;
-        if (![entityObject.note isEqualToString:responseObject.description])
-            entityObject.note = responseObject.description;
-        if (![entityObject.status isEqualToString:responseObject.status])
-            entityObject.status = responseObject.status;
-        if (![entityObject.forRegistration isEqualToString:responseObject.forRegistration])
-            entityObject.forRegistration = responseObject.forRegistration;
-        if (![entityObject.managedObjectContext hasChanges]) return NO;
-        NSError *error = nil;
-        return [entityObject.managedObjectContext save:&error];
-    } else {
-        return [self insertFromResponseObject:responseObject];
-    }
 }
 
 + (NSArray *)getCollection {

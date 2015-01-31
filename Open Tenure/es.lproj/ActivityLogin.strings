@@ -1,0 +1,21 @@
+/* Strings related to login */
+"action_forgot_password"="Recuperar contraseña perdida";
+"action_log_in_register"="Ingresar";
+"action_sign_in_short"="Ingresar";
+"error_connection"="La conexión no esta disponible";
+"error_field_required"="Este campo es requerido";
+"error_generic_conection"="A ocurrido un error durante la conexión";
+"error_generic_login"="A ocurrido un error al ingresar ";
+"error_incorrect_password"="Usuario y contraseña son incorrectas";
+"error_invalid_password"="Esta contraseña es muy corta";
+"error_invalid_username"="Este nombre de usuario es muy corto";
+"login_progress_signing_in"="Ingresado…";
+"message_login_before"="Abra un sesión antes";
+"message_login_ok"="Ha abierto su sesión con éxito";
+"message_logout_error"="Error de cierre de sesión";
+"message_logout_not_ok"="El cierre de la sesión fallo";
+"message_logout_ok"="Ha salido de la sesión con éxito";
+"message_timeout_exception"="Excepción de tiempo de espera";
+"message_unknowhost_error"="Error desconocido del servidor. Esta la red disponible?";
+"prompt_password"="Contraseña";
+"prompt_username"="Usuario";

@@ -1,0 +1,938 @@
+/*
+ * Loco ios export: iOS Localizable.strings
+ * Project: Localizable
+ * Release: Working copy
+ * Locale: fr_FR, French
+ * Exported by: chuyentt
+ * Exported at: Sun, 25 Jan 2015 18:28:58 +0000
+ */
+
+/* loco:54c52dfe14d725972b8b4587 */
+"action_add_claimant" = "Ajouter un déclarant";
+
+/* loco:54c52dfe14d725972b8b4577 */
+"action_backup_db" = "Backup local data";
+
+/* loco:54c52dfe14d725972b8b4572 */
+"action_camera" = "Appareil Photo";
+
+/* loco:54c52dfe14d725972b8b457a */
+"action_center" = "Centrer";
+
+/* loco:54c52dfe14d725972b8b4589 */
+"action_claim_map_snapshot" = "Attacher une capture d'écran du plan de cette déclaration";
+
+/* loco:54c52dfe14d725972b8b456c */
+"action_done" = "Terminé";
+
+/* loco:54c52dfe14d725972b8b457e */
+"action_download_claims" = "Télécharger les déclarations";
+
+/* loco:54c52dfe14d725972b8b457d */
+"action_download_file" = "Télécharger un fichier";
+
+/* loco:54c52dfe14d725972b8b4575 */
+"action_download_tiles" = "Télécharger les titres hors mis en ligne";
+
+/* loco:54c52dfe14d725972b8b4583 */
+"action_export" = "Exporter";
+
+/* loco:54c52dfe14d725972b8b4582 */
+"action_lock_db" = "Configurer le cryptage des données";
+
+/* loco:54c52dfe14d725972b8b4574 */
+"action_login" = "Connexion";
+
+/* loco:54c52dfe14d725972b8b4576 */
+"action_logout" = "Deconnexion";
+
+/* loco:54c52dfe14d725972b8b4573 */
+"action_map" = "Plan";
+
+/* loco:54c52dfe14d725972b8b4586 */
+"action_modify_claimant" = "Modifier le déclarant";
+
+/* loco:54c52dfe14d725972b8b456b */
+"action_new" = "Nouveau";
+
+/* loco:54c52dfe14d725972b8b4580 */
+"action_new_additional_info" = "Ajouter des informations";
+
+/* loco:54c52dfe14d725972b8b4581 */
+"action_new_attachment" = "Nouveau document";
+
+/* loco:54c52dfe14d725972b8b457f */
+"action_new_picture" = "Nouvelle photo";
+
+/* loco:54c52dfe14d725972b8b4578 */
+"action_print" = "Imprimer";
+
+/* loco:54c52dfe14d725972b8b456f */
+"action_remove_additional_info" = "Retirer l'information";
+
+/* loco:54c52dfe14d725972b8b456d */
+"action_remove_attachment" = "Retirer l'attachment";
+
+/* loco:54c52dfe14d725972b8b4570 */
+"action_remove_claim" = "Retirer la déclaration";
+
+/* loco:54c52dfe14d725972b8b456e */
+"action_remove_owner" = "Retirer le propriétaire des droits";
+
+/* loco:54c52dfe14d725972b8b4571 */
+"action_remove_section_element" = "Retirer l'élément";
+
+/* loco:54c52dfe14d725972b8b4584 */
+"action_rotate" = "Faire pivoter le plan selon boussole";
+
+/* loco:54c52dfe14d725972b8b4579 */
+"action_save" = "Sauvergarder";
+
+/* loco:54c52dfe14d725972b8b456a */
+"action_search" = "Recherche";
+
+/* loco:54c52dfe14d725972b8b4588 */
+"action_select_challenge" = "Sélectionner la declaration à contester";
+
+/* loco:54c52dfe14d725972b8b4569 */
+"action_settings" = "Paramètres";
+
+/* loco:54c52dfe14d725972b8b4585 */
+"action_stop_rotating" = "Arrêter de faire pivoter le plan";
+
+/* loco:54c52dfe14d725972b8b457c */
+"action_submit" = "Soumettre";
+
+/* loco:54c52dfe14d725972b8b457b */
+"action_view_community_area" = "Voir l’étendue de la communauté";
+
+/* loco:54c52dfe14d725972b8b4660 */
+"add_description" = "Description?";
+
+/* loco:54c52dfe14d725972b8b4661 */
+"add_key" = "Clé?";
+
+/* loco:54c52dfe14d725972b8b45c0 */
+"add_owner" = "Ajouter le propriétaire ";
+
+/* loco:54c52dfe14d725972b8b4662 */
+"add_value" = "Valeur?";
+
+/* loco:54c52dfe14d725972b8b45c1 */
+"additional_info" = "Informations supplémentaires";
+
+/* loco:54c52dfe14d725972b8b45e5 */
+"additional_info_removed" = "L'information a été retirée";
+
+/* loco:54c52dfe14d725972b8b45c3 */
+"adjacencies" = "Contiguïtés";
+
+/* loco:54c52dfe14d725972b8b45c2 */
+"adjacency" = "Contiguïté";
+
+/* loco:54c52dfe14d725972b8b4688 */
+"adjacent_claims" = "Déclarations adjacentes";
+
+/* loco:54c52dfe14d725972b8b4689 */
+"adjacent_properties" = "Propriétés adjacentes";
+
+/* loco:54c52dfe14d725972b8b464d */
+"all_tiles_downloaded" = "Toutes les images du mosaiquage de la liste de téléchargement ont été téléchargées.";
+
+/* loco:54c52dfe14d725972b8b4567 */
+"app_name" = "Open Tenure";
+
+/* loco:54c52dfe14d725972b8b45e1 */
+"attachment_removed" = "L'attachment a été retiré";
+
+/* loco:54c52dfe14d725972b8b45e2 */
+"attachment_updated" = "The attachment has been updated";
+
+/* loco:54c52dfe14d725972b8b45c6 */
+"by" = "Par";
+
+/* loco:54c52dfe14d725972b8b4687 */
+"calculated_adjacencies" = "Déclarations adjacentes";
+
+/* loco:54c52dfe14d725972b8b4659 */
+"cancel" = "Annuler";
+
+/* loco:54c52dfe14d725972b8b45c4 */
+"cardinal_direction" = "Direction cardinale";
+
+/* loco:54c52dfe14d725972b8b4669 */
+"challenge_to" = "Contestation de";
+
+/* loco:54c52dfe14d725972b8b466a */
+"challenged_by" = "Contestée par";
+
+/* loco:54c52dfe14d725972b8b464a */
+"check_location_service" = "Information de positionnement indisponible. Vérifier que le service de positionnement est actif dans les paramètres";
+
+/* loco:54c52dfe14d725972b8b45b2 */
+"choose_file" = "Choisir une application pour sélectionner un fichier";
+
+/* loco:54c52dfe14d725972b8b45bd */
+"claim" = "Déclaration";
+
+/* loco:54c52dfe14d725972b8b45cd */
+"claim_date" = "Date de la déclaration";
+
+/* loco:54c52dfe14d725972b8b45ce */
+"claim_name" = "Nom de la déclaration";
+
+/* loco:54c52dfe14d725972b8b45cf */
+"claim_name_label" = "Date de la déclaration *";
+
+/* loco:54c52dfe14d725972b8b466c */
+"claim_notes" = "Notes";
+
+/* loco:54c52dfe14d725972b8b4699 */
+"claim_statuses[0]" = "Non modérée";
+
+/* loco:54c52dfe14d725972b8b469a */
+"claim_statuses[1]" = "Modérée";
+
+/* loco:54c52dfe14d725972b8b469b */
+"claim_statuses[2]" = "Rejetée";
+
+/* loco:54c52dfe14d725972b8b469c */
+"claim_statuses[3]" = "Locale";
+
+/* loco:54c52dfe14d725972b8b45d0 */
+"claim_type" = "Type de déclaration *";
+
+/* loco:54c52dfe14d725972b8b4666 */
+"claimant" = "Déclarant *";
+
+/* loco:54c52dfe14d725972b8b4665 */
+"claimant_picture" = "Photo du déclarant";
+
+/* loco:54c52dfe14d725972b8b45b4 */
+"community_recorder_name" = "Archiviste de la commauté";
+
+/* loco:54c52dfe14d725972b8b4658 */
+"confirm" = "Confirmer";
+
+/* loco:54c52dfe14d725972b8b45df */
+"contact_phone_number" = "Numéro de téléphone à contacter";
+
+/* loco:54c52dfe14d725972b8b4679 */
+"cs_url_pref_dialog_title" = "Entrer l'URL de votre Serveur Communautaire OpenTenure";
+
+/* loco:54c52dfe14d725972b8b4678 */
+"cs_url_pref_summary" = "L'adresse Web du Serveur Communautaire OpenTenure";
+
+/* loco:54c52dfe14d725972b8b4677 */
+"cs_url_pref_title" = "URL de Serveur Communautaire";
+
+/* loco:54c52dfe14d725972b8b45be */
+"date" = "Date";
+
+/* loco:54c52dfe14d725972b8b45d6 */
+"date_of_birth" = "Date de naissance (AAAA-MM-JJ)";
+
+/* loco:54c52dfe14d725972b8b45d7 */
+"date_of_birth_label" = "Date de naissance * (AAAA-MM-JJ)";
+
+/* loco:54c52dfe14d725972b8b45dc */
+"date_of_establishment_label" = "Date d'installation";
+
+/* loco:54c52dfe14d725972b8b45d8 */
+"date_of_start" = "AAAA-MM-JJ";
+
+/* loco:54c52dfe14d725972b8b45d9 */
+"date_of_start_label" = "La date de la déclaration s'applique à partir du (AAAA-MM-JJ)";
+
+/* loco:54c52dfe14d725972b8b45d1 */
+"default_claim_name" = "Nouvelle déclaration";
+
+/* loco:54c52dfe14d725972b8b4667 */
+"delete_locally" = "Effacer localement";
+
+/* loco:54c52dfe14d725972b8b4655 */
+"down" = "En-dessous";
+
+/* loco:54c52dfe14d725972b8b4663 */
+"draggable_marker" = "Repère déplaçable";
+
+/* loco:54c52dfe14d725972b8b4690 */
+"east" = "Est";
+
+/* loco:54c52dfe14d725972b8b468c */
+"east_adjacency" = "Contiguïté Est";
+
+/* loco:54c52dfe14d725972b8b45b6 */
+"email_address" = "Adresses Email";
+
+/* loco:54c52dfe14d725972b8b45d2 */
+"first_name" = "Prénom";
+
+/* loco:54c52dfe14d725972b8b45d3 */
+"first_name_label" = "Prénom *";
+
+/* loco:54c52dfe14d725972b8b4682 */
+"form_template_url_pref_dialog_title" = "Entrer l'URL du formulaire d'enquête";
+
+/* loco:54c52dfe14d725972b8b4681 */
+"form_template_url_pref_summary" = "URL du formulaire d'enquête";
+
+/* loco:54c52dfe14d725972b8b4680 */
+"form_template_url_pref_title" = "URL du formulaire";
+
+/* loco:54c52dfe14d725972b8b45bb */
+"gender" = "Genre *";
+
+/* loco:54c52dfe14d725972b8b45b8 */
+"gender_feminine" = "Femme";
+
+/* loco:54c52dfe14d725972b8b45b7 */
+"gender_masculine" = "Homme";
+
+/* loco:54c52dfe14d725972b8b467f */
+"geoserver_layer_pref_dialog_title" = "Entrer le nom de la couche WMS";
+
+/* loco:54c52dfe14d725972b8b467e */
+"geoserver_layer_pref_summary" = "La couche WMS doit être extraite du GeoServer (demandez à votre administrateur)";
+
+/* loco:54c52dfe14d725972b8b467d */
+"geoserver_layer_pref_title" = "Couche GeoServer";
+
+/* loco:54c52dfe14d725972b8b467c */
+"geoserver_url_pref_dialog_title" = "Entrer l'URL du GeoServer";
+
+/* loco:54c52dfe14d725972b8b467b */
+"geoserver_url_pref_summary" = "URL de base de votre fournisseur du plan web GeoServer privé";
+
+/* loco:54c52dfe14d725972b8b467a */
+"geoserver_url_pref_title" = "GeoServer URL";
+
+/* loco:54c52dfe14d725972b8b4652 */
+"group" = "Groupe";
+
+/* loco:54c52dfe14d725972b8b45c9 */
+"group_name" = "Nom";
+
+/* loco:54c52dfe14d725972b8b4697 */
+"hint_type_to_filter" = "Entrer des caractères pour filtrer la liste";
+
+/* loco:54c52dfe14d725972b8b4685 */
+"id_number" = "Numéro d'identité";
+
+/* loco:54c52dfe14d725972b8b4684 */
+"id_type" = "Type d'identité";
+
+/* loco:54c52dfe14d725972b8b466d */
+"insert_claim_notes" = "Insérer des notes à la déclaration";
+
+/* loco:54c52dfe14d725972b8b4686 */
+"land_use" = "Utilisateur du terrain";
+
+/* loco:54c52dfe14d725972b8b45d4 */
+"last_name" = "Nom";
+
+/* loco:54c52dfe14d725972b8b45d5 */
+"last_name_label" = "Nom *";
+
+/* loco:54c52dfe14d725972b8b4656 */
+"left" = "Gauche";
+
+/* loco:54c52dfe14d725972b8b45ba */
+"legal_person" = "Personne morale";
+
+/* loco:54c52dfe14d725972b8b4676 */
+"map_provider_geoserver" = "GeoServer";
+
+/* loco:54c52dfe14d725972b8b4671 */
+"map_provider_google_hybrid" = "Google Hybrid";
+
+/* loco:54c52dfe14d725972b8b466f */
+"map_provider_google_normal" = "Google Maps";
+
+/* loco:54c52dfe14d725972b8b4670 */
+"map_provider_google_satellite" = "Google Earth";
+
+/* loco:54c52dfe14d725972b8b4672 */
+"map_provider_google_terrain" = "Google Terrain";
+
+/* loco:54c52dfe14d725972b8b4675 */
+"map_provider_local_tiles" = "Données locales";
+
+/* loco:54c52dfe14d725972b8b4673 */
+"map_provider_osm_mapnik" = "Open Street Map MapNik";
+
+/* loco:54c52dfe14d725972b8b4674 */
+"map_provider_osm_mapquest" = "Open Street Map MapQuest";
+
+/* loco:54c52dfe14d725972b8b461f */
+"message_add_marker" = "Ajouter un repère à la limite?";
+
+/* loco:54c52dfe14d725972b8b4601 */
+"message_added_attachment" = "L'attachement a été ajouté à la demande";
+
+/* loco:54c52dfe14d725972b8b4602 */
+"message_adding_attachment_not_ok" = "Une erreur s'est produite pendant l'ajout de l'attachement";
+
+/* loco:54c52dfe14d725972b8b45f8 */
+"message_adjacencies_not_saved" = "Contiguïtés non sauvegardées";
+
+/* loco:54c52dfe14d725972b8b45f7 */
+"message_adjacencies_saved" = "Contiguïtés sauvegardées";
+
+/* loco:54c52dfe14d725972b8b462d */
+"message_already_owner" = "La personne sélectionnée partage déjà cette déclaration";
+
+/* loco:54c52dfe14d725972b8b4649 */
+"message_app_initialized" = "L'application est prète à fonctionner et à communiquer avec le Serveur Communautaire Open Tenure";
+
+/* loco:54c52dfe14d725972b8b4648 */
+"message_app_initialized_default" = "L'application est prète à fonctionner et à communiquer avec le Serveur Communautaire Open Tenure par défaut";
+
+/* loco:54c52dfe14d725972b8b4641 */
+"message_app_initializing" = "Merci d'attendre…";
+
+/* loco:54c52dfe14d725972b8b4646 */
+"message_app_not_initialized" = "Vérifier que les paramètres de votre Serveur Communautaire Open Tenure soient corrects et procéder de nouveau à l'initialisation";
+
+/* loco:54c52dfe14d725972b8b4643 */
+"message_app_not_initialized_network" = "La connexion au réseau n'est pas disponible";
+
+/* loco:54c52dfe14d725972b8b4644 */
+"message_app_not_yet_initialized" = "L'application n'est pas encore initialisée";
+
+/* loco:54c52dfe14d725972b8b45f0 */
+"message_attachment_download_failed" = "Le télécharger de l'attachment %s a échoué ";
+
+/* loco:54c52dfe14d725972b8b45f1 */
+"message_attachment_download_not_complete" = "Le télécharger de l'attachment %s n'est pas terminé";
+
+/* loco:54c52dfe14d725972b8b45ee */
+"message_attachment_downloaded" = "Télécharger l'attachement %s";
+
+/* loco:54c52dfe14d725972b8b45ef */
+"message_attachment_downloading" = "Attachement %s déjà téléchargé";
+
+/* loco:54c52dfe14d725972b8b4610 */
+"message_cant_open_db" = "Impossible d'accéder aux données";
+
+/* loco:54c52dfe14d725972b8b4611 */
+"message_check_upgrade_db" = "Actualisation des données locales";
+
+/* loco:54c52dfe14d725972b8b45ed */
+"message_claim_exported" = "Exported the claim %s";
+
+/* loco:54c52dfe14d725972b8b45ec */
+"message_claim_exported_error" = "The claim %s is not exported";
+
+/* loco:54c52dfe14d725972b8b463e */
+"message_claim_modified" = "Déclaration modifiée";
+
+/* loco:54c52dfe14d725972b8b460a */
+"message_claims_downloaded" = "Déclarations correctement téléchargées";
+
+/* loco:54c52dfe14d725972b8b461d */
+"message_confirm_new_db_password" = "Confirmer le mot de passe";
+
+/* loco:54c52dfe14d725972b8b45eb */
+"message_connection_error" = "Connexion non disponible";
+
+/* loco:54c52dfe14d725972b8b4627 */
+"message_create_before_edit" = "Créer une déclaration en spécifiant ses détails avant d'ajouter les informations";
+
+/* loco:54c52dfe14d725972b8b4616 */
+"message_data_over_mobile" = "You are about to transfer a possibly large amount of data over a mobile internet connection. The associated cost can be high depending on your actual data plan";
+
+/* loco:54c52dfe14d725972b8b461b */
+"message_data_unencrypted" = "Alerte: vos données locales ne sont pas cryptées.";
+
+/* loco:54c52dfe14d725972b8b4645 */
+"message_db_backed_up" = "A copy of the local database has been created";
+
+/* loco:54c52dfe14d725972b8b460e */
+"message_db_locked" = "Les données sont protégées par un mot de passe";
+
+/* loco:54c52dfe14d725972b8b460f */
+"message_db_password" = "Mot de passe pour accéder aux données?";
+
+/* loco:54c52dfe14d725972b8b4613 */
+"message_default_initialization" = "Vous êtes sur le point d’initialiser l’application avec le Serveur Communautaire par défaut. Ce serveur doit être utilise uniquement pour les démonstration. Voulez-vous continuer? Autrement appuyez sur annuler et ajouter un URL pour le serveur communautaire dans les paramètres.  ";
+
+/* loco:54c52dfe14d725972b8b463a */
+"message_deleted_claim" = "Déclaration correctement supprimée localement";
+
+/* loco:54c52dfe14d725972b8b463d */
+"message_discard_changes" = "Voulez-vous réellement quitter sans sauvergarder?";
+
+/* loco:54c52dfe14d725972b8b45f9 */
+"message_downloading_attachment" = "Téléchargement de l'attachement";
+
+/* loco:54c52dfe14d725972b8b461a */
+"message_encryption_failed" = "Impossible de crypter les données locales";
+
+/* loco:54c52dfe14d725972b8b461c */
+"message_encryption_set" = "Vos données locales sont cryptées. Fournir le mot de passe de cryptage à la prochaine utilisation d'OpenTenure";
+
+/* loco:54c52dfe14d725972b8b461e */
+"message_enter_description" = "Entrer une description";
+
+/* loco:54c52dfe14d725972b8b463f */
+"message_entity_type" = "Quelle sorte d'entité?";
+
+/* loco:54c52dfe14d725972b8b463b */
+"message_error_deleting_claim" = "Une erreur s'est produite en supprimant la déclaration localement";
+
+/* loco:54c52dfe14d725972b8b460b */
+"message_error_downloading_claims" = "%s de déclarations téléchargées. Toutes les déclarations n'ont pas été téléchargés.";
+
+/* loco:54c52dfe14d725972b8b4634 */
+"message_error_mandatory_birthdate" = "La date de naissance n'est pas au bon format ou vide";
+
+/* loco:54c52dfe14d725972b8b4631 */
+"message_error_mandatory_field_first_name" = "Remplir le champs obligatoire Prénom avant de sauvegarder";
+
+/* loco:54c52dfe14d725972b8b4633 */
+"message_error_mandatory_field_gender" = "Remplir le champs obligatoire Genre avant de sauvegarder";
+
+/* loco:54c52dfe14d725972b8b4632 */
+"message_error_mandatory_field_last_name" = "Remplir le champs obligatoire Nom avant de sauvegarder";
+
+/* loco:54c52dfe14d725972b8b4630 */
+"message_error_mandatory_fields" = "Remplir tous les champs obligatoires avant de suavegarder";
+
+/* loco:54c52dfe14d725972b8b4614 */
+"message_error_opening_file" = "Une erreur s'est produite en ouvrant le fichier : ";
+
+/* loco:54c52dfe14d725972b8b45f4 */
+"message_error_remove_person" = "Personne %s non supprimée";
+
+/* loco:54c52dfe14d725972b8b4635 */
+"message_error_startdate" = "La date du début du droit n'est pas au bon format ou vide";
+
+/* loco:54c52dfe14d725972b8b4638 */
+"message_error_withdraw_claim" = "Une erreur s'est produite en retirant la déclaration : ";
+
+/* loco:54c52dfe14d725972b8b4626 */
+"message_exit_dialog" = "Voulez-vous vraiment quitter l'application?";
+
+/* loco:54c52dfe14d725972b8b4608 */
+"message_export" = "Exportation";
+
+/* loco:54c52dfe14d725972b8b460d */
+"message_initialize_before" = " Procéder d’abord à l’initialisation ";
+
+/* loco:54c52dfe14d725972b8b45fb */
+"message_invalid_url" = "URL non valide";
+
+/* loco:54c52dfe14d725972b8b460c */
+"message_login_no_more_valid" = "La session a expiré. Reconnectez-vous.";
+
+/* loco:54c52dfe14d725972b8b4628 */
+"message_map_not_yet_draw" = "Le plan de la déclaration n'est pas encore terminé";
+
+/* loco:54c52dfe14d725972b8b45f6 */
+"message_map_snapshot_saved" = "Capture d'écran du plan sauvegardée";
+
+/* loco:54c52dfe14d725972b8b4618 */
+"message_new_db_password" = "Nouveau mot de passe (laisser blanc pour les données non cryptées)?";
+
+/* loco:54c52dfe14d725972b8b4612 */
+"message_no_application" = "Imposible de trouver l'application pour ouvrir le fichier";
+
+/* loco:54c52dfe14d725972b8b4629 */
+"message_no_available_shares" = "Libérez des parts dans cette déclaration avant de modifier la valeur de la part";
+
+/* loco:54c52dfe14d725972b8b462a */
+"message_no_available_shares_adding_new" = "Libérez des parts dans cette déclaration avant d'ajouter une nouvelle part";
+
+/* loco:54c52dfe14d725972b8b4609 */
+"message_no_claim_to_download" = "Il n'y a aucune déclaration à télécharger";
+
+/* loco:54c52dfe14d725972b8b4617 */
+"message_no_connection_at_startup" = "Aucune connexion internet n’est disponible. La configuration ne reflète peut-être pas les récents changements et il vous sera impossible de télécharger ou vider les informations. Connectez-vous à internet si vous prévoyez de transférer des données en utilisant OpenTenure";
+
+/* loco:54c52dfe14d725972b8b4625 */
+"message_not_supported_on_this_device" = "Non permis sur cet appareil";
+
+/* loco:54c52dfe14d725972b8b4615 */
+"message_old_db_password" = "Mot de passe actuel?";
+
+/* loco:54c52dfe14d725972b8b45e7 */
+"message_password_character_is_wrong" = "Le mot de passe doit seulement contenir des lettres et des chiffres";
+
+/* loco:54c52dfe14d725972b8b4619 */
+"message_password_dont_match" = "Nouveau mot de passe non confirmé. Merci de ré-essayer.";
+
+/* loco:54c52dfe14d725972b8b45e6 */
+"message_password_too_short" = "Le mot de passe doit avoir au moins %d caractères";
+
+/* loco:54c52dfe14d725972b8b45f5 */
+"message_remaining_days" = "Jours restants pour contester la déclaration :  ";
+
+/* loco:54c52dfe14d725972b8b4624 */
+"message_remove_additional_info" = "Supprimer les informations?";
+
+/* loco:54c52dfe14d725972b8b4621 */
+"message_remove_attachment" = "Supprimer l'attachement?";
+
+/* loco:54c52dfe14d725972b8b4637 */
+"message_remove_claim" = "Voulze-vous vraiment supprimer la déclaration?";
+
+/* loco:54c52dfe14d725972b8b4620 */
+"message_remove_marker" = "Enlever le repère?";
+
+/* loco:54c52dfe14d725972b8b4622 */
+"message_remove_owner" = "Supprimer le propriétaire?";
+
+/* loco:54c52dfe14d725972b8b45f2 */
+"message_remove_person" = "Personne %s supprimée";
+
+/* loco:54c52dfe14d725972b8b45f3 */
+"message_remove_person_dialog" = "Voulez-vous vraiment supprimer %s?";
+
+/* loco:54c52dfe14d725972b8b4636 */
+"message_remove_quest" = "Voulez-vous vraiment retirer la déclaration?";
+
+/* loco:54c52dfe14d725972b8b4623 */
+"message_remove_section_element" = "Supprimer l'élément?";
+
+/* loco:54c52dfe14d725972b8b463c */
+"message_save_changes" = "Voulez-vous sauvegarder les chagements?";
+
+/* loco:54c52dfe14d725972b8b4606 */
+"message_save_claim_before_adding_content" = "La déclaration doit être sauvegardée avant d'ajouter le contenu";
+
+/* loco:54c52dfe14d725972b8b4604 */
+"message_save_claim_before_submit" = "La déclaration doit être sauvegardée avant la soumission";
+
+/* loco:54c52dfe14d725972b8b4607 */
+"message_save_person_before_adding_content" = "La personne doit être sauvegardée avant d'ajouter le contenu";
+
+/* loco:54c52dfe14d725972b8b4605 */
+"message_save_snapshot_before_printing" = "Attacher une capture d'écran du plan avant impression";
+
+/* loco:54c52dfe14d725972b8b45e8 */
+"message_saved" = "Sauvergardé";
+
+/* loco:54c52dfe14d725972b8b45e9 */
+"message_server_error_saving_claim" = "Erreur interne du serveur";
+
+/* loco:54c52dfe14d725972b8b45ea */
+"message_service_not_available" = "Service non disponible";
+
+/* loco:54c52dfe14d725972b8b462c */
+"message_share_not_saved" = "Une erreur s'est produite en sauvegardant la part";
+
+/* loco:54c52dfe14d725972b8b462b */
+"message_share_saved" = "Sauvegarder la part";
+
+/* loco:54c52dfe14d725972b8b4603 */
+"message_submission_error" = "Une erreur s'est produite pendant la soumission de la déclaration";
+
+/* loco:54c52dfe14d725972b8b45ff */
+"message_submitted" = "La déclaration a été soumise";
+
+/* loco:54c52dfe14d725972b8b4647 */
+"message_title_app_initialized" = "L'application est initialisée";
+
+/* loco:54c52dfe14d725972b8b4640 */
+"message_title_app_initializing" = "Initialisation d'OpenTenure";
+
+/* loco:54c52dfe14d725972b8b4642 */
+"message_title_app_not_initialized" = "Cette application n'est pas initialisée";
+
+/* loco:54c52dfe14d725972b8b462f */
+"message_touch_to_select_a_claim" = "Toucher pour sélectionner une déclaration";
+
+/* loco:54c52dfe14d725972b8b462e */
+"message_touch_to_select_a_person" = "Toucher pour sélectionner une personne";
+
+/* loco:54c52dfe14d725972b8b45fc */
+"message_unable_to_save" = "Impossible de sauvegarder. Vérifier les informations et ré-essayer.";
+
+/* loco:54c52dfe14d725972b8b45fd */
+"message_unable_to_save_missing_claim_name" = "Impossibilité de sauvegarder. Il manque le nom de la déclaration.";
+
+/* loco:54c52dfe14d725972b8b45fe */
+"message_unable_to_save_missing_person" = "Impossibilité de sauvegarder. Il manque le déclarant";
+
+/* loco:54c52dfe14d725972b8b4600 */
+"message_uploading" = "La déclaration est en téléchargement";
+
+/* loco:54c52dfe14d725972b8b45fa */
+"message_uploading_attachment" = "Chargement de l'attachement";
+
+/* loco:54c52dfe14d725972b8b4639 */
+"message_withdrawn_claim" = "Déclaration correctement retirée";
+
+/* loco:54c52dfe14d725972b8b45de */
+"mobile_phone_number" = "Numéro de téléphone mobile";
+
+/* loco:54c52dfe14d725972b8b45c8 */
+"na" = "N.A.";
+
+/* loco:54c52dfe14d725972b8b465f */
+"new_additional_info" = "Ajouter des informations";
+
+/* loco:54c52dfe14d725972b8b45c5 */
+"new_entity" = "Nouvelle entité";
+
+/* loco:54c52dfe14d725972b8b465c */
+"new_file" = "Nouveau fichier";
+
+/* loco:54c52dfe14d725972b8b465d */
+"new_multipage" = "Nouveau fichier multipage";
+
+/* loco:54c52dfe14d725972b8b465b */
+"new_snapshot" = "Nouvelle capture d'écran";
+
+/* loco:54c52dfe14d725972b8b4653 */
+"no" = "Non";
+
+/* loco:54c52dfe14d725972b8b468e */
+"north" = "Nord";
+
+/* loco:54c52dfe14d725972b8b468a */
+"north_adjacency" = "Contiguïté Nord";
+
+/* loco:54c52dfe14d725972b8b4693 */
+"north_east" = "Nord-Est";
+
+/* loco:54c52dfe14d725972b8b4694 */
+"north_west" = "Nord-Ouest";
+
+/* loco:54c52dfe14d725972b8b464e */
+"not_all_tiles_downloaded" = "%d images du mosaiquage pour ce plan ont été téléchargées. Vérifier que ce mosaiquage vous convienne ou recommencer le téléchargement.";
+
+/* loco:54c52dfe14d725972b8b465a */
+"not_boundary" = "N'est pas une limite";
+
+/* loco:54c52dfe14d725972b8b4668 */
+"owner" = "Propriétaire";
+
+/* loco:54c52dfe14d725972b8b45e3 */
+"owner_removed" = "Le propriétaire à été retiré";
+
+/* loco:54c52dfe14d725972b8b466b */
+"owners" = "Propriétaires";
+
+/* loco:54c52dfe14d725972b8b45e0 */
+"password" = "Mot de passe";
+
+/* loco:54c52dfe14d725972b8b4651 */
+"person" = "Personne";
+
+/* loco:54c52dfe14d725972b8b45b3 */
+"person_name" = "Nom de la personne";
+
+/* loco:54c52dfe14d725972b8b466e */
+"person_picture" = "Photo de la personne";
+
+/* loco:54c52dfe14d725972b8b45bc */
+"person_type" = "Type de personne *";
+
+/* loco:54c52dfe14d725972b8b45b9 */
+"physical_person" = "Personne physique";
+
+/* loco:54c52dfe14d725972b8b45da */
+"place_of_birth" = "Lieu de naissance";
+
+/* loco:54c52dfe14d725972b8b45db */
+"place_of_birth_label" = "Lieu de naissance *";
+
+/* loco:54c52dfe14d725972b8b45b5 */
+"postal_address" = "Adresse postale";
+
+/* loco:54c52dfe14d725972b8b4568 */
+"preload" = "Ouverture de l'image";
+
+/* loco:54c52dfe14d725972b8b4683 */
+"property" = "Propriété";
+
+/* loco:54c52dfe14d725972b8b45dd */
+"recorded_by" = "Enregistré par : ";
+
+/* loco:54c52dfe14d725972b8b4657 */
+"right" = "Droite";
+
+/* loco:54c52dfe14d725972b8b45e4 */
+"section_element_removed" = "L'élément a été retiré";
+
+/* loco:54c52dfe14d725972b8b45bf */
+"share_value" = "Valeur du pourcentage : ";
+
+/* loco:54c52dfe14d725972b8b4698 */
+"shares_prompt" = "Sélectionner les parts";
+
+/* loco:54c52dfe14d725972b8b45ca */
+"signature" = "Signature";
+
+/* loco:54c52dfe14d725972b8b45cc */
+"software_version" = "0.9.5";
+
+/* loco:54c52dfe14d725972b8b45cb */
+"software_version_title" = "Version du Logiciel";
+
+/* loco:54c52dfe14d725972b8b468f */
+"south" = "Sud";
+
+/* loco:54c52dfe14d725972b8b468b */
+"south_adjacency" = "Contiguïté Sud";
+
+/* loco:54c52dfe14d725972b8b4695 */
+"south_east" = "Sud-Est";
+
+/* loco:54c52dfe14d725972b8b4696 */
+"south_west" = "Sud-Ouest";
+
+/* loco:54c52dfe14d725972b8b4692 */
+"status" = "statut : ";
+
+/* loco:54c52dfe14d725972b8b4664 */
+"sticky_marker" = "Repère static";
+
+/* loco:54c52dfe14d725972b8b464b */
+"tiles_queued" = "Il y a %d images du mosaiquage dans la liste de téléchargement";
+
+/* loco:54c52dfe14d725972b8b45a0 */
+"title_activity_claim" = "Open Tenure: Nouvelle déclaration";
+
+/* loco:54c52dfe14d725972b8b45a7 */
+"title_activity_file_chooser" = "Choisir un fichier";
+
+/* loco:54c52dfe14d725972b8b45a3 */
+"title_activity_group" = "Open Tenure: Nouveau groupe";
+
+/* loco:54c52dfe14d725972b8b45a2 */
+"title_activity_person" = "Open Tenure: Nouvelle personne";
+
+/* loco:54c52dfe14d725972b8b45a4 */
+"title_activity_select_claim" = "Open Tenure: Sélectionner la demande";
+
+/* loco:54c52dfe14d725972b8b45a5 */
+"title_activity_select_person" = "Open Tenure: Sélectionner la personne";
+
+/* loco:54c52dfe14d725972b8b459f */
+"title_activity_settings" = "Paramètres";
+
+/* loco:54c52dfe14d725972b8b45a6 */
+"title_activity_share_details" = "Open Tenure: Partager les informations";
+
+/* loco:54c52dfe14d725972b8b45aa */
+"title_add_non_boundary" = "Ajouter une position en dehors de la limite";
+
+/* loco:54c52dfe14d725972b8b458f */
+"title_challenged_claim" = "Challenged claim : ";
+
+/* loco:54c52dfe14d725972b8b458e */
+"title_challenged_claims" = "Déclarations contestées";
+
+/* loco:54c52dfe14d725972b8b4590 */
+"title_claim" = "Déclaration";
+
+/* loco:54c52dfe14d725972b8b4597 */
+"title_claim__downloading_map" = "Téléchargement des déclarations";
+
+/* loco:54c52dfe14d725972b8b4593 */
+"title_claim_additional_info" = "Informations supplémentaires";
+
+/* loco:54c52dfe14d725972b8b4598 */
+"title_claim_adjacencies" = "Contiguïtés";
+
+/* loco:54c52dfe14d725972b8b459b */
+"title_claim_challenges" = "Contestations";
+
+/* loco:54c52dfe14d725972b8b4594 */
+"title_claim_documents" = "Documents";
+
+/* loco:54c52dfe14d725972b8b4596 */
+"title_claim_map" = "Plan";
+
+/* loco:54c52dfe14d725972b8b4599 */
+"title_claim_owners" = "Parts";
+
+/* loco:54c52dfe14d725972b8b4595 */
+"title_claim_photos" = "Photos de la déclaration";
+
+/* loco:54c52dfe14d725972b8b458c */
+"title_claims" = "Liste des déclarations";
+
+/* loco:54c52dfe14d725972b8b45a9 */
+"title_confirm_data_transfer" = "Confirm data transfer";
+
+/* loco:54c52dfe14d725972b8b45ab */
+"title_exit_dialog" = "Quitter";
+
+/* loco:54c52dfe14d725972b8b459c */
+"title_export" = "Exportation de la déclaration au format comprimé";
+
+/* loco:54c52dfe14d725972b8b4592 */
+"title_group_details" = "Données du groupe";
+
+/* loco:54c52dfe14d725972b8b45a1 */
+"title_i_m_here" = "Votre position";
+
+/* loco:54c52dfe14d725972b8b45ac */
+"title_initialization_process" = "Initialisation";
+
+/* loco:54c52dfe14d725972b8b459e */
+"title_item" = "Objet";
+
+/* loco:54c52dfe14d725972b8b45a8 */
+"title_lock_db" = "Crypter les données locales";
+
+/* loco:54c52dfe14d725972b8b458b */
+"title_map" = "Plan de la Communauté";
+
+/* loco:54c52dfe14d725972b8b458a */
+"title_news" = "Nouvelles";
+
+/* loco:54c52dfe14d725972b8b45b1 */
+"title_no_connection" = "Pas de connexion";
+
+/* loco:54c52dfe14d725972b8b4591 */
+"title_person_details" = "Données personnelles";
+
+/* loco:54c52dfe14d725972b8b458d */
+"title_persons" = "Personnes";
+
+/* loco:54c52dfe14d725972b8b45ad */
+"title_remove_person_dialog" = "Supprimer la personne";
+
+/* loco:54c52dfe14d725972b8b45ae */
+"title_save_claim_dialog" = "La déclaration a été modifiée";
+
+/* loco:54c52dfe14d725972b8b45b0 */
+"title_save_group_dialog" = "Le groupe a été modifié";
+
+/* loco:54c52dfe14d725972b8b45af */
+"title_save_person_dialog" = "La personne a été modifiée";
+
+/* loco:54c52dfe14d725972b8b459d */
+"title_section" = "Section";
+
+/* loco:54c52dfe14d725972b8b459a */
+"title_share" = "Part";
+
+/* loco:54c52dfe14d725972b8b464c */
+"too_many_tiles_queued" = "Il y a %d images du mosaiquage dans la liste des téléchargement. Merci d'attendre avant de télécharger d'autres images du mosaiquage.";
+
+/* loco:54c52dfe14d725972b8b45c7 */
+"type" = "Type";
+
+/* loco:54c52dfe14d725972b8b4654 */
+"up" = "Au-dessus";
+
+/* loco:54c52dfe14d725972b8b4691 */
+"west" = "Ouest";
+
+/* loco:54c52dfe14d725972b8b468d */
+"west_adjacency" = "Contiguïté Ouest";
+
+/* loco:54c52dfe14d725972b8b465e */
+"withdraw_claim" = "Retirer la déclaration";
+
+/* loco:54c52dfe14d725972b8b4650 */
+"yes" = "Oui";
+
+/* loco:54c52dfe14d725972b8b464f */
+"zoom_level_too_low" = "L'étendue du plan est trop large. Augmenter le niveau de zoom avant de télécharger des données locales pour la plan";

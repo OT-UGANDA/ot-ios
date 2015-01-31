@@ -42,10 +42,14 @@
 
 @property (weak, nonatomic) id <OTClaimsViewControllerDelegate> delegate;
 
+// Showcase
+@property (nonatomic, strong) NSArray *showcaseTargetList;
+
 - (IBAction)addClaim:(id)sender;
 - (IBAction)login:(id)sender;
 - (IBAction)logout:(id)sender;
 - (IBAction)showMenu:(id)sender;
 - (IBAction)cancel:(id)sender;
+- (IBAction)defaultShowcase:(id)sender;
 
 @end

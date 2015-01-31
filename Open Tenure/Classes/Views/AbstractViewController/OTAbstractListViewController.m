@@ -298,7 +298,7 @@
             
             for (NSString *cachedSearchText in [[_filteredResults allKeys] sortedArrayUsingDescriptors:@[[[NSSortDescriptor alloc] initWithKey:@"length" ascending:NO]]]) {
                 if ([searchText hasPrefix:cachedSearchText]) {
-                    _filteredObjects = [[_filteredResults objectForKey:cachedSearchText] filteredArrayUsingPredicate:predicate];
+                    _filteredObjects = [NSMutableArray arrayWithArray:[[_filteredResults objectForKey:cachedSearchText] filteredArrayUsingPredicate:predicate]];
                     break;
                 }
             }
@@ -321,7 +321,7 @@
                 if ([sortDescriptors count] > 0)
                     fetchRequest.sortDescriptors = [NSArray arrayWithArray:sortDescriptors];
                 
-                _filteredObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+                _filteredObjects = [NSMutableArray arrayWithArray:[self.managedObjectContext executeFetchRequest:fetchRequest error:nil]];
             }
             
             [_filteredResults setObject:_filteredObjects forKey:searchText];
@@ -356,6 +356,7 @@
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
     searchBar.text = nil;
     _filteredObjects = nil;
+    _filteredResults = nil;
     [_tableView reloadData];
     [searchBar setShowsCancelButton:NO animated:YES];
     [searchBar resignFirstResponder];
@@ -405,8 +406,6 @@
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    _filteredObjects = nil;
-    _filteredResults = [NSMutableDictionary new];
     
     [_tableView beginUpdates];
 }
@@ -414,22 +413,28 @@
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath {
     switch(type) {
         case NSFetchedResultsChangeInsert:
-            [_tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            if (_filteredObjects == nil)
+                [_tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            if (_filteredObjects == nil) {
+                [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            }
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [self configureCell:[_tableView cellForRowAtIndexPath:indexPath] forTableView:_tableView atIndexPath:indexPath];
+            if (_filteredObjects == nil)
+                [self configureCell:[_tableView cellForRowAtIndexPath:indexPath] forTableView:_tableView atIndexPath:indexPath];
             break;
             
         case NSFetchedResultsChangeMove:
-            [_tableView deleteRowsAtIndexPaths:[NSArray
-                                                arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [_tableView insertRowsAtIndexPaths:[NSArray
-                                                arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            if (_filteredObjects == nil) {
+                [_tableView deleteRowsAtIndexPaths:[NSArray
+                                                    arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                [_tableView insertRowsAtIndexPaths:[NSArray
+                                                    arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            }
             break;
     }
 }
@@ -437,11 +442,19 @@
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id )sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type {
     switch(type) {
         case NSFetchedResultsChangeInsert:
-            [_tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            if (_filteredObjects == nil)
+                [_tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
         case NSFetchedResultsChangeDelete:
-            [_tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            if (_filteredObjects == nil)
+                [_tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
             break;
     }
 }

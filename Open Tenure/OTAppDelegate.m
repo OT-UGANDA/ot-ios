@@ -27,38 +27,24 @@
  */
 
 #import "OTAppDelegate.h"
-#import "TestFlight.h"
 
 @implementation OTAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [TestFlight takeOff:@"c82ef56b-5f83-426d-91f5-822b573ece57"];
-    
-    //Create folder
-    [FileSystemUtilities createOpenTenureFolder];
-    [FileSystemUtilities createClaimsFolder];
-    [FileSystemUtilities createClaimantsFolder];
-    
-    // Update some things from server
-    [OT updateIdType];
-    [OT updateLandUse];
-    [OT updateClaimType];
-    [OT updateDocumentType];
+    [self managedObjectContext];
     
     // Check document opened with OpenTenure
     NSURL *url = [launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
     if (url != nil) {
         [FileSystemUtilities copyFileFromSource:url toDestination:[FileSystemUtilities applicationDocumentsDirectory]];
     }
-    
-    // Override point for customization after application launch.
     return YES;
 }
 
-- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier
-  completionHandler:(void (^)())completionHandler {
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler {
 	self.backgroundSessionCompletionHandler = completionHandler;
+    self.backgroundTransferCompletionHandler = completionHandler;
 }
 
 - (NSManagedObjectContext *)managedObjectContext {
@@ -66,6 +52,7 @@
         return _temporaryContext;
     }
     _temporaryContext = [NSManagedObjectContext new];
+    [_temporaryContext setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
     _temporaryContext.persistentStoreCoordinator = dataContext.persistentStoreCoordinator;
     return _temporaryContext;
 }

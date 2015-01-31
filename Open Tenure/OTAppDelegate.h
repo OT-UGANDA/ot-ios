@@ -31,7 +31,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class Person, Claim;
+@class Person, Claim, Share;
 
 @interface OTAppDelegate : UIResponder <UIApplicationDelegate> {
     NSManagedObjectContext *_temporaryContext;
@@ -39,12 +39,14 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property (copy) void (^backgroundSessionCompletionHandler)();
+@property (nonatomic, copy) void(^backgroundTransferCompletionHandler)();
 
 // For template storage
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @property (nonatomic) Person *person;
 @property (nonatomic) Claim *claim;
+@property (nonatomic) Share *share;
 
 @property (nonatomic) BOOL authenticated;
 @property (nonatomic, strong) NSString *userName;

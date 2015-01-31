@@ -27,7 +27,6 @@
  */
 
 #import "IdTypeEntity.h"
-#import "ResponseIdType.h"
 #import "IdType.h"
 
 @interface IdTypeEntity ()
@@ -91,41 +90,24 @@
 
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
     if (scope == 0)
-        return [NSPredicate predicateWithFormat:@"(code == %@)", searchText];
+        return [NSPredicate predicateWithFormat:@"(code CONTAINS[cd] %@)", searchText];
     else
-        return [NSPredicate predicateWithFormat:@"(displayValue == %@)", searchText];
+        return [NSPredicate predicateWithFormat:@"(displayValue CONTAINS[cd] %@)", searchText];
 }
 
-+ (BOOL)insertFromResponseObject:(ResponseIdType *)responseObject {
-    NSManagedObjectContext *context = [[[self sharedIdTypeEntity] fetchedResultsController] managedObjectContext];
-    NSEntityDescription *entity = [[[[self sharedIdTypeEntity] fetchedResultsController] fetchRequest] entity];
-    
-    IdType *entityObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-    
-    entityObject.code = responseObject.code;
-    entityObject.displayValue = responseObject.displayValue;
-    entityObject.note = responseObject.description;
-    entityObject.status = responseObject.status;
-    NSError *error = nil;
-    return [entityObject.managedObjectContext save:&error];
++ (IdType *)create {
+    IdType *entityObject = [NSEntityDescription insertNewObjectForEntityForName:[[self sharedIdTypeEntity] entityName] inManagedObjectContext:[[self sharedIdTypeEntity] managedObjectContext]];
+    return entityObject;
 }
 
-+ (BOOL)updateFromResponseObject:(ResponseIdType *)responseObject {
-    [[self sharedIdTypeEntity] filterContentForSearchText:responseObject.code scope:0];
-    if ([self sharedIdTypeEntity]->_filteredObjects.count == 1) {
-        IdType *entityObject = [[self sharedIdTypeEntity]->_filteredObjects firstObject];
-        if (![entityObject.displayValue isEqualToString:responseObject.displayValue])
-            entityObject.displayValue = responseObject.displayValue;
-        if (![entityObject.note isEqualToString:responseObject.description])
-            entityObject.note = responseObject.description;
-        if (![entityObject.status isEqualToString:responseObject.status])
-            entityObject.status = responseObject.status;
-        if (![entityObject.managedObjectContext hasChanges]) return NO;
-        NSError *error = nil;
-        return [entityObject.managedObjectContext save:&error];
-    } else {
-        return [self insertFromResponseObject:responseObject];
++ (IdType *)getIdTypeByCode:(NSString *)code {
+    [self sharedIdTypeEntity]->_filteredResults = nil;
+    
+    [[self sharedIdTypeEntity] filterContentForSearchText:code scope:0];
+    if ([self sharedIdTypeEntity]->_filteredObjects.count > 0) {
+        return [[self sharedIdTypeEntity]->_filteredObjects firstObject];
     }
+    return nil;
 }
 
 + (NSArray *)getCollection {

@@ -28,6 +28,7 @@
 
 #import "OTFormCell.h"
 #import "UIColor+OT.h"
+#import "OTAppearance.h"
 
 @implementation OTFormCell
 
@@ -35,18 +36,27 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor otGreen];
+        self.backgroundColor = [UIColor otLightGreen];
+        self.spaceToNextCell = 2.0f;
+        self.textLabel.backgroundColor = [UIColor whiteColor];
+        self.textLabel.font = [OTAppearance sharedInstance].infoCellLabelFont;
+        self.detailTextLabel.font = [OTAppearance sharedInstance].infoCellLabelFont;
+        self.detailTextLabel.textColor = [UIColor redColor];
+        
+        [self.textLabel setClipsToBounds:YES];
+        [[self.textLabel layer] setCornerRadius:4.f];
+        [[self.textLabel layer] setBorderWidth:0.8f];
+        [[self.textLabel layer] setBorderColor:[[UIColor otGreen] CGColor]];
     }
     return self;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
+// Có thể thay đổi chiều rộng của cell
+- (void)setFrame:(CGRect)frame {
+    //if (self.tag == 1)
+//        frame.size.width -= 96;
+    [super setFrame:frame];
 }
-*/
+
 
 @end

@@ -34,6 +34,7 @@
     if (self = [super init]) {
         _latitude = latitude;
         _longitude = longitude;
+        _tag = 0;
         _dragging = NO;
     }
     return self;

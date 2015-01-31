@@ -1,0 +1,938 @@
+/*
+ * Loco ios export: iOS Localizable.strings
+ * Project: Localizable
+ * Release: Working copy
+ * Locale: sq_AL, Albanian (Albania)
+ * Exported by: chuyentt
+ * Exported at: Sun, 25 Jan 2015 18:46:05 +0000
+ */
+
+/* loco:54c52dfe14d725972b8b4587 */
+"action_add_claimant" = "Add Claimant";
+
+/* loco:54c52dfe14d725972b8b4577 */
+"action_backup_db" = "Backup local data";
+
+/* loco:54c52dfe14d725972b8b4572 */
+"action_camera" = "Kamera";
+
+/* loco:54c52dfe14d725972b8b457a */
+"action_center" = "Qendër";
+
+/* loco:54c52dfe14d725972b8b4589 */
+"action_claim_map_snapshot" = "Bashkëngjit një foto të hartës të këtij pretendimi";
+
+/* loco:54c52dfe14d725972b8b456c */
+"action_done" = "U krye";
+
+/* loco:54c52dfe14d725972b8b457e */
+"action_download_claims" = "Shkarko pretendimet";
+
+/* loco:54c52dfe14d725972b8b457d */
+"action_download_file" = "Shkarko skedarin";
+
+/* loco:54c52dfe14d725972b8b4575 */
+"action_download_tiles" = "Shkarko imazhet(tile)";
+
+/* loco:54c52dfe14d725972b8b4583 */
+"action_export" = "Eksporto";
+
+/* loco:54c52dfe14d725972b8b4582 */
+"action_lock_db" = "Konfiguro mbrojtjen e të dhënave";
+
+/* loco:54c52dfe14d725972b8b4574 */
+"action_login" = "Kyçu";
+
+/* loco:54c52dfe14d725972b8b4576 */
+"action_logout" = "Ç'kyçu";
+
+/* loco:54c52dfe14d725972b8b4573 */
+"action_map" = "Harta";
+
+/* loco:54c52dfe14d725972b8b4586 */
+"action_modify_claimant" = "Modify Claimant";
+
+/* loco:54c52dfe14d725972b8b456b */
+"action_new" = "E re";
+
+/* loco:54c52dfe14d725972b8b4580 */
+"action_new_additional_info" = "Shto informacionin";
+
+/* loco:54c52dfe14d725972b8b4581 */
+"action_new_attachment" = "Dokument i ri";
+
+/* loco:54c52dfe14d725972b8b457f */
+"action_new_picture" = "Foto e re";
+
+/* loco:54c52dfe14d725972b8b4578 */
+"action_print" = "Printo";
+
+/* loco:54c52dfe14d725972b8b456f */
+"action_remove_additional_info" = "Fshi informacionin";
+
+/* loco:54c52dfe14d725972b8b456d */
+"action_remove_attachment" = "Fshi skedarin bashkangjitur";
+
+/* loco:54c52dfe14d725972b8b4570 */
+"action_remove_claim" = "Fshi pretendimin";
+
+/* loco:54c52dfe14d725972b8b456e */
+"action_remove_owner" = "Fshi të drejtat e pronarit";
+
+/* loco:54c52dfe14d725972b8b4571 */
+"action_remove_section_element" = "Fshi elementin";
+
+/* loco:54c52dfe14d725972b8b4584 */
+"action_rotate" = "Rrotullo hartën duke përdorur kompasin e pajisjes";
+
+/* loco:54c52dfe14d725972b8b4579 */
+"action_save" = "Ruaj";
+
+/* loco:54c52dfe14d725972b8b456a */
+"action_search" = "Kërko";
+
+/* loco:54c52dfe14d725972b8b4588 */
+"action_select_challenge" = "";
+
+/* loco:54c52dfe14d725972b8b4569 */
+"action_settings" = "Konfigurimet";
+
+/* loco:54c52dfe14d725972b8b4585 */
+"action_stop_rotating" = "Ndalo rrotullimin e hartës";
+
+/* loco:54c52dfe14d725972b8b457c */
+"action_submit" = "Paraqit";
+
+/* loco:54c52dfe14d725972b8b457b */
+"action_view_community_area" = "View Community Area";
+
+/* loco:54c52dfe14d725972b8b4660 */
+"add_description" = "Përshkrim";
+
+/* loco:54c52dfe14d725972b8b4661 */
+"add_key" = "Çelës?";
+
+/* loco:54c52dfe14d725972b8b45c0 */
+"add_owner" = "Add Owner ";
+
+/* loco:54c52dfe14d725972b8b4662 */
+"add_value" = "Vlerë?";
+
+/* loco:54c52dfe14d725972b8b45c1 */
+"additional_info" = "Informacion shtesë";
+
+/* loco:54c52dfe14d725972b8b45e5 */
+"additional_info_removed" = "Informacioni është hequr";
+
+/* loco:54c52dfe14d725972b8b45c3 */
+"adjacencies" = "Kufitarët";
+
+/* loco:54c52dfe14d725972b8b45c2 */
+"adjacency" = "Kufitar";
+
+/* loco:54c52dfe14d725972b8b4688 */
+"adjacent_claims" = "Pretendimet ngjitur";
+
+/* loco:54c52dfe14d725972b8b4689 */
+"adjacent_properties" = "Pasuritë ngjitur";
+
+/* loco:54c52dfe14d725972b8b464d */
+"all_tiles_downloaded" = "Të gjitha tilet në listën e shkarkimit u shkarkuan";
+
+/* loco:54c52dfe14d725972b8b4567 */
+"app_name" = "Open Tenure";
+
+/* loco:54c52dfe14d725972b8b45e1 */
+"attachment_removed" = "Skedari i bashkangjitur është hequr";
+
+/* loco:54c52dfe14d725972b8b45e2 */
+"attachment_updated" = "The attachment has been updated";
+
+/* loco:54c52dfe14d725972b8b45c6 */
+"by" = "Nga";
+
+/* loco:54c52dfe14d725972b8b4687 */
+"calculated_adjacencies" = "Pretendimet ngjitur";
+
+/* loco:54c52dfe14d725972b8b4659 */
+"cancel" = "Anulo";
+
+/* loco:54c52dfe14d725972b8b45c4 */
+"cardinal_direction" = "Drejtimi kryesor";
+
+/* loco:54c52dfe14d725972b8b4669 */
+"challenge_to" = "Ankesë për";
+
+/* loco:54c52dfe14d725972b8b466a */
+"challenged_by" = "Ankimuar nga";
+
+/* loco:54c52dfe14d725972b8b464a */
+"check_location_service" = "S'ka informacion mbi vendndodhjen. Kontrollo nëse shërbimi i vendndodhjes është i hapur tek konfigurimet.";
+
+/* loco:54c52dfe14d725972b8b45b2 */
+"choose_file" = "Zgjidh një program për të selektuar skedarin";
+
+/* loco:54c52dfe14d725972b8b45bd */
+"claim" = "Pretendim";
+
+/* loco:54c52dfe14d725972b8b45cd */
+"claim_date" = "Data e pretendimit";
+
+/* loco:54c52dfe14d725972b8b45ce */
+"claim_name" = "Emri i pretendimit";
+
+/* loco:54c52dfe14d725972b8b45cf */
+"claim_name_label" = "Emri i pretendimit *";
+
+/* loco:54c52dfe14d725972b8b466c */
+"claim_notes" = "Shënime";
+
+/* loco:54c52dfe14d725972b8b4699 */
+"claim_statuses[0]" = "I pa moderuar";
+
+/* loco:54c52dfe14d725972b8b469a */
+"claim_statuses[1]" = "I moderuar";
+
+/* loco:54c52dfe14d725972b8b469b */
+"claim_statuses[2]" = "I refuzuar";
+
+/* loco:54c52dfe14d725972b8b469c */
+"claim_statuses[3]" = "Lokal";
+
+/* loco:54c52dfe14d725972b8b45d0 */
+"claim_type" = "Tipi i pretendimit *";
+
+/* loco:54c52dfe14d725972b8b4666 */
+"claimant" = "Pretenduesi *";
+
+/* loco:54c52dfe14d725972b8b4665 */
+"claimant_picture" = "Foto e pretenduesit";
+
+/* loco:54c52dfe14d725972b8b45b4 */
+"community_recorder_name" = "Regjistrues i komunitetit";
+
+/* loco:54c52dfe14d725972b8b4658 */
+"confirm" = "Konfirmo";
+
+/* loco:54c52dfe14d725972b8b45df */
+"contact_phone_number" = "Numër kontakti(tel)";
+
+/* loco:54c52dfe14d725972b8b4679 */
+"cs_url_pref_dialog_title" = "Vendos URL e Komunitetit OpenTenure Server";
+
+/* loco:54c52dfe14d725972b8b4678 */
+"cs_url_pref_summary" = "Web adresat e Komunitetit OpenTenure Server";
+
+/* loco:54c52dfe14d725972b8b4677 */
+"cs_url_pref_title" = " URL e Komunitetit Server";
+
+/* loco:54c52dfe14d725972b8b45be */
+"date" = "Data";
+
+/* loco:54c52dfe14d725972b8b45d6 */
+"date_of_birth" = "Datëlindja (VVVV-MM-DD)";
+
+/* loco:54c52dfe14d725972b8b45d7 */
+"date_of_birth_label" = "Datëlindja * (VVVV-MM-DD)";
+
+/* loco:54c52dfe14d725972b8b45dc */
+"date_of_establishment_label" = "Data e themelimit";
+
+/* loco:54c52dfe14d725972b8b45d8 */
+"date_of_start" = "Data e pretendimit vlen nga (VVVV-MM-DD)";
+
+/* loco:54c52dfe14d725972b8b45d9 */
+"date_of_start_label" = "Data e pretendimit vlen nga (VVVV-MM-DD)";
+
+/* loco:54c52dfe14d725972b8b45d1 */
+"default_claim_name" = "Pretendim i ri";
+
+/* loco:54c52dfe14d725972b8b4667 */
+"delete_locally" = "Fshi lokalisht";
+
+/* loco:54c52dfe14d725972b8b4655 */
+"down" = "Poshtë";
+
+/* loco:54c52dfe14d725972b8b4663 */
+"draggable_marker" = "Shënues i lëvizshëm";
+
+/* loco:54c52dfe14d725972b8b4690 */
+"east" = "Lindje";
+
+/* loco:54c52dfe14d725972b8b468c */
+"east_adjacency" = "Në Lindje";
+
+/* loco:54c52dfe14d725972b8b45b6 */
+"email_address" = "Email adresa";
+
+/* loco:54c52dfe14d725972b8b45d2 */
+"first_name" = "Emri";
+
+/* loco:54c52dfe14d725972b8b45d3 */
+"first_name_label" = "Emri *";
+
+/* loco:54c52dfe14d725972b8b4682 */
+"form_template_url_pref_dialog_title" = "Vendosni URL për formën e rilevimit";
+
+/* loco:54c52dfe14d725972b8b4681 */
+"form_template_url_pref_summary" = "URL për formën e rilevimit";
+
+/* loco:54c52dfe14d725972b8b4680 */
+"form_template_url_pref_title" = "Forma URL";
+
+/* loco:54c52dfe14d725972b8b45bb */
+"gender" = "Gjinia *";
+
+/* loco:54c52dfe14d725972b8b45b8 */
+"gender_feminine" = "Femër";
+
+/* loco:54c52dfe14d725972b8b45b7 */
+"gender_masculine" = "Mashkull";
+
+/* loco:54c52dfe14d725972b8b467f */
+"geoserver_layer_pref_dialog_title" = "Vendosni emrin e shtresës WMS";
+
+/* loco:54c52dfe14d725972b8b467e */
+"geoserver_layer_pref_summary" = "Shtresat WMS që mund të gjenden tek GeoServer (pyesni administratorin)";
+
+/* loco:54c52dfe14d725972b8b467d */
+"geoserver_layer_pref_title" = "Shtresat e GeoServer";
+
+/* loco:54c52dfe14d725972b8b467c */
+"geoserver_url_pref_dialog_title" = "Vendosni URL e GeoServer-it tuaj";
+
+/* loco:54c52dfe14d725972b8b467b */
+"geoserver_url_pref_summary" = "URL bazë e instancës web-map të GeoServerit tuaj privat";
+
+/* loco:54c52dfe14d725972b8b467a */
+"geoserver_url_pref_title" = "GeoServer URL";
+
+/* loco:54c52dfe14d725972b8b4652 */
+"group" = "Grup";
+
+/* loco:54c52dfe14d725972b8b45c9 */
+"group_name" = "Emër";
+
+/* loco:54c52dfe14d725972b8b4697 */
+"hint_type_to_filter" = "Shtypni disa karaktere të filtroni nga lista";
+
+/* loco:54c52dfe14d725972b8b4685 */
+"id_number" = "Id Numër";
+
+/* loco:54c52dfe14d725972b8b4684 */
+"id_type" = "Id Tipi";
+
+/* loco:54c52dfe14d725972b8b466d */
+"insert_claim_notes" = "Fut shënimet e pretenduesit";
+
+/* loco:54c52dfe14d725972b8b4686 */
+"land_use" = "Përdorimi i Tokës";
+
+/* loco:54c52dfe14d725972b8b45d4 */
+"last_name" = "Atësia";
+
+/* loco:54c52dfe14d725972b8b45d5 */
+"last_name_label" = "Atësia *";
+
+/* loco:54c52dfe14d725972b8b4656 */
+"left" = "Majtas";
+
+/* loco:54c52dfe14d725972b8b45ba */
+"legal_person" = "Person juridik";
+
+/* loco:54c52dfe14d725972b8b4676 */
+"map_provider_geoserver" = "GeoServer";
+
+/* loco:54c52dfe14d725972b8b4671 */
+"map_provider_google_hybrid" = "Google Hybrid";
+
+/* loco:54c52dfe14d725972b8b466f */
+"map_provider_google_normal" = "Google Maps";
+
+/* loco:54c52dfe14d725972b8b4670 */
+"map_provider_google_satellite" = "Google Earth";
+
+/* loco:54c52dfe14d725972b8b4672 */
+"map_provider_google_terrain" = "Google Terrain";
+
+/* loco:54c52dfe14d725972b8b4675 */
+"map_provider_local_tiles" = "Të dhëna lokale";
+
+/* loco:54c52dfe14d725972b8b4673 */
+"map_provider_osm_mapnik" = "Open Street Map MapNik";
+
+/* loco:54c52dfe14d725972b8b4674 */
+"map_provider_osm_mapquest" = "Open Street Map MapQuest";
+
+/* loco:54c52dfe14d725972b8b461f */
+"message_add_marker" = "Shtoni një shënjues në kufi";
+
+/* loco:54c52dfe14d725972b8b4601 */
+"message_added_attachment" = "Shtojca iu shtua pretendimit";
+
+/* loco:54c52dfe14d725972b8b4602 */
+"message_adding_attachment_not_ok" = "Gabim gjatë bashkëngjitjes së shtojcës";
+
+/* loco:54c52dfe14d725972b8b45f8 */
+"message_adjacencies_not_saved" = " Kufitarët nuk u ruajtën ";
+
+/* loco:54c52dfe14d725972b8b45f7 */
+"message_adjacencies_saved" = "Kufitarët u ruajtën";
+
+/* loco:54c52dfe14d725972b8b462d */
+"message_already_owner" = "Personi i selektuar tashmë e ka një pjese tek ky pretendim";
+
+/* loco:54c52dfe14d725972b8b4649 */
+"message_app_initialized" = "Aplikacioni është i gatshëm të punojë dhe komunikojë me Komunitetin Open Tenure Server";
+
+/* loco:54c52dfe14d725972b8b4648 */
+"message_app_initialized_default" = "Aplikacioni është i gatshëm të punojë dhe komunikojë me Komunitetin kryesor të Open Tenure Server";
+
+/* loco:54c52dfe14d725972b8b4641 */
+"message_app_initializing" = "Ju lutem, prisni…";
+
+/* loco:54c52dfe14d725972b8b4646 */
+"message_app_not_initialized" = "Kontrollo tek 'Konfigurimet' që konfigurimet e Komunitetit Open Tenure Server janë të sakta dhe inicializo procesin përsëri";
+
+/* loco:54c52dfe14d725972b8b4643 */
+"message_app_not_initialized_network" = "Rrjeti nuk është i disponueshëm";
+
+/* loco:54c52dfe14d725972b8b4644 */
+"message_app_not_yet_initialized" = "Aplikacioni nuk është inicializuar akoma";
+
+/* loco:54c52dfe14d725972b8b45f0 */
+"message_attachment_download_failed" = "Shkarkimi i skedarit %s dështoi ";
+
+/* loco:54c52dfe14d725972b8b45f1 */
+"message_attachment_download_not_complete" = "Shkarkimi i skedarit %s nuk përfundoi ";
+
+/* loco:54c52dfe14d725972b8b45ee */
+"message_attachment_downloaded" = "Shkarkoni skedarin bashkangjitur %s";
+
+/* loco:54c52dfe14d725972b8b45ef */
+"message_attachment_downloading" = "Skedari %s bashkangjitur, është duke u shkarkuar ";
+
+/* loco:54c52dfe14d725972b8b4610 */
+"message_cant_open_db" = "Të dhënat nuk u aksesuan";
+
+/* loco:54c52dfe14d725972b8b4611 */
+"message_check_upgrade_db" = "Duke përmirësuar të dhënat lokale";
+
+/* loco:54c52dfe14d725972b8b45ed */
+"message_claim_exported" = "Exported the claim %s";
+
+/* loco:54c52dfe14d725972b8b45ec */
+"message_claim_exported_error" = "The claim %s is not exported";
+
+/* loco:54c52dfe14d725972b8b463e */
+"message_claim_modified" = "Pretendimi u modifikua";
+
+/* loco:54c52dfe14d725972b8b460a */
+"message_claims_downloaded" = "Pretendimi u shkarkua me sukses";
+
+/* loco:54c52dfe14d725972b8b461d */
+"message_confirm_new_db_password" = "Konfirmo fjalëkalimin e ri";
+
+/* loco:54c52dfe14d725972b8b45eb */
+"message_connection_error" = "Lidhja e pa disponoheshe";
+
+/* loco:54c52dfe14d725972b8b4627 */
+"message_create_before_edit" = "Krijoni një pretendim duke specifikuar detajet përpara se të shtoni informacionin";
+
+/* loco:54c52dfe14d725972b8b4616 */
+"message_data_over_mobile" = "You are about to transfer a possibly large amount of data over a mobile internet connection. The associated cost can be high depending on your actual data plan";
+
+/* loco:54c52dfe14d725972b8b461b */
+"message_data_unencrypted" = "Kujdes: të dhënat lokale nuk janë të mbrojtura";
+
+/* loco:54c52dfe14d725972b8b4645 */
+"message_db_backed_up" = "A copy of the local database has been created";
+
+/* loco:54c52dfe14d725972b8b460e */
+"message_db_locked" = "Të dhënat janë të mbrojtura me fjalëkalim";
+
+/* loco:54c52dfe14d725972b8b460f */
+"message_db_password" = "Fjalëkalimi për të aksesuar të dhënat";
+
+/* loco:54c52dfe14d725972b8b4613 */
+"message_default_initialization" = "You are about to initialize the application with the default Community Server. Default Community Server should be used just for demo purpose. Do you want to continue? Otherwise press Cancel and put a community server URL in settings  ";
+
+/* loco:54c52dfe14d725972b8b463a */
+"message_deleted_claim" = "Pretendimi u fshi lokalisht me sukses";
+
+/* loco:54c52dfe14d725972b8b463d */
+"message_discard_changes" = "Doni të dilni pa ruajtur ndryshimet?";
+
+/* loco:54c52dfe14d725972b8b45f9 */
+"message_downloading_attachment" = "Duke shkarkuar shtojcën";
+
+/* loco:54c52dfe14d725972b8b461a */
+"message_encryption_failed" = "E pamundur të mbrojë të dhënat lokale";
+
+/* loco:54c52dfe14d725972b8b461c */
+"message_encryption_set" = "Të dhënat lokale janë të mbrojtura. Vendosni fjalëkalimin e të dhënave të mbrojtura herës tjetër që do të hapni OpenTenure";
+
+/* loco:54c52dfe14d725972b8b461e */
+"message_enter_description" = "Vendos përshkrimin";
+
+/* loco:54c52dfe14d725972b8b463f */
+"message_entity_type" = "Cilin tip entiteti?";
+
+/* loco:54c52dfe14d725972b8b463b */
+"message_error_deleting_claim" = "Gabim gjatë fshirjes së pretendimit në memorien lokale";
+
+/* loco:54c52dfe14d725972b8b460b */
+"message_error_downloading_claims" = "Pretendimi %s u shkarkua. Nuk u shkarkuan të gjithë pretendimet";
+
+/* loco:54c52dfe14d725972b8b4634 */
+"message_error_mandatory_birthdate" = "Datëlindja nuk është ne formatin e duhur ose është bosh";
+
+/* loco:54c52dfe14d725972b8b4631 */
+"message_error_mandatory_field_first_name" = "Plotëso fushën e detyruar emri, përpara se ta ruani";
+
+/* loco:54c52dfe14d725972b8b4633 */
+"message_error_mandatory_field_gender" = "Plotëso fushën e detyruar gjinia, përpara se ta ruani";
+
+/* loco:54c52dfe14d725972b8b4632 */
+"message_error_mandatory_field_last_name" = "Plotëso fushën e detyruar mbiemri, përpara se ta ruani";
+
+/* loco:54c52dfe14d725972b8b4630 */
+"message_error_mandatory_fields" = "Plotësoni të gjitha fushat e detyruara përpara se ta ruani";
+
+/* loco:54c52dfe14d725972b8b4614 */
+"message_error_opening_file" = "Gabim. Skedari nuk mund të hapet : ";
+
+/* loco:54c52dfe14d725972b8b45f4 */
+"message_error_remove_person" = "Personi %s nuk u fshi ";
+
+/* loco:54c52dfe14d725972b8b4635 */
+"message_error_startdate" = "Data e fillimit të të drejtave nuk është në formatin e duhur ose është bosh";
+
+/* loco:54c52dfe14d725972b8b4638 */
+"message_error_withdraw_claim" = "Gabim gjatë tërheqjes së pretendimit: ";
+
+/* loco:54c52dfe14d725972b8b4626 */
+"message_exit_dialog" = "A jeni i sigurt që doni të dilni nga aplikacioni?";
+
+/* loco:54c52dfe14d725972b8b4608 */
+"message_export" = "Duke eksportuar";
+
+/* loco:54c52dfe14d725972b8b460d */
+"message_initialize_before" = " Do initialization before ";
+
+/* loco:54c52dfe14d725972b8b45fb */
+"message_invalid_url" = "URL e pavlefshme";
+
+/* loco:54c52dfe14d725972b8b460c */
+"message_login_no_more_valid" = "Seksioni skadoi. Kyçuni përsëri";
+
+/* loco:54c52dfe14d725972b8b4628 */
+"message_map_not_yet_draw" = "Harta e pretendimit nuk është e përfunduar";
+
+/* loco:54c52dfe14d725972b8b45f6 */
+"message_map_snapshot_saved" = "Snapshot i hartës u ruajt";
+
+/* loco:54c52dfe14d725972b8b4618 */
+"message_new_db_password" = "Fjalëkalimi i ri (lëre bosh për të dhëna të pambrojtura)?";
+
+/* loco:54c52dfe14d725972b8b4612 */
+"message_no_application" = "Nuk mundi të gjejë aplikacion për ta hapur skedarin";
+
+/* loco:54c52dfe14d725972b8b4629 */
+"message_no_available_shares" = "Zvogëloni numrin e pjesëve në këtë pretendim përpara se të modifikoni vlerën e kësaj pjese ";
+
+/* loco:54c52dfe14d725972b8b462a */
+"message_no_available_shares_adding_new" = "Zvogëloni numrin e pjesëve në këtë pretendim përpara se të shtoni një pjesë të re";
+
+/* loco:54c52dfe14d725972b8b4609 */
+"message_no_claim_to_download" = "S'ka pretendim për tu shkarkuar";
+
+/* loco:54c52dfe14d725972b8b4617 */
+"message_no_connection_at_startup" = "No Internet connection is available. Configuration may not reflect recent changes and you won't be able do upload or download information. Connect to the Internet if you plan to transfer data using OpenTenure";
+
+/* loco:54c52dfe14d725972b8b4625 */
+"message_not_supported_on_this_device" = "Nuk suportohet në ketë pajisje";
+
+/* loco:54c52dfe14d725972b8b4615 */
+"message_old_db_password" = "Fjalëkalimi ekzistues";
+
+/* loco:54c52dfe14d725972b8b45e7 */
+"message_password_character_is_wrong" = "Fjalëkalimi duhet të përmbaje vetëm numra dhe gërma";
+
+/* loco:54c52dfe14d725972b8b4619 */
+"message_password_dont_match" = "Fjalekalimi i ri nuk u konfirmua. Provojeni përsëri.";
+
+/* loco:54c52dfe14d725972b8b45e6 */
+"message_password_too_short" = "Fjalëkalimi duhet të jetë të paktën %d karaktere i gjatë";
+
+/* loco:54c52dfe14d725972b8b45f5 */
+"message_remaining_days" = "Ditët e ngelura për të kundërshtuar pretendimin :  ";
+
+/* loco:54c52dfe14d725972b8b4624 */
+"message_remove_additional_info" = "Hiq informacionin?";
+
+/* loco:54c52dfe14d725972b8b4621 */
+"message_remove_attachment" = "Hiq shtojcën?";
+
+/* loco:54c52dfe14d725972b8b4637 */
+"message_remove_claim" = "Doni ta hiqni këtë pretendim?";
+
+/* loco:54c52dfe14d725972b8b4620 */
+"message_remove_marker" = "Hiq shënjuesin?";
+
+/* loco:54c52dfe14d725972b8b4622 */
+"message_remove_owner" = "Hiq pronarin?";
+
+/* loco:54c52dfe14d725972b8b45f2 */
+"message_remove_person" = "Personi %s u fshi";
+
+/* loco:54c52dfe14d725972b8b45f3 */
+"message_remove_person_dialog" = "A jeni i sigurt se doni të fshini %s?";
+
+/* loco:54c52dfe14d725972b8b4636 */
+"message_remove_quest" = "Doni ta tërhiqni këtë pretendim?";
+
+/* loco:54c52dfe14d725972b8b4623 */
+"message_remove_section_element" = "Hiq elementin?";
+
+/* loco:54c52dfe14d725972b8b463c */
+"message_save_changes" = "Doni ti ruani ndryshimet?";
+
+/* loco:54c52dfe14d725972b8b4606 */
+"message_save_claim_before_adding_content" = "Pretendimi duhet të ruhet përpara se të shtoni përmbajtjen";
+
+/* loco:54c52dfe14d725972b8b4604 */
+"message_save_claim_before_submit" = "Pretendimi duhet të ruhet përpara paraqitjes";
+
+/* loco:54c52dfe14d725972b8b4607 */
+"message_save_person_before_adding_content" = "Personi duhet të ruhet përpara se të shtoni përmbajtjen";
+
+/* loco:54c52dfe14d725972b8b4605 */
+"message_save_snapshot_before_printing" = "Bashkëngjitni një snapshot të hartës përpara printimit";
+
+/* loco:54c52dfe14d725972b8b45e8 */
+"message_saved" = "U ruajt";
+
+/* loco:54c52dfe14d725972b8b45e9 */
+"message_server_error_saving_claim" = "Gabim i brendshëm i Serverit";
+
+/* loco:54c52dfe14d725972b8b45ea */
+"message_service_not_available" = "Shërbimi nuk është i disponoheshim";
+
+/* loco:54c52dfe14d725972b8b462c */
+"message_share_not_saved" = "Gabim gjatë ruajtjes së pjesës";
+
+/* loco:54c52dfe14d725972b8b462b */
+"message_share_saved" = "Pjesa u ruajt";
+
+/* loco:54c52dfe14d725972b8b4603 */
+"message_submission_error" = "Gabim gjatë paraqitjes së pretendimit";
+
+/* loco:54c52dfe14d725972b8b45ff */
+"message_submitted" = "Pretendimi u paraqit";
+
+/* loco:54c52dfe14d725972b8b4647 */
+"message_title_app_initialized" = " Aplikacioni u inicializua ";
+
+/* loco:54c52dfe14d725972b8b4640 */
+"message_title_app_initializing" = "Duke inicializuar OpenTenure";
+
+/* loco:54c52dfe14d725972b8b4642 */
+"message_title_app_not_initialized" = "Aplikacioni nuk u inicializua";
+
+/* loco:54c52dfe14d725972b8b462f */
+"message_touch_to_select_a_claim" = "Preke për të zgjedhur një pretendim";
+
+/* loco:54c52dfe14d725972b8b462e */
+"message_touch_to_select_a_person" = "Preke për të zgjedhur një person";
+
+/* loco:54c52dfe14d725972b8b45fc */
+"message_unable_to_save" = "Nuk mund të ruhet. Kontrollo detajet dhe provoje përsëri";
+
+/* loco:54c52dfe14d725972b8b45fd */
+"message_unable_to_save_missing_claim_name" = "Nuk mund të ruhet. Mungon emri i pretenduesit";
+
+/* loco:54c52dfe14d725972b8b45fe */
+"message_unable_to_save_missing_person" = "Nuk mund të ruhet. Mungon pretenduesi";
+
+/* loco:54c52dfe14d725972b8b4600 */
+"message_uploading" = "Pretendimi është tek ngarkimet";
+
+/* loco:54c52dfe14d725972b8b45fa */
+"message_uploading_attachment" = "Duke ngarkuar shtojcën";
+
+/* loco:54c52dfe14d725972b8b4639 */
+"message_withdrawn_claim" = "Pretendimi u tërhoq me sukses";
+
+/* loco:54c52dfe14d725972b8b45de */
+"mobile_phone_number" = "Celular";
+
+/* loco:54c52dfe14d725972b8b45c8 */
+"na" = "N.A.";
+
+/* loco:54c52dfe14d725972b8b465f */
+"new_additional_info" = "Shto informacion";
+
+/* loco:54c52dfe14d725972b8b45c5 */
+"new_entity" = "Entitet i ri";
+
+/* loco:54c52dfe14d725972b8b465c */
+"new_file" = "Skedar i ri";
+
+/* loco:54c52dfe14d725972b8b465d */
+"new_multipage" = "Skedar i ri me shumë faqe";
+
+/* loco:54c52dfe14d725972b8b465b */
+"new_snapshot" = "Snapshot i ri";
+
+/* loco:54c52dfe14d725972b8b4653 */
+"no" = "Jo";
+
+/* loco:54c52dfe14d725972b8b468e */
+"north" = "Veri";
+
+/* loco:54c52dfe14d725972b8b468a */
+"north_adjacency" = "Në Veri";
+
+/* loco:54c52dfe14d725972b8b4693 */
+"north_east" = "Veri-Lindje";
+
+/* loco:54c52dfe14d725972b8b4694 */
+"north_west" = "Veri-Perëndim";
+
+/* loco:54c52dfe14d725972b8b464e */
+"not_all_tiles_downloaded" = "%d tiles për ketë sipërfaqe harte nuk u shkarkuan. Kontrollo nëse është e mjaftueshme ose riprovoni shkarkimin";
+
+/* loco:54c52dfe14d725972b8b465a */
+"not_boundary" = "Jo kufi";
+
+/* loco:54c52dfe14d725972b8b4668 */
+"owner" = "Pronar";
+
+/* loco:54c52dfe14d725972b8b45e3 */
+"owner_removed" = "Pronari është hequr";
+
+/* loco:54c52dfe14d725972b8b466b */
+"owners" = "Pronaret";
+
+/* loco:54c52dfe14d725972b8b45e0 */
+"password" = "Fjalëkalimi";
+
+/* loco:54c52dfe14d725972b8b4651 */
+"person" = "Person";
+
+/* loco:54c52dfe14d725972b8b45b3 */
+"person_name" = "Emri i personit";
+
+/* loco:54c52dfe14d725972b8b466e */
+"person_picture" = "Foto e Personit";
+
+/* loco:54c52dfe14d725972b8b45bc */
+"person_type" = "Tipi i personit *";
+
+/* loco:54c52dfe14d725972b8b45b9 */
+"physical_person" = "Person fizik";
+
+/* loco:54c52dfe14d725972b8b45da */
+"place_of_birth" = "Vendlindja";
+
+/* loco:54c52dfe14d725972b8b45db */
+"place_of_birth_label" = "Vendlindja *";
+
+/* loco:54c52dfe14d725972b8b45b5 */
+"postal_address" = "Adresa postare";
+
+/* loco:54c52dfe14d725972b8b4568 */
+"preload" = "Duke hapur imazhin";
+
+/* loco:54c52dfe14d725972b8b4683 */
+"property" = "Pasuri";
+
+/* loco:54c52dfe14d725972b8b45dd */
+"recorded_by" = "U regjistrua nga : ";
+
+/* loco:54c52dfe14d725972b8b4657 */
+"right" = "Djathtas";
+
+/* loco:54c52dfe14d725972b8b45e4 */
+"section_element_removed" = "Elementi është hequr";
+
+/* loco:54c52dfe14d725972b8b45bf */
+"share_value" = "Vlera në përqindje : ";
+
+/* loco:54c52dfe14d725972b8b4698 */
+"shares_prompt" = "Zgjidhni pjesët";
+
+/* loco:54c52dfe14d725972b8b45ca */
+"signature" = "Nënshkrimi";
+
+/* loco:54c52dfe14d725972b8b45cc */
+"software_version" = "0.9.5";
+
+/* loco:54c52dfe14d725972b8b45cb */
+"software_version_title" = "Versioni i programit";
+
+/* loco:54c52dfe14d725972b8b468f */
+"south" = "Jug";
+
+/* loco:54c52dfe14d725972b8b468b */
+"south_adjacency" = "Në Jug";
+
+/* loco:54c52dfe14d725972b8b4695 */
+"south_east" = "Jug-Lindje";
+
+/* loco:54c52dfe14d725972b8b4696 */
+"south_west" = "Jug-Perëndim";
+
+/* loco:54c52dfe14d725972b8b4692 */
+"status" = "status : ";
+
+/* loco:54c52dfe14d725972b8b4664 */
+"sticky_marker" = "Shënues i ngjitur";
+
+/* loco:54c52dfe14d725972b8b464b */
+"tiles_queued" = " Janë  %d tiles në listën e shkarkimit ";
+
+/* loco:54c52dfe14d725972b8b45a0 */
+"title_activity_claim" = "Open Tenure: Pretendim i ri";
+
+/* loco:54c52dfe14d725972b8b45a7 */
+"title_activity_file_chooser" = "Zgjidh një skedar";
+
+/* loco:54c52dfe14d725972b8b45a3 */
+"title_activity_group" = "Open Tenure: Grup i ri";
+
+/* loco:54c52dfe14d725972b8b45a2 */
+"title_activity_person" = "Open Tenure: Person i ri";
+
+/* loco:54c52dfe14d725972b8b45a4 */
+"title_activity_select_claim" = "Open Tenure: Zgjidh pretendimin";
+
+/* loco:54c52dfe14d725972b8b45a5 */
+"title_activity_select_person" = "Open Tenure: Zgjidh personin";
+
+/* loco:54c52dfe14d725972b8b459f */
+"title_activity_settings" = "Konfigurime";
+
+/* loco:54c52dfe14d725972b8b45a6 */
+"title_activity_share_details" = "Open Tenure: Detajet e pjesës";
+
+/* loco:54c52dfe14d725972b8b45aa */
+"title_add_non_boundary" = "Shto një vendndodhje, jo kufi";
+
+/* loco:54c52dfe14d725972b8b458f */
+"title_challenged_claim" = "Challenged claim : ";
+
+/* loco:54c52dfe14d725972b8b458e */
+"title_challenged_claims" = "Pretendimet e kundërshtuara";
+
+/* loco:54c52dfe14d725972b8b4590 */
+"title_claim" = "Pretendim";
+
+/* loco:54c52dfe14d725972b8b4597 */
+"title_claim__downloading_map" = "Duke shkarkuar pretendimin";
+
+/* loco:54c52dfe14d725972b8b4593 */
+"title_claim_additional_info" = "Informacion shtesë";
+
+/* loco:54c52dfe14d725972b8b4598 */
+"title_claim_adjacencies" = "Kufitarët";
+
+/* loco:54c52dfe14d725972b8b459b */
+"title_claim_challenges" = "Ankesat";
+
+/* loco:54c52dfe14d725972b8b4594 */
+"title_claim_documents" = "Dokumente";
+
+/* loco:54c52dfe14d725972b8b4596 */
+"title_claim_map" = "Harta";
+
+/* loco:54c52dfe14d725972b8b4599 */
+"title_claim_owners" = "Pjesët";
+
+/* loco:54c52dfe14d725972b8b4595 */
+"title_claim_photos" = "Foto të pretendimit";
+
+/* loco:54c52dfe14d725972b8b458c */
+"title_claims" = "Lista e pretendimeve";
+
+/* loco:54c52dfe14d725972b8b45a9 */
+"title_confirm_data_transfer" = "Confirm data transfer";
+
+/* loco:54c52dfe14d725972b8b45ab */
+"title_exit_dialog" = "Dalje";
+
+/* loco:54c52dfe14d725972b8b459c */
+"title_export" = "Duke eksportuar pretendimin si skedar të ngjeshur";
+
+/* loco:54c52dfe14d725972b8b4592 */
+"title_group_details" = "Detajet e grupit";
+
+/* loco:54c52dfe14d725972b8b45a1 */
+"title_i_m_here" = "Vendndodhja juaj";
+
+/* loco:54c52dfe14d725972b8b45ac */
+"title_initialization_process" = "Initialization Process";
+
+/* loco:54c52dfe14d725972b8b459e */
+"title_item" = "Artikull";
+
+/* loco:54c52dfe14d725972b8b45a8 */
+"title_lock_db" = "Mbro të dhënat lokale";
+
+/* loco:54c52dfe14d725972b8b458b */
+"title_map" = "Harta e Komunitetit";
+
+/* loco:54c52dfe14d725972b8b458a */
+"title_news" = "Të reja";
+
+/* loco:54c52dfe14d725972b8b45b1 */
+"title_no_connection" = "No connection";
+
+/* loco:54c52dfe14d725972b8b4591 */
+"title_person_details" = "Detajet e personit";
+
+/* loco:54c52dfe14d725972b8b458d */
+"title_persons" = "Personat";
+
+/* loco:54c52dfe14d725972b8b45ad */
+"title_remove_person_dialog" = "Hiq personin";
+
+/* loco:54c52dfe14d725972b8b45ae */
+"title_save_claim_dialog" = "Pretendimi u modifikua";
+
+/* loco:54c52dfe14d725972b8b45b0 */
+"title_save_group_dialog" = "Grupi u modifikua";
+
+/* loco:54c52dfe14d725972b8b45af */
+"title_save_person_dialog" = "Personi u modifikua";
+
+/* loco:54c52dfe14d725972b8b459d */
+"title_section" = "Seksion";
+
+/* loco:54c52dfe14d725972b8b459a */
+"title_share" = "Pjesa";
+
+/* loco:54c52dfe14d725972b8b464c */
+"too_many_tiles_queued" = "Janë  %d tiles në listën e shkarkimit. Ju lutem prisni përpara se të shkarkoni tile shtese";
+
+/* loco:54c52dfe14d725972b8b45c7 */
+"type" = "Tipi";
+
+/* loco:54c52dfe14d725972b8b4654 */
+"up" = "Lart";
+
+/* loco:54c52dfe14d725972b8b4691 */
+"west" = "Perëndim";
+
+/* loco:54c52dfe14d725972b8b468d */
+"west_adjacency" = "Në Perëndim";
+
+/* loco:54c52dfe14d725972b8b465e */
+"withdraw_claim" = "Tërhiq Pretendimin";
+
+/* loco:54c52dfe14d725972b8b4650 */
+"yes" = "Po";
+
+/* loco:54c52dfe14d725972b8b464f */
+"zoom_level_too_low" = "Sipërfaqja është shumë e madhe. Zmadhohuni më shumë që të mund të shkarkoni të dhënat nga harta";

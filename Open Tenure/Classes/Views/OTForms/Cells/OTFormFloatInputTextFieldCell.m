@@ -42,7 +42,7 @@
     if (self) {
         self.backgroundColor = [UIColor otLightGreen];
         self.spaceToNextCell = 2.0f;
-        self.textField.backgroundColor = [UIColor otGreen];
+        self.textField.backgroundColor = [UIColor whiteColor];
         self.textField.layer.borderWidth = 0.0;
         self.textField.returnKeyType = UIReturnKeyDefault;
         self.infoCell.backgroundColor = [UIColor orangeColor];

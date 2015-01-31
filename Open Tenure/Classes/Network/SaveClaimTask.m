@@ -63,10 +63,10 @@ static NSURLSessionUploadTask *uploadTask;
     if ([NSJSONSerialization isValidJSONObject:jsonObject]) {
 
         self.saveAttachmentQueue = [NSOperationQueue new];
-        //[self.saveAttachmentQueue addObserver:self forKeyPath:@"attachmentCount" options:0 context:NULL];
-        
-        ALog(@"%@", jsonObject.description);
+
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonObject options:NSJSONWritingPrettyPrinted error:nil];
+        NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        ALog(@"%@", jsonString);
         
         [CommunityServerAPI saveClaim:jsonData completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
             if (error != nil) {
@@ -92,7 +92,7 @@ static NSURLSessionUploadTask *uploadTask;
                                     || [_claim.statusCode isEqualToString:kClaimStatusUpdateIncomplete]) {
                                     _claim.statusCode = kClaimStatusUpdateIncomplete;
                                 }
-                                [OT handleErrorWithMessage:[returnedData message]];
+                                [OT handleErrorWithMessage:[returnedData objectForKey:@"message"]];
                                 break;
                                 
                             case 105: /* IOException: */
@@ -106,7 +106,7 @@ static NSURLSessionUploadTask *uploadTask;
                                     || [_claim.statusCode isEqualToString:kClaimStatusUpdateIncomplete]) {
                                     _claim.statusCode = kClaimStatusUpdateError;
                                 }
-                                [OT handleErrorWithMessage:[returnedData message]];
+                                [OT handleErrorWithMessage:[returnedData objectForKey:@"message"]];
                                 break;
                                 
                             case 110:
@@ -120,7 +120,7 @@ static NSURLSessionUploadTask *uploadTask;
                                     || [_claim.statusCode isEqualToString:kClaimStatusUpdateIncomplete]) {
                                     _claim.statusCode = kClaimStatusUpdateError;
                                 }
-                                [OT handleErrorWithMessage:[returnedData message]];
+                                [OT handleErrorWithMessage:[returnedData objectForKey:@"message"]];
                                 break;
                                 
                             case 200: { /* OK */
@@ -204,7 +204,7 @@ static NSURLSessionUploadTask *uploadTask;
                                     _claim.statusCode = kClaimStatusUpdateError;
                                 }
                                 
-                                [OT handleErrorWithMessage:[returnedData message]];
+                                [OT handleErrorWithMessage:[returnedData objectForKey:@"message"]];
                                 break;
                             }
                             case 400:
@@ -217,7 +217,7 @@ static NSURLSessionUploadTask *uploadTask;
                                 } else {
                                     _claim.statusCode = kClaimStatusUpdateError;
                                 }
-                                [OT handleErrorWithMessage:[returnedData message]];
+                                [OT handleErrorWithMessage:[returnedData objectForKey:@"message"]];
                                 break;
                             default:
                                 break;

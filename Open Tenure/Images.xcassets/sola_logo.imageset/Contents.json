@@ -2,13 +2,7 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "sola_logo.png"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "2x",
-      "filename" : "sola_logo@2x.png"
+      "filename" : "sola_logo.pdf"
     }
   ],
   "info" : {

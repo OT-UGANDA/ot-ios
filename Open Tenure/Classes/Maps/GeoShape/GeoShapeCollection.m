@@ -32,7 +32,12 @@
 
 @implementation GeoShapeCollection
 
-@synthesize workingOverlay;
+@synthesize workingOverlay = _workingOverlay;
+@synthesize overlays = _overlays;
+@synthesize region = _region;
+@synthesize boundingMapRect = _boundingMapRect;
+@synthesize snappedCoordinate = _snappedCoordinate;
+@synthesize coordinate = _coordinate;
 
 - (id)init {
     if (self = [super init]) {
@@ -71,11 +76,12 @@
     pthread_rwlock_unlock(&_rwLock);
 }
 
-- (void)addPointToWorkingOverlay:(CLLocationCoordinate2D)point currentZoomScale:(double)currentZoomScale {
-    if (_overlays.count == 0) return;
-    if (self.workingOverlay == nil) return;
-    [self.workingOverlay addCoordinate:point currentZoomScale:currentZoomScale];
+- (NSInteger)addPointToWorkingOverlay:(CLLocationCoordinate2D)point currentZoomScale:(double)currentZoomScale {
+    if (_overlays.count == 0) return 0;
+    if (self.workingOverlay == nil) return 0;
+    NSInteger currentIndex = [self.workingOverlay addCoordinate:point currentZoomScale:currentZoomScale];
     [self updateOverlays];
+    return currentIndex;
 }
 
 - (void)removePointFromWorkingOverlay:(CLLocationCoordinate2D)point {
@@ -83,19 +89,6 @@
     if (self.workingOverlay == nil) return;
     [self.workingOverlay removeCoordinate:point];
     [self updateOverlays];
-}
-
-- (void)setWorkingOverlay:(GeoShape *)newWorkingOverlay {
-    workingOverlay = newWorkingOverlay;
-    [workingOverlay updatePoints];
-}
-
-- (CLLocationCoordinate2D)coordinate {
-    return _region.center;
-}
-
-- (MKMapRect)boundingMapRect {
-    return _boundingMapRect;
 }
 
 - (NSArray *)shapesInMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale {
@@ -130,10 +123,7 @@
         }
     }
     _region = MKCoordinateRegionForMapRect(_boundingMapRect);
-}
-
-- (NSArray *)overlays {
-    return _overlays;
+    _coordinate = _region.center;
 }
 
 - (GeoShape *)getOverlayByMapPoint:(MKMapPoint)mapPoint {
@@ -146,12 +136,12 @@
 - (BOOL)getSnapFromMapPoint:(CLLocationCoordinate2D)coordinate mapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale snapMode:(SnapMode)mode {
     NSMutableArray *overlays = [NSMutableArray arrayWithArray:[self shapesInMapRect:mapRect zoomScale:zoomScale]];
     double snap_threshold = 0.2 * MKRoadWidthAtZoomScale(zoomScale);
-    [overlays removeObject:workingOverlay];
+    [overlays removeObject:_workingOverlay];
     NSMutableArray *visiblePoints = [@[] mutableCopy];
     
     // Endpoint
     for (GeoShape *shape in overlays) {
-        for (GeoShapeVertex *vertex in shape.vertexs) {
+        for (GeoShapeVertex *vertex in shape.vertices) {
             NSValue *value = [NSValue valueWithMKCoordinate:vertex.coordinate];
             [visiblePoints addObject:value];
         }
@@ -159,7 +149,7 @@
     // Nearest
     MKMapPoint point = MKMapPointForCoordinate(coordinate);
     for (GeoShape *shape in overlays) {
-        NSUInteger n = shape.vertexs.count;
+        NSUInteger n = shape.vertices.count;
         for (int i = 0; i < shape.pointCount; i++) {
             MKMapPoint A = shape.points[at(i, n)];
             MKMapPoint B = shape.points[at(i+1, n)];
@@ -188,10 +178,6 @@
         }
     }
     return NO;
-}
-
-- (CLLocationCoordinate2D)snappedCoordinate {
-    return _snappedCoordinate;
 }
 
 @end

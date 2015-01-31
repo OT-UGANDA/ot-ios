@@ -24,6 +24,7 @@
 
 #define kIndicatorColor [UIColor otDarkBlue]
 #define kTabsViewBackgroundColor [UIColor clearColor]
+#define kTabsViewHighlightColor [UIColor otLightGreen]
 #define kContentViewBackgroundColor [UIColor otLightGreen]
 #define kTabsSwipe NO // Disable swipe gesture
 
@@ -71,11 +72,14 @@
     }
     return self;
 }
+
 - (void)setSelected:(BOOL)selected {
     _selected = selected;
     // Update view as state changed
+    [self performSelector:@selector(setBackgroundColor:) withObject:kTabsViewBackgroundColor afterDelay:0.3];
     [self setNeedsDisplay];
 }
+
 - (void)drawRect:(CGRect)rect {
     
     UIBezierPath *bezierPath;
@@ -117,6 +121,14 @@
         [bezierPath stroke];
     }
 }
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    UIView *hit =  [super hitTest:point withEvent:event];
+    hit.backgroundColor = kTabsViewHighlightColor;
+    [self performSelector:@selector(setBackgroundColor:) withObject:kTabsViewBackgroundColor afterDelay:0.3];
+    return hit;
+}
+
 @end
 
 #pragma mark - ViewPagerController
@@ -201,6 +213,15 @@
     
     // Re-layout sub views
     [self layoutSubviews];
+    
+    // Set navigationBar background
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    if ([UIApplication sharedApplication].statusBarHidden) {
+        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"ot-navigation1"] forBarMetrics:UIBarMetricsDefault];
+    } else {
+        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"ot-navigation"] forBarMetrics:UIBarMetricsDefault];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -227,6 +248,10 @@
         }
         if (self.navigationController && !self.navigationController.toolbarHidden) {
             bottomLayoutGuide += [self.navigationController toolbar].frame.size.height;
+        }
+        // Fixed for landscape
+        if ([UIApplication sharedApplication].statusBarHidden) {
+            topLayoutGuide -= 20.0;
         }
     }
     
@@ -656,7 +681,6 @@
         
         CGRect frame = tabView.frame;
         frame.origin.x = contentSizeWidth;
-        frame.size.width = [self.tabWidth floatValue];
         tabView.frame = frame;
         
         contentSizeWidth += CGRectGetWidth(tabView.frame);
@@ -851,14 +875,15 @@
             contentSizeWidth = [self.tabOffset floatValue];
         }
     }
-    
+
     for (NSUInteger i = 0; i < self.tabCount; i++) {
         
         UIView *tabView = [self tabViewAtIndex:i];
         
         CGRect frame = tabView.frame;
         frame.origin.x = contentSizeWidth;
-        frame.size.width = [self.tabWidth floatValue];
+        CGFloat width = frame.size.width + 20 < [self.tabWidth floatValue] ? [self.tabWidth floatValue] : frame.size.width + 20;
+        frame.size.width = width;
         tabView.frame = frame;
         
         [self.tabsView addSubview:tabView];
@@ -916,9 +941,10 @@
         // Get view from dataSource
         UIView *tabViewContent = [self.dataSource viewPager:self viewForTabAtIndex:index];
         tabViewContent.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-        
+
         // Create TabView and subview the content
-        TabView *tabView = [[TabView alloc] initWithFrame:CGRectMake(0.0, 0.0, [self.tabWidth floatValue], [self.tabHeight floatValue])];
+        TabView *tabView = [[TabView alloc] initWithFrame:CGRectMake(0.0, 0.0, tabViewContent.frame.size.width, [self.tabHeight floatValue])];
+        
         [tabView addSubview:tabViewContent];
         [tabView setClipsToBounds:YES];
         [tabView setIndicatorColor:self.indicatorColor];

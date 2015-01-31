@@ -52,4 +52,6 @@ typedef void (^CompletionHandler)(NSError *error, NSHTTPURLResponse *httpRespons
 - (void)getClaim:(NSString *)claimId completionHandler:(CompletionHandler)completionHandler;
 + (void)getCommunityArea:(CompletionHandler)completionHandler;
 
++ (void)getDefaultFormTemplate:(CompletionHandler)completionHandler;
+
 @end

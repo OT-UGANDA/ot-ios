@@ -27,11 +27,11 @@
  */
 #import "AbstractEntity.h"
 
-@class ResponseClaimType, ClaimType;
+@class ClaimType;
 @interface ClaimTypeEntity : AbstractEntity
 
-+ (BOOL)insertFromResponseObject:(ResponseClaimType *)responseObject;
-+ (BOOL)updateFromResponseObject:(ResponseClaimType *)responseObject;
++ (ClaimType *)create;
++ (ClaimType *)getClaimTypeByCode:(NSString *)code;
 
 - (NSArray *)getCollection;
 + (NSArray *)getCollection;

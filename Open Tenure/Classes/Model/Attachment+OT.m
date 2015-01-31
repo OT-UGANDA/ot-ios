@@ -80,7 +80,7 @@
     [documentTypeEntity setManagedObjectContext:self.managedObjectContext];
     NSArray *documentTypeCollection = [documentTypeEntity getCollection];
     NSString *docType = [keyedValues objectForKey:@"typeCode"];
-    NSPredicate *landUsePredicate = [NSPredicate predicateWithFormat:@"(code == %@)", docType];
+    NSPredicate *landUsePredicate = [NSPredicate predicateWithFormat:@"(code CONTAINS[cd] %@)", docType];
     DocumentType *documentType = [[documentTypeCollection filteredArrayUsingPredicate:landUsePredicate] firstObject];
     self.typeCode = documentType;
 }

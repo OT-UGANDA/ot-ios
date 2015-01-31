@@ -31,6 +31,7 @@
 #import "OTFormFloatInputTextFieldCell.h"
 #import "OTMapViewController.h"
 #import "ShapeKit.h"
+#import "OTFormCell.h"
 
 #define ADJACENT_THRESHOLD 0.0001
 
@@ -50,10 +51,17 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     self.viewType = _claim.getViewType;
-    
     self.formCells = [self createAdjacencies];
+    [self.tableView reloadData];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -62,12 +70,41 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)done:(id)sender {
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (NSArray *)createAdjacencies {
     
-    NSInteger customCellHeight = 40.0f;
-    Class inputTextFieldClass = [OTFormFloatInputTextFieldCell class];
+    NSInteger customCellHeight = 32.0f;
+    Class inputTextFieldClass = [OTFormInputTextFieldCell class];
     
-    [self setHeaderTitle:NSLocalizedString(@"title_claim_adjacencies", nil) forSection:0];
+    NSString *sectionHeaderTitle1 = NSLocalizedString(@"title_claim_adjacencies", nil);
+    NSString *sectionHeaderTitle2 = NSLocalizedString(@"adjacent_claims", nil);
+    OTFormCell *sectionHeader1 = [[OTFormCell alloc] init];
+    sectionHeader1.selectionStyle = UITableViewCellSelectionStyleNone;
+//    sectionHeader1.textLabel.backgroundColor = [UIColor otGreen];
+    sectionHeader1.backgroundColor = [UIColor otGreen];
+    sectionHeader1.textLabel.textColor = [UIColor whiteColor];
+    sectionHeader1.textLabel.layer.cornerRadius = 0;
+//    sectionHeader1.textLabel.attributedText = [OT getAttributedStringFromText:sectionHeaderTitle1];
+    sectionHeader1.textLabel.text = sectionHeaderTitle1;
+    sectionHeader1.customCellHeight = 24;
+    
+    OTFormCell *sectionHeader2 = [[OTFormCell alloc] init];
+    sectionHeader2.selectionStyle = UITableViewCellSelectionStyleNone;
+//    sectionHeader2.textLabel.backgroundColor = [UIColor otGreen];
+    sectionHeader2.backgroundColor = [UIColor otGreen];
+    sectionHeader2.textLabel.textColor = [UIColor whiteColor];
+    sectionHeader2.textLabel.layer.cornerRadius = 0;
+//    sectionHeader2.textLabel.attributedText = [OT getAttributedStringFromText:sectionHeaderTitle2];
+    sectionHeader2.textLabel.text = sectionHeaderTitle2;
+    sectionHeader2.customCellHeight = 24;
+    
+    [self setHeaderTitle:NSLocalizedString(@"north", nil) forSection:1];
+    [self setHeaderTitle:NSLocalizedString(@"south", nil) forSection:2];
+    [self setHeaderTitle:NSLocalizedString(@"east", nil) forSection:3];
+    [self setHeaderTitle:NSLocalizedString(@"west", nil) forSection:4];
     
     OTFormInputTextFieldCell *northAdjacency =
     [[inputTextFieldClass alloc] initWithText:_claim.northAdjacency
@@ -124,25 +161,40 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
         ShapeKitPoint *centerPoint = [polygon centroid];
         MKMapPoint center = MKMapPointForCoordinate(centerPoint.geometry.coordinate);
         NSArray *adjacentClaims = [self getAdjacentCLaims];
-        for (Claim *claim in adjacentClaims) {
+        for (int i = 0; i < adjacentClaims.count; i++) {
+            Claim *claim = [adjacentClaims objectAtIndex:i];
             ShapeKitPolygon *otherPolygon = [[ShapeKitPolygon alloc] initWithWKT:claim.mappedGeometry];
             ShapeKitPoint *otherPoint = [otherPolygon centroid];
             MKMapPoint other = MKMapPointForCoordinate(otherPoint.geometry.coordinate);
             double angle = azimuth(center, other);
             NSString *cardinalDirection = [self getCardinalDirection:angle * 180.0 / M_PI];
-            OTFormFloatInputTextFieldCell *cell =
-            [[inputTextFieldClass alloc] initWithText:[NSString stringWithFormat:@"%@, By: %@", claim.claimName, [claim.person fullNameType:OTFullNameTypeDefault]]
-                                          placeholder:NSLocalizedString(cardinalDirection, nil)
-                                             delegate:self
-                                            mandatory:NO
-                                     customCellHeight:customCellHeight
-                                         keyboardType:UIKeyboardTypeDefault
-                                             viewType:_viewType];
+            NSString *text = [NSString stringWithFormat:@"%@, By: %@\n%@",claim.claimName, [claim.person fullNameType:OTFullNameTypeDefault], NSLocalizedString(_claim.statusCode, nil)];
+            [self setHeaderTitle:NSLocalizedString(cardinalDirection, nil) forSection:i+6];
+            OTFormCell *cell = [[OTFormCell alloc] init];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.accessoryType = UITableViewCellAccessoryDetailButton;
+            cell.customCellHeight = 44;
+            cell.textLabel.numberOfLines = 0;
+            cell.textLabel.layer.cornerRadius = 0;
+            cell.textLabel.attributedText = [OT getAttributedStringFromText:text];
             [adjacentCells addObject:cell];
+            
+            // Tạo claimant image
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 46, 46)];
+            imageView.contentMode = UIViewContentModeScaleAspectFit;
+            NSString *imageFile = [FileSystemUtilities getClaimantImagePath:claim.person.personId];
+            UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
+            if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];
+            imageView.image = personPicture;
+            imageView.backgroundColor = [UIColor whiteColor];
+            cell.accessoryView = imageView;
         }
     }
-    [self setHeaderTitle:NSLocalizedString(@"adjacent_claims", nil) forSection:1];
-    return @[@[northAdjacency, southAdjacency, eastAdjacency, westAdjacency], adjacentCells];
+
+    self.customSectionHeaderHeight = 16;
+    self.customSectionFooterHeight = 8;
+
+    return @[@[sectionHeader1], @[northAdjacency], @[southAdjacency], @[eastAdjacency], @[westAdjacency], @[sectionHeader2], adjacentCells];
 }
 
 - (NSArray *)getAdjacentCLaims {

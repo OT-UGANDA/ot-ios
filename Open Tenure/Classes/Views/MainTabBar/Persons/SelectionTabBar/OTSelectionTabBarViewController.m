@@ -27,10 +27,10 @@
  */
 
 #import "OTSelectionTabBarViewController.h"
-#import "OTPersonsViewController.h"
 #import "OTClaimsViewController.h"
+#import "OTShareUpdateViewController.h"
 
-@interface OTSelectionTabBarViewController () <ViewPagerDataSource, ViewPagerDelegate, OTPersonsViewControllerDelegate, OTClaimsViewControllerDelegate>
+@interface OTSelectionTabBarViewController () <ViewPagerDataSource, ViewPagerDelegate, OTClaimsViewControllerDelegate>
 
 @property (nonatomic) NSUInteger numberOfTabs;
 @property (nonatomic) NSArray *views;
@@ -39,6 +39,7 @@
 @property (nonatomic) UIBarButtonItem *fixedSpace;
 @property (nonatomic) UIBarButtonItem *addPerson;
 @property (nonatomic) UIBarButtonItem *cancel;
+@property (nonatomic) UIBarButtonItem *save;
 
 @property (nonatomic) OTSelectionAction selectionAction;
 
@@ -70,18 +71,15 @@
     }
     // Set title and view
     switch (_selectionAction) {
-        case OTPersonSelectionAction: {
-            self.title = NSLocalizedString(@"title_activity_select_person", @"Select person");
-            OTPersonsViewController *personsViewController = (OTPersonsViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"Persons"];
-            personsViewController.delegate = self;
-            _views = @[personsViewController];
-            break;
-        }
         case OTClaimSelectionAction: {
-            self.title = NSLocalizedString(@"title_activity_select_claim", @"Select claim");
             OTClaimsViewController *claimsViewController = (OTClaimsViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"Claims"];
             claimsViewController.delegate = self;
             _views = @[claimsViewController];
+            break;
+        }
+        case OTShareViewDetail: {
+            OTShareUpdateViewController *shareUpdateviewController = (OTShareUpdateViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"Share"];
+            _views = @[shareUpdateviewController];
             break;
         }
     }
@@ -132,17 +130,17 @@
     NSArray *titles;
     
     switch (_selectionAction) {
-        case OTPersonSelectionAction:
-            titles = @[NSLocalizedString(@"title_persons", @"Persons")];
-            break;
         case OTClaimSelectionAction:
             titles = @[NSLocalizedString(@"title_claims", @"Claims")];
+            break;
+        case OTShareViewDetail:
+            titles = @[NSLocalizedString(@"title_activity_share_details", nil)];
             break;
     }
     UILabel *label = [UILabel new];
     label.backgroundColor = [UIColor clearColor];
     label.font = [UIFont systemFontOfSize:14.0];
-    label.text = titles[index];
+    label.text = [titles[index] uppercaseString];
     label.textAlignment = NSTextAlignmentCenter;
     label.textColor = [UIColor blackColor];
     [label sizeToFit];
@@ -172,7 +170,7 @@
         case ViewPagerOptionTabOffset:
             return 36.0;
         case ViewPagerOptionTabWidth:
-            return UIInterfaceOrientationIsLandscape(self.interfaceOrientation) ? 128.0 : 96.0;
+            return UIInterfaceOrientationIsLandscape(self.interfaceOrientation) ? 128.0 : 128.0;
         case ViewPagerOptionFixFormerTabsPositions:
             return 0.0;
         case ViewPagerOptionFixLatterTabsPositions:
@@ -199,19 +197,40 @@
     
     _addPerson = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:_views[0] action:@selector(addPerson:)];
     
-    _cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:_views[0] action:@selector(cancel:)];
+    _save = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu_save"] style:UIBarButtonItemStylePlain target:_views[0] action:@selector(save:)];
+
+    _cancel = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:_views[0] action:@selector(cancel:)];
 }
 
 - (void)setBarButtonItemsForTabBarIndex:(NSInteger)index {
+    NSArray *titles;
+    
+    switch (_selectionAction) {
+        case OTClaimSelectionAction:
+            titles = @[NSLocalizedString(@"title_claims", @"Claims")];
+            break;
+        case OTShareViewDetail:
+            titles = @[NSLocalizedString(@"title_activity_share_details", nil)];
+            break;
+    }
+    
+    NSString *buttonTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"app_name", nil), titles[index]];
+    UIBarButtonItem *logo = [OT logoButtonWithTitle:buttonTitle];
+    self.navigationItem.leftBarButtonItems = @[logo];
+    
     switch (index) {
         case 0:
             switch (_selectionAction) {
-                case OTPersonSelectionAction: {
-                    self.navigationItem.rightBarButtonItems = @[_cancel, _fixedSpace, _addPerson, _flexibleSpace];
-                    break;
-                }
                 case OTClaimSelectionAction: {
                     self.navigationItem.rightBarButtonItems = @[_cancel, _flexibleSpace];
+                    break;
+                }
+                case OTShareViewDetail: {
+                    if ([[[Claim getFromTemporary] statusCode] isEqualToString:kClaimStatusCreated]) {
+                        self.navigationItem.rightBarButtonItems = @[_cancel, _flexibleSpace];
+                    } else {
+                        self.navigationItem.rightBarButtonItems = @[_cancel, _flexibleSpace];
+                    }
                     break;
                 }
             }
@@ -219,13 +238,7 @@
     }
 }
 
-#pragma OTPersonsViewControllerDelegate method
-
-- (void)personSelection:(OTPersonsViewController *)controller didSelectPerson:(Person *)person {
-    [_selectionDelegate personSelection:self didSelectPerson:person];
-}
-
-#pragma OTPersonsViewControllerDelegate method
+#pragma OTClaimViewControllerDelegate method
 
 - (void)claimSelection:(OTClaimsViewController *)controller didSelectClaim:(Claim *)claim {
     [_selectionDelegate claimSelection:self didSelelectClaim:claim];

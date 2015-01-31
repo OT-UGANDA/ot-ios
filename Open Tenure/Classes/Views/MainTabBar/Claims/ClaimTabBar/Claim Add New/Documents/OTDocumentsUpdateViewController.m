@@ -28,19 +28,33 @@
 
 #import "OTDocumentsUpdateViewController.h"
 #import "OTFileChooserViewController.h"
-#import "PickerView.h"
 #import <QuickLook/QuickLook.h>
 
-@interface OTDocumentsUpdateViewController () <OTFileChooserViewControllerDelegate, UITextFieldDelegate, UIDocumentInteractionControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface OTDocumentsUpdateViewController () <OTFileChooserViewControllerDelegate, UITextFieldDelegate, QLPreviewControllerDelegate, QLPreviewControllerDataSource, UIDocumentInteractionControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPickerViewDelegate> {
+    NSURL *documentURL;
+}
 
-@property (nonatomic, strong) PickerView *pickerView;
+@property (nonatomic, strong) UIPickerView *pickerView;
+
 @property (nonatomic, strong) NSMutableDictionary *dictionary;
 @property (nonatomic, strong) NSArray *docTypeCollection;
 @property (nonatomic, strong) NSMutableArray *docTypeDisplayValue;
+@property (nonatomic, strong) UITextField *textField;
 
 @end
 
 @implementation OTDocumentsUpdateViewController
+
+- (id)init {
+    if (self = [super init]) {
+        _tableView.tableFooterView = [UIView new];
+        _tableView.separatorInset = UIEdgeInsetsMake(0, 16, 0, 16);
+        _tableView.backgroundColor = [UIColor otLightGreen];
+        _tableView.separatorColor = [UIColor otGreen];
+        _tableView.tintColor = [UIColor otLightGreen];
+    }
+    return self;
+}
 
 - (void)viewDidLoad
 {
@@ -56,9 +70,9 @@
     for (DocumentType *object in _docTypeCollection) {
         [_docTypeDisplayValue addObject:object.displayValue];
     }
-    
-    self.pickerView = [[PickerView alloc] initWithPickItems:_docTypeDisplayValue];
-    [_pickerView setPickType:PickTypeList];
+    _pickerView = [[UIPickerView alloc] init];
+    _pickerView.delegate = self;
+    _pickerView.showsSelectionIndicator = YES;
 }
 
 - (void)didReceiveMemoryWarning
@@ -146,6 +160,10 @@
     [self.navigationController pushViewController:fileChooser animated:YES];
 }
 
+- (IBAction)done:(id)sender {
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)fileChooserController:(OTFileChooserViewController *)controller didSelectFile:(NSString *)file uti:(NSString *)uti {
     
     unsigned long long size = [[[NSFileManager defaultManager] attributesOfItemAtPath:file error:nil] fileSize];
@@ -169,13 +187,15 @@
                                               otherButtonTitles:NSLocalizedString(@"confirm", nil), nil];
     
     [alertView setAlertViewStyle:UIAlertViewStyleLoginAndPasswordInput];
-    
     // Alert style customization
     [[alertView textFieldAtIndex:1] setSecureTextEntry:NO];
+    [[alertView textFieldAtIndex:1] setText:[_docTypeDisplayValue objectAtIndex:0]];
+    
     [[alertView textFieldAtIndex:0] setPlaceholder:NSLocalizedString(@"message_enter_description", nil)];
     [[alertView textFieldAtIndex:1] setPlaceholder:NSLocalizedString(@"message_select_document_type", nil)];
     [[alertView textFieldAtIndex:1] setDelegate:self];
     [alertView show];
+    
 }
 
 #pragma Function
@@ -203,13 +223,15 @@
         
         attachment.claim = _claim;
         NSString *typeCode = [_dictionary objectForKey:@"typeCode"];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(displayValue == %@)", typeCode];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(displayValue CONTAINS[cd] %@)", typeCode];
         
         // Nạp lại sau khi claim đã save
+        // Fix bug: một khi đã view thì _docTypeCollection được dùng managedObjectContext. Sau khi quay sang
+        // map edit thì lúc này _claim.managedObjectContext đã thay đổi, cần phải set lại managedObjectContext
         DocumentTypeEntity *docTypeEntity = [DocumentTypeEntity new];
         [docTypeEntity setManagedObjectContext:_claim.managedObjectContext];
         _docTypeCollection = [docTypeEntity getCollection];
-        
+
         DocumentType *docType = [[_docTypeCollection filteredArrayUsingPredicate:predicate] firstObject];
         attachment.typeCode = docType;
         
@@ -232,12 +254,12 @@
 #pragma UITextFieldDelegate methods
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
-    [_pickerView attachWithTextField:textField];
-    [_pickerView showPopOverList];
+    _textField = textField;
+    [_textField setInputView:_pickerView];
 }
 
 - (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-    [_pickerView detach];
+    
     return YES;
 }
 
@@ -291,14 +313,28 @@
             }
         }];
     } else {
-        // Presenting a Document Interaction Controller
-        UIDocumentInteractionController *docView = [self setupControllerWithURL:fileUrl usingDelegate:self];
-        [docView presentPreviewAnimated:YES];
+        documentURL = fileUrl;
+        QLPreviewController *previewController = [[QLPreviewController alloc] init];
+        previewController.delegate = self;
+        previewController.dataSource = self;
+        previewController.currentPreviewItemIndex = 0;
+        [self presentViewController:previewController animated:YES completion:^{
+            UIView *view = [[[previewController.view.subviews lastObject] subviews] lastObject];
+            if ([view isKindOfClass:[UINavigationBar class]])
+            {
+                [[UIApplication sharedApplication] setStatusBarHidden:NO];
+                [((UINavigationBar *)view) setBarStyle:UIBarStyleBlackTranslucent];
+                ((UINavigationBar *)view).tintColor = [UIColor whiteColor];
+                ((UINavigationBar *)view).barTintColor = [UIColor otDarkBlue];
+                ((UINavigationBar *)view).translucent = YES;
+                [((UINavigationBar *)view) setBackgroundImage:[UIImage imageNamed:@"ot-navigation"] forBarMetrics:UIBarMetricsDefault];
+            }
+        }];
     }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
+    return !_claim.getViewType == OTViewTypeView;
 }
 
 - (UITableViewCellEditingStyle) tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -312,15 +348,16 @@
     }
 }
 
-/*!
- Creating and Configuring a Document Interaction Controller
- */
-- (UIDocumentInteractionController *)setupControllerWithURL:(NSURL *)fileURL
-                                              usingDelegate:(id<UIDocumentInteractionControllerDelegate>)interactionDelegate {
-    UIDocumentInteractionController *interactionController =
-    [UIDocumentInteractionController interactionControllerWithURL:fileURL];
-    interactionController.delegate = interactionDelegate;
-    return interactionController;
+#pragma mark - QLPreviewControllerDataSource
+
+// Returns the number of items that the preview controller should preview
+- (NSInteger)numberOfPreviewItemsInPreviewController:(QLPreviewController *)previewController {
+    return 1;
+}
+
+// returns the item that the preview controller should preview
+- (id)previewController:(QLPreviewController *)previewController previewItemAtIndex:(NSInteger)idx {
+    return documentURL;
 }
 
 #pragma mark - UIDocumentInteractionControllerDelegate
@@ -352,7 +389,15 @@
                 imagePickerController.navigationBarHidden = NO;
                 
             }
-            [self presentViewController:imagePickerController animated:YES completion:nil];
+            if(IS_DEVICE_RUNNING_IOS_8_AND_ABOVE())
+            {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [self presentViewController:imagePickerController animated:YES completion:nil];
+                });
+                
+            } else {
+                [self presentViewController:imagePickerController animated:YES completion:nil];
+            }
         }];
     } else {
         [UIActionSheet showFromToolbar:self.navigationController.toolbar withTitle:nil cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[NSLocalizedString(@"Select from photo library", nil), NSLocalizedString(@"Take new picture", nil)] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
@@ -369,7 +414,15 @@
                 imagePickerController.navigationBarHidden = NO;
                 
             }
-            [self presentViewController:imagePickerController animated:YES completion:nil];
+            if(IS_DEVICE_RUNNING_IOS_8_AND_ABOVE())
+            {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [self presentViewController:imagePickerController animated:YES completion:nil];
+                });
+                
+            } else {
+                [self presentViewController:imagePickerController animated:YES completion:nil];
+            }
         }];
     }
 }
@@ -418,6 +471,8 @@
             
             // Alert style customization
             [[alertView textFieldAtIndex:1] setSecureTextEntry:NO];
+            [[alertView textFieldAtIndex:1] setText:[_docTypeDisplayValue objectAtIndex:0]];
+            
             [[alertView textFieldAtIndex:0] setPlaceholder:NSLocalizedString(@"message_enter_description", nil)];
             [[alertView textFieldAtIndex:1] setPlaceholder:NSLocalizedString(@"message_select_document_type", nil)];
             [[alertView textFieldAtIndex:1] setDelegate:self];
@@ -426,6 +481,27 @@
             [OT handleErrorWithMessage:@"Error"];
         }
     }];
+}
+
+#pragma mark - UIPickerViewDelegate methods
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    _textField.text = [_docTypeDisplayValue objectAtIndex:row];
+}
+
+// tell the picker how many rows are available for a given component
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    return _docTypeDisplayValue.count;
+}
+
+// tell the picker how many components it will have
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return 1;
+}
+
+// tell the picker the title for a given component
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    return [_docTypeDisplayValue objectAtIndex:row];
 }
 
 @end

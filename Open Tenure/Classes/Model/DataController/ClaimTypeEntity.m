@@ -85,55 +85,26 @@
 
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
     if (scope == 0)
-        return [NSPredicate predicateWithFormat:@"(code == %@)", searchText];
+        return [NSPredicate predicateWithFormat:@"(code CONTAINS[cd] %@)", searchText];
     else
-        return [NSPredicate predicateWithFormat:@"(displayValue == %@)", searchText];
+        return [NSPredicate predicateWithFormat:@"(displayValue CONTAINS[cd] %@)", searchText];
 }
 
-+ (BOOL)insertFromResponseObject:(ResponseClaimType *)responseObject {
-    NSManagedObjectContext *context = [[[self sharedClaimTypeEntity] fetchedResultsController] managedObjectContext];
-    NSEntityDescription *entity = [[[[self sharedClaimTypeEntity] fetchedResultsController] fetchRequest] entity];
-    
-    ClaimType *entityObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-    
-    entityObject.code = responseObject.code;
-    entityObject.displayValue = responseObject.displayValue;
-    entityObject.note = responseObject.description;
-    entityObject.status = responseObject.status;
-    entityObject.rrrGroupTypeCode = responseObject.rrrGroupTypeCode;
-    entityObject.primary = [NSString stringWithFormat:@"%@", responseObject.primary];
-    entityObject.shareCheck = [NSString stringWithFormat:@"%@", responseObject.shareCheck];
-    entityObject.partyRequired = [NSString stringWithFormat:@"%@", responseObject.partyRequired];
-    entityObject.rrrPanelCode = [NSString stringWithFormat:@"%@", responseObject.rrrPanelCode];;
-    NSError *error = nil;
-    return [entityObject.managedObjectContext save:&error];
++ (ClaimType *)create {
+    ClaimType *entityObject = [NSEntityDescription insertNewObjectForEntityForName:[[self sharedClaimTypeEntity] entityName] inManagedObjectContext:[[self sharedClaimTypeEntity] managedObjectContext]];
+    return entityObject;
 }
 
-+ (BOOL)updateFromResponseObject:(ResponseClaimType *)responseObject {
-    [[self sharedClaimTypeEntity] filterContentForSearchText:responseObject.code scope:0];
-    if ([self sharedClaimTypeEntity]->_filteredObjects.count == 1) {
-        ClaimType *entityObject = [[self sharedClaimTypeEntity]->_filteredObjects firstObject];
-        if (![entityObject.displayValue isEqualToString:responseObject.displayValue])
-            entityObject.displayValue = responseObject.displayValue;
-        if (![entityObject.note isEqualToString:responseObject.description])
-            entityObject.note = responseObject.description;
-        if (![entityObject.status isEqualToString:responseObject.status])
-            entityObject.status = responseObject.status;
-        if (![entityObject.rrrGroupTypeCode isEqualToString:responseObject.rrrGroupTypeCode])
-            entityObject.rrrGroupTypeCode = responseObject.rrrGroupTypeCode;
-        if (![entityObject.primary isEqualToString:responseObject.primary])
-            entityObject.primary = responseObject.primary;
-        if (![entityObject.shareCheck isEqualToString:responseObject.shareCheck])
-            entityObject.shareCheck = responseObject.shareCheck;
-        if (![entityObject.rrrPanelCode isEqualToString:responseObject.rrrPanelCode])
-            entityObject.rrrPanelCode = responseObject.rrrPanelCode;
-        if (![entityObject.managedObjectContext hasChanges]) return NO;
-        NSError *error = nil;
-        return [entityObject.managedObjectContext save:&error];
-    } else {
-        return [self insertFromResponseObject:responseObject];
++ (ClaimType *)getClaimTypeByCode:(NSString *)code {
+    [self sharedClaimTypeEntity]->_filteredResults = nil;
+    
+    [[self sharedClaimTypeEntity] filterContentForSearchText:code scope:0];
+    if ([self sharedClaimTypeEntity]->_filteredObjects.count > 0) {
+        return [[self sharedClaimTypeEntity]->_filteredObjects firstObject];
     }
+    return nil;
 }
+
 
 - (NSArray *)getCollection {
     [self displayData];

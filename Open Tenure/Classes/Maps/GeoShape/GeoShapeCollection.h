@@ -38,6 +38,7 @@ typedef NS_ENUM(NSInteger, SnapMode) {
 
 @interface GeoShapeCollection : NSObject <MKOverlay> {
     @package
+    GeoShape *_workingOverlay;
     NSMutableArray *_overlays;
     MKCoordinateRegion _region;
     MKMapRect _boundingMapRect;
@@ -46,22 +47,23 @@ typedef NS_ENUM(NSInteger, SnapMode) {
 }
 
 @property (nonatomic, strong) GeoShape *workingOverlay;
+@property (nonatomic, strong) NSArray *overlays;
+@property (nonatomic, assign) MKCoordinateRegion region;
+@property (nonatomic, assign) MKMapRect boundingMapRect;
+@property (nonatomic, assign) CLLocationCoordinate2D snappedCoordinate;
 
 - (GeoShape *)createShapeWithTitle:(NSString *)title subtitle:(NSString *)subtitle;
 - (GeoShape *)createShapeWithCenterCoordinate:(CLLocationCoordinate2D)coordinate;
 - (GeoShape *)createShapeFromPolygon:(MKPolygon *)polygon;
 - (void)addShape:(GeoShape *)shape;
-- (void)addPointToWorkingOverlay:(CLLocationCoordinate2D)point currentZoomScale:(double)currentZoomScale;
+- (NSInteger)addPointToWorkingOverlay:(CLLocationCoordinate2D)point currentZoomScale:(double)currentZoomScale;
 - (void)removePointFromWorkingOverlay:(CLLocationCoordinate2D)point;
 
-- (MKMapRect)boundingMapRect;
 - (NSArray *)shapesInMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale;
 - (void)lockForReading;
 - (void)unlockForReading;
 - (void)updateOverlays;
-- (NSArray *)overlays;
 - (GeoShape *)getOverlayByMapPoint:(MKMapPoint)mapPoint;
-- (CLLocationCoordinate2D)snappedCoordinate;
 - (BOOL)getSnapFromMapPoint:(CLLocationCoordinate2D)coordinate mapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale snapMode:(SnapMode)mode;
 
 @end

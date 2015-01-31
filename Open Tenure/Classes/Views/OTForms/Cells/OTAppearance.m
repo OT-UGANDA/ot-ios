@@ -30,4 +30,46 @@
 
 @implementation OTAppearance
 
++(OTAppearance *)sharedInstance {
+    static dispatch_once_t onceToken;
+    static id instance = nil;
+    dispatch_once(&onceToken, ^{
+        instance = [[[self class] alloc] init];
+    });
+    
+    return instance;
+}
+
+- (id)init {
+    if (self = [super init]) {
+        [self loadDefaults];
+    }
+    return self;
+}
+
+- (void)loadDefaults {
+    self.tableViewBackGroundColor           = [UIColor otLightGreen];
+    
+    self.inputCellBackgroundColor           = [UIColor whiteColor];
+    self.inputCellTextFieldTextColor        = [UIColor blackColor];
+    self.inputCellTextFieldBackgroundColor  = [UIColor colorWithRed:0.93f green:0.93f blue:0.93f alpha:1.0f];
+    self.inputCellTextFieldBorderColor      = [UIColor colorWithRed:0.85f green:0.85f blue:0.85f alpha:1.0f];
+    
+    self.infoCellBackgroundColor            = [UIColor whiteColor];
+    self.infoCellLabelTextColor             = [UIColor colorWithRed:0.25f green:0.25f blue:0.25f alpha:1.0f];
+    self.infoCellLabelBackgroundColor       = [UIColor clearColor];
+    
+    self.buttonCellBackgroundColor          = [UIColor whiteColor];
+    
+    self.headerFooterLabelTextColor         = [UIColor blackColor];
+    
+    self.inputCellTextFieldFont             = [UIFont systemFontOfSize:14.0f];
+    self.inputCellTextFieldFloatingLabelFont= [UIFont systemFontOfSize: 8.0f];
+    self.infoCellLabelFont                  = [UIFont systemFontOfSize:14.0f];
+    self.headerFooterLabelFont              = [UIFont systemFontOfSize:13.0f];
+    
+    self.infoCellHeight = 16.0f;
+    self.spaceBetweenCells = 8.0f;
+}
+
 @end

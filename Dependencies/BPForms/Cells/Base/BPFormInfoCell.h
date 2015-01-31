@@ -33,4 +33,7 @@
 
 @property (nonatomic, assign) CGFloat customCellHeight;             // set this to use any height for the cell
 
+- (void)setupCell;
+- (void)setupLabel;
+
 @end

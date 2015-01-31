@@ -32,7 +32,18 @@
 #import "UploadChunkTask.h"
 #import "SaveAttachmentTask.h"
 
-@interface OTClaimsViewController () <UploadChunkTaskDelegate, SaveClaimTaskDelegate, SaveAttachmentTaskDelegate, UploadChunkTaskDelegate>
+#import "CDRTranslucentSideBar.h"
+#import "OTSideBarItems.h"
+
+
+@interface OTClaimsViewController () <UploadChunkTaskDelegate, SaveClaimTaskDelegate, SaveAttachmentTaskDelegate, UploadChunkTaskDelegate> {
+       BOOL multipleShowcase;
+    BOOL customShowcases;
+    NSInteger currentShowcaseIndex;
+}
+
+@property (nonatomic, strong) CDRTranslucentSideBar *sideBarMenu;
+@property (nonatomic, strong) OTSideBarItems *sideBarItems;
 
 @property (nonatomic, strong) NSString *rootViewClassName;
 
@@ -49,10 +60,22 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    _searchBar.placeholder = NSLocalizedString(@"action_search", @"Search");
-    _searchBar.placeholder = [[_searchBar.placeholder stringByAppendingString:@" "] stringByAppendingString:NSLocalizedString(@"title_claims", @"Claims")];
+
+    _tableView.tableFooterView = [UIView new];
+    _tableView.separatorInset = UIEdgeInsetsMake(0, 16, 0, 16);
+
+    [self configureSideBarMenu];
+    
+    
+    
+    _searchBar.placeholder = NSLocalizedString(@"hint_type_to_filter", @"Search");
     
     _rootViewClassName = NSStringFromClass([[[self.navigationController viewControllers] lastObject] class]);
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [self.sideBarMenu dismiss];
+    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -63,6 +86,43 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - OTShowcase & OTShowcaseDelegate methods
+
+
+
+#pragma mark - OTShowcaseDelegate methods
+
+
+
+
+- (void)configureSideBarMenu {
+    _sideBarItems = [[OTSideBarItems alloc] initWithStyle:UITableViewStylePlain];
+    NSArray *cells = @[@{@"title" : NSLocalizedString(@"action_settings", nil)},
+                       @{@"title" : NSLocalizedStringFromTable(@"action_showcase", @"Showcase", nil)}];
+    
+    [_sideBarItems setCells:cells];
+    __strong typeof(self) self_ = self;
+    _sideBarItems.itemAction = ^void(NSInteger section, NSInteger itemIndex) {
+        switch (itemIndex) {
+            case 0:
+                [self_ showSettings:nil];
+                break;
+                
+            case 1:
+                [[NSNotificationCenter defaultCenter] postNotificationName:kSetMainTabBarIndexNotificationName object:[NSNumber numberWithInteger:0] userInfo:@{@"action":@"showcase"}];
+                break;
+        }
+        [self_.sideBarMenu dismiss];
+    };
+    
+    self.sideBarMenu = [[CDRTranslucentSideBar alloc] initWithDirectionFromRight:YES];
+    [self.sideBarMenu setTranslucent:YES];
+    self.sideBarMenu.translucentStyle = UIBarStyleDefault;
+    self.sideBarMenu.tag = 1;
+    [self.sideBarMenu setSideBarWidth:260];
+    [self.sideBarMenu setContentViewInSideBar:_sideBarItems.tableView];
 }
 
 #pragma mark - Data
@@ -139,15 +199,33 @@
 }
 
 - (void)configureCell:(UITableViewCell *)cell forTableView:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath {
-    [super configureCell:cell forTableView:tableView atIndexPath:indexPath];
+    cell.accessoryType = UITableViewCellAccessoryDetailButton;
     Claim *object;
-    
+    if (_filteredObjects == nil)
+        object = [_fetchedResultsController objectAtIndexPath:indexPath];
+    else
+        object = [_filteredObjects objectAtIndex:indexPath.row];
     cell.tintColor = [UIColor otDarkBlue];
+    
+    // Tạo một UIView chứa Claimant image và Action button
+    UIView *container = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 110, 44)];
+    [container setUserInteractionEnabled:YES];
+    
+    // Tạo claimant image
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 48, 48)];
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
+    NSString *imageFile = [FileSystemUtilities getClaimantImagePath:object.person.personId];
+    UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
+    if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];
+    imageView.image = personPicture;
+    imageView.backgroundColor = [UIColor whiteColor];
+    
+    [container addSubview:imageView];
 
     UIButton *actionBtn = [UIButton  buttonWithType:UIButtonTypeCustom];
-    actionBtn.frame = CGRectMake(0, 0, 50, 40);
+    actionBtn.frame = CGRectMake(60, 0, 50, 40);
     [actionBtn setBackgroundImage:[UIImage imageNamed:@"ic_submit_big"]
-                            forState:UIControlStateNormal];
+                         forState:UIControlStateNormal];
     actionBtn.backgroundColor = [UIColor clearColor];
     
     actionBtn.layer.borderColor = [UIColor otDarkBlue].CGColor;
@@ -155,18 +233,18 @@
     actionBtn.layer.cornerRadius = 5;
     
     actionBtn.tag = indexPath.row;
-    [actionBtn addTarget:self action:@selector(claimAction:) forControlEvents:UIControlEventTouchUpInside];
-    cell.accessoryView = actionBtn;
+    [actionBtn addTarget:self action:@selector(checkButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
     
+    [container addSubview:actionBtn];
     
-    if (_filteredObjects == nil)
-        object = [_fetchedResultsController objectAtIndexPath:indexPath];
-    else
-        object = [_filteredObjects objectAtIndex:indexPath.row];
+    cell.accessoryView = container;
+    
+    cell.textLabel.numberOfLines = 0;
+    cell.detailTextLabel.numberOfLines = 0;
     
     cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"claim_status_%@", object.statusCode]];
    // cell.textLabel.text = [NSString stringWithFormat:@"%@, By: %@", object.claimName, [object.person fullNameType:OTFullNameTypeDefault]];
-    if([object.recorderName isEqual:@""] == true || (object.recorderName==nil) )
+    if([object.recorderName isEqualToString:@""] || (object.recorderName == nil) )
         cell.textLabel.text = [NSString stringWithFormat:@"%@, Created by:%@ ", object.claimName, [object.person fullNameType:OTFullNameTypeDefault]];
     
     else
@@ -175,30 +253,23 @@
     cell.detailTextLabel.text = object.notes;
 }
 
-- (IBAction)claimAction:(id)sender {
-    UITableViewCell *cell = (UITableViewCell *)[[sender superview] superview];
-    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
-
-    if (cell != nil) {
-        Claim *claim;
-        
-        if (_filteredObjects == nil)
-            claim = [_fetchedResultsController objectAtIndexPath:indexPath];
-        else
-            claim = [_filteredObjects objectAtIndex:indexPath.row];
-        
-        [UIActionSheet showFromRect:cell.accessoryView.frame inView:cell.contentView animated:YES withTitle:@"Claim Actions" cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@[@"Submit claim", @"Action 2", @"Action 3"] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
-            if (buttonIndex == 0) {
-                [self submitClaim:claim];
-            }
-        }];
+- (void)checkButtonTapped:(id)sender event:(id)event{
+    NSSet *touches = [event allTouches];
+    UITouch *touch = [touches anyObject];
+    CGPoint currentTouchPosition = [touch locationInView:_tableView];
+    NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint: currentTouchPosition];
+    if (indexPath != nil){
+        [self tableView:_tableView accessoryButtonTappedForRowWithIndexPath: indexPath];
     }
 }
 
 #pragma Bar Buttons Action
 
 - (IBAction)showMenu:(id)sender {
-    
+    if ([self.sideBarMenu hasShown])
+        [self.sideBarMenu dismiss];
+    else
+        [self.sideBarMenu showInViewController:self];
 }
 
 - (IBAction)cancel:(id)sender {
@@ -225,58 +296,26 @@
     }
 }
 
-#pragma recursively iterate the sub views
-// Hàm này đệ quy dùng để tìm subview theo class, không biết nên để ở đâu cho tiện
-
-- (UIView *)getSubviewByClass:(Class)className ofView:(UIView *)view {
-    
-    // Get the subviews of the view
-    NSArray *subviews = [view subviews];
-    
-    // Return if there are no subviews
-    if ([subviews count] == 0) return nil;
-    
-    for (UIView *subview in subviews) {
-        if ([subview isKindOfClass:className])
-            return subview;
-        if (subview.subviews.count > 0)
-            [self getSubviewByClass:className ofView:subview];
-    }
-    return nil;
-}
-
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
-    Claim *claim;
-    
-    if (_filteredObjects == nil)
-        claim = [_fetchedResultsController objectAtIndexPath:indexPath];
-    else
-        claim = [_filteredObjects objectAtIndex:indexPath.row];
-    
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    
-    UIView *accessoryView = cell.accessoryView;
-    if (accessoryView == nil) {
-        UIView *cellContentView = nil;
+    if (cell != nil) {
+        Claim *claim;
         
-        for (UIView *accView in [cell subviews]) {
-            accessoryView = [self getSubviewByClass:[UIButton class] ofView:accView];
-        }
-        // if the UIButton doesn't exists, find cell contet view (UITableViewCellContentView)
-        if (accessoryView == nil) {
-            accessoryView   = cellContentView;
-        }
-        // if the cell contet view doesn't exists, use cell view
-        if (accessoryView == nil) {
-            accessoryView   = cell; 
-        }
+        if (_filteredObjects == nil)
+            claim = [_fetchedResultsController objectAtIndexPath:indexPath];
+        else
+            claim = [_filteredObjects objectAtIndex:indexPath.row];
+        CGRect frame = cell.accessoryView.frame;
+        frame.origin.x += 60;
+        [UIActionSheet showFromRect:frame inView:cell animated:YES withTitle:@"Claim Actions" cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@[@"Submit claim", @"Withdraw", @"Action 3"] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+            if (buttonIndex == 0) {
+                [self submitClaim:claim];
+            } else if(buttonIndex == 1){
+                [self withdrawClaim:claim];
+            }
+            
+        }];
     }
-    
-    [UIActionSheet showFromRect:accessoryView.frame inView:cell.contentView animated:YES withTitle:@"Action" cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@[@"Submit claim", @"Action 2", @"Action 3"] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
-        if (buttonIndex == 0) {
-            [self submitClaim:claim];
-        }
-    }];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -323,17 +362,78 @@
         claim = [_filteredObjects objectAtIndex:indexPath.row];
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.managedObjectContext deleteObject:claim];
-        [self.managedObjectContext save:nil];
+        [_filteredObjects removeObject:claim];
+        if (_filteredObjects != nil)
+            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [claim setChallenged:nil]; // Fixed delete challeged claim
+        [claim.managedObjectContext deleteObject:claim];
+        NSError *error;
+        if (![claim.managedObjectContext save:&error]) {
+            ALog(@"Error: %@", error.description);
+        }
     }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 64;
 }
 
 #pragma Bar Buttons Action
 
 - (IBAction)addClaim:(id)sender {
+    if (![OTSetting getInitialization]) {
+        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"message_app_not_yet_initialized", nil)];
+        return;
+    }
+
     ClaimEntity *claimEntity = [ClaimEntity new];
     [claimEntity setManagedObjectContext:temporaryContext];
     Claim *claim = [claimEntity create];
+    
+    FormPayloadEntity *formPayloadEntity = [FormPayloadEntity new];
+    [formPayloadEntity setManagedObjectContext:temporaryContext];
+    FormPayload *formPayload = [formPayloadEntity createObject];
+
+    FormTemplateEntity *formTemplateEntity = [FormTemplateEntity new];
+    [formTemplateEntity setManagedObjectContext:temporaryContext];
+    FormTemplate *formTemplate = [formTemplateEntity getDefaultTemplate];
+    formPayload.formTemplate = formTemplate;
+    
+    SectionPayloadEntity *sectionPayloadEntity = [SectionPayloadEntity new];
+    [sectionPayloadEntity setManagedObjectContext:temporaryContext];
+    SectionElementPayloadEntity *sectionElementPayloadEntity = [SectionElementPayloadEntity new];
+    [sectionElementPayloadEntity setManagedObjectContext:temporaryContext];
+    FieldPayloadEntity *fieldPayloadEntity = [FieldPayloadEntity new];
+    [fieldPayloadEntity setManagedObjectContext:temporaryContext];
+    // Tạo danh sách các sectionPayload (các tab) dựa trên sectiontemplate của formtemplate
+    for (SectionTemplate *sectionTemplate in formTemplate.sectionTemplateList) {
+        SectionPayload *sectionPayload = [sectionPayloadEntity createObject];
+        sectionPayload.formPayload = formPayload;
+        sectionPayload.sectionTemplate = sectionTemplate;
+        // Tạo sectionElementPayload (nếu maxOccurrences = 1).
+        // Nếu maxOccurrences > 1 sẽ tạo trong class OTDynamicFormViewController
+        if ([sectionTemplate.maxOccurrences integerValue] == 1) {
+            SectionElementPayload *sectionElementPayload = [sectionElementPayloadEntity createObject];
+            sectionElementPayload.sectionPayload = sectionPayload;
+            // Tạo các fieldPayload theo danh sách fieldTemplate của sectionTemplate
+            for (FieldTemplate *fieldTemplate in sectionTemplate.fieldTemplateList) {
+                FieldPayload *fieldPayload = [fieldPayloadEntity createObject];
+                if ([fieldTemplate.fieldType isEqualToString:@"BOOL"]) {
+                    fieldPayload.fieldValueType = @"BOOL";
+                    fieldPayload.booleanPayload = [NSNumber numberWithBool:NO];
+                } else if ([fieldTemplate.fieldType isEqualToString:@"DECIMAL"]) {
+                    fieldPayload.fieldValueType = @"NUMBER";
+                } else {
+                    fieldPayload.fieldValueType = @"TEXT";
+                    fieldPayload.stringPayload = @"";
+                }
+                fieldPayload.fieldTemplate = fieldTemplate;
+                fieldPayload.sectionElementPayload = sectionElementPayload;
+            }
+        }
+    }
+    
+    claim.dynamicForm = formPayload;
     
     [claim setToTemporary];
     UINavigationController *nav = [[self storyboard] instantiateViewControllerWithIdentifier:@"ClaimTabBar"];
@@ -341,17 +441,38 @@
 }
 
 - (IBAction)login:(id)sender {
-    [OT login];
+    if ([OTSetting getInitialization]) {
+        [OT login];
+    } else {
+        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"message_app_not_yet_initialized", nil)];
+    }
 }
 
 - (IBAction)logout:(id)sender {
     [OT login];
 }
 
+- (IBAction)withdrawClaim:(Claim *)claim {
+    if (![OTAppDelegate authenticated]) {
+        [SVProgressHUD showErrorWithStatus:NSLocalizedStringFromTable(@"message_login_before", @"ActivityLogin", nil)];
+        return;
+    }
+    
+    [claim withDraw];
+
+}
+
 - (IBAction)submitClaim:(Claim *)claim {
     
+//    NSError *error;
+//    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:claim.dynamicForm.dictionary
+//                                                       options:NSJSONWritingPrettyPrinted
+//                                                         error:&error];
+//    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+//    ALog(@"%@", jsonString);
+    
     if (![OTAppDelegate authenticated]) {
-        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"message_login_before", @"Do login before")];
+        [SVProgressHUD showErrorWithStatus:NSLocalizedStringFromTable(@"message_login_before", @"ActivityLogin", nil)];
         return;
     }
     
@@ -427,6 +548,13 @@
             }
         }
     }
+}
+
+#pragma Actions
+- (IBAction)showSettings:(id)sender {
+    UINavigationController *settingViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"SettingViewController"];
+    settingViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentViewController:settingViewController animated:YES completion:nil];
 }
 
 @end

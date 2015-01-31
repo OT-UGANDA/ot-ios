@@ -28,8 +28,8 @@
 
 #import "OTFormInputTextFieldCell.h"
 #import "OTFormInfoCell.h"
-#import "PickerView.h"
 #import "UIColor+OT.h"
+#import "OTAppearance.h"
 
 @implementation OTFormInputTextFieldCell
 
@@ -39,11 +39,16 @@
     if (self) {
         self.backgroundColor = [UIColor otLightGreen];
         self.spaceToNextCell = 2.0f;
-        self.textField.backgroundColor = [UIColor otGreen];
+        self.textField.backgroundColor = [UIColor whiteColor];
         self.textField.layer.borderWidth = 0.0;
         self.textField.returnKeyType = UIReturnKeyDefault;
         self.infoCell.backgroundColor = [UIColor orangeColor];
         self.infoCell.label.textColor = [UIColor whiteColor];
+        
+        [self.textField setClipsToBounds:YES];
+        [[self.textField layer] setCornerRadius:4.f];
+        [[self.textField layer] setBorderWidth:0.8f];
+        [[self.textField layer] setBorderColor:[[UIColor otGreen] CGColor]];
     }
     return self;
 }
@@ -80,5 +85,35 @@
 //    frame.size.width -= 96;
     [super setFrame:frame];
 }
+
+//- (void)setupTextField {
+//    Class textInputClass = [[self class] textInputClass];
+//    if (!textInputClass) {
+//        textInputClass = [BPFormTextField class];
+//    }
+//    
+//    self.textField = [[textInputClass alloc] init];
+//    
+//    self.textField.autocorrectionType = UITextAutocorrectionTypeNo;
+//    self.textField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+//    self.textField.textColor = [BPAppearance sharedInstance].inputCellTextFieldTextColor;
+//    self.textField.font = [BPAppearance sharedInstance].inputCellTextFieldFont;
+//    self.textField.backgroundColor = [BPAppearance sharedInstance].inputCellTextFieldBackgroundColor;
+//    
+//    self.textField.layer.borderColor = [BPAppearance sharedInstance].inputCellTextFieldBorderColor.CGColor;
+//    self.textField.layer.borderWidth = 0.5;
+//    
+//    [self.contentView addSubview:self.textField];
+//    
+//    [self.widthConstraint uninstall];
+//    [self.heightConstraint uninstall];
+//    
+//    [self.textField mas_updateConstraints:^(MASConstraintMaker *make) {
+//        self.widthConstraint = make.width.equalTo(self.mas_width).offset(-30);
+//        make.centerX.equalTo(self.mas_centerX);
+//        make.top.equalTo(self.mas_top);
+//        self.heightConstraint = make.height.equalTo(self.mas_height).offset(-self.spaceToNextCell);
+//    }];
+//}
 
 @end

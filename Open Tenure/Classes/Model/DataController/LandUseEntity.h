@@ -28,12 +28,12 @@
 
 #import "AbstractEntity.h"
 
-@class ResponseLandUse, LandUse;
+@class LandUse;
 
 @interface LandUseEntity : AbstractEntity
 
-+ (BOOL)insertFromResponseObject:(ResponseLandUse *)responseObject;
-+ (BOOL)updateFromResponseObject:(ResponseLandUse *)responseObject;
++ (LandUse *)create;
++ (LandUse *)getLandUseByCode:(NSString *)code;
 
 - (NSArray *)getCollection;
 + (NSArray *)getCollection;

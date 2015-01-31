@@ -31,4 +31,6 @@
 
 @property (strong, nonatomic) Claim *claim;
 
+- (IBAction)done:(id)sender;
+
 @end

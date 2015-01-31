@@ -33,5 +33,6 @@
 
 - (IBAction)takePhotoDoc:(id)sender;
 - (IBAction)attachDoc:(id)sender;
+- (IBAction)done:(id)sender;
 
 @end

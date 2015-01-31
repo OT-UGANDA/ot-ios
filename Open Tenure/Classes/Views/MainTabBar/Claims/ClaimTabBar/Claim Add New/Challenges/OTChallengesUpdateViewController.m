@@ -34,6 +34,17 @@
 
 @implementation OTChallengesUpdateViewController
 
+- (id)init {
+    if (self = [super init]) {
+        _tableView.tableFooterView = [UIView new];
+        _tableView.separatorInset = UIEdgeInsetsMake(0, 16, 0, 16);
+        _tableView.backgroundColor = [UIColor otLightGreen];
+        _tableView.separatorColor = [UIColor otGreen];
+        _tableView.tintColor = [UIColor otLightGreen];
+    }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -44,6 +55,10 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)done:(id)sender {
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Data
@@ -126,7 +141,7 @@
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
+    return NO;
 }
 
 - (UITableViewCellEditingStyle) tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -43,27 +43,36 @@ MK_EXTERN MKMapPoint MKMapPointPerpendicular(MKMapPoint point, MKMapPoint A, MKM
     MKMapPoint *_points;
     MKCoordinateRegion _region;
     MKMapRect _boundingMapRect;
-    NSMutableArray *_vertexes;
-    CLLocationCoordinate2D _centroid;
+    NSMutableArray *_vertices;
+    CLLocationCoordinate2D _coordinate;
+    NSInteger _currentIndex;
     BOOL _isCW;
+    
+    UIColor *_strokeColor;
+    UIColor *_fillColor;
+    CGFloat _lineWidth;
 }
 
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *subtitle;
+@property (nonatomic, assign) NSUInteger pointCount;
+@property (nonatomic, assign) CLLocationCoordinate2D coordinate;
+@property (nonatomic, assign) MKMapPoint *points;
+@property (nonatomic, assign) MKCoordinateRegion region;
+@property (nonatomic, assign) MKMapRect boundingMapRect;
+@property (nonatomic, strong) NSArray *vertices;
+
+@property (nonatomic, strong) UIColor *strokeColor;
+@property (nonatomic, strong) UIColor *fillColor;
+@property (nonatomic, assign) CGFloat lineWidth;
 
 - (id)initWithTitle:(NSString *)newTitle subtitle:(NSString *)newSubtitle;
 - (id)initWithCenterCoordinate:(CLLocationCoordinate2D)coordinate;
-- (void)addCoordinate:(CLLocationCoordinate2D)coordinate currentZoomScale:(double)currentZoomScale;
+- (NSInteger)addCoordinate:(CLLocationCoordinate2D)coordinate currentZoomScale:(double)currentZoomScale;
 - (void)removeCoordinate:(CLLocationCoordinate2D)coordinate;
 
-- (CLLocationCoordinate2D)coordinate;
 - (CLLocationCoordinate2D *)coordinates;
-- (MKCoordinateRegion)region;
-- (MKMapPoint *)points;
-- (NSUInteger)pointCount;
-- (MKMapRect)boundingMapRect;
 - (void)updatePoints;
-- (NSMutableArray *)vertexs;
 /*!
  Determining whether A given point is inside or outside of A polygon O(n)
  */

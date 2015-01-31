@@ -357,7 +357,8 @@
         if (![curFileName isEqualToString:@".DS_Store"] &&
             ![curFileName isEqualToString:@"Open Tenure"] &&
             ![curFileName isEqualToString:@"claims"] &&
-            ![curFileName isEqualToString:@"claimants"]) {
+            ![curFileName isEqualToString:@"claimants"] &&
+            ![curFileName isEqualToString:@"MapTiles"]) {
             [self.documentURLs addObject:fileURL];
         }
 	}

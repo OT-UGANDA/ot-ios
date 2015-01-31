@@ -25,6 +25,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
+
+#import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
 /*!
@@ -33,6 +35,10 @@
 extern NSString * const kLoginSuccessNotificationName;
 extern NSString * const kLogoutSuccessNotificationName;
 extern NSString * const kGetAllClaimsSuccessNotificationName;
+extern NSString * const kInitializedNotificationName;
+extern NSString * const kMapZoomLevelNotificationName;
+extern NSString * const kSetMainTabBarIndexNotificationName;
+extern NSString * const kSetClaimTabBarIndexNotificationName;
 
 extern NSString * const kResponseClaimsErrorNotificationName;
 extern NSString * const kResponseClaimsMessageErrorKey;
@@ -72,8 +78,8 @@ extern NSString * const kPersonTypePhysical;
 extern NSString * const kPersonTypeGroup;
 
 typedef NS_ENUM(NSInteger, OTSelectionAction) {
-    OTPersonSelectionAction = 0,
-    OTClaimSelectionAction
+    OTClaimSelectionAction = 0,
+    OTShareViewDetail
 };
 
 typedef NS_ENUM(NSInteger, OTViewType) {
@@ -95,6 +101,8 @@ typedef NS_ENUM(NSInteger, OTFullNameType) {
 
 + (NSDateFormatter *)dateFormatter;
 
++ (UIBarButtonItem *)logoButtonWithTitle:(NSString *)title;
+
 /*!
  Cập nhật dữ liệu từ server khi lần đầu khởi động ứng dụng. Được gọi từ OTAppDelegate
  */
@@ -102,7 +110,34 @@ typedef NS_ENUM(NSInteger, OTFullNameType) {
 + (void)updateLandUse;
 + (void)updateClaimType;
 + (void)updateDocumentType;
++ (void)updateDefaultFormTemplate;
++ (void)updateCommunityArea;
+
+/*!
+ Lưu và lấy ra trạng thái khởi tạo
+ */
++ (BOOL)getInitialized;
+
++ (void)setUpdatedIdType:(BOOL)state;
++ (BOOL)getUpdatedIdType;
++ (void)setUpdatedLandUse:(BOOL)state;
++ (BOOL)getUpdatedLandUse;
++ (void)setUpdatedClaimType:(BOOL)state;
++ (BOOL)getUpdatedClaimType;
++ (void)setUpdatedDocumentType:(BOOL)state;
++ (BOOL)getUpdatedDocumentType;
++ (void)setUpdatedDefaultFormTemplate:(BOOL)state;
++ (BOOL)getUpdatedDefaultFormTemplate;
++ (void)setUpdatedCommunityArea:(BOOL)state;
++ (BOOL)getUpdatedCommunityArea;
 
 + (void)login;
+
++ (NSAttributedString *)getAttributedStringFromText:(NSString *)text;
+
+/*!
+ Xác định control cho UIBarbuttonItem dùng cho showcase
+ */
++ (UIControl *)findBarButtonItem:(UIBarButtonItem *)barButtonItem fromNavBar:(UINavigationBar *)toolbar;
 
 @end

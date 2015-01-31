@@ -111,7 +111,7 @@
  Override định nghĩa câu truy vấn
  */
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
-    return [NSPredicate predicateWithFormat:@"(key == %@)", searchText];
+    return [NSPredicate predicateWithFormat:@"(key CONTAINS[cd] %@)", searchText];
 }
 
 + (AdditionalInfo *)create {

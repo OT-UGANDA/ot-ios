@@ -65,7 +65,7 @@
 }
 
 + (UIColor *)otGreen {
-    return [UIColor colorWithRed:135.0/255.0 green:169.0/255.0 blue:104.0/255.0 alpha:1];
+    return [UIColor colorWithRed:182.0/255.0 green:202.0/255.0 blue:164.0/255.0 alpha:1];
 }
 
 + (UIColor *)otLightGreen {

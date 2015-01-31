@@ -28,15 +28,28 @@
 #import "OTPersonUpdateViewController.h"
 #import "OTFormInfoCell.h"
 #import "OTFormInputTextFieldCell.h"
-#import "PickerView.h"
+#import "OTFormCell.h"
 
-@interface OTPersonUpdateViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface OTPersonUpdateViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPickerViewDelegate>
 
-@property (nonatomic, strong) PickerView *pickerView;
+@property (nonatomic, strong) UIPickerView *pickerView;
+@property (nonatomic, strong) UIDatePicker *datePicker;
 
 @property (nonatomic, strong) NSArray *idTypeCollection;
 @property (nonatomic, strong) NSDictionary *idTypes;
 @property (nonatomic, strong) UIImageView *personImageView;
+
+@property (nonatomic, strong) __block OTFormCell *dateOfBirthBlock;
+@property (nonatomic, strong) __block OTFormCell *genderBlock;
+@property (nonatomic, strong) __block OTFormCell *idTypeBlock;
+
+@property (nonatomic, strong) UIView *pickerViewBackground;
+
+@property (nonatomic, assign, getter=isPickerGenderShowing) BOOL pickerGenderShowing;
+@property (nonatomic, assign, getter=isPickerIdTypeShowing) BOOL pickerIdTypeShowing;
+@property (nonatomic, assign, getter=isDatePickerShowing) BOOL datePickerShowing;
+
+
 @property (assign) OTViewType viewType;
 
 @end
@@ -44,10 +57,6 @@
 @implementation OTPersonUpdateViewController
 
 - (void)setupView {
-    _pickerView = [[PickerView alloc] init];
-    [_pickerView setDateFormat:[[OT dateFormatter] dateFormat]];
-    [_pickerView setShouldHideOnSelection:YES];
-    
     IdTypeEntity *idTypeEntity = [IdTypeEntity new];
     NSArray *entities= [idTypeEntity getCollectionWithProperties:@[@"code", @"displayValue"]];
     NSArray *codes = [entities valueForKeyPath:@"code"];
@@ -55,33 +64,24 @@
     _idTypes = [NSDictionary dictionaryWithObjects:displayValues forKeys:codes];
     
     if ([_person isSaved]) { // View person/group
-        if (_person.claim == nil || [_person.claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local person/group
-            if (![_person.person boolValue]) { // Local group
-                self.viewType = OTViewTypeEdit;
-            } else { // Local person
-                self.viewType = OTViewTypeEdit;
-            }
-        } else { // Readonly person/group
-            if (![_person.person boolValue]) { // Readonly group
-                self.viewType = OTViewTypeView;
-            } else { // Readonly person
-                self.viewType = OTViewTypeView;
-            }
-        }
+        if (_person.owner != nil)
+            self.viewType = _person.owner.claim.getViewType;
+        else
+            self.viewType = _person.claim.getViewType;
     } else { // Add person/group
-        if (![_person.person boolValue]) { // Add group
-            self.viewType = OTViewTypeAdd;
-        } else { // Add person
-            self.viewType = OTViewTypeAdd;
-        }
+        self.viewType = OTViewTypeAdd;
     }
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    UITapGestureRecognizer *singleTouch = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapAction:)];
+    singleTouch.numberOfTapsRequired = 1;
+    [self.tableView addGestureRecognizer:singleTouch];
+
     [self setupView];
-    
+
     CGFloat imageWith = 72;
     CGFloat cellSpace = 15;
     CGRect rect = CGRectMake(self.view.frame.size.width - imageWith - cellSpace, 5, imageWith, imageWith);
@@ -94,7 +94,6 @@
     singleTap.numberOfTapsRequired = 1;
     [imageView addGestureRecognizer:singleTap];
     imageView.userInteractionEnabled = YES;
-    ALog(@"%@", _person.personId);
     NSString *imageFile = [FileSystemUtilities getClaimantImagePath:_person.personId];
     UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
     if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];
@@ -125,13 +124,17 @@
             self.formCells = [self personFormCellsEditable:YES];
         }
     }
-    
-    self.customSectionHeaderHeight = 20;
+    self.customSectionHeaderHeight = 16;
+    self.customSectionFooterHeight = 8;
+}
+
+- (IBAction)singleTapAction:(id)sender {
+    [self hidePickers];
 }
 
 - (NSArray *)groupFormCellsEditable:(BOOL)editable {
-    NSInteger customCellHeight = 40.0f;
-    
+    NSInteger customCellHeight = 32.0f;
+    // Group name
     [self setHeaderTitle:NSLocalizedString(@"group_name", nil) forSection:0];
     OTFormInputTextFieldCell *firstName =
     [[OTFormInputTextFieldCell alloc] initWithText:_person.name
@@ -141,7 +144,10 @@
                                   customCellHeight:customCellHeight
                                       keyboardType:UIKeyboardTypeAlphabet
                                           viewType:self.viewType];
-    firstName.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
+    if (self.viewType != OTViewTypeView)
+        [firstName.textField becomeFirstResponder];
+    firstName.textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
+    firstName.shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
         if (inText.length > 0) {
             inCell.validationState = BPFormValidationStateValid;
             inCell.shouldShowInfoCell = NO;
@@ -152,57 +158,29 @@
             inCell.infoCell.label.text = NSLocalizedString(@"message_error_mandatory_field_first_name", nil);
             inCell.shouldShowInfoCell = YES;
         }
-    };
-    if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-        [firstName.textField becomeFirstResponder];
-    firstName.textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
-    
-    [self setHeaderTitle:NSLocalizedString(@"date_of_establishment_label", nil) forSection:1];
-    OTFormInputTextFieldCell *dateOfBirth =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.birthDate
-                                       placeholder:NSLocalizedString(@"date_of_establishment_label", nil)
-                                          delegate:self
-                                         mandatory:YES
-                                  customCellHeight:customCellHeight
-                                      keyboardType:UIKeyboardTypeNumbersAndPunctuation
-                                          viewType:self.viewType];
-    
-    __block OTFormInputTextFieldCell *dateOfBirthBlock = dateOfBirth;
-    dateOfBirth.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
-        NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-        [[OT dateFormatter] setTimeZone:gmt];
-        NSDate *date = [[OT dateFormatter] dateFromString:inText];
-        if (date != nil) {
-            inCell.validationState = BPFormValidationStateValid;
-            inCell.shouldShowInfoCell = NO;
-            if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-                _person.birthDate = inText;
-        }
-        else {
-            inCell.validationState = BPFormValidationStateInvalid;
-            inCell.infoCell.label.text = NSLocalizedString(@"message_error_mandatory_birthdate", nil);
-            inCell.shouldShowInfoCell = YES;
-        }
-        [_pickerView detach];
-    };
-    // Hiện DatePicker khi bắt đầu edit (bắt buộc)
-    dateOfBirth.didBeginEditingBlock =  ^void(BPFormInputCell *inCell, NSString *inText){
-        inCell.validationState = BPFormValidationStateNone;
-        // Xác định vùng hiển thị popover
-        [_pickerView attachWithTextField:dateOfBirthBlock.textField];
-        // Đặt kiểu ngày giờ cho DatePicker
-        [_pickerView setPickType:PickTypeDate];
-        // Đặt ngày cho DatePicker theo dữ liệu hiện tại (nên)
-        [_pickerView matchDate:dateOfBirthBlock.textField.text];
-        // Hiện popover
-        [_pickerView showPopOverList];
-    };
-    // Đặt ngày ngược lại cho DatePicker khi nhập liệu bằng bàn phím (tùy chọn)
-    dateOfBirth.shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
-        [_pickerView matchDate:inText];
         return YES;
     };
     
+    // DateOfBirth
+    [self setHeaderTitle:NSLocalizedString(@"date_of_establishment_label", nil) forSection:1];
+    if (_person.birthDate == nil)
+        _person.birthDate = [[OT dateFormatter] stringFromDate:[NSDate date]];
+    
+    OTFormCell *dateOfBirth = [[OTFormCell alloc] initWithFrame:CGRectZero];
+    _dateOfBirthBlock = dateOfBirth;
+    
+    UITapGestureRecognizer *dateOfBirthTapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(datePickerShow:)];
+    dateOfBirthTapped.numberOfTapsRequired = 1;
+    
+    NSString *dateOfBirthTitle = [_person.birthDate substringToIndex:10];
+    
+    dateOfBirth.selectionStyle = UITableViewCellSelectionStyleNone;
+    dateOfBirth.imageView.image = [UIImage imageNamed:@"ic_action_datepicker"];
+    dateOfBirth.textLabel.attributedText = [OT getAttributedStringFromText:dateOfBirthTitle];
+    dateOfBirth.imageView.userInteractionEnabled = YES;
+    [dateOfBirth.imageView addGestureRecognizer:dateOfBirthTapped];
+
+    // IdNumber
     [self setHeaderTitle:NSLocalizedString(@"id_number", nil) forSection:2];
     OTFormInputTextFieldCell *idNumber =
     [[OTFormInputTextFieldCell alloc] initWithText:_person.idNumber
@@ -212,9 +190,11 @@
                                   customCellHeight:customCellHeight
                                       keyboardType:UIKeyboardTypeDefault
                                           viewType:self.viewType];
-    idNumber.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
-        if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
+    idNumber.shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
+        if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit) {
             _person.idNumber = inText;
+            return YES;
+        } else return NO;
     };
     
     [self setHeaderTitle:NSLocalizedString(@"postal_address", nil) forSection:3];
@@ -226,12 +206,14 @@
                                   customCellHeight:customCellHeight
                                       keyboardType:UIKeyboardTypeDefault
                                           viewType:self.viewType];
-    postalAddress.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
-        if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-            _person.address = inText;
-    };
     postalAddress.textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
-    
+    postalAddress.shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
+        if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit) {
+            _person.address = inText;
+            return YES;
+        } else return NO;
+    };
+
     [self setHeaderTitle:NSLocalizedString(@"email_address", nil) forSection:4];
     OTFormInputTextFieldCell *emailAddress =
     [[OTFormInputTextFieldCell alloc] initWithText:_person.email
@@ -274,12 +256,14 @@
         if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
             _person.phone = inText;
     };
-    
+
+    dateOfBirth.customCellHeight = customCellHeight;
     return @[@[firstName], @[dateOfBirth], @[idNumber], @[postalAddress], @[emailAddress], @[mobilePhoneNumber], @[contactPhoneNumber]];
 }
 
+
 - (NSArray *)personFormCellsEditable:(BOOL)editable {
-    NSInteger customCellHeight = 40.0f;
+    NSInteger customCellHeight = 32.0f;
     [self setHeaderTitle:NSLocalizedString(@"first_name", nil) forSection:0];
     OTFormInputTextFieldCell *firstName =
     [[OTFormInputTextFieldCell alloc] initWithText:_person.name
@@ -301,10 +285,10 @@
             inCell.shouldShowInfoCell = YES;
         }
     };
-    if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
+    if (self.viewType != OTViewTypeView)
         [firstName.textField becomeFirstResponder];
     firstName.textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
-
+    
     [self setHeaderTitle:NSLocalizedString(@"last_name", nil) forSection:1];
     OTFormInputTextFieldCell *lastName =
     [[OTFormInputTextFieldCell alloc] initWithText:_person.lastName
@@ -329,121 +313,64 @@
     lastName.textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
     
     [self setHeaderTitle:NSLocalizedString(@"date_of_birth_label", nil) forSection:2];
-    OTFormInputTextFieldCell *dateOfBirth =
-    [[OTFormInputTextFieldCell alloc] initWithText:_person.birthDate
-                                       placeholder:NSLocalizedString(@"date_of_birth", nil)
-                                          delegate:self
-                                         mandatory:YES
-                                  customCellHeight:customCellHeight
-                                      keyboardType:UIKeyboardTypeNumbersAndPunctuation
-                                          viewType:self.viewType];
+    if (_person.birthDate == nil)
+        _person.birthDate = [[OT dateFormatter] stringFromDate:[NSDate date]];
     
-    __block OTFormInputTextFieldCell *dateOfBirthBlock = dateOfBirth;
-    dateOfBirth.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
-        NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-        [[OT dateFormatter] setTimeZone:gmt];
-        NSDate *date = [[OT dateFormatter] dateFromString:inText];
-        if (date != nil) {
-            inCell.validationState = BPFormValidationStateValid;
-            inCell.shouldShowInfoCell = NO;
-            if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
-                _person.birthDate = inText;
-        }
-        else {
-            inCell.validationState = BPFormValidationStateInvalid;
-            inCell.infoCell.label.text = NSLocalizedString(@"message_error_mandatory_birthdate", nil);
-            inCell.shouldShowInfoCell = YES;
-        }
-        [_pickerView detach];
-    };
-    // Hiện DatePicker khi bắt đầu edit (bắt buộc)
-    dateOfBirth.didBeginEditingBlock =  ^void(BPFormInputCell *inCell, NSString *inText){
-        // Xác định vùng hiển thị popover
-        [_pickerView attachWithTextField:dateOfBirthBlock.textField];
-        // Đặt kiểu ngày giờ cho DatePicker
-        [_pickerView setPickType:PickTypeDate];
-        // Đặt ngày cho DatePicker theo dữ liệu hiện tại (nên)
-        [_pickerView matchDate:dateOfBirthBlock.textField.text];
-        // Hiện popover
-        [_pickerView showPopOverList];
-    };
-    // Đặt ngày ngược lại cho DatePicker khi nhập liệu bằng bàn phím (tùy chọn)
-    dateOfBirth.shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
-        [_pickerView matchDate:inText];
-        return YES;
-    };
+    OTFormCell *dateOfBirth = [[OTFormCell alloc] initWithFrame:CGRectZero];
+    _dateOfBirthBlock = dateOfBirth;
     
+    UITapGestureRecognizer *dateOfBirthTapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(datePickerShow:)];
+    dateOfBirthTapped.numberOfTapsRequired = 1;
+    
+    NSString *dateOfBirthTitle = [_person.birthDate substringToIndex:10];
+    
+    dateOfBirth.selectionStyle = UITableViewCellSelectionStyleNone;
+    dateOfBirth.imageView.image = [UIImage imageNamed:@"ic_action_datepicker"];
+    dateOfBirth.textLabel.attributedText = [OT getAttributedStringFromText:dateOfBirthTitle];
+    dateOfBirth.imageView.userInteractionEnabled = YES;
+    [dateOfBirth.imageView addGestureRecognizer:dateOfBirthTapped];
+    
+    // Gender
     [self setHeaderTitle:NSLocalizedString(@"gender", nil) forSection:3];
-    OTFormInputTextFieldCell *gender =
-    [[OTFormInputTextFieldCell alloc] initWithText:NSLocalizedString(_person.genderCode, nil)
-                                       placeholder:NSLocalizedString(@"gender", nil)
-                                          delegate:self
-                                         mandatory:YES
-                                  customCellHeight:customCellHeight
-                                      keyboardType:UIKeyboardTypeDefault
-                                          viewType:self.viewType];
-    __block OTFormInputTextFieldCell *genderBlock = gender;
-    gender.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText) {
-        if (inText.length > 0) {
-            inCell.validationState = BPFormValidationStateValid;
-            inCell.shouldShowInfoCell = NO;
-            if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit) {
-                if ([inText isEqualToString:NSLocalizedString(@"male", nil)])
-                    _person.genderCode = @"male";
-                else
-                    _person.genderCode = @"female";
-            }
-            [_pickerView detach];
-        } else {
-            inCell.validationState = BPFormValidationStateInvalid;
-            inCell.infoCell.label.text = NSLocalizedString(@"message_error_mandatory_field_gender", nil);
-            inCell.shouldShowInfoCell = YES;
-        }
-    };
-    gender.didBeginEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText) {
-        genderBlock.validationState = BPFormValidationStateNone;
-        NSArray *genders = @[NSLocalizedString(@"male", nil),
-                             NSLocalizedString(@"female", nil)];
-        [_pickerView setPickType:PickTypeList];
-        [_pickerView setPickItems:genders];
-        [_pickerView attachWithTextField:genderBlock.textField];
-        [_pickerView showPopOverList];
-    };
-    gender.shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
-        // Disable typing
-        return NO;
-    };
+    if (_person.genderCode == nil)
+        _person.genderCode = @"male";
     
+    OTFormCell *gender = [[OTFormCell alloc] initWithFrame:CGRectZero];
+    _genderBlock = gender;
+    
+    UITapGestureRecognizer *genderTapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickerGenderShow:)];
+    genderTapped.numberOfTapsRequired = 1;
+    
+    NSString *genderTitle = NSLocalizedString(_person.genderCode, nil);
+    
+    gender.selectionStyle = UITableViewCellSelectionStyleNone;
+    gender.imageView.image = [UIImage imageNamed:@"ic_action_picker"];
+    gender.textLabel.attributedText = [OT getAttributedStringFromText:genderTitle];
+    gender.imageView.userInteractionEnabled = YES;
+    [gender.imageView addGestureRecognizer:genderTapped];
+    
+    // IdType
     [self setHeaderTitle:NSLocalizedString(@"id_type", nil) forSection:4];
-    OTFormInputTextFieldCell *idType =
-    [[OTFormInputTextFieldCell alloc] initWithText:[_idTypes valueForKey:_person.idTypeCode]
-                                       placeholder:NSLocalizedString(@"id_type", nil)
-                                          delegate:self
-                                         mandatory:NO
-                                  customCellHeight:customCellHeight
-                                      keyboardType:UIKeyboardTypeDefault
-                                          viewType:self.viewType];
+    if (_person.idTypeCode == nil) {
+        NSString *idTypeCode = [[_idTypes allKeys] firstObject];
+        _person.idTypeCode = idTypeCode;
+    }
     
-    __block OTFormInputTextFieldCell *idTypeBlock = idType;
-    idType.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
-        if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit) {
-            NSString *idTypeCode = [[_idTypes allKeysForObject:inText] firstObject];
-            _person.idTypeCode = idTypeCode;
-        }
-        [_pickerView detach];
-    };
-    idType.didBeginEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText) {
-        inCell.validationState = BPFormValidationStateNone;
-        [_pickerView setPickType:PickTypeList];
-        [_pickerView setPickItems:_idTypes.allValues];
-        [_pickerView attachWithTextField:idTypeBlock.textField];
-        [_pickerView showPopOverList];
-    };
-    idType.shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
-        // Disable typing
-        return NO;
-    };
+    OTFormCell *idType = [[OTFormCell alloc] initWithFrame:CGRectZero];
+    _idTypeBlock = idType;
     
+    UITapGestureRecognizer *idTypeTapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pickerIdTypeShow:)];
+    idTypeTapped.numberOfTapsRequired = 1;
+    
+    NSString *idTypeTitle = [_idTypes valueForKey:_person.idTypeCode];
+    
+    idType.selectionStyle = UITableViewCellSelectionStyleNone;
+    idType.imageView.image = [UIImage imageNamed:@"ic_action_picker"];
+    idType.textLabel.attributedText = [OT getAttributedStringFromText:idTypeTitle];
+    idType.imageView.userInteractionEnabled = YES;
+    [idType.imageView addGestureRecognizer:idTypeTapped];
+    
+    // IdNumber
     [self setHeaderTitle:NSLocalizedString(@"id_number", nil) forSection:5];
     OTFormInputTextFieldCell *idNumber =
     [[OTFormInputTextFieldCell alloc] initWithText:_person.idNumber
@@ -515,8 +442,195 @@
         if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
             _person.phone = inText;
     };
-        
+    
+    dateOfBirth.customCellHeight = customCellHeight;
+    gender.customCellHeight = customCellHeight;
+    idType.customCellHeight = customCellHeight;
     return @[@[firstName], @[lastName], @[dateOfBirth], @[gender], @[idType], @[idNumber], @[postalAddress], @[emailAddress], @[mobilePhoneNumber], @[contactPhoneNumber]];
+}
+
+- (IBAction)datePickerShow:(UIGestureRecognizer *)sender {
+    if (self.viewType == OTViewTypeView) return;
+    if (![self isPickerGenderShowing] && ![self isPickerIdTypeShowing] && ![self isDatePickerShowing]) {
+        [self dismissKeyboard];
+        CGRect frame = _dateOfBirthBlock.textLabel.frame;
+        
+        _pickerViewBackground = [[UIView alloc] initWithFrame:CGRectMake(frame.origin.x, _dateOfBirthBlock.frame.origin.y + _dateOfBirthBlock.frame.size.height, frame.size.width, 150)];
+        _pickerViewBackground.layer.borderColor = [[UIColor otGreen] CGColor];
+        _pickerViewBackground.layer.borderWidth = 1;
+        _pickerViewBackground.layer.cornerRadius = 4.0f;
+        _pickerViewBackground.backgroundColor = [UIColor whiteColor];
+        _pickerViewBackground.alpha = 0.95;
+        
+        _datePicker = [[UIDatePicker alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 150)];
+        _datePickerShowing = YES;
+        [_datePicker setDatePickerMode:UIDatePickerModeDate];
+        [_datePicker addTarget:self action:@selector(datePickerChanged:) forControlEvents:UIControlEventValueChanged];
+        
+        // Đặt ngày của datePicker theo ngày của field
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy'-'MM'-'dd"];
+        NSString *dateText = [_dateOfBirthBlock.textLabel.text substringToIndex:10];
+        NSDate *date = [dateFormatter dateFromString:dateText];
+        if (date != nil)
+            [_datePicker setDate:date];
+        
+        [_pickerViewBackground addSubview:_datePicker];
+        [_dateOfBirthBlock.superview.superview addSubview:_pickerViewBackground];
+    } else if ([self isPickerGenderShowing])
+        [self pickerGenderDone:nil];
+    else if ([self isPickerIdTypeShowing])
+        [self pickerIdTypeDone:nil];
+    else if ([self isDatePickerShowing])
+        [self datePickerDone:nil];
+}
+
+- (IBAction)datePickerDone:(id)sender {
+    [_pickerViewBackground removeFromSuperview];
+    _datePickerShowing = NO;
+}
+
+- (IBAction)pickerGenderShow:(UIGestureRecognizer *)sender {
+    if (self.viewType == OTViewTypeView) return;
+    if (![self isPickerGenderShowing] && ![self isPickerIdTypeShowing] && ![self isDatePickerShowing]) {
+        [self dismissKeyboard];
+        CGRect frame = _genderBlock.textLabel.frame;
+        
+        _pickerViewBackground = [[UIView alloc] initWithFrame:CGRectMake(frame.origin.x, _genderBlock.frame.origin.y + _genderBlock.frame.size.height, frame.size.width, 150)];
+        _pickerViewBackground.layer.borderColor = [[UIColor otGreen] CGColor];
+        _pickerViewBackground.layer.borderWidth = 1;
+        _pickerViewBackground.layer.cornerRadius = 4.0f;
+        _pickerViewBackground.backgroundColor = [UIColor whiteColor];
+        _pickerViewBackground.alpha = 0.95;
+        
+        _pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 150)];
+        _pickerView.delegate = self;
+        _pickerGenderShowing = YES;
+        [_pickerView reloadAllComponents];
+        
+        NSArray *genders = @[@"male", @"female"];
+        
+        for (int i = 0; i < genders.count; i++) {
+            if ([_person.genderCode isEqualToString:genders[i]])
+                [_pickerView selectRow:i inComponent:0 animated:YES];
+        }
+        
+        [_pickerViewBackground addSubview:_pickerView];
+        [_genderBlock.superview.superview addSubview:_pickerViewBackground];
+    } else [self hidePickers];
+}
+
+- (IBAction)pickerGenderDone:(id)sender {
+    [_pickerViewBackground removeFromSuperview];
+    _pickerGenderShowing = NO;
+}
+
+- (IBAction)pickerIdTypeShow:(UIGestureRecognizer *)sender {
+    if (self.viewType == OTViewTypeView) return;
+    if (![self isPickerGenderShowing] && ![self isPickerIdTypeShowing] && ![self isDatePickerShowing]) {
+        [self dismissKeyboard];
+        CGRect frame = _idTypeBlock.textLabel.frame;
+        
+        _pickerViewBackground = [[UIView alloc] initWithFrame:CGRectMake(frame.origin.x, _idTypeBlock.frame.origin.y + _idTypeBlock.frame.size.height, frame.size.width, 150)];
+        _pickerViewBackground.layer.borderColor = [[UIColor otGreen] CGColor];
+        _pickerViewBackground.layer.borderWidth = 1;
+        _pickerViewBackground.layer.cornerRadius = 4.0f;
+        _pickerViewBackground.backgroundColor = [UIColor whiteColor];
+        _pickerViewBackground.alpha = 0.95;
+        
+        _pickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 150)];
+        _pickerView.delegate = self;
+        _pickerIdTypeShowing = YES;
+        [_pickerView reloadAllComponents];
+        
+        NSArray *options = [_idTypes allKeys];
+        
+        for (int i = 0; i < options.count; i++) {
+            if ([_person.idTypeCode isEqualToString:options[i]])
+                [_pickerView selectRow:i inComponent:0 animated:YES];
+        }
+        
+        [_pickerViewBackground addSubview:_pickerView];
+        [_idTypeBlock.superview.superview addSubview:_pickerViewBackground];
+    } else [self hidePickers];
+}
+
+- (IBAction)pickerIdTypeDone:(id)sender {
+    [_pickerViewBackground removeFromSuperview];
+    _pickerIdTypeShowing = NO;
+}
+
+- (void)hidePickers {
+    if ([self isPickerGenderShowing])
+        [self pickerGenderDone:nil];
+    else if ([self isPickerIdTypeShowing])
+        [self pickerIdTypeDone:nil];
+    else
+        [self datePickerDone:nil];
+}
+
+- (void)dismissKeyboard {
+    for (id cells in self.formCells) {
+        for (id cell in cells) {
+            if ([cell isKindOfClass:[BPFormInputTextFieldCell class]]) {
+                [[cell textField] resignFirstResponder];
+            }
+        }
+    }
+}
+
+#pragma handle UIDatePicker method
+
+- (IBAction)datePickerChanged:(UIDatePicker *)sender {
+    NSString *dateString = [[OT dateFormatter] stringFromDate:[sender date]];
+    _dateOfBirthBlock.textLabel.attributedText = [OT getAttributedStringFromText:[dateString substringToIndex:10]];
+    _person.birthDate = dateString;
+}
+
+#pragma mark - UIPickerViewDelegate methods
+
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow: (NSInteger)row inComponent:(NSInteger)component {
+    if ([self isPickerGenderShowing]) {
+        NSArray *options = @[@"male", @"female"];
+        
+        _person.genderCode = options[row];
+        
+        NSArray *displayOptions = @[NSLocalizedString(@"male", nil), NSLocalizedString(@"female", nil)];
+        
+        _genderBlock.textLabel.attributedText = [OT getAttributedStringFromText:displayOptions[row]];
+    } else if ([self isPickerIdTypeShowing]) {
+        NSString *idTypeDisplayValue = [[_idTypes allValues] objectAtIndex:row];
+        NSString *idTypeCode = [[_idTypes allKeys] objectAtIndex:row];
+        _person.idTypeCode = idTypeCode;
+        _idTypeBlock.textLabel.attributedText = [OT getAttributedStringFromText:idTypeDisplayValue];
+    }
+}
+
+// tell the picker how many rows are available for a given component
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    if ([self isPickerGenderShowing])
+        return 2;
+    else
+        return [[_idTypes allKeys] count];
+}
+
+// tell the picker how many components it will have
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return 1;
+}
+
+// tell the picker the title for a given component
+- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    NSString *title;
+    NSArray *options;
+    if ([self isPickerGenderShowing]) {
+        options = @[NSLocalizedString(@"male", nil), NSLocalizedString(@"female", nil)];
+    } else {
+        options = [_idTypes allValues];
+    }
+    title = [options objectAtIndex:row];
+    
+    return title;
 }
 
 #pragma Bar Buttons Action
@@ -543,6 +657,7 @@ static bool allCellChecked = false;
 - (IBAction)save:(id)sender {
     if (self.allCellsAreValid) {
         if ([_person.managedObjectContext hasChanges]) {
+            [FileSystemUtilities createClaimantsFolder];
             [FileSystemUtilities createClaimantFolder:_person.personId];
             [_person.managedObjectContext save:nil];
             [self setupView];
@@ -557,12 +672,16 @@ static bool allCellChecked = false;
 - (IBAction)cancel:(id)sender {
     if (![_person isSaved]) {
         [self.navigationController dismissViewControllerAnimated:NO completion:^{
+            if (_person.owner != nil)
+                [_person.owner removeOwnersObject:_person];
+            if (_person.claim != nil)
+                _person.claim = nil;
             [_person.managedObjectContext deleteObject:_person];
         }];
     } else {
         if ([_person.managedObjectContext hasChanges] &&
             (_person.claim == nil || [_person.claim.statusCode isEqualToString:kClaimStatusCreated])) {
-            [UIAlertView showWithTitle:NSLocalizedString(@"title_save_dialog", nil) message:NSLocalizedString(@"message_save_dialog", nil) style:UIAlertViewStyleDefault cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"action_save", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+            [UIAlertView showWithTitle:NSLocalizedStringFromTable(@"title_save_dialog", @"Additional", nil) message:NSLocalizedStringFromTable(@"message_save_dialog", @"Additional", nil) style:UIAlertViewStyleDefault cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"action_save", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                 if (buttonIndex == 1) {
                     [self.navigationController dismissViewControllerAnimated:NO completion:^{
                         [self save:nil];
@@ -582,7 +701,23 @@ static bool allCellChecked = false;
 }
 
 - (IBAction)done:(id)sender {
-    [self.navigationController dismissViewControllerAnimated:NO completion:nil];
+    if (self.viewType == OTViewTypeView)
+        [self.navigationController dismissViewControllerAnimated:NO completion:nil];
+    else {
+        if (_person.name != nil) {
+            if (self.allCellsAreValid) {
+                [self.navigationController dismissViewControllerAnimated:NO completion:^{
+                    [self save:nil];
+                }];
+            } else {
+                if (!allCellChecked) [self checkInvalidCell];
+                [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"message_error_mandatory_fields", nil)];
+            }
+        } else {
+            if (!allCellChecked) [self checkInvalidCell];
+            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"message_error_mandatory_fields", nil)];
+        }
+    }
 }
 
 - (void)rollback {
@@ -611,7 +746,9 @@ static bool allCellChecked = false;
                 imagePickerController.navigationBarHidden = NO;
                 
             }
-            [self presentViewController:imagePickerController animated:YES completion:nil];
+            dispatch_async(dispatch_get_main_queue(), ^{ // Fixed for Xcode 6, iOS 8
+                [self presentViewController:imagePickerController animated:YES completion:nil];
+            });
         }];
     } else {
         [UIActionSheet showFromToolbar:self.navigationController.toolbar withTitle:nil cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[NSLocalizedString(@"Select from photo library", nil), NSLocalizedString(@"Take new picture", nil)] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
@@ -628,7 +765,9 @@ static bool allCellChecked = false;
                 imagePickerController.navigationBarHidden = NO;
                 
             }
-            [self presentViewController:imagePickerController animated:YES completion:nil];
+            dispatch_async(dispatch_get_main_queue(), ^{ // Fixed for Xcode 6, iOS 8
+                [self presentViewController:imagePickerController animated:YES completion:nil];
+            });
         }];
     }
 }

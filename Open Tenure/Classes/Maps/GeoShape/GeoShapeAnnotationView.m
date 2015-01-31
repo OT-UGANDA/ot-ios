@@ -80,7 +80,7 @@
     self.image = [UIImage imageNamed:@"ot_blue_marker"];
     
     //Offset vị trí xuống chân
-    self.centerOffset = CGPointMake(0, -14);
+    self.centerOffset = CGPointMake(0, -14.5);
     
     [self setBounds:CGRectMake(0, 0, 29, 29)];
 }

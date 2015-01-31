@@ -33,6 +33,7 @@
 @property (nonatomic, assign) CLLocationDegrees latitude;
 @property (nonatomic, assign) CLLocationDegrees longitude;
 @property (nonatomic, assign, getter = isDragging) BOOL dragging;
+@property (nonatomic, assign) NSInteger tag;
 
 - (id)initWithLatitude:(CLLocationDegrees)latitude longitude:(CLLocationDegrees)longitude;
 - (CLLocationCoordinate2D)coordinate;

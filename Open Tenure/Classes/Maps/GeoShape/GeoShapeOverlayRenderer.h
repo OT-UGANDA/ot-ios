@@ -28,6 +28,6 @@
 
 #import <MapKit/MapKit.h>
 
-@interface GeoShapeOverlayRenderer : MKOverlayRenderer
+@interface GeoShapeOverlayRenderer : MKOverlayPathRenderer
 
 @end

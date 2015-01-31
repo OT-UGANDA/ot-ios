@@ -19,6 +19,9 @@
 // ALog always displays output regardless of the DEBUG setting
 #define ALog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 
+// 8.0 and above
+#define IS_DEVICE_RUNNING_IOS_8_AND_ABOVE() ([[[UIDevice currentDevice] systemVersion] compare:@"8.0" options:NSNumericSearch] != NSOrderedAscending)
+
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
@@ -45,17 +48,20 @@
 #import "FileSystemUtilities.h"
 #import "SVProgressHUD.h"
 #import "ZipUtilities.h"
+#import "OTSetting.h"
 
 /*!
  Network & Network response
- */
+*/
 #import "CommunityServerAPI.h"
+ 
+/*
 #import "ResponseClaim.h"
 #import "ResponseIdType.h"
 #import "ResponseLandUse.h"
 #import "ResponseClaimType.h"
 #import "ResponseDocumentType.h"
-
+*/
 /*!
  Classes Category
  */
@@ -79,6 +85,17 @@
 #import "PersonEntity.h"
 #import "AttachmentEntity.h"
 #import "AdditionalInfoEntity.h"
+#import "LocationEntity.h"
+
+#import "FormTemplateEntity.h"
+#import "SectionTemplateEntity.h"
+#import "FieldTemplateEntity.h"
+#import "FieldConstraintEntity.h"
+#import "FieldConstraintOptionEntity.h"
+#import "FormPayloadEntity.h"
+#import "SectionPayloadEntity.h"
+#import "SectionElementPayloadEntity.h"
+#import "FieldPayloadEntity.h"
 
 /*!
  NSManagedObject Subclass
@@ -92,6 +109,17 @@
 #import "DocumentType.h"
 #import "Attachment.h"
 #import "AdditionalInfo.h"
+#import "Location.h"
+
+#import "FormTemplate.h"
+#import "SectionTemplate.h"
+#import "FieldTemplate.h"
+#import "FieldConstraint.h"
+#import "FieldConstraintOption.h"
+#import "FormPayload.h"
+#import "SectionPayload.h"
+#import "SectionElementPayload.h"
+#import "FieldPayload.h"
 
 // NSManagedObject Subclass category
 #import "NSManagedObject+OT.h"
@@ -100,5 +128,21 @@
 #import "Attachment+OT.h"
 #import "AdditionalInfo+OT.h"
 #import "Share+OT.h"
+#import "Location+OT.h"
+
+#import "DocumentType+OT.h"
+#import "IdType+OT.h"
+#import "LandUse+OT.h"
+#import "ClaimType+OT.h"
+
+#import "FormTemplate+OT.h"
+#import "SectionTemplate+OT.h"
+#import "FieldTemplate+OT.h"
+#import "FieldConstraint+OT.h"
+#import "FieldConstraintOption+OT.h"
+#import "FormPayload+OT.h"
+#import "SectionPayload+OT.h"
+#import "SectionElementPayload+OT.h"
+#import "FieldPayload+OT.h"
 
 #endif

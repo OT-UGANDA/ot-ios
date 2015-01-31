@@ -1,0 +1,21 @@
+/* Strings related to login */
+"action_forgot_password"="إسترجاع كلمة المرور الضائعة";
+"action_log_in_register"="<b>تسجيل الدخول</b>";
+"action_sign_in_short"="تسجيل الدخول";
+"error_connection"="الأتصال غير متوفر ";
+"error_field_required"="هذا الحقل إجباري";
+"error_generic_conection"="حدث خطأ أثناء عملية الأتصال";
+"error_generic_login"="حدث خطأ أثناء عملية تسجيل الدخول ";
+"error_incorrect_password"="إسم المستخدم أو كلمة المرور غير صحيحة";
+"error_invalid_password"="طول كلمة المرور غير كاف";
+"error_invalid_username"="طول إسم المستخدم غير كاف";
+"login_progress_signing_in"="تسجيل الدخول …";
+"message_login_before"="سجل الدخول أولا";
+"message_login_ok"="تم تسجيل دخولك بنجاح";
+"message_logout_error"="خطأ أثناء تسجيل الخروج";
+"message_logout_not_ok"="تسجيل الخروج فشلت";
+"message_logout_ok"="تم تسجيل خروجك بنجاح";
+"message_timeout_exception"="خطأ نتيجة نفاذ الوقت ";
+"message_unknowhost_error"="خطأ غير معروف على الخادم المضيف. هل الشبكة متوفرة؟";
+"prompt_password"="كلمة المرور";
+"prompt_username"="إسم المستخدم";

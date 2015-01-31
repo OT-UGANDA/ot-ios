@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13F34" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14B25" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AdditionalInfo" representedClassName="AdditionalInfo" syncable="YES">
         <attribute name="key" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
@@ -20,6 +20,7 @@
         <relationship name="typeCode" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DocumentType" inverseName="attachments" inverseEntity="DocumentType" syncable="YES"/>
     </entity>
     <entity name="Claim" representedClassName="Claim" syncable="YES">
+        <attribute name="challengedClaimId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="challengeExpiryDate" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="claimId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="claimName" optional="YES" attributeType="String" syncable="YES"/>
@@ -41,7 +42,9 @@
         <relationship name="challenged" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Claim" inverseName="challenges" inverseEntity="Claim" syncable="YES"/>
         <relationship name="challenges" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Claim" inverseName="challenged" inverseEntity="Claim" syncable="YES"/>
         <relationship name="claimType" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ClaimType" inverseName="claims" inverseEntity="ClaimType" syncable="YES"/>
+        <relationship name="dynamicForm" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="FormPayload" inverseName="claim" inverseEntity="FormPayload" syncable="YES"/>
         <relationship name="landUse" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LandUse" inverseName="claims" inverseEntity="LandUse" syncable="YES"/>
+        <relationship name="locations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Location" inverseName="claim" inverseEntity="Location" syncable="YES"/>
         <relationship name="person" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Person" inverseName="claim" inverseEntity="Person" syncable="YES"/>
         <relationship name="shares" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Share" inverseName="claim" inverseEntity="Share" syncable="YES"/>
     </entity>
@@ -65,6 +68,59 @@
         <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attachment" inverseName="typeCode" inverseEntity="Attachment" syncable="YES"/>
     </entity>
+    <entity name="FieldConstraint" representedClassName="FieldConstraint" syncable="YES">
+        <attribute name="attributeId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="errorMsg" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fieldConstraintType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="format" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="maxValue" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="minValue" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ordering" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="fieldConstraintOptionList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FieldConstraintOption" inverseName="fieldConstraint" inverseEntity="FieldConstraintOption" syncable="YES"/>
+        <relationship name="fieldTemplate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FieldTemplate" inverseName="fieldConstraintList" inverseEntity="FieldTemplate" syncable="YES"/>
+    </entity>
+    <entity name="FieldConstraintOption" representedClassName="FieldConstraintOption" syncable="YES">
+        <attribute name="attributeId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ordering" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="fieldConstraint" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FieldConstraint" inverseName="fieldConstraintOptionList" inverseEntity="FieldConstraint" syncable="YES"/>
+    </entity>
+    <entity name="FieldPayload" representedClassName="FieldPayload" syncable="YES">
+        <attribute name="attributeId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="bigDecimalPayload" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="booleanPayload" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="fieldValueType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="stringPayload" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="fieldTemplate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FieldTemplate" inverseName="fieldPayloadList" inverseEntity="FieldTemplate" syncable="YES"/>
+        <relationship name="sectionElementPayload" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SectionElementPayload" inverseName="fieldPayloadList" inverseEntity="SectionElementPayload" syncable="YES"/>
+    </entity>
+    <entity name="FieldTemplate" representedClassName="FieldTemplate" syncable="YES">
+        <attribute name="attributeId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fieldType" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="hint" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ordering" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="fieldConstraintList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FieldConstraint" inverseName="fieldTemplate" inverseEntity="FieldConstraint" syncable="YES"/>
+        <relationship name="fieldPayloadList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FieldPayload" inverseName="fieldTemplate" inverseEntity="FieldPayload" syncable="YES"/>
+        <relationship name="sectionTemplate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SectionTemplate" inverseName="fieldTemplateList" inverseEntity="SectionTemplate" syncable="YES"/>
+    </entity>
+    <entity name="FormPayload" representedClassName="FormPayload" syncable="YES">
+        <attribute name="attributeId" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="claim" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Claim" inverseName="dynamicForm" inverseEntity="Claim" syncable="YES"/>
+        <relationship name="formTemplate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FormTemplate" inverseName="formPayloadList" inverseEntity="FormTemplate" syncable="YES"/>
+        <relationship name="sectionPayloadList" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SectionPayload" inverseName="formPayload" inverseEntity="SectionPayload" syncable="YES"/>
+    </entity>
+    <entity name="FormTemplate" representedClassName="FormTemplate" syncable="YES">
+        <attribute name="defaultTemplate" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="formPayloadList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FormPayload" inverseName="formTemplate" inverseEntity="FormPayload" syncable="YES"/>
+        <relationship name="sectionTemplateList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SectionTemplate" inverseName="formTemplate" inverseEntity="SectionTemplate" syncable="YES"/>
+    </entity>
     <entity name="IdType" representedClassName="IdType" syncable="YES">
         <attribute name="attribute" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="code" optional="YES" attributeType="String" syncable="YES"/>
@@ -78,6 +134,14 @@
         <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="status" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="claims" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Claim" inverseName="landUse" inverseEntity="Claim" syncable="YES"/>
+    </entity>
+    <entity name="Location" representedClassName="Location" syncable="YES">
+        <attribute name="claimId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="gpsLocation" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="locationId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mappedLocation" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="claim" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Claim" inverseName="locations" inverseEntity="Claim" syncable="YES"/>
     </entity>
     <entity name="Person" representedClassName="Person" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
@@ -93,7 +157,32 @@
         <attribute name="personId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="phone" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="claim" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="Claim" inverseName="person" inverseEntity="Claim" syncable="YES"/>
-        <relationship name="owner" optional="YES" maxCount="1" deletionRule="Deny" destinationEntity="Share" inverseName="owners" inverseEntity="Share" syncable="YES"/>
+        <relationship name="owner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Share" inverseName="owners" inverseEntity="Share" syncable="YES"/>
+    </entity>
+    <entity name="SectionElementPayload" representedClassName="SectionElementPayload" syncable="YES">
+        <attribute name="attributeId" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="fieldPayloadList" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="FieldPayload" inverseName="sectionElementPayload" inverseEntity="FieldPayload" syncable="YES"/>
+        <relationship name="sectionPayload" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SectionPayload" inverseName="sectionElementPayloadList" inverseEntity="SectionPayload" syncable="YES"/>
+    </entity>
+    <entity name="SectionPayload" representedClassName="SectionPayload" syncable="YES">
+        <attribute name="attributeId" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="formPayload" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FormPayload" inverseName="sectionPayloadList" inverseEntity="FormPayload" syncable="YES"/>
+        <relationship name="sectionElementPayloadList" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SectionElementPayload" inverseName="sectionPayload" inverseEntity="SectionElementPayload" syncable="YES"/>
+        <relationship name="sectionTemplate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SectionTemplate" inverseName="sectionPayloadList" inverseEntity="SectionTemplate" syncable="YES"/>
+    </entity>
+    <entity name="SectionTemplate" representedClassName="SectionTemplate" syncable="YES">
+        <attribute name="attributeId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="elementDisplayName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="elementName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="errorMsg" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="maxOccurrences" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="minOccurrences" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="ordering" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="fieldTemplateList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FieldTemplate" inverseName="sectionTemplate" inverseEntity="FieldTemplate" syncable="YES"/>
+        <relationship name="formTemplate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FormTemplate" inverseName="sectionTemplateList" inverseEntity="FormTemplate" syncable="YES"/>
+        <relationship name="sectionPayloadList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SectionPayload" inverseName="sectionTemplate" inverseEntity="SectionPayload" syncable="YES"/>
     </entity>
     <entity name="Share" representedClassName="Share" syncable="YES">
         <attribute name="denominator" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -103,14 +192,24 @@
         <relationship name="owners" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Person" inverseName="owner" inverseEntity="Person" syncable="YES"/>
     </entity>
     <elements>
-        <element name="AdditionalInfo" positionX="-9117" positionY="-1440" width="128" height="88"/>
-        <element name="Attachment" positionX="-9695" positionY="-1044" width="128" height="223"/>
-        <element name="Claim" positionX="-9317" positionY="-1348" width="128" height="403"/>
-        <element name="ClaimType" positionX="-9081" positionY="-1305" width="128" height="195"/>
-        <element name="DocumentType" positionX="-9972" positionY="-1159" width="128" height="133"/>
-        <element name="IdType" positionX="-9974" positionY="-1449" width="128" height="120"/>
-        <element name="LandUse" positionX="-9099" positionY="-1072" width="128" height="118"/>
-        <element name="Share" positionX="-9567" positionY="-1408" width="128" height="118"/>
-        <element name="Person" positionX="-9810" positionY="-1449" width="128" height="253"/>
+        <element name="AdditionalInfo" positionX="-9497" positionY="-1233" width="128" height="88"/>
+        <element name="Attachment" positionX="-9497" positionY="-1116" width="128" height="223"/>
+        <element name="Claim" positionX="-9317" positionY="-1348" width="128" height="448"/>
+        <element name="ClaimType" positionX="-9135" positionY="-1503" width="128" height="195"/>
+        <element name="DocumentType" positionX="-9659" positionY="-1026" width="128" height="133"/>
+        <element name="FieldConstraint" positionX="-8268" positionY="-1375" width="144" height="208"/>
+        <element name="FieldConstraintOption" positionX="-8441" positionY="-1444" width="137" height="118"/>
+        <element name="FieldPayload" positionX="-8438" positionY="-1078" width="143" height="148"/>
+        <element name="FieldTemplate" positionX="-8435" positionY="-1315" width="136" height="178"/>
+        <element name="FormPayload" positionX="-8956" positionY="-1033" width="128" height="103"/>
+        <element name="FormTemplate" positionX="-8965" positionY="-1240" width="128" height="118"/>
+        <element name="IdType" positionX="-9657" positionY="-1503" width="128" height="120"/>
+        <element name="LandUse" positionX="-9126" positionY="-1297" width="128" height="118"/>
+        <element name="Location" positionX="-9119" positionY="-1161" width="128" height="133"/>
+        <element name="Person" positionX="-9504" positionY="-1503" width="128" height="253"/>
+        <element name="SectionElementPayload" positionX="-8606" positionY="-1003" width="128" height="88"/>
+        <element name="SectionPayload" positionX="-8793" positionY="-1003" width="140" height="103"/>
+        <element name="SectionTemplate" positionX="-8613" positionY="-1330" width="128" height="223"/>
+        <element name="Share" positionX="-9324" positionY="-1503" width="128" height="118"/>
     </elements>
 </model>

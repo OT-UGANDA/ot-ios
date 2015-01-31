@@ -1,0 +1,21 @@
+/* Strings related to login */
+"action_forgot_password"="Khôi phục mật khẩu bị mất";
+"action_log_in_register"="Đăng nhập";
+"action_sign_in_short"="Đăng nhập";
+"error_connection"="Các kết nối không có sẵn";
+"error_field_required"="Trường này là bắt buộc";
+"error_generic_conection"="Một lỗi đã xảy ra trong quá trình kết nối";
+"error_generic_login"="Một lỗi đã xảy ra trong quá trình đăng nhập";
+"error_incorrect_password"="Tên đăng nhập hoặc mật khẩu không đúng";
+"error_invalid_password"="Mật khẩu quá ngắn";
+"error_invalid_username"="Tên đăng nhập quá ngắn";
+"login_progress_signing_in"="Đăng nhập...";
+"message_login_before"="Hãy đăng nhập trước";
+"message_login_ok"="Bạn đã đăng nhập thành công";
+"message_logout_error"="Lỗi đăng xuất";
+"message_logout_not_ok"="Đăng xuất thất bại";
+"message_logout_ok"="Bạn đã đăng xuất thành công";
+"message_timeout_exception"="Hết thời gian chờ";
+"message_unknowhost_error"="Không rõ lỗi. Liệu mạng có sẵn?";
+"prompt_password"="Mật khẩu";
+"prompt_username"="Tên đăng nhập";

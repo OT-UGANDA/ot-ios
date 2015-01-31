@@ -28,8 +28,17 @@
 
 #import <UIKit/UIKit.h>
 
-@interface OTNewsViewController : UITableViewController
+@interface OTNewsViewController : UITableViewController <UISearchBarDelegate> {
+    __weak IBOutlet UISearchBar *_searchBar;
+    IBOutlet NSArray *_filteredObjects;
+}
+
+@property (strong, nonatomic) NSArray *cells;
+
+// Showcase
+@property (nonatomic, strong) NSArray *showcaseTargetList;
 
 - (IBAction)showMenu:(id)sender;
+- (IBAction)defaultShowcase:(id)sender;
 
 @end

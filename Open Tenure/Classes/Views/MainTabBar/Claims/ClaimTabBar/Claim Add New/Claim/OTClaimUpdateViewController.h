@@ -35,5 +35,8 @@
 - (IBAction)save:(id)sender;
 - (IBAction)cancel:(id)sender;
 - (IBAction)done:(id)sender;
+- (IBAction)print:(id)sender;
+- (IBAction)export:(id)sender;
+- (IBAction)showMenu:(id)sender;
 
 @end

@@ -35,7 +35,19 @@
 
 @property (strong, nonatomic) Claim *claim;
 
+// Showcase
+@property (nonatomic, strong) NSArray *showcaseTargetList;
+
+- (IBAction)zoomToCommunityArea:(id)sender;
 - (IBAction)downloadClaims:(id)sender;
 - (IBAction)mapSnapshot:(id)sender;
+- (IBAction)done:(id)sender;
+- (IBAction)addMarker:(id)sender;
+- (IBAction)login:(id)sender;
+- (IBAction)logout:(id)sender;
+- (IBAction)initialization:(id)sender;
+- (void)configureCommunityArea;
+- (IBAction)downloadMapTiles:(id)sender;
+- (IBAction)defaultShowcase:(id)sender;
 
 @end

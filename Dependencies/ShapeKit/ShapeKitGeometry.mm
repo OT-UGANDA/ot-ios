@@ -13,7 +13,7 @@
 #import "ShapeKitGeometry.h"
 
 @implementation ShapeKitGeometry
-@synthesize wktGeom, geomType, projDefinition, geosGeom, numberOfCoords;
+@synthesize wktGeom, geomType, geosGeom, numberOfCoords;
 
 #pragma mark ShapeKitPoint init methods
 - (id)init
@@ -64,44 +64,6 @@
         GEOSWKTWriter_destroy_r(handle, WKTWriter);
     }
     return self;    
-}
-
--(void)reprojectTo:(NSString *)newProjectionDefinition {
-    // TODO: Impliment this as an SRID int stored on the geom rather than a proj4 string
-	projPJ source, destination;
-	source = pj_init_plus([projDefinition UTF8String]);
-	destination = pj_init_plus([newProjectionDefinition UTF8String]);
-	unsigned int coordCount;
-    GEOSCoordSequence *sequence = GEOSCoordSeq_clone_r(handle, GEOSGeom_getCoordSeq_r(handle, geosGeom));
-	GEOSCoordSeq_getSize_r(handle, sequence, &coordCount);
-	double x[coordCount];
-	double y[coordCount];
-    
-    for (int coord = 0; coord < coordCount; coord++) {
-        double xCoord = NULL;
-        GEOSCoordSeq_getX_r(handle, sequence, coord, &xCoord);
-        
-        double yCoord = NULL;
-        GEOSCoordSeq_getY_r(handle, sequence, coord, &yCoord);
-		xCoord *= DEG_TO_RAD;
-		yCoord *= DEG_TO_RAD;
-		y[coord] = yCoord;
-		x[coord] = xCoord;
-    }
-	
-    GEOSCoordSeq_destroy_r(handle, sequence);
-	
-	int proj = pj_transform(source, destination, coordCount, 1, x, y, NULL );
-	for (int i = 0; i < coordCount; i++) {
-		printf("x:\t%.2f\n",x[i]);
-	}
-    
-    // TODO: move the message from a log to an NSError
-    if (proj != 0) {
-        ALog(@"%@",[NSString stringWithUTF8String:pj_strerrno(proj)]);
-    }
-	pj_free(source);
-	pj_free(destination);
 }
 
 #pragma mark GEOS init functions

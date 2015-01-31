@@ -40,7 +40,7 @@
 
     NSManagedObjectContext *_managedObjectContext;
 
-    NSArray *_filteredObjects;
+    NSMutableArray *_filteredObjects;
     NSMutableDictionary *_filteredResults;
 }
 
