@@ -26,17 +26,55 @@
  * *********************************************************************************************
  */
 
-#import <Foundation/Foundation.h>
-#import "SSZipArchive.h"
+#import "MKPolygon+OT.h"
 
-@interface ZipUtilities : NSObject
+#define kEarthRadius 6378137
+static inline double degreesToRadians(double degrees) {
+    return degrees * M_PI / 180.;
+}
+
+@implementation MKPolygon (OT)
 
 /**
- *
- * This code support the AES encryption.
- *
- **/
+ Area calculator
+ */
+- (double)area {
+    double area = 0;
+    NSArray *coords = [self coordinates];
+    if (coords.count > 2) {
+        CLLocationCoordinate2D p1, p2;
+        for (int i = 0; i < coords.count - 1; i++) {
+            p1 = [coords[i] MKCoordinateValue];
+            p2 = [coords[i + 1] MKCoordinateValue];
+            area += degreesToRadians(p2.longitude - p1.longitude) * (2 + sinf(degreesToRadians(p1.latitude)) + sinf(degreesToRadians(p2.latitude)));
+        }
+        //Wrapping around
+        p1 = [coords[coords.count - 1] MKCoordinateValue];
+        p2 = [coords[0] MKCoordinateValue];
+        area += degreesToRadians(p2.longitude - p1.longitude) * (2 + sinf(degreesToRadians(p1.latitude)) + sinf(degreesToRadians(p2.latitude)));
+        area = area * kEarthRadius * kEarthRadius / 2;
+    }
+    
+    return fabs(area);
+}
 
-+ (BOOL)addFilesWithAESEncryption:(NSString *)password claimId:(NSString *)claimId;
+- (NSArray *)coordinates {
+    NSMutableArray *points = [NSMutableArray arrayWithCapacity:self.pointCount];
+    for (int i = 0; i < self.pointCount; i++) {
+        MKMapPoint *point = &self.points[i];
+        [points addObject:[NSValue valueWithMKCoordinate:MKCoordinateForMapPoint(* point)]];
+    }
+    return points.copy;
+}
+
+- (double)getArea {
+    double area = [self area];
+    if (self.interiorPolygons != nil) {
+        for (MKPolygon *p in self.interiorPolygons) {
+            area -= [p area];
+        }
+    }
+    return area;
+}
 
 @end
