@@ -29,7 +29,12 @@
 #import "OTSharesUpdateViewController.h"
 #import "OTSelectionTabBarViewController.h"
 
-@interface OTSharesUpdateViewController () <OTSelectionTabBarViewControllerDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
+
+@interface OTSharesUpdateViewController () <OTSelectionTabBarViewControllerDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate> {
+  
+    BOOL multipleShowcase;
+    NSInteger currentShowcaseIndex;
+}
 
 @property  NSInteger *selectedRow;
 @property BOOL tapped;
@@ -52,6 +57,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     [self loadData];
      NSMutableArray *items = [NSMutableArray array];
     for (NSUInteger i = 1; i <= 100; i++)
@@ -81,6 +87,20 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark - OTShowcase & OTShowcaseDelegate methods
+- (void)configureShowcase {
+   }
+
+- (IBAction)defaultShowcase:(id)sender {
+   
+}
+
+#pragma mark - OTShowcaseDelegate methods
+- (void)OTShowcaseShown{}
+
+- (void)OTShowcaseDismissed {
+   }
 
 - (IBAction)done:(id)sender {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];

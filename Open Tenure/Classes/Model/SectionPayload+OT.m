@@ -46,19 +46,27 @@
     }
     
     // Bổ sung thông tin từ sectionTemplate
-    [dict setObject:self.sectionTemplate.displayName forKey:@"displayName"];
-    [dict setObject:self.sectionTemplate.elementDisplayName forKey:@"elementDisplayName"];
-    [dict setObject:self.sectionTemplate.elementName forKey:@"elementName"];
-    [dict setObject:self.sectionTemplate.name forKey:@"name"];
-    [dict setObject:self.formPayload.attributeId forKey:@"formPayloadId"];    
-    [dict setObject:self.sectionTemplate.maxOccurrences forKey:@"maxOccurrences"];
-    [dict setObject:self.sectionTemplate.minOccurrences forKey:@"minOccurrences"];
+    if (self.sectionTemplate.displayName != nil)
+        [dict setObject:self.sectionTemplate.displayName forKey:@"displayName"];
+    if (self.sectionTemplate.elementDisplayName != nil)
+        [dict setObject:self.sectionTemplate.elementDisplayName forKey:@"elementDisplayName"];
+    if (self.sectionTemplate.elementName != nil)
+        [dict setObject:self.sectionTemplate.elementName forKey:@"elementName"];
+    if (self.sectionTemplate.name != nil)
+        [dict setObject:self.sectionTemplate.name forKey:@"name"];
+    if (self.formPayload.attributeId != nil)
+        [dict setObject:self.formPayload.attributeId forKey:@"formPayloadId"];
+    if (self.sectionTemplate.maxOccurrences != nil)
+        [dict setObject:self.sectionTemplate.maxOccurrences forKey:@"maxOccurrences"];
+    if (self.sectionTemplate.minOccurrences != nil)
+        [dict setObject:self.sectionTemplate.minOccurrences forKey:@"minOccurrences"];
     
     // SectionElementPayload dictionary
     NSMutableArray *array = [NSMutableArray array];
     for (SectionElementPayload *obj in self.sectionElementPayloadList) {
         [array addObject:obj.dictionary];
     }
+    if (array != nil)
     [dict setObject:array forKey:@"sectionElementPayloadList"];
 
     return dict;

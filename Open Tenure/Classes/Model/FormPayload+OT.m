@@ -47,14 +47,16 @@
     
     // Bổ sung thông tin từ formTemplate
     [dict setObject:self.claim.claimId forKey:@"claimId"];
-    [dict setObject:self.formTemplate.name forKey:@"formTemplateName"];
+    if (self.formTemplate != nil)
+        [dict setObject:self.formTemplate.name forKey:@"formTemplateName"];
     
     // SectionElementPayload dictionary
     NSMutableArray *array = [NSMutableArray array];
     for (SectionPayload *obj in self.sectionPayloadList) {
         [array addObject:obj.dictionary];
     }
-    [dict setObject:array forKey:@"sectionPayloadList"];
+    if (array != nil)
+        [dict setObject:array forKey:@"sectionPayloadList"];
     
     return dict;
 }

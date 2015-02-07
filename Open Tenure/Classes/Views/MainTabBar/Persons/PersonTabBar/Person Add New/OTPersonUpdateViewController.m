@@ -653,12 +653,25 @@
     }
 }
 
+- (void)updateShare {
+    if (_person.claim.shares.count != 0 || _person.claim == nil) return;
+    ShareEntity *shareEntity = [ShareEntity new];
+    [shareEntity setManagedObjectContext:_person.claim.managedObjectContext];
+    Share *share = [shareEntity create];
+    share.shareId = [[[NSUUID UUID] UUIDString] lowercaseString];
+    [share addOwnersObject:[_person clone]];
+    share.denominator = [NSNumber numberWithInteger:100];
+    share.nominator = [NSNumber numberWithInteger:100];
+    share.claim = _person.claim;
+}
+
 static bool allCellChecked = false;
 - (IBAction)save:(id)sender {
     if (self.allCellsAreValid) {
         if ([_person.managedObjectContext hasChanges]) {
             [FileSystemUtilities createClaimantsFolder];
             [FileSystemUtilities createClaimantFolder:_person.personId];
+            [self updateShare];
             [_person.managedObjectContext save:nil];
             [self setupView];
         }
@@ -732,7 +745,7 @@ static bool allCellChecked = false;
     imagePickerController.delegate = self;
 
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [UIActionSheet showFromRect:[[sender view] frame] inView:self.view animated:YES withTitle:nil cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[NSLocalizedString(@"Select from photo library", nil), NSLocalizedString(@"Take new picture", nil)] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+        [UIActionSheet showFromRect:[[sender view] frame] inView:self.view animated:YES withTitle:nil cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[NSLocalizedStringFromTable(@"from_photo_library", @"Additional", nil), NSLocalizedStringFromTable(@"take_new_photo", @"Additional", nil)] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
             if (buttonIndex == [actionSheet cancelButtonIndex]) return;
             if (buttonIndex == 0) {
                 imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
@@ -751,7 +764,7 @@ static bool allCellChecked = false;
             });
         }];
     } else {
-        [UIActionSheet showFromToolbar:self.navigationController.toolbar withTitle:nil cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[NSLocalizedString(@"Select from photo library", nil), NSLocalizedString(@"Take new picture", nil)] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+        [UIActionSheet showFromToolbar:self.navigationController.toolbar withTitle:nil cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[NSLocalizedStringFromTable(@"from_photo_library", @"Additional", nil), NSLocalizedStringFromTable(@"take_new_photo", @"Additional", nil)] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
             if (buttonIndex == [actionSheet cancelButtonIndex]) return;
             if (buttonIndex == 0) {
                 imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;

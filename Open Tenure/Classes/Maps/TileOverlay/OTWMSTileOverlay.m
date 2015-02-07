@@ -184,7 +184,7 @@ NS_INLINE POINT TileOfCoordinate(CLLocationCoordinate2D coord, int zoom) {
 - (id)initWithWMSUrlString:(NSString *)urlString layers:(NSString *)layers tileSize:(CGSize)tileSize {
     if (self = [self init]) {
         NSString *stringFormat = @"/wms?layers=%@&version=%@&service=%@&request=%@&transparent=true&styles=%@&format=%@&srs=%@%@&width=%tu&height=%tu";
-        URL_STRING = [urlString stringByAppendingString:[NSString stringWithFormat:stringFormat, layers, version, service, request, styles, format, srs, @"&bbox=%f,%f,%f,%f", (int)tileSize.width, (int)tileSize.height]];
+        URL_STRING = [urlString stringByAppendingString:[NSString stringWithFormat:stringFormat, layers, version, service, request, styles, format, srs, @"&bbox=%f,%f,%f,%f", (long)tileSize.width, (long)tileSize.height]];
     }
     MKTileOverlayPath path;
     path.x = 1;

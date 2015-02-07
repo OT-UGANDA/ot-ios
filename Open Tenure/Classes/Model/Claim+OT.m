@@ -27,6 +27,7 @@
  */
 
 #import "Claim+OT.h"
+#import "ShapeKit.h"
 
 @implementation Claim (OT)
 
@@ -130,7 +131,8 @@
         [dict setObject:@[] forKey:@"locations"];
     
     // Dynamic Form
-    [dict setObject:self.dynamicForm.dictionary forKey:@"dynamicForm"];
+    if (self.dynamicForm != nil)
+        [dict setObject:self.dynamicForm.dictionary forKey:@"dynamicForm"];
     
     return dict;
 }
@@ -262,4 +264,15 @@
      ];
 }
 
+- (double)area {
+    double area_ = 0.0f;
+    if (self.mappedGeometry != nil) {
+        ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:self.mappedGeometry];
+        area_ = [polygon.geometry getArea];
+        area_ = round(area_);
+        NSInteger mod = (long)area_ % 10;
+        area_ = mod > 8 ? area_ + 1 : (mod > 3 ? area_ - mod + 5 : area_ - mod);
+    }
+    return area_;
+}
 @end

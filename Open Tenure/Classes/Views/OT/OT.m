@@ -87,16 +87,31 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
 }
 
 + (UIBarButtonItem *)logoButtonWithTitle:(NSString *)title {
-    NSString *buttonTitle = title;
-    CGSize size = [buttonTitle sizeWithAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:16.0f]}];
-    CGRect frame = CGRectMake(0, 0, size.width + 64, 32);
-    UIButton *logoButton = [[UIButton alloc] initWithFrame:frame];
+    CGSize size = CGSizeZero;
+    CGFloat fontSize = 19.0f;
+    if ([[self getLocalization] isEqualToString:@"km"]) {
+        // Khmer Sangam MN
+        size = [title sizeWithAttributes:@{NSFontAttributeName:[UIFont fontWithName:@"Khmer Sangam MN" size:fontSize]}];
+    } else {
+        size = [title sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:fontSize]}];
+    }
     UIImage *logoImage = [UIImage imageNamed:@"sola_logo"];
+    CGRect rect = CGRectMake(0, 0, size.width + logoImage.size.width, logoImage.size.height);
+    UIButton *logoButton = [[UIButton alloc] initWithFrame:rect];
+    logoButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
     [logoButton setImage:logoImage forState:UIControlStateNormal];
-    [logoButton setImageEdgeInsets:UIEdgeInsetsMake(0, 0, 0, size.width)];
-    [logoButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 0, -5.0, 0.0)];
-    [logoButton setTitle:buttonTitle forState:UIControlStateNormal];
-    return [[UIBarButtonItem alloc] initWithCustomView:logoButton];
+    [logoButton setTitle:title forState:UIControlStateNormal];
+    UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithCustomView:logoButton];
+    return button;
+}
+
++ (NSString *)getLocalization {
+    return @"en-us"; //[[[NSBundle mainBundle] preferredLocalizations] firstObject];
+}
+
++ (NSString *)getCookie {
+    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    return [[NSHTTPCookie requestHeaderFieldsWithCookies:[cookieStorage cookies]] objectForKey:@"Cookie"];
 }
 
 + (void)updateIdType {
@@ -122,7 +137,7 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
                     saveDataContext;
                 }
             } else {
-                NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
+                NSString *errorString = NSLocalizedStringFromTable(@"error_generic_conection", @"ActivityLogin", nil);
                 NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
                 NSError *reportError = [NSError errorWithDomain:@"HTTP"
                                                            code:[httpResponse statusCode]
@@ -156,7 +171,7 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
                     saveDataContext;
                 }
             } else {
-                NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
+                NSString *errorString = NSLocalizedStringFromTable(@"error_generic_conection", @"ActivityLogin", nil);
                 NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
                 NSError *reportError = [NSError errorWithDomain:@"HTTP"
                                                            code:[httpResponse statusCode]
@@ -190,7 +205,7 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
                     saveDataContext;
                 }
             } else {
-                NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
+                NSString *errorString = NSLocalizedStringFromTable(@"error_generic_conection", @"ActivityLogin", nil);
                 NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
                 NSError *reportError = [NSError errorWithDomain:@"HTTP"
                                                            code:[httpResponse statusCode]
@@ -224,7 +239,7 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
                     saveDataContext;
                 }
             } else {
-                NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
+                NSString *errorString = NSLocalizedStringFromTable(@"error_generic_conection", @"ActivityLogin", nil);
                 NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
                 NSError *reportError = [NSError errorWithDomain:@"HTTP"
                                                            code:[httpResponse statusCode]
@@ -246,16 +261,18 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
                 if (errorJSON != nil) {
                     [OT handleError:errorJSON];
                 } else {
-                    FormTemplate *formTepplate = [FormTemplateEntity getEntityByName:[objects objectForKey:@"name"]];
-                    if (formTepplate == nil)
-                        formTepplate = [FormTemplateEntity createObject];
-                    [formTepplate importFromJSON:objects];
-                    if (objects.count > 0)
-                        [self setUpdatedDefaultFormTemplate:YES];
-                    saveDataContext;
+                    if (objects.count > 0) {
+                        FormTemplate *formTepplate = [FormTemplateEntity getEntityByName:[objects objectForKey:@"name"]];
+                        if (formTepplate == nil)
+                            formTepplate = [FormTemplateEntity createObject];
+                        
+                            [formTepplate importFromJSON:objects];
+                        saveDataContext;
+                    }
+                    [self setUpdatedDefaultFormTemplate:YES];
                 }
             } else {
-                NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
+                NSString *errorString = NSLocalizedStringFromTable(@"error_generic_conection", @"ActivityLogin", nil);
                 NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
                 NSError *reportError = [NSError errorWithDomain:@"HTTP"
                                                            code:[httpResponse statusCode]
@@ -283,7 +300,7 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
                     [self setUpdatedCommunityArea:YES];
                 }
             } else {
-                NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
+                NSString *errorString = NSLocalizedStringFromTable(@"error_generic_conection", @"ActivityLogin", nil);
                 NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
                 NSError *reportError = [NSError errorWithDomain:@"HTTP"
                                                            code:[httpResponse statusCode]
@@ -312,7 +329,7 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
                     [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] setAuthenticated:NO];
                     [[NSNotificationCenter defaultCenter] postNotificationName:kLogoutSuccessNotificationName object:self userInfo:nil];
                 } else {
-                    NSString *errorString = NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection");
+                    NSString *errorString = NSLocalizedStringFromTable(@"error_generic_conection", @"ActivityLogin", nil);
                     NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
                     NSError *reportError = [NSError errorWithDomain:@"HTTP"
                                                                code:[httpResponse statusCode]
@@ -323,7 +340,7 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
         }];
     } else {
         // Login        
-        [UIAlertView showWithTitle:NSLocalizedString(@"app_name", nil) message:nil style:UIAlertViewStyleLoginAndPasswordInput cancelButtonTitle:NSLocalizedString(@"cancel", @"Cancel") otherButtonTitles:@[NSLocalizedStringFromTable(@"action_sign_in_short", @"ActivityLogin", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+        [UIAlertView showWithTitle:NSLocalizedString(@"app_name", nil) message:nil style:UIAlertViewStyleLoginAndPasswordInput cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedStringFromTable(@"action_sign_in_short", @"ActivityLogin", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
             if (buttonIndex != [alertView cancelButtonIndex]) {
                 [SVProgressHUD showWithStatus:NSLocalizedStringFromTable(@"login_progress_signing_in", @"ActivityLogin", nil)];
                 [CommunityServerAPI loginWithUsername:[[alertView textFieldAtIndex:0] text] andPassword:[[alertView textFieldAtIndex:1] text] completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
@@ -339,7 +356,8 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
                             [(OTAppDelegate *)[[UIApplication sharedApplication] delegate] setAuthenticated:YES];
                             [[NSNotificationCenter defaultCenter] postNotificationName:kLoginSuccessNotificationName object:self userInfo:nil];
                         } else {
-                            NSDictionary *userInfo = @{NSLocalizedDescriptionKey : NSLocalizedString(@"error_generic_conection", @"An error has occurred during connection")};
+                            NSString *errorString = NSLocalizedStringFromTable(@"error_generic_conection", @"ActivityLogin", nil);
+                            NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
                             [OT handleError:[NSError errorWithDomain:@"HTTP"
                                                                 code:[httpResponse statusCode]
                                                             userInfo:userInfo]];
@@ -354,9 +372,6 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
 + (BOOL)getInitialized {    
     //Create folder
     BOOL success = YES;
-    if (![FileSystemUtilities createOpenTenureFolder]) success = NO;
-    if (![FileSystemUtilities createClaimsFolder]) success = NO;
-    if (![FileSystemUtilities createClaimantsFolder]) success = NO;
     if (![OT getUpdatedIdType]) success = NO;
     if (![OT getUpdatedLandUse]) success = NO;
     if (![OT getUpdatedClaimType]) success = NO;

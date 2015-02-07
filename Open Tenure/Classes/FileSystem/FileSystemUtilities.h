@@ -48,6 +48,7 @@
 + (BOOL)deleteClaim:(NSString *)claimId;
 + (BOOL)deleteClaimant:(NSString *)personId;
 + (BOOL)deleteFile:(NSString *)file;
++ (BOOL)deleteDocumentsFolder;
 + (BOOL)deleteCompressedClaim:(NSString *)claimId;
 + (int)getUploadProgress:(Claim *)claim;
 + (NSString *)getClaimsFolder;

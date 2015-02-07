@@ -33,6 +33,7 @@
 #import "ShapeKit.h"
 #import "OTFormCell.h"
 
+
 #define ADJACENT_THRESHOLD 0.0001
 
 static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
@@ -40,7 +41,11 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
     return (tmp >= 2.0 * M_PI ? tmp - 2.0 * M_PI : (tmp >= 0.0 ? tmp : tmp + 2.0 * M_PI));
 }
 
-@interface OTAdjacenciesUpdateViewController ()
+@interface OTAdjacenciesUpdateViewController () {
+
+    BOOL multipleShowcase;
+    NSInteger currentShowcaseIndex;
+}
 
 @property (assign) OTViewType viewType;
 
@@ -69,6 +74,21 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark - OTShowcase & OTShowcaseDelegate methods
+- (void)configureShowcase {
+   }
+
+- (IBAction)defaultShowcase:(id)sender {
+   
+}
+
+#pragma mark - OTShowcaseDelegate methods
+- (void)OTShowcaseShown{}
+
+- (void)OTShowcaseDismissed {
+    currentShowcaseIndex++;
+  }
 
 - (IBAction)done:(id)sender {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];

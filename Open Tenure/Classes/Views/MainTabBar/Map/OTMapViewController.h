@@ -37,6 +37,7 @@
 
 // Showcase
 @property (nonatomic, strong) NSArray *showcaseTargetList;
+@property (nonatomic, assign) BOOL customShowcase;
 
 - (IBAction)zoomToCommunityArea:(id)sender;
 - (IBAction)downloadClaims:(id)sender;

@@ -36,8 +36,11 @@
 
 #import "CDRTranslucentSideBar.h"
 #import "OTSideBarItems.h"
+#import "ShapeKit.h"
 
+#import "PDFClaimExporter.h"
 #import <QuickLook/QuickLook.h>
+
 
 typedef NS_ENUM(NSInteger, OTCell) {
     OTCellClaimTypeTag = 1001,
@@ -48,6 +51,10 @@ typedef NS_ENUM(NSInteger, OTCell) {
 
 @interface OTClaimUpdateViewController () <OTSelectionTabBarViewControllerDelegate, UIPickerViewDelegate, QLPreviewControllerDelegate, QLPreviewControllerDataSource, UIViewControllerTransitioningDelegate> {
     NSURL *documentURL;
+    
+  
+    BOOL multipleShowcase;
+    NSInteger currentShowcaseIndex;
 }
 
 @property (nonatomic, strong) CDRTranslucentSideBar *sideBarMenu;
@@ -101,7 +108,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     
     // Dùng để view claim và person sử dụng context khi ở trạng thái select
     [_claim setToTemporary];
-
+    
     self.viewType = _claim.getViewType;
 }
 
@@ -113,7 +120,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTapAction:)];
     singleTap.numberOfTapsRequired = 1;
     [self.tableView addGestureRecognizer:singleTap];
-
+    
     [self setupView];
     
     // Headerview 16pt
@@ -122,7 +129,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     self.tableView.tableHeaderView = headerView;
     
     NSInteger customCellHeight = 32.0f;
-
+    
     [self setHeaderTitle:NSLocalizedString(@"claim_name_label", nil) forSection:0];
     OTFormInputTextFieldCell *claimName =
     [[OTFormInputTextFieldCell alloc] initWithText:_claim.claimName
@@ -156,7 +163,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     [self setHeaderTitle:NSLocalizedString(@"claim_type", nil) forSection:1];
     if (_claim.claimType == nil)
         _claim.claimType = [_claimTypeCollection firstObject];
-
+    
     OTFormCell *claimType = [[OTFormCell alloc] initWithFrame:CGRectZero];
     _claimTypeBlock = claimType;
     claimType.tag = OTCellClaimTypeTag;
@@ -172,12 +179,12 @@ typedef NS_ENUM(NSInteger, OTCell) {
     claimType.imageView.userInteractionEnabled = YES;
     claimType.imageView.tag = OTCellClaimTypeTag;
     [claimType.imageView addGestureRecognizer:claimTypeTapped];
-
+    
     // Land Use
     [self setHeaderTitle:NSLocalizedString(@"land_use", nil) forSection:2];
     if (_claim.landUse == nil)
         _claim.landUse = [_landUseCollection firstObject];
-
+    
     OTFormCell *landUse = [[OTFormCell alloc] initWithFrame:CGRectZero];
     _landUseBlock = landUse;
     landUse.tag = OTCellLandUseTag;
@@ -198,7 +205,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     [self setHeaderTitle:NSLocalizedString(@"date_of_start_label", nil) forSection:3];
     if (_claim.startDate == nil)
         _claim.startDate = [[OT dateFormatter] stringFromDate:[NSDate date]];
-
+    
     OTFormCell *startDate = [[OTFormCell alloc] initWithFrame:CGRectZero];
     _startDateBlock = startDate;
     startDate.tag = OTCellStartDateTag;
@@ -215,8 +222,20 @@ typedef NS_ENUM(NSInteger, OTCell) {
     startDate.imageView.tag = OTCellStartDateTag;
     [startDate.imageView addGestureRecognizer:startDateTapped];
     
+    // Claim's area
+    NSString *claimAreaText = [NSString stringWithFormat:@"%0.0f %@", _claim.area, NSLocalizedString(@"square_meters", nil)];
+    [self setHeaderTitle:NSLocalizedString(@"claim_area_label", nil) forSection:4];
+    OTFormInputTextFieldCell *claimArea =
+    [[OTFormInputTextFieldCell alloc] initWithText:claimAreaText
+                                       placeholder:NSLocalizedString(@"claim_area_label", nil)
+                                          delegate:self
+                                         mandatory:NO
+                                  customCellHeight:customCellHeight
+                                      keyboardType:UIKeyboardTypeDefault
+                                          viewType:OTViewTypeView];
+    
     // Claim notes
-    [self setHeaderTitle:NSLocalizedString(@"claim_notes", nil) forSection:4];
+    [self setHeaderTitle:NSLocalizedString(@"claim_notes", nil) forSection:5];
     OTFormInputTextFieldCell *claimNotes =
     [[OTFormInputTextFieldCell alloc] initWithText:_claim.notes
                                        placeholder:NSLocalizedString(@"insert_claim_notes", nil)
@@ -236,7 +255,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     };
     
     // Select person
-    [self setHeaderTitle:NSLocalizedString(@"claimant", nil) forSection:5];
+    [self setHeaderTitle:NSLocalizedString(@"claimant", nil) forSection:6];
     OTFormCell *claimant = [[OTFormCell alloc] initWithFrame:CGRectZero];
     _claimantBlock = claimant;
     claimant.tag = OTCellClaimantTag;
@@ -254,7 +273,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     [claimant.imageView addGestureRecognizer:claimantTapped];
     
     // Select challenged to claim
-    [self setHeaderTitle:NSLocalizedString(@"challenge_to", nil) forSection:6];
+    [self setHeaderTitle:NSLocalizedString(@"challenge_to", nil) forSection:7];
     OTFormCell *challenged = [[OTFormCell alloc] initWithFrame:CGRectZero];
     _challengedBlock = challenged;
     
@@ -268,7 +287,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     challenged.textLabel.attributedText = [OT getAttributedStringFromText:challengedTitle];
     challenged.imageView.userInteractionEnabled = YES;
     [challenged.imageView addGestureRecognizer:challengedTapped];
-
+    
     claimName.customCellHeight = customCellHeight;
     claimType.customCellHeight = customCellHeight;
     landUse.customCellHeight = customCellHeight;
@@ -276,7 +295,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     claimNotes.customCellHeight = customCellHeight;
     claimant.customCellHeight = customCellHeight;
     challenged.customCellHeight = customCellHeight;
-    self.formCells = @[@[claimName], @[claimType], @[landUse], @[startDate], @[claimNotes], @[claimant], @[challenged]];
+    self.formCells = @[@[claimName], @[claimType], @[landUse], @[startDate], @[claimArea], @[claimNotes], @[claimant], @[challenged]];
     
     self.customSectionHeaderHeight = 16;
     self.customSectionFooterHeight = 8;
@@ -292,7 +311,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     _claimantBlock.imageView.image = _claim.person == nil ? [UIImage imageNamed:@"ic_action_add_claimant"] : [UIImage imageNamed:@"ic_action_edit_claimant"];
     NSString *claimantTitle = _claim.person != nil ? [_claim.person fullNameType:OTFullNameTypeDefault] : NSLocalizedString(@"message_touch_to_select_a_person", nil);
     _claimantBlock.textLabel.attributedText = [OT getAttributedStringFromText:claimantTitle];
-
+    
     _challengedBlock.imageView.image = _claim.challenged == nil ? [UIImage imageNamed:@"ic_action_add_claimant"] : [UIImage imageNamed:@"ic_action_remove_claimant"];
     NSString *challengedTitle = _claim.challenged != nil ? [_claim.challenged claimName] : NSLocalizedString(@"message_touch_to_select_a_claim", nil);
     _challengedBlock.textLabel.attributedText = [OT getAttributedStringFromText:challengedTitle];
@@ -313,7 +332,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     _sideBarItems.itemAction = ^void(NSInteger section, NSInteger itemIndex) {
         switch (itemIndex) {
             case 0:
-                // TODO View tutorial
+                [self_ defaultShowcase:nil];
                 break;
         }
         [self_.sideBarMenu dismiss];
@@ -334,6 +353,72 @@ typedef NS_ENUM(NSInteger, OTCell) {
         [self.sideBarMenu dismiss];
     else
         [self.sideBarMenu showInViewController:self];
+}
+
+#pragma mark - OTShowcase & OTShowcaseDelegate methods
+- (void)configureShowcase {
+   /* showcase = [[OTShowcase alloc] init];
+    showcase.delegate = self;
+    [showcase setBackgroundColor:[UIColor otDarkBlue]];
+    [showcase setTitleColor:[UIColor greenColor]];
+    [showcase setDetailsColor:[UIColor whiteColor]];
+    [showcase setHighlightColor:[UIColor whiteColor]];
+    [showcase setContainerView:self.navigationController.navigationBar.superview];
+    __strong typeof(showcase) showcase_ = showcase;
+    showcase.nextActionBlock = ^(void){
+        [showcase_ setShowing:YES];
+        [showcase_ showcaseTapped];
+    };
+    showcase.skipActionBlock = ^(void) {
+        [showcase_ setShowing:NO];
+        [showcase_ showcaseTapped];
+    };*/
+}
+
+- (IBAction)defaultShowcase:(id)sender {
+  /*  [self configureShowcase];
+    if (sender != nil) {
+        multipleShowcase = ![[sender objectForKey:@"action"] isEqualToString:@"close"];
+    } else {
+        multipleShowcase = YES;
+    }
+    if (_showcaseTargetList.count == 0 || [showcase isShowing]) return;
+    NSDictionary *item = [_showcaseTargetList objectAtIndex:0];
+    [showcase setIType:[[item objectForKey:@"type"] intValue]];
+    [showcase setupShowcaseForTarget:[item objectForKey:@"target"]  title:[item objectForKey:@"title"] details:[item objectForKey:@"detail"]];
+    [showcase show];
+   */
+}
+
+#pragma mark - OTShowcaseDelegate methods
+- (void)OTShowcaseShown{
+   /* if (currentShowcaseIndex == _showcaseTargetList.count - 1 && !multipleShowcase) {
+        NSString *title = NSLocalizedStringFromTable(@"close", @"Showcase", nil);
+        [showcase.nextButton setTitle:title forState:UIControlStateNormal];
+        [showcase.nextButton setTitle:title forState:UIControlStateHighlighted];
+        
+        [showcase.skipButton removeFromSuperview];
+    } */
+}
+
+- (void)OTShowcaseDismissed {
+  /*  currentShowcaseIndex++;
+    if (![showcase isShowing]) {
+        currentShowcaseIndex = 0;
+        [[NSNotificationCenter defaultCenter] postNotificationName:kSetClaimTabBarIndexNotificationName object:[NSNumber numberWithInteger:0] userInfo:nil];
+    } else {
+        if (currentShowcaseIndex < _showcaseTargetList.count) {
+            NSDictionary *item = [_showcaseTargetList objectAtIndex:currentShowcaseIndex];
+            [showcase setIType:[[item objectForKey:@"type"] intValue]];
+            [showcase setupShowcaseForTarget:[item objectForKey:@"target"]  title:[item objectForKey:@"title"] details:[item objectForKey:@"detail"]];
+            [showcase show];
+        } else {
+            currentShowcaseIndex = 0;
+            [showcase setShowing:NO];
+            if (multipleShowcase)
+                [[NSNotificationCenter defaultCenter] postNotificationName:kSetClaimTabBarIndexNotificationName object:[NSNumber numberWithInteger:1] userInfo:@{@"action":@"showcase"}];
+        }
+    } */
 }
 
 - (IBAction)addPerson:(id)sender {
@@ -431,17 +516,17 @@ static bool allCellChecked = false;
         if ([_claim.managedObjectContext hasChanges] && self.viewType == OTViewTypeEdit) {
             [UIAlertView showWithTitle:NSLocalizedStringFromTable(@"title_save_dialog", @"Additional", nil) message:NSLocalizedStringFromTable(@"message_save_dialog", @"Additional", nil)
                                  style:UIAlertViewStyleDefault cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"action_save", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                if (buttonIndex == 1) {
-                    [self.navigationController dismissViewControllerAnimated:NO completion:^{
-                        [self save:nil];
-                    }];
-                } else {
-                    [self.navigationController dismissViewControllerAnimated:NO completion:^{
-                        [self performSelector:@selector(rollback) withObject:nil afterDelay:0];
-                    }];
-                }
-                
-            }];
+                                     if (buttonIndex == 1) {
+                                         [self.navigationController dismissViewControllerAnimated:NO completion:^{
+                                             [self save:nil];
+                                         }];
+                                     } else {
+                                         [self.navigationController dismissViewControllerAnimated:NO completion:^{
+                                             [self performSelector:@selector(rollback) withObject:nil afterDelay:0];
+                                         }];
+                                     }
+                                     
+                                 }];
         } else {
             [self.navigationController dismissViewControllerAnimated:NO completion:nil];
         }
@@ -454,119 +539,13 @@ static bool allCellChecked = false;
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - PDF Generation
-
-- (UIImage *)imageByCroppingImage:(UIImage *)image toSize:(CGSize)size {
-    double refWidth = CGImageGetWidth(image.CGImage);
-    double refHeight = CGImageGetHeight(image.CGImage);
-    
-    double x = (refWidth - size.width) / 2.0;
-    double y = (refHeight - size.height) / 2.0;
-    CGRect cropRect = CGRectMake(x, y, size.width, size.height);
-    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], cropRect);
-    
-    UIImage *cropped = [UIImage imageWithCGImage:imageRef scale:[UIScreen mainScreen].scale orientation:image.imageOrientation];
-    CGImageRelease(imageRef);
-    
-    return cropped;
-}
-
-- (UIImage *)getCadastralMapWithSize:(CGSize)size {
-    NSString *cadastralMap = @"_map_.jpg";
-    for (Attachment *attachment in _claim.attachments) {
-        if ([attachment.typeCode.code isEqualToString:@"cadastralMap"] &&
-            [attachment.note isEqualToString:@"Map"]) {
-            cadastralMap = attachment.fileName;
-        }
-    }
-    NSString *claimImagePath = [[FileSystemUtilities getAttachmentFolder:_claim.claimId] stringByAppendingPathComponent:cadastralMap];
-    UIImage *image = [UIImage imageWithContentsOfFile:claimImagePath];
-    if (image) {
-        CGFloat width = image.size.width < image.size.height ? image.size.width : image.size.height;
-        CGFloat scale = size.width > size.height ? width / size.width : width / size.height;
-        CGSize newSize = CGSizeMake(scale * size.width, scale * size.height);
-        return [self imageByCroppingImage:image toSize:newSize];
-    }
-    return nil;
-}
-
-- (void)setupPDFDocumentName:(NSString *)name pageSize:(CGSize)pageSize {
-    [FileSystemUtilities createClaimFolder:_claim.claimId];
-    [FileSystemUtilities createClaimantFolder:_claim.claimId];
-    NSString *claimFolder = [FileSystemUtilities getClaimFolder:_claim.claimId];
-    NSString *pdfPath = [claimFolder stringByAppendingPathComponent:name];
-    UIGraphicsBeginPDFContextToFile(pdfPath, CGRectZero, nil);
-}
-
-- (void)beginPDFPageSize:(CGSize)pageSize {
-    UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
-}
-
-- (CGRect)PDFPageSize:(CGSize)pageSize addText:(NSString*)text withFrame:(CGRect)frame font:(UIFont *)font textColor:(UIColor *)textColor {
-
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
-    paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-    paragraphStyle.alignment = NSTextAlignmentLeft;
-
-    CGRect textRect = [text boundingRectWithSize:CGSizeZero
-                                         options:NSStringDrawingUsesLineFragmentOrigin
-                                      attributes:@{NSFontAttributeName:font, NSParagraphStyleAttributeName:paragraphStyle.copy}
-                                         context:nil];
-    CGSize stringSize = textRect.size;
-    float textWidth = frame.size.width;
-    
-    if (stringSize.width > pageSize.width - frame.origin.x - (frame.size.width - frame.origin.x))
-        textWidth = frame.size.width;
-    else
-        textWidth = stringSize.width;
-    
-    CGRect renderingRect = CGRectMake(frame.origin.x, frame.origin.y, textWidth, stringSize.height);
-    
-    [text drawInRect:renderingRect withAttributes:@{NSFontAttributeName:font, NSForegroundColorAttributeName:textColor,  NSParagraphStyleAttributeName:paragraphStyle.copy}];
-    
-    frame = CGRectMake(frame.origin.x, frame.origin.y, textWidth, stringSize.height);
-    return frame;
-}
-
-- (CGRect)addLineWithFrame:(CGRect)frame withColor:(UIColor *)color {
-    CGContextRef currentContext = UIGraphicsGetCurrentContext();
-    
-    CGPoint startPoint = frame.origin;
-    CGPoint endPoint = CGPointMake(frame.origin.x + frame.size.width, frame.origin.y);
-    
-    CGMutablePathRef path = CGPathCreateMutable();
-    CGPathMoveToPoint(path, NULL, startPoint.x, startPoint.y);
-    CGPathAddLineToPoint(path, NULL, endPoint.x, endPoint.y);
-    CGPathCloseSubpath(path);
-    if (path != NULL) {
-        CGContextAddPath(currentContext, path);
-        CGContextSetStrokeColorWithColor(currentContext, color.CGColor);
-        CGContextSetLineWidth(currentContext, frame.size.height);
-        CGContextSetFillColorWithColor(currentContext, [[UIColor clearColor] CGColor]);
-        CGContextDrawPath(currentContext, kCGPathFillStroke);
-        CGPathRelease(path);
-        
-    }
-    return frame;
-}
-
-- (CGRect)addImage:(UIImage*)image atPoint:(CGPoint)point size:(CGSize)size {
-    CGRect imageFrame = CGRectMake(point.x, point.y, size.width, size.height);
-    [image drawInRect:imageFrame];
-    return imageFrame;
-}
-
-- (void)finishPDF {
-    UIGraphicsEndPDFContext();
-}
-
 - (void)quickPreviewFilePath:(NSString *)filePath {
     documentURL = [NSURL fileURLWithPath:filePath];
     QLPreviewController *previewController = [[QLPreviewController alloc] init];
     previewController.delegate = self;
     previewController.dataSource = self;
     previewController.currentPreviewItemIndex = 0;
-
+    
     [self.navigationController presentViewController:previewController animated:YES completion:^{
         UIView *view = [[[previewController.view.subviews lastObject] subviews] lastObject];
         if ([view isKindOfClass:[UINavigationBar class]])
@@ -584,163 +563,10 @@ static bool allCellChecked = false;
 - (IBAction)print:(id)sender {
     [self.sideBarMenu dismiss];
     
-    CGSize pageSize = CGSizeMake(595.28, 841.89);
-    CGFloat kPadding = 40.0;
-    CGFloat kTopMargin = 30.0;
-    CGFloat kFontSize = 14.0;
-    CGFloat kLineSpacing = 8.0;
-    CGFloat x = kPadding;
-    CGFloat y = kPadding;
-    CGFloat width = pageSize.width - 2.0 * kPadding;
-    CGRect rect = CGRectZero;
-    
-    NSString *pdfName = @"print_and_sign_this.pdf";
-    
-    
-    [self setupPDFDocumentName:pdfName pageSize:pageSize];
-    [self beginPDFPageSize:pageSize];
-    NSString *title = [NSString stringWithFormat:@"Open Tenure Claim: %@ (Claimant *: %@)", _claim.claimName, [_claim.person fullNameType:OTFullNameTypeDefault]];
-    
-    // Tiêu đề
-    rect = [self PDFPageSize:pageSize
-                     addText:title
-                   withFrame:CGRectMake(kPadding, kTopMargin, pageSize.width - kPadding * 2.0, kFontSize)
-                        font:[UIFont boldSystemFontOfSize:kFontSize]
-                   textColor:[UIColor otDarkBlue]];
-    
-    // Logo
-    UIImage *logoImage = [UIImage imageNamed:@"sola_logo"];
-    rect = [self addImage:logoImage atPoint:CGPointMake(kPadding, rect.origin.y + rect.size.height + kLineSpacing) size:logoImage.size];
-    
-    // Line 1
-    rect = [self addLineWithFrame:CGRectMake(kPadding, rect.origin.y + rect.size.height + kLineSpacing, pageSize.width - kPadding * 2.0, 0.5) withColor:[UIColor otDarkBlue]];
-    
-    // Info text
-    NSString *firstName = NSLocalizedString(@"first_name", nil);
-    NSString *lastName = NSLocalizedString(@"last_name", nil);
-    NSString *birthDate = NSLocalizedString(@"date_of_birth", nil);
-    NSString *postalAddress = NSLocalizedString(@"postal_address", nil);
-    NSString *contactPhoneNumber = NSLocalizedString(@"contact_phone_number", nil);
-
-    NSString *infoText = [NSString stringWithFormat:@"%@: %@\n%@: %@\n%@: %@\n%@: %@\n%@: %@", firstName, _claim.person.name, lastName, _claim.person.lastName, birthDate, [_claim.person.birthDate substringToIndex:10], postalAddress, _claim.person.address, contactPhoneNumber, _claim.person.phone];
-    if (![_claim.person.person boolValue]) {
-        firstName = NSLocalizedString(@"group_name", nil);
-        birthDate = NSLocalizedString(@"date_of_establishment_label", nil);
-        infoText = [NSString stringWithFormat:@"%@: %@\n%@: %@\n%@: %@\n%@: %@", firstName, _claim.person.name, birthDate, [_claim.person.birthDate substringToIndex:10], postalAddress, _claim.person.address, contactPhoneNumber, _claim.person.phone];
-    }
-    
-    rect = [self PDFPageSize:pageSize
-                     addText:infoText
-                   withFrame:CGRectMake(kPadding, rect.origin.y + kLineSpacing, pageSize.width - kPadding * 2.0, kFontSize)
-                        font:[UIFont systemFontOfSize:kFontSize]
-                   textColor:[UIColor blackColor]];
-    // Line 2
-    rect = [self addLineWithFrame:CGRectMake(kPadding, rect.origin.y + rect.size.height + kLineSpacing, pageSize.width - kPadding * 2.0, 0.5) withColor:[UIColor otDarkBlue]];
-    
-    // Cadastral map
-    CGSize imageSize = CGSizeMake(width, width - kLineSpacing * 8.0);
-    UIImage *claimImage = [self getCadastralMapWithSize:imageSize];
-    if (claimImage != nil)
-        rect = [self addImage:claimImage atPoint:CGPointMake(kPadding, rect.origin.y + rect.size.height + kLineSpacing) size:imageSize];
-    else
-        rect = [self PDFPageSize:pageSize
-                         addText:@"Please download Cadastral Map!"
-                       withFrame:CGRectMake(kPadding, rect.origin.y + kLineSpacing, pageSize.width - kPadding * 2.0, kFontSize)
-                            font:[UIFont boldSystemFontOfSize:kFontSize]
-                       textColor:[UIColor redColor]];
-    
-    // Line 3
-    rect = [self addLineWithFrame:CGRectMake(kPadding, rect.origin.y + rect.size.height + kLineSpacing, pageSize.width - kPadding * 2.0, 0.5) withColor:[UIColor otDarkBlue]];
-    
-    // Date and Signature
-    NSString *dateText = NSLocalizedString(@"date", nil);
-    NSString *signatureText = NSLocalizedString(@"signature", nil);
-    x = kPadding;
-    y = rect.origin.y + rect.size.height + kLineSpacing * 2.0;
-
-    CGRect rect1 = [self PDFPageSize:pageSize
-                             addText:dateText
-                           withFrame:CGRectMake(x, y, width, kFontSize)
-                                font:[UIFont systemFontOfSize:kFontSize]
-                           textColor:[UIColor blackColor]];
-    CGRect rect2 = [self PDFPageSize:pageSize
-                             addText:signatureText
-                           withFrame:CGRectMake(x + (width - x) / 2.0, y, width / 2.0, kFontSize)
-                                font:[UIFont systemFontOfSize:kFontSize]
-                           textColor:[UIColor blackColor]];
-    
-    // Date line ____
-    x = rect1.origin.x + rect1.size.width;
-    y = rect1.origin.y + rect1.size.height;
-    width = pageSize.width / 2.0 - x - rect1.size.width;
-    CGRect rectLine1 = [self addLineWithFrame:CGRectMake(x, y, width, 0.5) withColor:[UIColor otDarkBlue]];
-    
-    // Signature line ___
-    x = rect2.origin.x + rect2.size.width;
-    width = pageSize.width - kPadding - x;
-    CGRect rectLine2 = [self addLineWithFrame:CGRectMake(x, y, width, 0.5) withColor:[UIColor otDarkBlue]];
-    
-    // Adjacent claim
-    x = kPadding;
-    y = rect1.origin.y + rect1.size.height + kLineSpacing;
-    NSString *adjacentClaims = NSLocalizedString(@"adjacent_claims", nil);
-    rect = [self PDFPageSize:pageSize
-                     addText:adjacentClaims
-                   withFrame:CGRectMake(x, y, width, kFontSize)
-                        font:[UIFont systemFontOfSize:kFontSize]
-                   textColor:[UIColor blackColor]];
-    // Line 5
-    x = kPadding;
-    y = rect.origin.y + rect.size.height + kLineSpacing * 2.0;
-    rect = [self addLineWithFrame:CGRectMake(x, y, pageSize.width - kPadding * 2.0, 0.5) withColor:[UIColor otDarkBlue]];
-
-    // Adjacencies
-    x = kPadding;
-    y = rect.origin.y + rect.size.height + kLineSpacing;
-    NSString *adjacencies = NSLocalizedString(@"title_claim_adjacencies", nil);
-    rect = [self PDFPageSize:pageSize
-                     addText:adjacencies
-                   withFrame:CGRectMake(x, y, width, kFontSize)
-                        font:[UIFont systemFontOfSize:kFontSize]
-                   textColor:[UIColor blackColor]];
-
-    // Line 6
-    x = kPadding;
-    y = rect.origin.y + rect.size.height + kLineSpacing * 2.0;
-    rect = [self addLineWithFrame:CGRectMake(x, y, pageSize.width - kPadding * 2.0, 0.5) withColor:[UIColor otDarkBlue]];
-    
-    // Date and Signature 2
-    x = kPadding;
-    y = rect.origin.y + rect.size.height + kLineSpacing * 2.0;
-    rect1.origin.y = y;
-    rect2.origin.y = y;
-    CGRect rect11 = [self PDFPageSize:pageSize
-                              addText:dateText
-                            withFrame:rect1
-                                 font:[UIFont systemFontOfSize:kFontSize]
-                            textColor:[UIColor blackColor]];
-    [self PDFPageSize:pageSize
-              addText:signatureText
-            withFrame:rect2
-                 font:[UIFont systemFontOfSize:kFontSize]
-            textColor:[UIColor blackColor]];
-
-    // Date line ____
-    y = rect11.origin.y + rect11.size.height;
-    rectLine1.origin.y = y;
-    rectLine2.origin.y = y;
-    [self addLineWithFrame:rectLine1 withColor:[UIColor otDarkBlue]];
-    
-    // Signature line ___
-    [self addLineWithFrame:rectLine2 withColor:[UIColor otDarkBlue]];
-    
-    // Finish
-    [self finishPDF];
+    PDFClaimExporter *pdfClaimExporter = [[PDFClaimExporter alloc] initWithClaim:_claim];
     
     // Quick preview pdf
-    NSString *claimFolder = [FileSystemUtilities getClaimFolder:_claim.claimId];
-    NSString *pdfPath = [claimFolder stringByAppendingPathComponent:pdfName];
-    [self quickPreviewFilePath:pdfPath];
+    [self quickPreviewFilePath:[pdfClaimExporter getFilePath]];
 }
 
 - (BOOL)createClaimJsonFile {
@@ -756,7 +582,7 @@ static bool allCellChecked = false;
     [self.sideBarMenu dismiss];
     [FileSystemUtilities createClaimFolder:_claim.claimId];
     [FileSystemUtilities createClaimantFolder:_claim.claimId];
-
+    
     NSString *title = NSLocalizedString(@"title_export", nil);
     NSString *message = nil;
     NSString *cancelButtonTitle = NSLocalizedString(@"cancel", nil);
@@ -984,7 +810,7 @@ static bool allCellChecked = false;
     if ([self isPickerClaimTypeShowing]) {
         NSArray *options = [_claimTypeCollection sortedArrayUsingDescriptors:@[sortDescriptor]];
         ClaimType *claimType = [options objectAtIndex:row];
-
+        
         title = claimType.displayValue;
     } else if ([self isPickerLandUseShowing]) {
         NSArray *options = [_landUseCollection sortedArrayUsingDescriptors:@[sortDescriptor]];
@@ -997,20 +823,20 @@ static bool allCellChecked = false;
 }
 
 - (void)showLandUsePicker {
-//    if (self.viewType == OTViewTypeView) return;
-//    [_pickerView setPickType:PickTypeList];
-//    [_pickerView setPickItems:_landUseDisplayValue];
-//    [_pickerView attachWithTextField:_landUseBlock.textField];
-//    [_landUseBlock.textField becomeFirstResponder];
-//    [_pickerView showPopOverList];
+    //    if (self.viewType == OTViewTypeView) return;
+    //    [_pickerView setPickType:PickTypeList];
+    //    [_pickerView setPickItems:_landUseDisplayValue];
+    //    [_pickerView attachWithTextField:_landUseBlock.textField];
+    //    [_landUseBlock.textField becomeFirstResponder];
+    //    [_pickerView showPopOverList];
 }
 
 - (void)showStartDatePicker {
-//    if (self.viewType == OTViewTypeView) return;
-//    [_pickerView attachWithTextField:_startDateBlock.textField];
-//    [_pickerView setPickType:PickTypeDate];
-//    [_startDateBlock.textField becomeFirstResponder];
-//    [_pickerView showPopOverList];
+    //    if (self.viewType == OTViewTypeView) return;
+    //    [_pickerView attachWithTextField:_startDateBlock.textField];
+    //    [_pickerView setPickType:PickTypeDate];
+    //    [_startDateBlock.textField becomeFirstResponder];
+    //    [_pickerView showPopOverList];
 }
 
 - (void)showClaimant {

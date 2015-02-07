@@ -104,6 +104,16 @@ typedef NS_ENUM(NSInteger, OTFullNameType) {
 + (UIBarButtonItem *)logoButtonWithTitle:(NSString *)title;
 
 /*!
+ Lấy mã ngôn ngữ hiện tại
+ */
++ (NSString *)getLocalization;
+
+/*!
+ Cookies store
+ */
++ (NSString *)getCookie;
+
+/*!
  Cập nhật dữ liệu từ server khi lần đầu khởi động ứng dụng. Được gọi từ OTAppDelegate
  */
 + (void)updateIdType;

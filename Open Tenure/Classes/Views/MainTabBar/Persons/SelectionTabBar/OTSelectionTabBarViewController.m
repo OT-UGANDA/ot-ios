@@ -204,7 +204,6 @@
 
 - (void)setBarButtonItemsForTabBarIndex:(NSInteger)index {
     NSArray *titles;
-    
     switch (_selectionAction) {
         case OTClaimSelectionAction:
             titles = @[NSLocalizedString(@"title_claims", @"Claims")];
@@ -213,9 +212,7 @@
             titles = @[NSLocalizedString(@"title_activity_share_details", nil)];
             break;
     }
-    
-    NSString *buttonTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"app_name", nil), titles[index]];
-    UIBarButtonItem *logo = [OT logoButtonWithTitle:buttonTitle];
+    UIBarButtonItem *logo = [OT logoButtonWithTitle:titles[index]];
     self.navigationItem.leftBarButtonItems = @[logo];
     
     switch (index) {

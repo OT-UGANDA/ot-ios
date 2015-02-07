@@ -30,8 +30,13 @@
 #import "OTFileChooserViewController.h"
 #import <QuickLook/QuickLook.h>
 
+
 @interface OTDocumentsUpdateViewController () <OTFileChooserViewControllerDelegate, UITextFieldDelegate, QLPreviewControllerDelegate, QLPreviewControllerDataSource, UIDocumentInteractionControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPickerViewDelegate> {
     NSURL *documentURL;
+    
+  
+    BOOL multipleShowcase;
+    NSInteger currentShowcaseIndex;
 }
 
 @property (nonatomic, strong) UIPickerView *pickerView;
@@ -80,6 +85,21 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark - OTShowcase & OTShowcaseDelegate methods
+- (void)configureShowcase {
+   
+}
+
+- (IBAction)defaultShowcase:(id)sender {
+ 
+}
+
+#pragma mark - OTShowcaseDelegate methods
+- (void)OTShowcaseShown{}
+
+- (void)OTShowcaseDismissed {
+   }
 
 #pragma mark - Data
 
@@ -191,6 +211,8 @@
     [[alertView textFieldAtIndex:1] setSecureTextEntry:NO];
     [[alertView textFieldAtIndex:1] setText:[_docTypeDisplayValue objectAtIndex:0]];
     
+    [[alertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeASCIICapable];
+    [[alertView textFieldAtIndex:0] setAutocapitalizationType:UITextAutocapitalizationTypeSentences];
     [[alertView textFieldAtIndex:0] setPlaceholder:NSLocalizedString(@"message_enter_description", nil)];
     [[alertView textFieldAtIndex:1] setPlaceholder:NSLocalizedString(@"message_select_document_type", nil)];
     [[alertView textFieldAtIndex:1] setDelegate:self];
@@ -375,7 +397,7 @@
     imagePickerController.delegate = self;
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [UIActionSheet showFromRect:[[sender view] frame] inView:self.view animated:YES withTitle:nil cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[NSLocalizedString(@"Select from photo library", nil), NSLocalizedString(@"Take new picture", nil)] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+        [UIActionSheet showFromRect:[[sender view] frame] inView:self.view animated:YES withTitle:nil cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[NSLocalizedStringFromTable(@"from_photo_library", @"Additional", nil), NSLocalizedStringFromTable(@"take_new_photo", @"Additional", nil)] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
             if (buttonIndex == [actionSheet cancelButtonIndex]) return;
             if (buttonIndex == 0) {
                 imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
@@ -400,7 +422,7 @@
             }
         }];
     } else {
-        [UIActionSheet showFromToolbar:self.navigationController.toolbar withTitle:nil cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[NSLocalizedString(@"Select from photo library", nil), NSLocalizedString(@"Take new picture", nil)] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+        [UIActionSheet showFromToolbar:self.navigationController.toolbar withTitle:nil cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[NSLocalizedStringFromTable(@"from_photo_library", @"Additional", nil), NSLocalizedStringFromTable(@"take_new_photo", @"Additional", nil)] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
             if (buttonIndex == [actionSheet cancelButtonIndex]) return;
             if (buttonIndex == 0) {
                 imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
@@ -438,8 +460,7 @@
         NSData *imageData = UIImageJPEGRepresentation(selectedImage, 1);
 
         NSString *temporaryFileName = @"_selectedImage_.png";
-        NSString *temporaryFilePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:@"Open Tenure"];
-        temporaryFilePath = [temporaryFilePath stringByAppendingPathComponent:temporaryFileName];
+        NSString *temporaryFilePath = [[FileSystemUtilities getOpentenureFolder] stringByAppendingPathComponent:temporaryFileName];
         NSString *fileName = [[[[NSUUID UUID] UUIDString] lowercaseString] stringByAppendingPathExtension:@"jpg"];
         BOOL success = [imageData writeToFile:temporaryFilePath atomically:YES];
         NSDictionary *dict = [[NSFileManager defaultManager] attributesOfItemAtPath:temporaryFilePath error:nil];
@@ -461,6 +482,7 @@
             [_dictionary setValue:md5 forKey:@"md5"];
             [_dictionary setValue:kAttachmentStatusCreated forKey:@"status"];
             [_dictionary setValue:temporaryFilePath forKey:@"filePath"];
+            
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"new_file", nil)
                                                                 message:nil
                                                                delegate:self
@@ -473,6 +495,8 @@
             [[alertView textFieldAtIndex:1] setSecureTextEntry:NO];
             [[alertView textFieldAtIndex:1] setText:[_docTypeDisplayValue objectAtIndex:0]];
             
+            [[alertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeASCIICapable];
+            [[alertView textFieldAtIndex:0] setAutocapitalizationType:UITextAutocapitalizationTypeSentences];
             [[alertView textFieldAtIndex:0] setPlaceholder:NSLocalizedString(@"message_enter_description", nil)];
             [[alertView textFieldAtIndex:1] setPlaceholder:NSLocalizedString(@"message_select_document_type", nil)];
             [[alertView textFieldAtIndex:1] setDelegate:self];

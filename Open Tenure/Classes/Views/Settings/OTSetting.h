@@ -51,4 +51,10 @@
 + (BOOL)getInitialization;
 + (void)setInitialization:(BOOL)initialized;
 
+/*!
+ Lưu và lấy trạng thái thiết lập mới (xóa toàn bộ dữ liệu)
+ */
++ (void)setReInitialization:(BOOL)state;
++ (BOOL)getReInitialization;
+
 @end

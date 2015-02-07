@@ -50,7 +50,7 @@ static NSString *destinationPath;
 
 + (void)loginWithUsername:(NSString *)username andPassword:(NSString *)password completionHandler:(CompletionHandler)completionHandler{
 
-    NSString *urlString = [NSString stringWithFormat:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_LOGIN], username, password];
+    NSString *urlString = [NSString stringWithFormat:HTTPS_LOGIN, [OTSetting getCommunityServerURL], [OT getLocalization], username, password];
     urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
@@ -64,7 +64,8 @@ static NSString *destinationPath;
 
 + (void)logoutWithCompletionHandler:(CompletionHandler)completionHandler {
 
-    NSURL *url = [NSURL URLWithString:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_LOGOUT]];
+    NSString *urlString = [NSString stringWithFormat:HTTPS_LOGOUT, [OTSetting getCommunityServerURL], [OT getLocalization]];
+    NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
@@ -74,15 +75,10 @@ static NSString *destinationPath;
     }];
 }
 
-- (NSString *)getCoockieStore {
-    
-    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-    return [[NSHTTPCookie requestHeaderFieldsWithCookies:[cookieStorage cookies]] objectForKey:@"Cookie"];
-}
-
 + (void)getAllClaimsWithCompletionHandler:(CompletionHandler)completionHandler {
     
-    NSURL *url = [NSURL URLWithString:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_GETALLCLAIMS]];
+    NSString *urlString = [NSString stringWithFormat:HTTPS_GETALLCLAIMS, [OTSetting getCommunityServerURL], [OT getLocalization]];
+    NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -94,8 +90,9 @@ static NSString *destinationPath;
 }
 
 + (void)getAllClaimsByBox:(NSArray *)coordinates completionHandler:(CompletionHandler)completionHandler {
-
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_GETALLCLAIMSBYBOX], coordinates[0], coordinates[1], coordinates[2], coordinates[3], @"100"]];
+    
+    NSString *urlString = [NSString stringWithFormat:HTTPS_GETALLCLAIMSBYBOX, [OTSetting getCommunityServerURL], [OT getLocalization], coordinates[0], coordinates[1], coordinates[2], coordinates[3], @"100"];
+    NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -107,11 +104,12 @@ static NSString *destinationPath;
 }
 
 + (void)withdrawClaim:(NSString *)claimId completionHandler:(CompletionHandler)completionHandler {
-
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_WITHDRAWCLAIM], claimId]];
+    
+    NSString *urlString = [NSString stringWithFormat:HTTPS_WITHDRAWCLAIM, [OTSetting getCommunityServerURL], [OT getLocalization], claimId];
+    NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
-    [request setValue:[[self controller] getCoockieStore] forHTTPHeaderField:@"Cookie"];
+    [request setValue:[OT getCookie] forHTTPHeaderField:@"Cookie"];
 
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
@@ -123,20 +121,8 @@ static NSString *destinationPath;
 
 + (void)getClaim:(NSString *)claimId completionHandler:(CompletionHandler)completionHandler {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_GETCLAIM], claimId]];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-    
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completionHandler(error, httpResponse, data);
-        });
-    }];
-}
-
-- (void)getClaim:(NSString *)claimId completionHandler:(CompletionHandler)completionHandler {
-    
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_GETCLAIM], claimId]];
+    NSString *urlString = [NSString stringWithFormat:HTTPS_GETCLAIM, [OTSetting getCommunityServerURL], [OT getLocalization], claimId];
+    NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -149,7 +135,7 @@ static NSString *destinationPath;
 
 + (void)getAttachment:(NSString *)attachmentId saveToPath:(NSString *)path {
     downloadingStatus = NSLocalizedString(@"message_downloading_attachment", @"Downloading the attachment");
-    successfulStatus = [NSString stringWithFormat:NSLocalizedString(@"message_attachment_downloaded", @"Downloaded attachment"), [[path pathComponents] lastObject]];
+    successfulStatus = [NSString stringWithFormat:NSLocalizedString(@"message_attachment_downloaded", @"Downloaded attachment"), [[[path pathComponents] lastObject] UTF8String]];
     destinationPath = path;
     _session = [[self controller] backgroundSession];
     
@@ -158,14 +144,19 @@ static NSString *destinationPath;
     [SVProgressHUD showProgress:0.0 status:downloadingStatus];
     
     // Create a new download task using the URL session. Tasks start in the “suspended” state; to start a task you need to explicitly call -resume on a task after creating it.
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_GETATTACHMENT], attachmentId]];
+    
+    NSString *urlString = [NSString stringWithFormat:HTTPS_GETATTACHMENT, [OTSetting getCommunityServerURL], attachmentId];
+    NSURL *url = [NSURL URLWithString:urlString];
+    ALog(@"%@", urlString);
 	NSURLRequest *request = [NSURLRequest requestWithURL:url];
 	_downloadTask = [_session downloadTaskWithRequest:request];
     [_downloadTask resume];
 }
 
 + (void)getLandUsesWithCompletionHandler:(CompletionHandler)completionHandler {
-    NSURL *url = [NSURL URLWithString:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_GETLANDUSE]];
+    
+    NSString *urlString = [NSString stringWithFormat:HTTPS_GETLANDUSE, [OTSetting getCommunityServerURL], [OT getLocalization]];
+    NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -178,7 +169,8 @@ static NSString *destinationPath;
 
 + (void)getIdTypesWithCompletionHandler:(CompletionHandler)completionHandler {
     
-    NSURL *url = [NSURL URLWithString:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_GETIDTYPES]];
+    NSString *urlString = [NSString stringWithFormat:HTTPS_GETIDTYPES, [OTSetting getCommunityServerURL], [OT getLocalization]];
+    NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -190,8 +182,9 @@ static NSString *destinationPath;
 }
 
 + (void)getClaimTypesWithCompletionHandler:(CompletionHandler)completionHandler {
-
-    NSURL *url = [NSURL URLWithString:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_GETCLAIMTYPES]];
+    
+    NSString *urlString = [NSString stringWithFormat:HTTPS_GETCLAIMTYPES, [OTSetting getCommunityServerURL], [OT getLocalization]];
+    NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -203,8 +196,9 @@ static NSString *destinationPath;
 }
 
 + (void)getDocumentTypesWithCompletionHandler:(CompletionHandler)completionHandler {
-
-    NSURL *url = [NSURL URLWithString:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_GETDOCUMENTYPES]];
+    
+    NSString *urlString = [NSString stringWithFormat:HTTPS_GETDOCUMENTYPES, [OTSetting getCommunityServerURL], [OT getLocalization]];
+    NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -216,13 +210,15 @@ static NSString *destinationPath;
 }
 
 + (void)saveClaim:(NSData *)jsonData completionHandler:(CompletionHandler)completionHandler {
-    NSURL *url = [NSURL URLWithString:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_SAVECLAIM]];
+    
+    NSString *urlString = [NSString stringWithFormat:HTTPS_SAVECLAIM, [OTSetting getCommunityServerURL], [OT getLocalization]];
+    NSURL *url = [NSURL URLWithString:urlString];
     
     NSString *postLength = [NSString stringWithFormat:@"%lu",(unsigned long)[jsonData length]];
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
-    [request setValue:[[self controller] getCoockieStore] forHTTPHeaderField:@"Cookie"];
+    [request setValue:[OT getCookie] forHTTPHeaderField:@"Cookie"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
@@ -238,7 +234,9 @@ static NSString *destinationPath;
 }
 
 + (void)saveAttachment:(NSData *)jsonData completionHandler:(CompletionHandler)completionHandler {
-    NSURL *url = [NSURL URLWithString:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_SAVEATTACHMENT]];
+    
+    NSString *urlString = [NSString stringWithFormat:HTTPS_SAVEATTACHMENT, [OTSetting getCommunityServerURL], [OT getLocalization]];
+    NSURL *url = [NSURL URLWithString:urlString];
     
     NSString *postLength = [NSString stringWithFormat:@"%tu", [jsonData length]];
     ALog(@"File size: %tu (%@)", [jsonData length], postLength);
@@ -248,7 +246,7 @@ static NSString *destinationPath;
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
-    [request setValue:[[self controller] getCoockieStore] forHTTPHeaderField:@"Cookie"];
+    [request setValue:[OT getCookie] forHTTPHeaderField:@"Cookie"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
@@ -289,8 +287,9 @@ static NSString *destinationPath;
      (Binary data not shown)
      -----------------------------41184676334--
      */
-
-    NSURL *url = [NSURL URLWithString:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_UPLOADCHUNK]];
+    
+    NSString *urlString = [NSString stringWithFormat:HTTPS_UPLOADCHUNK, [OTSetting getCommunityServerURL], [OT getLocalization]];
+    NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     NSString *boundaryStringPrefix =  @"\r\n-----------------------------41184676334\r\n";
     NSString *boundaryStringPostfix = @"\r\n-----------------------------41184676334--";
@@ -299,7 +298,7 @@ static NSString *destinationPath;
 //    NSString *postLength = [NSString stringWithFormat:@"%d",[chunk length]];
     
 
-    [request setValue:[[self controller] getCoockieStore] forHTTPHeaderField:@"Cookie"];
+    [request setValue:[OT getCookie] forHTTPHeaderField:@"Cookie"];
     [request setValue:contentType forHTTPHeaderField:@"Content-Type"];
 //    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
     [request setHTTPMethod:@"POST"];
@@ -334,7 +333,9 @@ static NSString *destinationPath;
 }
 
 + (void)getCommunityArea:(CompletionHandler)completionHandler {
-    NSURL *url = [NSURL URLWithString:[[OTSetting getCommunityServerURL] stringByAppendingPathComponent:HTTPS_GETCOMMUNITYAREA]];
+    
+    NSString *urlString = [NSString stringWithFormat:HTTPS_GETCOMMUNITYAREA, [OTSetting getCommunityServerURL], [OT getLocalization]];
+    NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -346,7 +347,9 @@ static NSString *destinationPath;
 }
 
 + (void)getDefaultFormTemplate:(CompletionHandler)completionHandler {
-    NSURL *url = [NSURL URLWithString:[[OTSetting getFormURL] stringByAppendingPathComponent:HTTPS_GETDEFAULTFORMTEMPLATE]];
+    
+    NSString *urlString = [NSString stringWithFormat:HTTPS_GETDEFAULTFORMTEMPLATE, [OTSetting getCommunityServerURL], [OT getLocalization]];
+    NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -383,7 +386,7 @@ static NSString *destinationPath;
     // Using disptach_once here ensures that multiple background sessions with the same identifier are not created in this instance of the application. If you want to support multiple background sessions within a single process, you should create each session with its own identifier.
 	static NSURLSession *session = nil;
 	static dispatch_once_t onceToken;
-    NSString *sessionConfiguration = [[[NSBundle mainBundle] bundleIdentifier] stringByAppendingString:@".BackgroundSession"];
+    NSString *sessionConfiguration = [[[NSBundle mainBundle] bundleIdentifier] stringByAppendingString:@".BackgroundSessionForDownloadDocuments"];
 	dispatch_once(&onceToken, ^{
         NSURLSessionConfiguration *configuration;
         

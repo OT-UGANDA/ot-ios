@@ -47,6 +47,7 @@
     // matching managedObject vs jsonObject
     NSDictionary * const matching = @{
                                       @"shareId": @"id",
+                                      @"nominator": @"percentage",
                                       
                                       };
     
@@ -59,6 +60,10 @@
             [dict removeObjectForKey:key];
         }
     }
+    
+    //
+    [dict removeObjectForKey:@"denominator"];
+    //
     
     if (self.owners.count > 0) {
         NSMutableArray *array = [NSMutableArray array];
@@ -77,7 +82,7 @@
     
     NSDictionary * const matching = @{
                                       @"shareId": @"id",
-                                      
+                                      @"nominator": @"percentage",
                                       };
     
     NSDictionary *attributes = [[self entity] attributesByName];
@@ -96,7 +101,7 @@
         }
         [self setValue:value forKey:key];
     }
-    
+    self.denominator = [NSNumber numberWithInt:100];
     // Add owners
     NSArray *owners = [keyedValues objectForKey:@"owners"];
     if (owners.count > 0) {

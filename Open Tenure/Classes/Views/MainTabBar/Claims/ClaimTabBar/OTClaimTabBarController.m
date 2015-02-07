@@ -62,6 +62,13 @@
 
 @property (strong, nonatomic) NSMutableArray *titles;
 
+@property (strong, nonatomic) UILabel *claimTabBarLabel;
+@property (strong, nonatomic) UILabel *mapTabBarLabel;
+@property (strong, nonatomic) UILabel *documentsTabBarLabel;
+@property (strong, nonatomic) UILabel *adjacenciesTabBarLabel;
+@property (strong, nonatomic) UILabel *challengesTabBarLabel;
+@property (strong, nonatomic) UILabel *sharesTabBarLabel;
+
 @end
 
 @implementation OTClaimTabBarController
@@ -77,6 +84,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setTabBarIndex:) name:kSetClaimTabBarIndexNotificationName object:nil];
     
     self.dataSource = self;
     self.delegate = self;
@@ -141,6 +150,27 @@
     [super viewDidAppear:animated];
 }
 
+- (void)setTabBarIndex:(NSNotification *)notification {
+    NSInteger index = [notification.object integerValue];
+    [self selectTabAtIndex:index];
+    if (notification.userInfo != nil) {
+        if ([[notification.userInfo objectForKey:@"action"] isEqualToString:@"close"]) {
+//            NSArray *items0 = @[@{@"type":[NSNumber numberWithInt:0],
+//                                  @"target":_newsLabel,
+//                                  @"title":@"",
+//                                  @"detail":NSLocalizedStringFromTable(@"showcase_actionAlert1_message", @"Showcase", nil)},
+//                                @{@"type":[NSNumber numberWithInt:0],
+//                                  @"target":[OT findBarButtonItem:_initialization fromNavBar:self.navigationController.navigationBar],
+//                                  @"title":@"",
+//                                  @"detail":NSLocalizedStringFromTable(@"showcase_actionAlert_message", @"Showcase", nil)}];
+//            [_views[newsTabIndex] setShowcaseTargetList:items0];
+//            [_views[index] defaultShowcase:notification.userInfo];
+        } else {
+            [_views[index] defaultShowcase:nil];
+        }
+    }
+}
+
 #pragma mark - Setters
 
 - (void)setNumberOfTabs:(NSUInteger)numberOfTabs {
@@ -175,6 +205,25 @@
     label.textColor = [UIColor blackColor];
     [label sizeToFit];
     
+    switch (index) {
+        case 0:
+            _claimTabBarLabel = label;
+            break;
+        case 1:
+            _mapTabBarLabel = label;
+            break;
+        case 2:
+            _documentsTabBarLabel = label;
+            break;
+        case 3:
+            _adjacenciesTabBarLabel = label;
+            break;
+        case 4:
+            _challengesTabBarLabel = label;
+            break;
+        case 5:
+            _sharesTabBarLabel = label;
+    }
     return label;
 }
 
@@ -255,57 +304,119 @@
 }
 
 - (void)setBarButtonItemsForTabBarIndex:(NSInteger)index {
-    NSString *title = NSLocalizedString(@"title_activity_claim", nil);
+    NSString *buttonTitle = NSLocalizedString(@"title_activity_claim", nil);
     if ([_claim isSaved])
-        title = _claim.claimName;
+        buttonTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"app_name", nil), _claim.claimName];
 
-    NSString *buttonTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"app_name", nil), title];
     UIBarButtonItem *logo = [OT logoButtonWithTitle:buttonTitle];
     self.navigationItem.leftBarButtonItems = @[logo];
     
     [_save setTarget:_views[index]];
     [_done setTarget:_views[index]];
     [_menu setTarget:_views[index]];
+    UINavigationBar *navBar = self.navigationController.navigationBar;
+    NSArray *target;
     switch (index) {
-        case 0: // Buttons for Claim tab
+        case 0: { // Buttons for Claim tab
             if ([_claim isSaved]) { // View claim
                 if ([_claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local claim
                     self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _print, _fixedSpace, _export, _fixedSpace, _save, _flexibleSpace];
+                    target = @[[OT findBarButtonItem:_save fromNavBar:navBar],
+                               [OT findBarButtonItem:_export fromNavBar:navBar],
+                               [OT findBarButtonItem:_print fromNavBar:navBar],
+                               [OT findBarButtonItem:_done fromNavBar:navBar],
+                               [OT findBarButtonItem:_menu fromNavBar:navBar]];
                 } else { // Readonly claim
                     self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _print, _fixedSpace, _export,  _flexibleSpace];
+                    target = @[[OT findBarButtonItem:_export fromNavBar:navBar],
+                               [OT findBarButtonItem:_print fromNavBar:navBar],
+                               [OT findBarButtonItem:_done fromNavBar:navBar],
+                               [OT findBarButtonItem:_menu fromNavBar:navBar]];
                 }
             } else { // Add claim
                 self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _cancel, _fixedSpace, _save, _flexibleSpace];
+                target = @[[OT findBarButtonItem:_save fromNavBar:navBar],
+                           [OT findBarButtonItem:_cancel fromNavBar:navBar],
+                           [OT findBarButtonItem:_menu fromNavBar:navBar]];
             }
+            
+            NSArray *items = @[@{@"type":[NSNumber numberWithInt:0],
+                                 @"target":_claimTabBarLabel,
+                                 @"title":NSLocalizedStringFromTable(@"showcase_claim_title", @"Showcase", nil),
+                                 @"detail":NSLocalizedStringFromTable(@"showcase_claim_message", @"Showcase", nil)},
+                               @{@"type":[NSNumber numberWithInt:1],
+                                 @"target":target,
+                                 @"title":@"",
+                                 @"detail":NSLocalizedStringFromTable(@"showcase_actionClaimDetails_message", @"Showcase", nil)}];
+            [_views[index] setShowcaseTargetList:items];
             break;
-        case 1: // Buttons for Map tab
+        }
+        case 1: { // Buttons for Map tab
             _myLocation.mapView = [(OTMapViewController *)_views[index] mapView];
             [_done setTarget:_views[index]];
             [_zoomToCommunityArea setTarget:_views[index]];
+            
             if ([_claim isSaved]) { // View claim
                 if ([_claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local claim
                     self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _mapSnapshot, _fixedSpace, _zoomToCommunityArea, _fixedSpace, _myLocation, _fixedSpace, _addMarker, _flexibleSpace];
+                    target = @[[OT findBarButtonItem:_addMarker fromNavBar:navBar],
+                               [OT findBarButtonItem:_menu fromNavBar:navBar]];
                 } else { // Readonly claim
                     self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _zoomToCommunityArea, _fixedSpace, _myLocation, _flexibleSpace];
+                    target = @[_myLocation.customView, [OT findBarButtonItem:_menu fromNavBar:navBar]];
                 }
             } else { // Add claim
                 self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _mapSnapshot, _fixedSpace, _myLocation, _fixedSpace, _addMarker, _flexibleSpace];
+                target = @[[OT findBarButtonItem:_addMarker fromNavBar:navBar],
+                           [OT findBarButtonItem:_menu fromNavBar:navBar]];
             }
+            
+            NSArray *items = @[@{@"type":[NSNumber numberWithInt:0],
+                                 @"target":_mapTabBarLabel,
+                                 @"title":NSLocalizedString(@"title_map", @"Community Map"),
+                                 @"detail":NSLocalizedStringFromTable(@"showcase_claim_map_message", @"Showcase", nil)},
+                               @{@"type":[NSNumber numberWithInt:0],
+                                 @"target":[UIView new],
+                                 @"title":@"",
+                                 @"detail":NSLocalizedStringFromTable(@"showcase_claim_mapdraw_message", @"Showcase", nil)},
+                               @{@"type":[NSNumber numberWithInt:1],
+                                 @"target":target,
+                                 @"title":@"",
+                                 @"detail":NSLocalizedStringFromTable(@"showcase_actionClaimMap_message", @"Showcase", nil)}];
+            [_views[index] setCustomShowcase:YES];
+            [_views[index] setShowcaseTargetList:items];
             break;
-        case 2: // Buttons for Documents tab
+        }
+        case 2: { // Buttons for Documents tab
             [_done setTarget:_views[index]];
             if ([_claim isSaved]) { // View claim
                 if ([_claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local claim
                     self.navigationItem.rightBarButtonItems = @[_done, _fixedSpace, _takePhotoDoc, _fixedSpace, _attachDoc, _flexibleSpace];
+                    target = @[[OT findBarButtonItem:_attachDoc fromNavBar:navBar],
+                               [OT findBarButtonItem:_done fromNavBar:navBar]];
                 } else { // Readonly claim
                     // TODO: Can be edit and save?
                     self.navigationItem.rightBarButtonItems = @[_done, _fixedSpace, _takePhotoDoc, _fixedSpace, _attachDoc, _flexibleSpace];
+                    target = @[[OT findBarButtonItem:_attachDoc fromNavBar:navBar],
+                               [OT findBarButtonItem:_done fromNavBar:navBar]];
                 }
             } else { // Add claim
                 self.navigationItem.rightBarButtonItems = @[_done, _fixedSpace, _takePhotoDoc, _fixedSpace, _attachDoc, _flexibleSpace];
+                target = @[[OT findBarButtonItem:_attachDoc fromNavBar:navBar],
+                           [OT findBarButtonItem:_done fromNavBar:navBar]];
             }
+            NSArray *items = @[@{@"type":[NSNumber numberWithInt:0],
+                                 @"target":_documentsTabBarLabel,
+                                 @"title":NSLocalizedString(@"title_claim_documents", nil),
+                                 @"detail":NSLocalizedStringFromTable(@"showcase_claim_document_message", @"Showcase", nil)},
+                               @{@"type":[NSNumber numberWithInt:1],
+                                 @"target":target,
+                                 @"title":@"",
+                                 @"detail":NSLocalizedStringFromTable(@"showcase_claim_documentAttach_message", @"Showcase", nil)}];
+            [_views[index] setShowcaseTargetList:items];
             break;
-        case 3: // Buttons for Adjacencies tab
+        }
+        case 3: { // Buttons for Adjacencies tab
             [_done setTarget:_views[index]];
             if ([_claim isSaved]) { // View claim
                 if ([_claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local claim
@@ -317,12 +428,24 @@
             } else { // Add claim
                 self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
             }
+            NSArray *items = @[@{@"type":[NSNumber numberWithInt:0],
+                                 @"target":_adjacenciesTabBarLabel,
+                                 @"title":NSLocalizedString(@"title_claim_adjacencies", nil),
+                                 @"detail":NSLocalizedStringFromTable(@"showcase_claim_adjacencies_message", @"Showcase", nil)}];
+            [_views[index] setShowcaseTargetList:items];
             break;
-        case 4: // Buttons for Challenges tab
+        }
+        case 4: { // Buttons for Challenges tab
             [_done setTarget:_views[index]];
             self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
+            NSArray *items = @[@{@"type":[NSNumber numberWithInt:0],
+                                 @"target":_challengesTabBarLabel,
+                                 @"title":NSLocalizedString(@"title_claim_challenges", nil),
+                                 @"detail":NSLocalizedStringFromTable(@"showcase_claim_challenges_message", @"Showcase", nil)}];
+            [_views[index] setShowcaseTargetList:items];
             break;
-        case 5: // Buttons for Shares tab
+        }
+        case 5: { // Buttons for Shares tab
             [_done setTarget:_views[index]];
             if ([_claim isSaved]) { // View claim
                 if ([_claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local claim
@@ -334,7 +457,13 @@
             } else { // Add claim
                 self.navigationItem.rightBarButtonItems = @[_done, _fixedSpace, _addShare, _flexibleSpace];
             }
+            NSArray *items = @[@{@"type":[NSNumber numberWithInt:0],
+                                 @"target":_sharesTabBarLabel,
+                                 @"title":NSLocalizedString(@"title_claim_owners", nil),
+                                 @"detail":NSLocalizedStringFromTable(@"showcase_claim_shares_message", @"Showcase", nil)}];
+            [_views[index] setShowcaseTargetList:items];
             break;
+        }
         default: // Buttons for Dynamic form
             [_done setTarget:_views[index]];
             [_addFormSection setTarget:_views[index]];

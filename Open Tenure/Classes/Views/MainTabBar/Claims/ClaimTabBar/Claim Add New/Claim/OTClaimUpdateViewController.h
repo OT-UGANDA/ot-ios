@@ -39,4 +39,8 @@
 - (IBAction)export:(id)sender;
 - (IBAction)showMenu:(id)sender;
 
+// Showcase
+@property (nonatomic, strong) NSArray *showcaseTargetList;
+- (IBAction)defaultShowcase:(id)sender;
+
 @end

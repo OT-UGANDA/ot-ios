@@ -49,7 +49,8 @@
 #import "OTSideBarItems.h"
 
 
-#define TILE_SIZE 256.
+
+#define TILE_SIZE 256
 
 @interface OTMapViewController () <DownloadClaimTaskDelegate, NSURLSessionDelegate> {
     MKAnnotationView *workingAnnotationView;
@@ -58,7 +59,6 @@
     id tileOverlay;
   
     BOOL multipleShowcase;
-    BOOL customShowcases;
     NSInteger currentShowcaseIndex;
     
     MKPolygon *communityArea;
@@ -137,9 +137,7 @@
     [super viewDidLoad];
     
     [self configureSession];
-    
-
-    
+        
     [self configureSideBarMenu];
     
     [self configureMapTypeLabelForTitle:NSLocalizedStringFromTable(@"map_type_standard", @"Additional", nil) message:nil];
@@ -199,7 +197,10 @@
     [_mapView addOverlay:_shapes level:MKOverlayLevelAboveLabels];
 
     self.workingAnnotations = [NSMutableArray array];
-
+    
+    // Vẽ các thửa trước
+    [self drawMappedGeometry];
+    
     if (_claim.mappedGeometry != nil) {
         // Lấy dữ liệu polygon
         ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:_claim.mappedGeometry];
@@ -241,13 +242,12 @@
             [_additionalMarkers addObject:annotation];
         }
     }
-    
-    [self drawMappedGeometry];
 }
 
 // Chuyển qua tab khác
 - (void)viewWillDisappear:(BOOL)animated{
     [self.sideBarMenu dismiss];
+    _customShowcase = NO;
     // TODO: Lưu mapedGeometry trong trường hợp tạo mới hoặc sửa
     if ([_claim getViewType] == OTViewTypeView) return;
     
@@ -337,6 +337,20 @@
     [self.mapView addSubview:_mapTypeLabel];
 }
 
+#pragma mark - OTShowcase & OTShowcaseDelegate methods
+- (void)configureShowcase {
+  
+}
+
+- (IBAction)defaultShowcase:(id)sender {
+  
+}
+
+#pragma mark - OTShowcaseDelegate methods
+- (void)OTShowcaseShown{}
+
+- (void)OTShowcaseDismissed {
+   }
 
 #pragma mark - configure
 - (void)configureSideBarMenu {
@@ -558,7 +572,7 @@
     if (polygon.geometry != nil) {
         communityArea = polygon.geometry;
         [_mapView insertOverlay:communityArea aboveOverlay:_shapes];
-        if (_claim == nil)
+        if (_claim == nil || _claim.mappedGeometry == nil)
             [_mapView setVisibleMapRect:polygon.geometry.boundingMapRect animated:YES];
     }
 }
@@ -1027,7 +1041,7 @@
         _totalItemsDownloadError = 0;
         [self setDownloading:YES];
         [SVProgressHUD showProgress:0.0
-                             status:NSLocalizedString(@"title_claim_downloading_map", nil)
+                             status:NSLocalizedString(@"title_claim__downloading_map", nil)
                            maskType:SVProgressHUDMaskTypeGradient];
         // <
         NSMutableArray *operations = [NSMutableArray array];
@@ -1051,7 +1065,7 @@
     double progress = (double)_totalItemsDownloaded / (double)_totalItemsToDownload;
     dispatch_async(dispatch_get_main_queue(), ^{
         [SVProgressHUD showProgress:progress
-                             status:NSLocalizedString(@"title_claim_downloading_map", nil)
+                             status:NSLocalizedString(@"title_claim__downloading_map", nil)
                            maskType:SVProgressHUDMaskTypeGradient];
     });
     if (progress >= 1.0) {
@@ -1147,6 +1161,7 @@
     for (Claim *object in collection) {
         [self processClaim:object];
     }
+    [_shapes setWorkingOverlay:nil];
     // Cập nhật hiển thị điểm
     [_coordinateQuadTree buildTreeFromAnnotations:_annotations];
     [self mapView:_mapView regionDidChangeAnimated:NO];
@@ -1193,7 +1208,7 @@
                        [NSNumber numberWithDouble:swCoord.latitude],
                        [NSNumber numberWithDouble:neCoord.longitude],
                        [NSNumber numberWithDouble:neCoord.latitude], nil];
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"title_claim_downloading_map", @"Downloading Claims")];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"title_claim__downloading_map", @"Downloading Claims")];
     [CommunityServerAPI getAllClaimsByBox:coords completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
         if (error != nil) {
             [OT handleError:error];
@@ -1834,7 +1849,7 @@
     ALog(@"downloadClaimTask didFinishWithSuccess %d, progress: %f", success, progress);
     dispatch_async(dispatch_get_main_queue(), ^{
         [SVProgressHUD showProgress:progress
-                             status:NSLocalizedString(@"title_claim_downloading_map", nil)
+                             status:NSLocalizedString(@"title_claim__downloading_map", nil)
                            maskType:SVProgressHUDMaskTypeGradient];
     });
     if (progress >= 1.0 || _totalItemsDownloaded == _totalItemsToDownload) {
@@ -1882,6 +1897,11 @@
         } else {
             configuration = [NSURLSessionConfiguration backgroundSessionConfiguration:sessionConfiguration];
         }
+        //Nếu muốn cho phép download tile bằng 3G
+        //configuration.allowsCellularAccess = YES;
+        configuration.discretionary = YES;
+        configuration.HTTPMaximumConnectionsPerHost = 1;
+        configuration.timeoutIntervalForRequest = 14400; // 4 hours
         session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:[NSOperationQueue mainQueue]];
     });
     return session;
@@ -1899,7 +1919,6 @@
                 [self stopAllDownloads:nil];
                 return;
             } else {
-                [self resumeAllDownloads:nil];
                 return;
             }
         }];
@@ -1928,7 +1947,6 @@
                     _totalTilesToDownload = tiles.count;
                     _totalTilesDownloaded = 0;
                     _totalTilesDownloadError = 0;
-                    [self setTileDownloading:YES];
                     
                     [self performSelector:@selector(createDownloadList:) withObject:tiles afterDelay:0.3];
                 }
@@ -1950,12 +1968,23 @@
 }
 
 - (IBAction)startAllDownloads:(id)sender {
+    if (self.arrFileDownloadData.count > 0)
+        [self setTileDownloading:YES];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *formatString = NSLocalizedString(@"too_many_tiles_queued", nil);
+        [SVProgressHUD showWithStatus:[NSString stringWithFormat:formatString, self.arrFileDownloadData.count] maskType:SVProgressHUDMaskTypeGradient];
+    });
+    
     for (NSInteger i = 0; i < self.arrFileDownloadData.count; i++) {
         FileDownloadInfo *fdi = [self.arrFileDownloadData objectAtIndex:i];
-        if (!fdi.isDownloading) {
+        if (!fdi.isDownloading && !fdi.downloadComplete) {
             // Check if should create a new download task using a URL, or using resume data.
             if (fdi.taskIdentifier == -1) {
                 fdi.downloadTask = [self.session downloadTaskWithURL:fdi.sourceUrl];
+                if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+                    fdi.downloadTask.priority = 1.0f;
+                }
             } else {
                 fdi.downloadTask = [self.session downloadTaskWithResumeData:fdi.taskResumeData];
             }
@@ -1973,23 +2002,57 @@
             fdi.isDownloading = YES;
         }
     }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
 }
 
-- (IBAction)resumeAllDownloads:(id)sender {
+- (IBAction)pauseOrResumeAllDownloads:(id)sender {
     for (NSInteger i = 0; i < self.arrFileDownloadData.count; i++) {
+        // Get the FileDownloadInfo object being at the cellIndex position of the array.
         FileDownloadInfo *fdi = [self.arrFileDownloadData objectAtIndex:i];
-        if (fdi.isDownloading) {
-            fdi.downloadTask = [self.session downloadTaskWithResumeData:fdi.taskResumeData];
+        
+        // The isDownloading property of the fdi object defines whether a downloading should be started
+        // or be stopped.
+        if (!fdi.isDownloading) {
+            // This is the case where a download task should be started.
             
-            // Keep the new taskIdentifier.
-            fdi.taskIdentifier = fdi.downloadTask.taskIdentifier;
-            
-            // Store index and filePath to taskDescription (available for the developer)
-            fdi.downloadTask.taskDescription = [NSString stringWithFormat:@"%@|%@", [@(i) stringValue], fdi.filePath];
-            
-            // Start the download.
-            [fdi.downloadTask resume];
+            // Create a new task, but check whether it should be created using a URL or resume data.
+            if (fdi.taskIdentifier == -1) {
+                // If the taskIdentifier property of the fdi object has value -1, then create a new task
+                // providing the appropriate URL as the download source.
+                fdi.downloadTask = [self.session downloadTaskWithURL:fdi.sourceUrl];
+                
+                // Keep the new task identifier.
+                fdi.taskIdentifier = fdi.downloadTask.taskIdentifier;
+                
+                // Store index and filePath to taskDescription (available for the developer)
+                fdi.downloadTask.taskDescription = [NSString stringWithFormat:@"%@|%@", [@(i) stringValue], fdi.filePath];
+                
+                // Start the task.
+                [fdi.downloadTask resume];
+            } else {
+                // Create a new download task, which will use the stored resume data.
+                fdi.downloadTask = [self.session downloadTaskWithResumeData:fdi.taskResumeData];
+                [fdi.downloadTask resume];
+                
+                // Keep the new download task identifier.
+                fdi.taskIdentifier = fdi.downloadTask.taskIdentifier;
+                
+                // Store index and filePath to taskDescription (available for the developer)
+                fdi.downloadTask.taskDescription = [NSString stringWithFormat:@"%@|%@", [@(i) stringValue], fdi.filePath];
+            }
+        } else {
+            // Pause the task by canceling it and storing the resume data.
+            [fdi.downloadTask cancelByProducingResumeData:^(NSData *resumeData) {
+                if (resumeData != nil) {
+                    fdi.taskResumeData = [[NSData alloc] initWithData:resumeData];
+                }
+            }];
         }
+        
+        // Change the isDownloading property value.
+        fdi.isDownloading = !fdi.isDownloading;
     }
 }
 
@@ -2024,16 +2087,16 @@
 
     NSError *error;
 
-    BOOL success = [[NSFileManager defaultManager] copyItemAtURL:location toURL:destinationUrl error:&error];
+    BOOL success = [[NSFileManager defaultManager] moveItemAtURL:location toURL:destinationUrl error:&error];
 
     NSInteger index = [[[downloadTask.taskDescription componentsSeparatedByString:@"|"] firstObject] integerValue];
     //[self getFileDownloadInfoIndexWithTaskIdentifier:downloadTask.taskIdentifier];
     FileDownloadInfo *fdi = [self.arrFileDownloadData objectAtIndex:index];
+    fdi.downloadTask = nil;
     if (success) {
         // Change the flag values of the respective FileDownloadInfo object.
         fdi.isDownloading = NO;
         fdi.downloadComplete = YES;
-        ALog(@"Success: %@", fdi.filePath);
         // Set the initial value to the taskIdentifier property of the fdi object,
         // so when the start button gets tapped again to start over the file download.
         fdi.taskIdentifier = -1;
@@ -2046,79 +2109,33 @@
         ALog(@"Unable to copy temp file. Error: %@", [error localizedDescription]);
     }
 
-    if (_totalTilesDownloaded == _totalTilesToDownload) {
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        if (_totalTilesDownloaded == _totalTilesToDownload) {
             [self setTileDownloading:NO];
-    //        NSString *title = NSLocalizedString(@"title_tiles_download", nil);
             NSString *message = NSLocalizedString(@"all_tiles_downloaded", nil);
             
             [SVProgressHUD showInfoWithStatus:message];
-        }];
-    }
+        } else {
+            NSString *message = [NSString stringWithFormat:@"Download finished successfully. Task %tu: %tu/%tu. Error: %tu", downloadTask.taskIdentifier, _totalTilesDownloaded, _totalTilesToDownload, _totalTilesDownloadError];
+            ALog(@"%@", message);
+        }
+    }];
 }
 
 #pragma mark - NSURLSessionTaskDelegate method
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
-    NSString *message;
-    if (error != nil) {
-        message = [NSString stringWithFormat:@"Download completed with error: %@", [error localizedDescription]];
-    }
-    else{
-        message = [NSString stringWithFormat:@"Download finished successfully. Task %tu", task.taskIdentifier];
-    }
-    ALog(@"%@", message);
-}
-
-#pragma mark - NSURLSessionDownloadDelegate method
-- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
-    
-    if (totalBytesExpectedToWrite == NSURLSessionTransferSizeUnknown) {
-        //ALog(@"Unknown transfer size");
-    } else {
-        // Locate the FileDownloadInfo object among all based on the taskIdentifier property of the task.
-        NSInteger index = [[[downloadTask.taskDescription componentsSeparatedByString:@"|"] firstObject]  integerValue];
-        //[self getFileDownloadInfoIndexWithTaskIdentifier:downloadTask.taskIdentifier];
-        FileDownloadInfo *fdi = [self.arrFileDownloadData objectAtIndex:index];
-        
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            // Calculate the progress.
-            fdi.downloadProgress = (double)totalBytesWritten / (double)totalBytesExpectedToWrite;
-        }];
-    }
-}
-
 /*
  Chế độ background, có sử dụng UILocalNotification để thông báo khi kết thúc
  */
 - (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
     OTAppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
     // Check if all download tasks have been finished.
-    [self.session getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-        if ([downloadTasks count] == 0) {
-            if (appDelegate.backgroundTransferCompletionHandler != nil) {
-                // Copy locally the completion handler.
-                void(^completionHandler)() = appDelegate.backgroundTransferCompletionHandler;
-                
-                // Make nil the backgroundTransferCompletionHandler.
-                appDelegate.backgroundTransferCompletionHandler = nil;
-                
-                [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-                    // Call the completion handler to tell the system that there are no other background transfers.
-                    completionHandler();
-                    
-                    // Show a local notification when all downloads are over.
-                    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-                    localNotification.alertBody = NSLocalizedString(@"all_tiles_downloaded", nil);
-                    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-                }];
-            }
-            [self setTileDownloading:NO];
-            NSString *title = NSLocalizedString(@"app_name", nil);
-            NSString *message = NSLocalizedString(@"all_tiles_downloaded", nil);
-            [UIAlertView showWithTitle:title message:message cancelButtonTitle:NSLocalizedString(@"confirm", nil) otherButtonTitles:nil tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                
-            }];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        if (appDelegate.backgroundSessionCompletionHandler) {
+            void (^completionHandler)() = appDelegate.backgroundSessionCompletionHandler;
+            appDelegate.backgroundSessionCompletionHandler = nil;
+            completionHandler();
         }
+        ALog(@"All tasks are finished");
     }];
 }
 

@@ -26,17 +26,13 @@
  * *********************************************************************************************
  */
 
-#import "OTAbstractListViewController.h"
+#import <Foundation/Foundation.h>
 
-@interface OTSharesUpdateViewController : OTAbstractListViewController
+@interface PDFClaimExporter : NSObject
 
-@property (strong, nonatomic) Claim *claim;
+@property (nonatomic, readonly) Claim *claim;
 
-- (IBAction)addShare:(id)sender;
-- (IBAction)done:(id)sender;
-
-// Showcase
-@property (nonatomic, strong) NSArray *showcaseTargetList;
-- (IBAction)defaultShowcase:(id)sender;
+- (id)initWithClaim:(Claim *)claim;
+- (NSString *)getFilePath;
 
 @end

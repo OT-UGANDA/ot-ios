@@ -28,7 +28,12 @@
 
 #import "OTChallengesUpdateViewController.h"
 
-@interface OTChallengesUpdateViewController ()
+
+@interface OTChallengesUpdateViewController () {
+ 
+    BOOL multipleShowcase;
+    NSInteger currentShowcaseIndex;
+}
 
 @end
 
@@ -45,9 +50,9 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
+    
     [self loadData];
 }
 
@@ -56,6 +61,21 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark - OTShowcase & OTShowcaseDelegate methods
+- (void)configureShowcase {
+    
+}
+
+- (IBAction)defaultShowcase:(id)sender {
+  
+}
+
+#pragma mark - OTShowcaseDelegate methods
+- (void)OTShowcaseShown{}
+
+- (void)OTShowcaseDismissed {
+  }
 
 - (IBAction)done:(id)sender {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];

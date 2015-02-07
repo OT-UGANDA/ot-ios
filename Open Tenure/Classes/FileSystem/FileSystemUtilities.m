@@ -131,6 +131,8 @@
     if (![[NSFileManager defaultManager] fileExistsAtPath:file])
         return YES;
     NSError *error = nil;
+    if ([file isEqualToString:@".DS_Store"])
+        return NO;
     if (![[NSFileManager defaultManager] removeItemAtPath:file error: &error]) {
         [NSException raise:@"Unable to remove file: error" format:@"[%@], %@", file, error];
         return NO;
@@ -142,6 +144,17 @@
     return [self deleteFile:[self getCompressClaim:claimId]];
 }
 
++ (BOOL)deleteDocumentsFolder {
+    BOOL status = YES;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager removeItemAtPath:documentsDirectory error:nil]) {
+        status = NO;
+    }
+    return status;
+}
+
 + (int)getUploadProgress:(Claim *)claim {
     // TODO: After create model
     return 0;
@@ -150,12 +163,20 @@
 + (NSString *)getClaimsFolder {
     NSString *docDir = [[self applicationDocumentsDirectory] path];
     NSString *path = [docDir stringByAppendingPathComponent:_CLAIMS_FOLDER];
+    BOOL isDirectory;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
+        [self createClaimsFolder];
+    }
     return path;
 }
 
 + (NSString *)getClaimantsFolder {
     NSString *docDir = [[self applicationDocumentsDirectory] path];
     NSString *path = [docDir stringByAppendingPathComponent:_CLAIMANTS_FOLDER];
+    BOOL isDirectory;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
+        [self createClaimantsFolder];
+    }
     return path;
 }
 
@@ -164,12 +185,20 @@
     NSString *claimsPath = [docDir stringByAppendingPathComponent:_CLAIMS_FOLDER];
     NSString *claimFolder = [_CLAIM_PREFIX stringByAppendingString:claimId];
     NSString *path = [claimsPath stringByAppendingPathComponent:claimFolder];
+    BOOL isDirectory;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
+        [self createClaimFolder:claimId];
+    }
     return path;
 }
 
 + (NSString *)getAttachmentFolder:(NSString *)claimId {
     NSString *claimPath = [self getClaimFolder:claimId];
     NSString *path = [claimPath stringByAppendingPathComponent:_ATTACHMENT_FOLDER];
+    BOOL isDirectory;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
+        [self createFolder:path];
+    }
     return path;
 }
 
@@ -184,6 +213,10 @@
 + (NSString *)getOpentenureFolder {
     NSString *docDir = [[self applicationDocumentsDirectory] path];
     NSString *path = [docDir stringByAppendingPathComponent:_OPEN_TENURE_FOLDER];
+    BOOL isDirectory;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
+        [self createOpenTenureFolder];
+    }
     return path;
 }
 

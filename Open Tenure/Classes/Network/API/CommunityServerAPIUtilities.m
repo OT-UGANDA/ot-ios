@@ -28,34 +28,34 @@
 
 #import "CommunityServerAPIUtilities.h"
 
-NSString *HTTPS_LOGIN = @"ws/en-us/auth/login?username=%@&password=%@";
+NSString *HTTPS_LOGIN = @"%@/ws/%@/auth/login?username=%@&password=%@";
 
-NSString *HTTPS_LOGOUT = @"ws/en-us/auth/logout";
+NSString *HTTPS_LOGOUT = @"%@/ws/%@/auth/logout";
 
-NSString *HTTPS_GETCLAIM = @"ws/en-us/claim/getClaim/%@";
+NSString *HTTPS_GETCLAIM = @"%@/ws/%@/claim/getClaim/%@";
 
-NSString *HTTPS_GETATTACHMENT = @"claim/getAttachment?id=%@";
+NSString *HTTPS_GETATTACHMENT = @"%@/claim/getAttachment?id=%@";
 
-NSString *HTTPS_SAVECLAIM = @"ws/en-us/claim/saveClaim";
+NSString *HTTPS_SAVECLAIM = @"%@/ws/%@/claim/saveClaim";
 
-NSString *HTTPS_SAVEATTACHMENT = @"ws/en-us/claim/saveAttachment";
+NSString *HTTPS_SAVEATTACHMENT = @"%@/ws/%@/claim/saveAttachment";
 
-NSString *HTTPS_UPLOADCHUNK = @"ws/en-us/claim/uploadChunk";
+NSString *HTTPS_UPLOADCHUNK = @"%@/ws/%@/claim/uploadChunk";
 
-NSString *HTTPS_GETALLCLAIMS = @"ws/en-us/claim/getAllClaims";
+NSString *HTTPS_GETALLCLAIMS = @"%@/ws/%@/claim/getAllClaims";
 
-NSString *HTTPS_GETALLCLAIMSBYBOX = @"ws/en-us/claim/getClaimsByBox?minx=%@&miny=%@&maxx=%@&maxy=%@&limit=%@";
+NSString *HTTPS_GETALLCLAIMSBYBOX = @"%@/ws/%@/claim/getClaimsByBox?minx=%@&miny=%@&maxx=%@&maxy=%@&limit=%@";
 
-NSString *HTTPS_GETCLAIMTYPES = @"ws/en-us/ref/getclaimtypes";
+NSString *HTTPS_GETCLAIMTYPES = @"%@/ws/%@/ref/getclaimtypes";
 
-NSString *HTTPS_GETDOCUMENTYPES = @"ws/en-us/ref/getdocumenttypes";
+NSString *HTTPS_GETDOCUMENTYPES = @"%@/ws/%@/ref/getdocumenttypes";
 
-NSString *HTTPS_GETIDTYPES = @"ws/en-us/ref/getidtypes";
+NSString *HTTPS_GETIDTYPES = @"%@/ws/%@/ref/getidtypes";
 
-NSString *HTTPS_GETLANDUSE = @"ws/en-us/ref/getlanduses";
+NSString *HTTPS_GETLANDUSE = @"%@/ws/%@/ref/getlanduses";
 
-NSString *HTTPS_GETCOMMUNITYAREA = @"ws/en-us/ref/getcommunityarea";
+NSString *HTTPS_GETCOMMUNITYAREA = @"%@/ws/%@/ref/getcommunityarea";
 
-NSString *HTTPS_WITHDRAWCLAIM = @"ws/en-us/claim/withdrawclaim/%@";
+NSString *HTTPS_WITHDRAWCLAIM = @"%@/ws/%@/claim/withdrawclaim/%@";
 
-NSString *HTTPS_GETDEFAULTFORMTEMPLATE = @"ws/en-us/claim/getDefaultFormTemplate";
+NSString *HTTPS_GETDEFAULTFORMTEMPLATE = @"%@/ws/%@/claim/getDefaultFormTemplate";

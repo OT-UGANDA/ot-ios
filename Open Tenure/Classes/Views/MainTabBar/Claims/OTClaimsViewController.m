@@ -37,7 +37,8 @@
 
 
 @interface OTClaimsViewController () <UploadChunkTaskDelegate, SaveClaimTaskDelegate, SaveAttachmentTaskDelegate, UploadChunkTaskDelegate> {
-       BOOL multipleShowcase;
+
+    BOOL multipleShowcase;
     BOOL customShowcases;
     NSInteger currentShowcaseIndex;
 }
@@ -66,8 +67,6 @@
 
     [self configureSideBarMenu];
     
-    
-    
     _searchBar.placeholder = NSLocalizedString(@"hint_type_to_filter", @"Search");
     
     _rootViewClassName = NSStringFromClass([[[self.navigationController viewControllers] lastObject] class]);
@@ -89,13 +88,17 @@
 }
 
 #pragma mark - OTShowcase & OTShowcaseDelegate methods
+- (void)configureShowcase {
+  }
 
-
+- (IBAction)defaultShowcase:(id)sender {
+   }
 
 #pragma mark - OTShowcaseDelegate methods
+- (void)OTShowcaseShown{}
 
-
-
+- (void)OTShowcaseDismissed {
+}
 
 - (void)configureSideBarMenu {
     _sideBarItems = [[OTSideBarItems alloc] initWithStyle:UITableViewStylePlain];
@@ -307,7 +310,7 @@
             claim = [_filteredObjects objectAtIndex:indexPath.row];
         CGRect frame = cell.accessoryView.frame;
         frame.origin.x += 60;
-        [UIActionSheet showFromRect:frame inView:cell animated:YES withTitle:@"Claim Actions" cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@[@"Submit claim", @"Withdraw", @"Action 3"] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+        [UIActionSheet showFromRect:frame inView:cell animated:YES withTitle:@"Claim Actions" cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[@"Submit claim", @"Withdraw", @"Action 3"] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
             if (buttonIndex == 0) {
                 [self submitClaim:claim];
             } else if(buttonIndex == 1){

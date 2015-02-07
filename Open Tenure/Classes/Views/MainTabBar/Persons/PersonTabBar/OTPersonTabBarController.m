@@ -190,17 +190,14 @@
 }
 
 - (void)setBarButtonItemsForTabBarIndex:(NSInteger)index {
-    NSString *title = @"";
-    if (![_person.person boolValue]) { // Add group
-        title = NSLocalizedString(@"title_activity_group", @"New group");
-    } else { // Add person
-        title = NSLocalizedString(@"title_activity_person", @"New person");
+    NSString *buttonTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"app_name", nil), [_person fullNameType:OTFullNameTypeDefault]];
+    if (![_person isSaved]) {
+        if (![_person.person boolValue])
+            buttonTitle = NSLocalizedString(@"title_activity_group", nil);
+        else
+            buttonTitle = NSLocalizedString(@"title_activity_person", nil);
     }
     
-    if ([_person isSaved])
-        title = [_person fullNameType:OTFullNameTypeDefault];
-    
-    NSString *buttonTitle = [NSString stringWithFormat:@"%@: %@", NSLocalizedString(@"app_name", nil), title];
     UIBarButtonItem *logo = [OT logoButtonWithTitle:buttonTitle];
     self.navigationItem.leftBarButtonItems = @[logo];
     

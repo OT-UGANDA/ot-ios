@@ -41,5 +41,6 @@
 
 - (BOOL)canBeUploaded;
 - (void)withDraw;
+- (double)area;
 
 @end

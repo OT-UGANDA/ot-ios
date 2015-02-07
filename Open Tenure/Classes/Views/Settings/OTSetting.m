@@ -104,4 +104,34 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+
++ (void)setReInitialization:(BOOL)state {
+    if (state) {
+        // Xóa các thiết lập
+        [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:[[NSBundle mainBundle] bundleIdentifier]];
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:state] forKey:@"ReInitialization"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (BOOL)getReInitialization {
+    BOOL state = [[NSUserDefaults standardUserDefaults] boolForKey:@"ReInitialization"];
+    if (state) {
+        // Xóa dữ liệu
+        NSURL *storeURL = [[FileSystemUtilities applicationHiddenDocumentsDirectory] URLByAppendingPathComponent:@"OpenTenure.sqlite"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:storeURL.path]) {
+            NSError *error;
+            if (![[NSFileManager defaultManager] removeItemAtURL:storeURL error:&error]) {
+                ALog(@"Error: %@", error.localizedDescription);
+            } else {
+                [OTSetting setReInitialization:NO];
+                ALog(@"ReInitialized");
+            }
+        }
+        // Xóa các tài nguyên
+        [FileSystemUtilities deleteDocumentsFolder];
+    }
+    return state;
+}
+
 @end
