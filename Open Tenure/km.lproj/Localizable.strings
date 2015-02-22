@@ -936,3 +936,34 @@
 
 /* loco:54c52dfe14d725972b8b464f */
 "zoom_level_too_low" = "តំបន់ធំពេក។ បង្កើនកម្រិតទំហំមុនទាញយកទិន្នន័យក្នុងស្រុកសម្រាប់ផែនទី";
+
+/* --------------------------------*/
+/* Android Commits on Jan 27, 2015 */
+"claim_area_label"="Area";
+"square_meters"="m2";
+
+/* Android Commits on Jan 30, 2015 */
+"created"="created";
+"uploading"="uploading";
+"uploaded"="uploaded";
+"deleted"="deleted";
+"upload_incomplete"="upload incomplete";
+"upload_error"="upload error";
+"download_incomplete"="download incomplete";
+"download_failed"="download faile";
+"downloading"="downloading";
+
+/* iOS new string */
+"generated_on"="generated on:";
+"title_claimant"="Claimant";
+"title_claim_parcel"="Parcel";
+"title_claim_document_reference"="Reference #";
+"title_claim_document_date"="Document date";
+"title_claim_document_description"="Description";
+"title_claim_area_label"="Area";
+"title_claim_type_label"="Claim type";
+"title_claim_occupied_since"="Occupied since";
+"title_claim_north_adjacency_label"="North adjacency";
+"title_claim_south_adjacency_label"="South adjacency";
+"title_claim_east_label"="East adjacency";
+"title_claim_west_label"="West adjacency";

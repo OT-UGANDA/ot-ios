@@ -336,13 +336,12 @@ void log_and_exit(const char *fmt,...) {
         GEOSGeometry *ring = GEOSGeom_createLinearRing_r(handle, seq);
         self.geosGeom = GEOSGeom_createPolygon_r(handle, ring, NULL, 0);
         
-        // TODO: Move the destroy into the dealloc method
-        // GEOSCoordSeq_destroy(seq);
         geometry = [MKPolygon polygonWithCoordinates:coordinates count:count];
         
         GEOSWKTWriter *WKTWriter = GEOSWKTWriter_create_r(handle);
         self.wktGeom = [NSString stringWithUTF8String:GEOSWKTWriter_write_r(handle, WKTWriter, geosGeom)];
         GEOSWKTWriter_destroy_r(handle, WKTWriter);
+        GEOSCoordSeq_destroy_r(handle, seq);
     }
     return self;
 }

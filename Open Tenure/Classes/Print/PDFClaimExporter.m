@@ -28,6 +28,7 @@
 
 #import "PDFClaimExporter.h"
 #import "ShapeKit.h"
+#import "UIImage+OT.h"
 
 @interface PDFClaimExporter () {
     NSString *filePath;
@@ -540,24 +541,9 @@
         CGFloat width = image.size.width < image.size.height ? image.size.width : image.size.height;
         CGFloat scale = size.width > size.height ? width / size.width : width / size.height;
         CGSize newSize = CGSizeMake(scale * size.width, scale * size.height);
-        return [self imageByCroppingImage:image toSize:newSize];
+        return [image cropToSize:newSize];
     }
     return nil;
-}
-
-- (UIImage *)imageByCroppingImage:(UIImage *)image toSize:(CGSize)size {
-    double refWidth = CGImageGetWidth(image.CGImage);
-    double refHeight = CGImageGetHeight(image.CGImage);
-    
-    double x = (refWidth - size.width) / 2.0;
-    double y = (refHeight - size.height) / 2.0;
-    CGRect cropRect = CGRectMake(x, y, size.width, size.height);
-    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], cropRect);
-    
-    UIImage *cropped = [UIImage imageWithCGImage:imageRef scale:[UIScreen mainScreen].scale orientation:image.imageOrientation];
-    CGImageRelease(imageRef);
-    
-    return cropped;
 }
 
 - (void)finishPDF {

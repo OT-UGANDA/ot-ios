@@ -35,5 +35,6 @@
 @property (strong, nonatomic) SectionElementPayload *sectionElementPayload;
 
 - (IBAction)done:(id)sender;
+- (void)checkInvalidCell;
 
 @end

@@ -95,10 +95,57 @@ static const void *UIAlertViewShouldEnableFirstOtherButtonBlockKey  = &UIAlertVi
                                        otherButtonTitles:firstObject, nil];
     
     alertView.alertViewStyle = style;
-    if (style == UIAlertViewStylePlainTextInput) {
+    if (style == UIAlertViewStylePlainTextInput || style == UIAlertViewStyleLoginAndPasswordInput) {
         [[alertView textFieldAtIndex:0] setPlaceholder:placeholder];
         [[alertView textFieldAtIndex:0] setText:defaultText];
     }
+    
+    if (otherButtonTitles.count > 1) {
+        for (NSString *buttonTitle in [otherButtonTitles subarrayWithRange:NSMakeRange(1, otherButtonTitles.count - 1)]) {
+            [alertView addButtonWithTitle:buttonTitle];
+        }
+    }
+    
+    if (tapBlock) {
+        alertView.tapBlock = tapBlock;
+    }
+    
+    [alertView show];
+    
+#if !__has_feature(objc_arc)
+    return [alertView autorelease];
+#else
+    return alertView;
+#endif
+}
+
++ (instancetype)showWithTitle:(NSString *)title
+                      message:(NSString *)message
+                 placeholder0:(NSString *)placeholder0
+                 defaultText0:(NSString *)defaultText0
+                    delegate0:(id)delegate0
+                 placeholder1:(NSString *)placeholder1
+                 defaultText1:(NSString *)defaultText1
+                    delegate1:(id)delegate1
+            cancelButtonTitle:(NSString *)cancelButtonTitle
+            otherButtonTitles:(NSArray *)otherButtonTitles
+                     tapBlock:(UIAlertViewCompletionBlock)tapBlock {
+    NSString *firstObject = otherButtonTitles.count ? otherButtonTitles[0] : nil;
+    
+    UIAlertView *alertView = [[self alloc] initWithTitle:title
+                                                 message:message
+                                                delegate:nil
+                                       cancelButtonTitle:cancelButtonTitle
+                                       otherButtonTitles:firstObject, nil];
+    
+    alertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
+    [[alertView textFieldAtIndex:0] setPlaceholder:placeholder0];
+    [[alertView textFieldAtIndex:0] setText:defaultText0];
+    [[alertView textFieldAtIndex:1] setPlaceholder:placeholder1];
+    [[alertView textFieldAtIndex:1] setText:defaultText1];
+    [[alertView textFieldAtIndex:1] setSecureTextEntry:NO];
+    [[alertView textFieldAtIndex:0] setDelegate:delegate0];
+    [[alertView textFieldAtIndex:1] setDelegate:delegate1];
     
     if (otherButtonTitles.count > 1) {
         for (NSString *buttonTitle in [otherButtonTitles subarrayWithRange:NSMakeRange(1, otherButtonTitles.count - 1)]) {

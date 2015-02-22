@@ -194,7 +194,7 @@
         NSString *previousPath = [self.docWatcher.currentPath stringByDeletingLastPathComponent];
         cell.textLabel.text = [previousPath lastPathComponent];
         cell.detailTextLabel.text = @"Go back to folder";
-        cell.imageView.image = [UIImage imageNamed:@"folder"];
+        cell.imageView.image = [UIImage imageNamed:@"folder_close"];
         return cell;
     } else {
         // layout the cell

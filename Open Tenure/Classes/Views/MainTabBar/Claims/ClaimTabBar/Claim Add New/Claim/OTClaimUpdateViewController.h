@@ -38,6 +38,7 @@
 - (IBAction)print:(id)sender;
 - (IBAction)export:(id)sender;
 - (IBAction)showMenu:(id)sender;
+- (void)checkInvalidCell;
 
 // Showcase
 @property (nonatomic, strong) NSArray *showcaseTargetList;

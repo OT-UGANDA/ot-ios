@@ -29,13 +29,16 @@
 		DE1F365419907F5D0035F7D7 /* OTAbstractListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE1F365319907F5D0035F7D7 /* OTAbstractListViewController.m */; };
 		DE1FB8641A7410A300864885 /* ActivityLogin.strings in Resources */ = {isa = PBXBuildFile; fileRef = DE1FB8621A7410A300864885 /* ActivityLogin.strings */; };
 		DE1FB88D1A74332E00864885 /* Additional.strings in Resources */ = {isa = PBXBuildFile; fileRef = DE1FB88B1A74332E00864885 /* Additional.strings */; };
+		DE1FB8A61A754DC900864885 /* OTShowcase.m in Sources */ = {isa = PBXBuildFile; fileRef = DE1FB8A51A754DC900864885 /* OTShowcase.m */; };
 		DE20FE6A19D40DD5008504E8 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE20FE6919D40DD5008504E8 /* CoreLocation.framework */; };
 		DE3124591A2C51D6001D5069 /* OTDynamicFormViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE3124581A2C51D6001D5069 /* OTDynamicFormViewController.m */; };
 		DE31245C1A2D5038001D5069 /* OTFormUpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE31245B1A2D5038001D5069 /* OTFormUpdateViewController.m */; };
 		DE31245F1A2EBCB5001D5069 /* OTFormTabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE31245E1A2EBCB5001D5069 /* OTFormTabBarViewController.m */; };
 		DE373FB41A71724400360AA2 /* OTWMSTileOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = DE373FB31A71724400360AA2 /* OTWMSTileOverlay.m */; };
 		DE373FBA1A72547B00360AA2 /* FileDownloadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = DE373FB91A72547B00360AA2 /* FileDownloadInfo.m */; };
+		DE3ACE3A1A88B8CF00FFCA66 /* UIImage+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DE3ACE391A88B8CF00FFCA66 /* UIImage+OT.m */; };
 		DE3DBE1B1A6B8AEF00807C83 /* Showcase.strings in Resources */ = {isa = PBXBuildFile; fileRef = DE3DBE191A6B8AEF00807C83 /* Showcase.strings */; };
+		DE4AEBB91A8DF5FF00DB6067 /* NSDate+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DE4AEBB81A8DF5FF00DB6067 /* NSDate+OT.m */; };
 		DE5448C0198A8D7400221700 /* libSSZipArchive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE5448BD198A8D7400221700 /* libSSZipArchive.a */; };
 		DE5448C1198A8D7400221700 /* libGEOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE5448BE198A8D7400221700 /* libGEOS.a */; };
 		DE5448C8198A8F4300221700 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE5448C7198A8F4300221700 /* QuartzCore.framework */; };
@@ -53,6 +56,7 @@
 		DE5CFBF019AB567E00E253B0 /* AdditionalInfo+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5CFBEF19AB567E00E253B0 /* AdditionalInfo+OT.m */; };
 		DE5CFBFF19ABADD400E253B0 /* NSManagedObject+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5CFBFE19ABADD400E253B0 /* NSManagedObject+OT.m */; };
 		DE5CFC2419AC914700E253B0 /* DownloadClaimTask.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5CFC2319AC914700E253B0 /* DownloadClaimTask.m */; };
+		DE5F89511A7C74ED00A72DDE /* MKPolygon+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5F89501A7C74ED00A72DDE /* MKPolygon+OT.m */; };
 		DE610B091A051CE100647B8B /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE610B071A051CE100647B8B /* Launch Screen.xib */; };
 		DE62D1C01A6599D000582B0C /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE62D1BF1A6599D000582B0C /* CoreText.framework */; };
 		DE6D1D9D19CDEA780096C50B /* GeoShape.m in Sources */ = {isa = PBXBuildFile; fileRef = DE6D1D9419CDEA780096C50B /* GeoShape.m */; };
@@ -98,7 +102,6 @@
 		DEB89C1F199616FC00BBC9D3 /* Claim+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C1E199616FC00BBC9D3 /* Claim+OT.m */; };
 		DEB89C2A199646B600BBC9D3 /* OTClaimUpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C29199646B600BBC9D3 /* OTClaimUpdateViewController.m */; };
 		DEB89C2D199646E000BBC9D3 /* OTDocumentsUpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C2C199646E000BBC9D3 /* OTDocumentsUpdateViewController.m */; };
-		DEB89C301996473A00BBC9D3 /* OTAdditionalUpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C2F1996473A00BBC9D3 /* OTAdditionalUpdateViewController.m */; };
 		DEB89C331996477E00BBC9D3 /* OTAdjacenciesUpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C321996477E00BBC9D3 /* OTAdjacenciesUpdateViewController.m */; };
 		DEB89C36199647AF00BBC9D3 /* OTChallengesUpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C35199647AF00BBC9D3 /* OTChallengesUpdateViewController.m */; };
 		DEB89C39199647D600BBC9D3 /* OTSharesUpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C38199647D600BBC9D3 /* OTSharesUpdateViewController.m */; };
@@ -163,6 +166,7 @@
 		DEE8798A1A5EE7DF0047C48F /* OTFormTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = DEE879891A5EE7DF0047C48F /* OTFormTextField.m */; };
 		DEE8799E1A62BFE10047C48F /* CDRTranslucentSideBar.m in Sources */ = {isa = PBXBuildFile; fileRef = DEE8799D1A62BFE10047C48F /* CDRTranslucentSideBar.m */; };
 		DEE879A11A62C36B0047C48F /* OTSideBarItems.m in Sources */ = {isa = PBXBuildFile; fileRef = DEE879A01A62C36B0047C48F /* OTSideBarItems.m */; };
+		DEED932E1A7E91B3007091B1 /* PDFClaimExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = DEED932D1A7E91B3007091B1 /* PDFClaimExporter.m */; };
 		DEEE28CC1991316E00B69E94 /* OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DEEE28CB1991316E00B69E94 /* OT.m */; };
 		DEEE28CF1991372D00B69E94 /* AbstractEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = DEEE28CE1991372D00B69E94 /* AbstractEntity.m */; };
 		DEEE28D2199139DD00B69E94 /* IdTypeEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = DEEE28D1199139DD00B69E94 /* IdTypeEntity.m */; };
@@ -261,6 +265,8 @@
 		DE1FB89B1A748BA100864885 /* km */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = km; path = km.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DE1FB89D1A748BA100864885 /* km */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = km; path = km.lproj/ActivityLogin.strings; sourceTree = "<group>"; };
 		DE1FB89E1A748BA100864885 /* km */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = km; path = km.lproj/Additional.strings; sourceTree = "<group>"; };
+		DE1FB8A41A754DC900864885 /* OTShowcase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTShowcase.h; path = Classes/Views/OTShowcase/OTShowcase.h; sourceTree = "<group>"; };
+		DE1FB8A51A754DC900864885 /* OTShowcase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTShowcase.m; path = Classes/Views/OTShowcase/OTShowcase.m; sourceTree = "<group>"; };
 		DE1FB8A71A757BF000864885 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Showcase.strings; sourceTree = "<group>"; };
 		DE20FE6919D40DD5008504E8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DE3124571A2C51D6001D5069 /* OTDynamicFormViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTDynamicFormViewController.h; path = "Classes/Views/MainTabBar/Claims/ClaimTabBar/Claim Update/DymanicForm/OTDynamicFormViewController.h"; sourceTree = "<group>"; };
@@ -273,6 +279,10 @@
 		DE373FB31A71724400360AA2 /* OTWMSTileOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTWMSTileOverlay.m; path = Classes/Maps/TileOverlay/OTWMSTileOverlay.m; sourceTree = "<group>"; };
 		DE373FB81A72547B00360AA2 /* FileDownloadInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileDownloadInfo.h; path = Classes/Network/FileDownloadInfo.h; sourceTree = "<group>"; };
 		DE373FB91A72547B00360AA2 /* FileDownloadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileDownloadInfo.m; path = Classes/Network/FileDownloadInfo.m; sourceTree = "<group>"; };
+		DE3ACE381A88B8CF00FFCA66 /* UIImage+OT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+OT.h"; path = "Classes/Category/UIImage+OT.h"; sourceTree = "<group>"; };
+		DE3ACE391A88B8CF00FFCA66 /* UIImage+OT.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+OT.m"; path = "Classes/Category/UIImage+OT.m"; sourceTree = "<group>"; };
+		DE4AEBB71A8DF5FF00DB6067 /* NSDate+OT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+OT.h"; path = "Classes/Category/NSDate+OT.h"; sourceTree = "<group>"; };
+		DE4AEBB81A8DF5FF00DB6067 /* NSDate+OT.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDate+OT.m"; path = "Classes/Category/NSDate+OT.m"; sourceTree = "<group>"; };
 		DE5448BD198A8D7400221700 /* libSSZipArchive.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSSZipArchive.a; path = Dependencies/libSSZipArchive.a; sourceTree = "<group>"; };
 		DE5448BE198A8D7400221700 /* libGEOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGEOS.a; path = Dependencies/libGEOS.a; sourceTree = "<group>"; };
 		DE5448C2198A8D9800221700 /* geos_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = geos_c.h; path = Dependencies/include/GEOS/geos_c.h; sourceTree = "<group>"; };
@@ -309,6 +319,8 @@
 		DE5CFBFE19ABADD400E253B0 /* NSManagedObject+OT.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSManagedObject+OT.m"; path = "Classes/Model/NSManagedObject+OT.m"; sourceTree = "<group>"; };
 		DE5CFC2219AC914700E253B0 /* DownloadClaimTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DownloadClaimTask.h; path = Classes/Network/DownloadClaimTask.h; sourceTree = "<group>"; };
 		DE5CFC2319AC914700E253B0 /* DownloadClaimTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DownloadClaimTask.m; path = Classes/Network/DownloadClaimTask.m; sourceTree = "<group>"; };
+		DE5F894F1A7C74ED00A72DDE /* MKPolygon+OT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "MKPolygon+OT.h"; path = "Classes/Category/MKPolygon+OT.h"; sourceTree = "<group>"; };
+		DE5F89501A7C74ED00A72DDE /* MKPolygon+OT.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "MKPolygon+OT.m"; path = "Classes/Category/MKPolygon+OT.m"; sourceTree = "<group>"; };
 		DE610B081A051CE100647B8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
 		DE62D1BF1A6599D000582B0C /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		DE6D1D9319CDEA780096C50B /* GeoShape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoShape.h; sourceTree = "<group>"; };
@@ -390,8 +402,6 @@
 		DEB89C29199646B600BBC9D3 /* OTClaimUpdateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTClaimUpdateViewController.m; path = "Classes/Views/MainTabBar/Claims/ClaimTabBar/Claim Add New/Claim/OTClaimUpdateViewController.m"; sourceTree = "<group>"; };
 		DEB89C2B199646E000BBC9D3 /* OTDocumentsUpdateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTDocumentsUpdateViewController.h; path = "Classes/Views/MainTabBar/Claims/ClaimTabBar/Claim Add New/Documents/OTDocumentsUpdateViewController.h"; sourceTree = "<group>"; };
 		DEB89C2C199646E000BBC9D3 /* OTDocumentsUpdateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTDocumentsUpdateViewController.m; path = "Classes/Views/MainTabBar/Claims/ClaimTabBar/Claim Add New/Documents/OTDocumentsUpdateViewController.m"; sourceTree = "<group>"; };
-		DEB89C2E1996473A00BBC9D3 /* OTAdditionalUpdateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTAdditionalUpdateViewController.h; path = "Classes/Views/MainTabBar/Claims/ClaimTabBar/Claim Add New/Additional Information/OTAdditionalUpdateViewController.h"; sourceTree = "<group>"; };
-		DEB89C2F1996473A00BBC9D3 /* OTAdditionalUpdateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTAdditionalUpdateViewController.m; path = "Classes/Views/MainTabBar/Claims/ClaimTabBar/Claim Add New/Additional Information/OTAdditionalUpdateViewController.m"; sourceTree = "<group>"; };
 		DEB89C311996477E00BBC9D3 /* OTAdjacenciesUpdateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTAdjacenciesUpdateViewController.h; path = "Classes/Views/MainTabBar/Claims/ClaimTabBar/Claim Add New/Adjacencies/OTAdjacenciesUpdateViewController.h"; sourceTree = "<group>"; };
 		DEB89C321996477E00BBC9D3 /* OTAdjacenciesUpdateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTAdjacenciesUpdateViewController.m; path = "Classes/Views/MainTabBar/Claims/ClaimTabBar/Claim Add New/Adjacencies/OTAdjacenciesUpdateViewController.m"; sourceTree = "<group>"; };
 		DEB89C34199647AF00BBC9D3 /* OTChallengesUpdateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTChallengesUpdateViewController.h; path = "Classes/Views/MainTabBar/Claims/ClaimTabBar/Claim Add New/Challenges/OTChallengesUpdateViewController.h"; sourceTree = "<group>"; };
@@ -524,6 +534,8 @@
 		DEE8799D1A62BFE10047C48F /* CDRTranslucentSideBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDRTranslucentSideBar.m; sourceTree = "<group>"; };
 		DEE8799F1A62C36B0047C48F /* OTSideBarItems.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTSideBarItems.h; path = Classes/Views/Menu/OTSideBarItems.h; sourceTree = "<group>"; };
 		DEE879A01A62C36B0047C48F /* OTSideBarItems.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTSideBarItems.m; path = Classes/Views/Menu/OTSideBarItems.m; sourceTree = "<group>"; };
+		DEED932C1A7E91B3007091B1 /* PDFClaimExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PDFClaimExporter.h; path = Classes/Print/PDFClaimExporter.h; sourceTree = "<group>"; };
+		DEED932D1A7E91B3007091B1 /* PDFClaimExporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PDFClaimExporter.m; path = Classes/Print/PDFClaimExporter.m; sourceTree = "<group>"; };
 		DEEE28CA1991316E00B69E94 /* OT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OT.h; path = Classes/Views/OT/OT.h; sourceTree = "<group>"; };
 		DEEE28CB1991316E00B69E94 /* OT.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OT.m; path = Classes/Views/OT/OT.m; sourceTree = "<group>"; };
 		DEEE28CD1991372D00B69E94 /* AbstractEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbstractEntity.h; path = Classes/Model/DataController/AbstractEntity.h; sourceTree = "<group>"; };
@@ -726,6 +738,8 @@
 		DE0D2C9F197F9F5100D248B9 /* Print */ = {
 			isa = PBXGroup;
 			children = (
+				DEED932C1A7E91B3007091B1 /* PDFClaimExporter.h */,
+				DEED932D1A7E91B3007091B1 /* PDFClaimExporter.m */,
 			);
 			name = Print;
 			sourceTree = "<group>";
@@ -862,6 +876,15 @@
 				DE86CE131A2C201B000DD7AC /* FieldPayload.m */,
 			);
 			name = "Dynamic Form";
+			sourceTree = "<group>";
+		};
+		DE1FB8A11A74B2BF00864885 /* OTShowcase */ = {
+			isa = PBXGroup;
+			children = (
+				DE1FB8A41A754DC900864885 /* OTShowcase.h */,
+				DE1FB8A51A754DC900864885 /* OTShowcase.m */,
+			);
+			name = OTShowcase;
 			sourceTree = "<group>";
 		};
 		DE3124561A2C4F7D001D5069 /* DynamicForm */ = {
@@ -1111,6 +1134,12 @@
 				DEB89C9A199B6D9D00BBC9D3 /* NSString+OT.m */,
 				DEB89C9C199B6DBB00BBC9D3 /* NSData+OT.h */,
 				DEB89C9D199B6DBB00BBC9D3 /* NSData+OT.m */,
+				DE5F894F1A7C74ED00A72DDE /* MKPolygon+OT.h */,
+				DE5F89501A7C74ED00A72DDE /* MKPolygon+OT.m */,
+				DE3ACE381A88B8CF00FFCA66 /* UIImage+OT.h */,
+				DE3ACE391A88B8CF00FFCA66 /* UIImage+OT.m */,
+				DE4AEBB71A8DF5FF00DB6067 /* NSDate+OT.h */,
+				DE4AEBB81A8DF5FF00DB6067 /* NSDate+OT.m */,
 			);
 			name = Category;
 			sourceTree = "<group>";
@@ -1218,6 +1247,7 @@
 		DEA137AA1976D28100C0C232 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				DE1FB8A11A74B2BF00864885 /* OTShowcase */,
 				DE8134E21A119EEF000B7051 /* Menu */,
 				DE5614871A10B9FC0075ABD5 /* Settings */,
 				DE1F365119907EE60035F7D7 /* AbstractViewController */,
@@ -1237,7 +1267,6 @@
 				DEB89C2619963E7700BBC9D3 /* Challenges */,
 				DEB89C2719963E8400BBC9D3 /* Shares */,
 				DE3124561A2C4F7D001D5069 /* DynamicForm */,
-				DEB89C2419963E3B00BBC9D3 /* Additional Information */,
 			);
 			name = "Claim Update";
 			sourceTree = "<group>";
@@ -1258,15 +1287,6 @@
 				DEB89C2C199646E000BBC9D3 /* OTDocumentsUpdateViewController.m */,
 			);
 			name = Documents;
-			sourceTree = "<group>";
-		};
-		DEB89C2419963E3B00BBC9D3 /* Additional Information */ = {
-			isa = PBXGroup;
-			children = (
-				DEB89C2E1996473A00BBC9D3 /* OTAdditionalUpdateViewController.h */,
-				DEB89C2F1996473A00BBC9D3 /* OTAdditionalUpdateViewController.m */,
-			);
-			name = "Additional Information";
 			sourceTree = "<group>";
 		};
 		DEB89C2519963E6800BBC9D3 /* Adjacencies */ = {
@@ -1545,7 +1565,6 @@
 				ORGANIZATIONNAME = "Food and Agriculture Organization of the United Nations (FAO)";
 				TargetAttributes = {
 					DE7952F01976AF9800AAA157 = {
-						DevelopmentTeam = 62RSNGGTGD;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1649,10 +1668,12 @@
 				DED374FA198E8A1900B48E7A /* JVFloatLabeledTextView.m in Sources */,
 				DEB89C9E199B6DBB00BBC9D3 /* NSData+OT.m in Sources */,
 				DE94CBDA19B950BD00636189 /* LandUse.m in Sources */,
+				DE4AEBB91A8DF5FF00DB6067 /* NSDate+OT.m in Sources */,
 				DEB89C2A199646B600BBC9D3 /* OTClaimUpdateViewController.m in Sources */,
 				DE7953011976AF9800AAA157 /* main.m in Sources */,
 				DEB89CEB199DFEA200BBC9D3 /* ClaimType.m in Sources */,
 				DED374F4198E8A1900B48E7A /* BPFormInfoCell.m in Sources */,
+				DE5F89511A7C74ED00A72DDE /* MKPolygon+OT.m in Sources */,
 				DEEE28CF1991372D00B69E94 /* AbstractEntity.m in Sources */,
 				DE3124591A2C51D6001D5069 /* OTDynamicFormViewController.m in Sources */,
 				DED374F3198E8A1900B48E7A /* BPFormCell.m in Sources */,
@@ -1669,6 +1690,7 @@
 				DE1F3613198F39DE0035F7D7 /* OTPersonUpdateViewController.m in Sources */,
 				DE1F363D198FC6CE0035F7D7 /* UIActionSheet+Blocks.m in Sources */,
 				DED374FB198E8A1900B48E7A /* NSString+TextDirectionality.m in Sources */,
+				DE1FB8A61A754DC900864885 /* OTShowcase.m in Sources */,
 				DE5A14E319FD75D6005643DE /* OTShareUpdateViewController.m in Sources */,
 				DED37506198E8A1900B48E7A /* UITextView+BPForms.m in Sources */,
 				DED37503198E8A1900B48E7A /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
@@ -1733,8 +1755,8 @@
 				DED374F0198E8A1900B48E7A /* BPFormTextField.m in Sources */,
 				DEEE28D2199139DD00B69E94 /* IdTypeEntity.m in Sources */,
 				DEC6184D19D1607500A89485 /* Claim.m in Sources */,
+				DEED932E1A7E91B3007091B1 /* PDFClaimExporter.m in Sources */,
 				DE56148A1A10BA2F0075ABD5 /* OTSettingViewController.m in Sources */,
-				DEB89C301996473A00BBC9D3 /* OTAdditionalUpdateViewController.m in Sources */,
 				DEB89C4E199A14B300BBC9D3 /* DirectoryWatcher.m in Sources */,
 				DE6D1D9D19CDEA780096C50B /* GeoShape.m in Sources */,
 				DEEF29F01A2336CD002A3AA6 /* SectionPayload+OT.m in Sources */,
@@ -1763,6 +1785,7 @@
 				DE5448D8198AA62100221700 /* OTNewsViewController.m in Sources */,
 				DE5CFC2419AC914700E253B0 /* DownloadClaimTask.m in Sources */,
 				DE8134EA1A12461C000B7051 /* OTSettingNavigationController.m in Sources */,
+				DE3ACE3A1A88B8CF00FFCA66 /* UIImage+OT.m in Sources */,
 				DE86CE1D1A2C220E000DD7AC /* SectionElementPayload+OT.m in Sources */,
 				DE1F365419907F5D0035F7D7 /* OTAbstractListViewController.m in Sources */,
 				DEEF29E11A2321EE002A3AA6 /* FieldPayload+OT.m in Sources */,
@@ -1867,8 +1890,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = "";
@@ -1896,7 +1919,7 @@
 					"$(PROJECT_DIR)/Dependencies",
 				);
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "79EECB71-D723-44A6-B85E-9C0FCA82D7CC";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1920,8 +1943,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1944,7 +1967,7 @@
 					"$(PROJECT_DIR)/Dependencies",
 				);
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "79EECB71-D723-44A6-B85E-9C0FCA82D7CC";
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				STRIP_STYLE = "non-global";
 				TARGETED_DEVICE_FAMILY = "1,2";

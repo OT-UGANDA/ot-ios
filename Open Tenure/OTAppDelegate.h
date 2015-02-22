@@ -39,7 +39,6 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property (copy) void (^backgroundSessionCompletionHandler)();
-@property (nonatomic, copy) void(^backgroundTransferCompletionHandler)();
 
 // For template storage
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;

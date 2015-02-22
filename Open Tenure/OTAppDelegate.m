@@ -32,6 +32,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [OTSetting getReInitialization];
+    
     [self managedObjectContext];
     
     // Check document opened with OpenTenure
@@ -39,12 +41,49 @@
     if (url != nil) {
         [FileSystemUtilities copyFileFromSource:url toDestination:[FileSystemUtilities applicationDocumentsDirectory]];
     }
+    
+    [self registerForRemoteNotification];
+    
     return YES;
 }
 
 - (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler {
 	self.backgroundSessionCompletionHandler = completionHandler;
-    self.backgroundTransferCompletionHandler = completionHandler;
+    [self presentNotification];
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    application.applicationIconBadgeNumber = 0;
+}
+
+- (void)registerForRemoteNotification {
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0f) {
+        UIUserNotificationType types = UIUserNotificationTypeSound | UIUserNotificationTypeBadge | UIUserNotificationTypeAlert;
+        UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
+    } else {
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    }
+}
+
+#ifdef __IPHONE_8_0
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
+    [application registerForRemoteNotifications];
+}
+#endif
+
+-(void)presentNotification{
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    localNotification.alertBody = @"Download Complete!";
+    localNotification.alertAction = @"Background Transfer Download!";
+
+    //On sound
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
+    
+    //increase the badge number of application plus 1
+    localNotification.applicationIconBadgeNumber = [[UIApplication sharedApplication] applicationIconBadgeNumber] + 1;
+    
+    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
 }
 
 - (NSManagedObjectContext *)managedObjectContext {

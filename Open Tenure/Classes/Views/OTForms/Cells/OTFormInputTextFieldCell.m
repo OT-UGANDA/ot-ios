@@ -68,7 +68,7 @@
         self.mandatory = mandatory;
         self.customCellHeight = cellHeight;
         self.textField.keyboardType = keyboardType;
-        if ((viewType == OTViewTypeAdd) && mandatory) {
+        if ((viewType != OTViewTypeView) && mandatory) {
             // Set init to invalid
             self.validationState = BPFormValidationStateInvalid;
             // Clear validation state when begin editing

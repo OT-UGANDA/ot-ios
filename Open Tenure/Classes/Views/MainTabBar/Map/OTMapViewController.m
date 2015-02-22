@@ -48,7 +48,7 @@
 #import "CDRTranslucentSideBar.h"
 #import "OTSideBarItems.h"
 
-
+#import "OTShowcase.h"
 
 #define TILE_SIZE 256
 
@@ -57,7 +57,7 @@
     GeoShapeVertex *workingVertex;
     BOOL snapped;
     id tileOverlay;
-  
+    OTShowcase *showcase;
     BOOL multipleShowcase;
     NSInteger currentShowcaseIndex;
     
@@ -92,8 +92,6 @@
 
 @property (nonatomic, strong) NSURLSession *session;
 @property (nonatomic, strong) NSMutableArray *arrFileDownloadData;
-
-@property (assign) OTViewType viewType;
 
 @property (nonatomic) NSOperationQueue *parseQueue;
 @property (nonatomic) NSOperationQueue *downloadTileQueue;
@@ -177,10 +175,9 @@
     
     [self configureDashboard];
     
-    self.viewType = _claim.getViewType;
-    if (_viewType == OTViewTypeView) { // Readonly
+    if (_claim.getViewType == OTViewTypeView) { // Readonly
         // TODO: Vẽ các marker cho polygon (không cho phép sửa
-    } else if (_viewType == OTViewTypeEdit) { // Editable
+    } else if (_claim.getViewType == OTViewTypeEdit) { // Editable
         
     } else { // Add new
 
@@ -266,9 +263,9 @@
         _claim.gpsGeometry = nil;
         _claim.mappedGeometry = nil;
     }
-    if (_claim.isSaved && [_claim.managedObjectContext hasChanges]) {
-        [_claim.managedObjectContext save:nil];
-    }
+//    if (_claim.isSaved && [_claim.managedObjectContext hasChanges]) {
+//        [_claim.managedObjectContext save:nil];
+//    }
     
     [super viewWillDisappear:animated];
 }
@@ -339,18 +336,65 @@
 
 #pragma mark - OTShowcase & OTShowcaseDelegate methods
 - (void)configureShowcase {
-  
+    showcase = [[OTShowcase alloc] init];
+    showcase.delegate = self;
+    [showcase setBackgroundColor:[UIColor otDarkBlue]];
+    [showcase setTitleColor:[UIColor greenColor]];
+    [showcase setDetailsColor:[UIColor whiteColor]];
+    [showcase setHighlightColor:[UIColor whiteColor]];
+    [showcase setContainerView:[[[[[UIApplication sharedApplication] delegate] window] subviews] objectAtIndex:0]];
+    __strong typeof(showcase) showcase_ = showcase;
+    showcase.nextActionBlock = ^(void){
+        [showcase_ showcaseTapped];
+    };
+    showcase.skipActionBlock = ^(void) {
+        [showcase_ setShowing:NO];
+        [showcase_ showcaseTapped];
+    };
 }
 
 - (IBAction)defaultShowcase:(id)sender {
-  
+    [self configureShowcase];
+    if (_showcaseTargetList.count == 0 || [showcase isShowing]) return;
+    
+    // Set zoomLevel to maxZoom for showing file download button
+    MKCoordinateRegion region = self.mapView.region;
+    region.span = MKCoordinateSpanMake(0.01f, 0.01f);
+    [self.mapView setRegion:region animated:NO];
+    
+    NSDictionary *item = [_showcaseTargetList objectAtIndex:0];
+    [showcase setIType:[[item objectForKey:@"type"] intValue]];
+    [showcase setupShowcaseForTarget:[item objectForKey:@"target"]  title:[item objectForKey:@"title"] details:[item objectForKey:@"detail"]];
+    [showcase show];
 }
 
 #pragma mark - OTShowcaseDelegate methods
 - (void)OTShowcaseShown{}
 
 - (void)OTShowcaseDismissed {
-   }
+    currentShowcaseIndex++;
+    if (![showcase isShowing]) {
+        currentShowcaseIndex = 0;
+        if (!_customShowcase)
+            [[NSNotificationCenter defaultCenter] postNotificationName:kSetMainTabBarIndexNotificationName object:[NSNumber numberWithInteger:0] userInfo:nil];
+        else
+            [[NSNotificationCenter defaultCenter] postNotificationName:kSetClaimTabBarIndexNotificationName object:[NSNumber numberWithInteger:0] userInfo:nil];
+    } else {
+        if (currentShowcaseIndex < _showcaseTargetList.count) {
+            NSDictionary *item = [_showcaseTargetList objectAtIndex:currentShowcaseIndex];
+            [showcase setIType:[[item objectForKey:@"type"] intValue]];
+            [showcase setupShowcaseForTarget:[item objectForKey:@"target"]  title:[item objectForKey:@"title"] details:[item objectForKey:@"detail"]];
+            [showcase show];
+        } else {
+            currentShowcaseIndex = 0;
+            [showcase setShowing:NO];
+            if (!_customShowcase)
+                [[NSNotificationCenter defaultCenter] postNotificationName:kSetMainTabBarIndexNotificationName object:[NSNumber numberWithInteger:2] userInfo:@{@"action":@"showcase"}];
+            else
+                [[NSNotificationCenter defaultCenter] postNotificationName:kSetClaimTabBarIndexNotificationName object:[NSNumber numberWithInteger:2] userInfo:@{@"action":@"showcase"}];
+        }
+    }
+}
 
 #pragma mark - configure
 - (void)configureSideBarMenu {
@@ -805,9 +849,9 @@
             break;
         }
         case 4: { // Add action
-            if (_viewType == OTViewTypeAdd) {
+            if (_claim.getViewType == OTViewTypeAdd) {
                 [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"message_save_claim_before_adding_content", nil)];
-            } else if (_viewType == OTViewTypeView) {
+            } else if (_claim.getViewType == OTViewTypeView) {
                 return;
             } else {
                 MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
@@ -890,9 +934,9 @@
 #pragma handler touch on the map
 
 - (IBAction)handleLongPress:(id)sender {
-    if (_viewType == OTViewTypeAdd) {
+    if (_claim.getViewType == OTViewTypeAdd) {
         [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"message_save_claim_before_adding_content", nil)];
-    } else if (_viewType == OTViewTypeView) {
+    } else if (_claim.getViewType == OTViewTypeView) {
         return;
     } else {
         UIGestureRecognizer *gestureRecognizer = sender;
@@ -1234,6 +1278,8 @@
 }
 
 - (IBAction)mapSnapshot:(id)sender {
+    // Lưu claim trước khi snapshot
+    [_claim.managedObjectContext save:nil];
     
     [FileSystemUtilities createClaimFolder:_claim.claimId];
     
@@ -1368,7 +1414,7 @@
         NSString *file = [[FileSystemUtilities getAttachmentFolder:_claim.claimId] stringByAppendingPathComponent:fileName];
         [imageData writeToFile:file atomically:NO];
         NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
-        [dictionary setValue:[[OT dateFormatter] stringFromDate:[NSDate date]] forKey:@"documentDate"];
+        [dictionary setValue:[[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10] forKey:@"documentDate"];
         [dictionary setValue:@"image/png" forKey:@"mimeType"];
         [dictionary setValue:fileName  forKey:@"fileName"];
         [dictionary setValue:@"png" forKey:@"fileExtension"];
@@ -1633,12 +1679,12 @@
             if (!pin) {
                 pin = [[GeoShapeAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
                 
-                pin.draggable = (_viewType == OTViewTypeView) ? NO : YES;
+                pin.draggable = (_claim.getViewType == OTViewTypeView) ? NO : YES;
                 pin.canShowCallout = YES;
 //                UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(1, 0, 25, 25)];
 //                UIImage *btnImage = [UIImage imageNamed:@"Icon-remove"];
 //                [deleteButton setImage:btnImage forState:UIControlStateNormal];
-//                if (_viewType != OTViewTypeView)
+//                if (_claim.getViewType != OTViewTypeView)
 //                    pin.rightCalloutAccessoryView = deleteButton;
             }
             [pin setSelected:YES animated:YES];
@@ -1721,7 +1767,7 @@
         }
     } else if ([view isKindOfClass:[GeoShapeAnnotationView class]]) {
         if (!_dashboardActionShowing) {
-            _dashboardMenuShowing = (_viewType == OTViewTypeView) ? NO : YES;
+            _dashboardMenuShowing = (_claim.getViewType == OTViewTypeView) ? NO : YES;
             _selectedMarkerView = view; // Dùng để xác định frame khi hiện bảng điều khiển marker
             NSInteger tag = 0;
             NSString *title = [view.annotation title];

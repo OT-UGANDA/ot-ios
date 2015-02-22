@@ -29,12 +29,12 @@
 #import "OTDocumentsUpdateViewController.h"
 #import "OTFileChooserViewController.h"
 #import <QuickLook/QuickLook.h>
-
+#import "OTShowcase.h"
 
 @interface OTDocumentsUpdateViewController () <OTFileChooserViewControllerDelegate, UITextFieldDelegate, QLPreviewControllerDelegate, QLPreviewControllerDataSource, UIDocumentInteractionControllerDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPickerViewDelegate> {
     NSURL *documentURL;
     
-  
+    OTShowcase *showcase;
     BOOL multipleShowcase;
     NSInteger currentShowcaseIndex;
 }
@@ -88,18 +88,53 @@
 
 #pragma mark - OTShowcase & OTShowcaseDelegate methods
 - (void)configureShowcase {
-   
+    showcase = [[OTShowcase alloc] init];
+    showcase.delegate = self;
+    [showcase setBackgroundColor:[UIColor otDarkBlue]];
+    [showcase setTitleColor:[UIColor greenColor]];
+    [showcase setDetailsColor:[UIColor whiteColor]];
+    [showcase setHighlightColor:[UIColor whiteColor]];
+    [showcase setContainerView:self.navigationController.navigationBar.superview];
+    __strong typeof(showcase) showcase_ = showcase;
+    showcase.nextActionBlock = ^(void){
+        [showcase_ showcaseTapped];
+    };
+    showcase.skipActionBlock = ^(void) {
+        [showcase_ setShowing:NO];
+        [showcase_ showcaseTapped];
+    };
 }
 
 - (IBAction)defaultShowcase:(id)sender {
- 
+    [self configureShowcase];
+    if (_showcaseTargetList.count == 0 || [showcase isShowing]) return;
+    NSDictionary *item = [_showcaseTargetList objectAtIndex:0];
+    [showcase setIType:[[item objectForKey:@"type"] intValue]];
+    [showcase setupShowcaseForTarget:[item objectForKey:@"target"]  title:[item objectForKey:@"title"] details:[item objectForKey:@"detail"]];
+    [showcase show];
 }
 
 #pragma mark - OTShowcaseDelegate methods
 - (void)OTShowcaseShown{}
 
 - (void)OTShowcaseDismissed {
-   }
+    currentShowcaseIndex++;
+    if (![showcase isShowing]) {
+        currentShowcaseIndex = 0;
+        [[NSNotificationCenter defaultCenter] postNotificationName:kSetClaimTabBarIndexNotificationName object:[NSNumber numberWithInteger:0] userInfo:nil];
+    } else {
+        if (currentShowcaseIndex < _showcaseTargetList.count) {
+            NSDictionary *item = [_showcaseTargetList objectAtIndex:currentShowcaseIndex];
+            [showcase setIType:[[item objectForKey:@"type"] intValue]];
+            [showcase setupShowcaseForTarget:[item objectForKey:@"target"]  title:[item objectForKey:@"title"] details:[item objectForKey:@"detail"]];
+            [showcase show];
+        } else {
+            currentShowcaseIndex = 0;
+            [showcase setShowing:NO];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kSetClaimTabBarIndexNotificationName object:[NSNumber numberWithInteger:3] userInfo:@{@"action":@"showcase"}];
+        }
+    }
+}
 
 #pragma mark - Data
 
@@ -162,9 +197,10 @@
         attachment = [_fetchedResultsController objectAtIndexPath:indexPath];
     else
         attachment = [_filteredObjects objectAtIndex:indexPath.row];
-    
-    cell.textLabel.text = [NSString stringWithFormat:@"%@, Type: %@", attachment.note, attachment.mimeType];
-    cell.detailTextLabel.text = attachment.statusCode;
+    cell.textLabel.numberOfLines = 0;
+    cell.textLabel.text = [NSString stringWithFormat:@"%@\n%@", attachment.note, attachment.typeCode.displayValue];
+    cell.detailTextLabel.numberOfLines = 0;
+    cell.detailTextLabel.text = attachment.mimeType;
 }
 
 #pragma Bar Buttons Action
@@ -191,7 +227,7 @@
     NSData *fileData = [NSData dataWithContentsOfFile:file];
     NSString *md5 = [fileData md5];
     self.dictionary = [NSMutableDictionary dictionary];
-    [_dictionary setValue:[[OT dateFormatter] stringFromDate:[NSDate date]] forKey:@"documentDate"];
+    [_dictionary setValue:[[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10] forKey:@"documentDate"];
     [_dictionary setValue:uti forKey:@"mimeType"];
     [_dictionary setValue:[file lastPathComponent] forKey:@"fileName"];
     [_dictionary setValue:[[file lastPathComponent] pathExtension] forKey:@"fileExtension"];
@@ -277,6 +313,8 @@
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
     _textField = textField;
+    NSUInteger index = [_docTypeDisplayValue indexOfObject:_textField.text];
+    [_pickerView selectRow:index inComponent:0 animated:NO];
     [_textField setInputView:_pickerView];
 }
 
@@ -302,15 +340,53 @@
 #pragma UITableViewDelegate methods
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    Attachment *attachment;
+    
+    if (_filteredObjects == nil)
+        attachment = [_fetchedResultsController objectAtIndexPath:indexPath];
+    else
+        attachment = [_filteredObjects objectAtIndex:indexPath.row];
+
     static NSString *CellIdentifier = @"Cell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
-    if (!cell)
+    if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     
+    NSString *filePath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
+    filePath = [filePath stringByAppendingPathComponent:attachment.fileName];
+    BOOL isFileExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+    if (!isFileExist) {
+        cell.accessoryType = UITableViewCellAccessoryDetailButton;
+        cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_menu_download_document"]];
+    } else if (_claim.getViewType != OTViewTypeView) {
+        cell.accessoryType = UITableViewCellAccessoryDetailButton;
+        NSString *imageName = @"action_edit_document";
+        UIImage *bgImage = [UIImage imageNamed:imageName];
+        UIButton *actionBtn = [UIButton  buttonWithType:UIButtonTypeCustom];
+        actionBtn.frame = CGRectMake(0, 0, bgImage.size.width, bgImage.size.height);
+        [actionBtn setBackgroundImage:bgImage
+                             forState:UIControlStateNormal];
+        actionBtn.backgroundColor = [UIColor clearColor];
+        
+        actionBtn.tag = indexPath.row;
+        [actionBtn addTarget:self action:@selector(checkButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
+        
+        cell.accessoryView = actionBtn;
+    }
     [self configureCell:cell forTableView:tableView atIndexPath:indexPath];
     return cell;
+}
+
+- (void)checkButtonTapped:(id)sender event:(id)event{
+    NSSet *touches = [event allTouches];
+    UITouch *touch = [touches anyObject];
+    CGPoint currentTouchPosition = [touch locationInView:_tableView];
+    NSIndexPath *indexPath = [_tableView indexPathForRowAtPoint: currentTouchPosition];
+    if (indexPath != nil){
+        [self tableView:_tableView accessoryButtonTappedForRowWithIndexPath: indexPath];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -326,8 +402,8 @@
     
     BOOL isFileExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
     if (!isFileExist) {
-        NSString *title = @"Download attachment";
-        NSString *message = @"This file does not exist in local. Do you want to download?";
+        NSString *title = NSLocalizedStringFromTable(@"title_download_document", @"Additional", nil);
+        NSString *message = NSLocalizedStringFromTable(@"message_download_document", @"Additional", nil);
         [UIAlertView showWithTitle:title message:message cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"OK", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
             if (buttonIndex != alertView.cancelButtonIndex) {
                 [FileSystemUtilities createClaimFolder:attachment.claim.claimId];
@@ -355,6 +431,34 @@
     }
 }
 
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    Attachment *attachment;
+    
+    if (_filteredObjects == nil)
+        attachment = [_fetchedResultsController objectAtIndexPath:indexPath];
+    else
+        attachment = [_filteredObjects objectAtIndex:indexPath.row];
+    NSString *filePath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
+    filePath = [filePath stringByAppendingPathComponent:attachment.fileName];
+    
+    NSString *title = NSLocalizedString(@"app_name", nil);
+    NSString *message = nil;
+    [UIAlertView showWithTitle:title message:message placeholder0:NSLocalizedString(@"message_enter_description", nil) defaultText0:attachment.note delegate0:nil placeholder1:NSLocalizedString(@"message_select_document_type", nil) defaultText1:attachment.typeCode.displayValue delegate1:self cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"confirm", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+        if (buttonIndex != alertView.cancelButtonIndex) {
+            attachment.note = [[alertView textFieldAtIndex:0] text];
+            
+            DocumentTypeEntity *docTypeEntity = [DocumentTypeEntity new];
+            [docTypeEntity setManagedObjectContext:attachment.managedObjectContext];
+            NSArray *docTypeCollection = [docTypeEntity getCollection];
+            NSString *typeCode = [[alertView textFieldAtIndex:1] text];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(displayValue CONTAINS[cd] %@)", typeCode];
+            DocumentType *docType = [[docTypeCollection filteredArrayUsingPredicate:predicate] firstObject];
+            attachment.typeCode = docType;
+            [attachment.managedObjectContext save:nil];
+        }
+    }];
+}
+
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     return !_claim.getViewType == OTViewTypeView;
 }
@@ -368,6 +472,10 @@
         Attachment *attachment = [_fetchedResultsController objectAtIndexPath:indexPath];
         [self.managedObjectContext deleteObject:attachment];
     }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 64;
 }
 
 #pragma mark - QLPreviewControllerDataSource
@@ -473,7 +581,7 @@
             NSString *md5 = [fileData md5];
             
             self.dictionary = [NSMutableDictionary dictionary];
-            [_dictionary setValue:[[OT dateFormatter] stringFromDate:[NSDate date]] forKey:@"documentDate"];
+            [_dictionary setValue:[[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10] forKey:@"documentDate"];
             [_dictionary setValue:@"image/jpg" forKey:@"mimeType"];
             [_dictionary setValue:fileName  forKey:@"fileName"];
             [_dictionary setValue:@"jpg" forKey:@"fileExtension"];

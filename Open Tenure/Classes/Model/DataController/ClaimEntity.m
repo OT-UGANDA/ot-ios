@@ -122,24 +122,25 @@
     
     Claim *newObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
     newObject.claimId = [[[NSUUID UUID] UUIDString] lowercaseString];
-    newObject.statusCode = kClaimStatusCreated;
+    newObject.statusCode = kClaimStatusUpdating;
+    newObject.nr = @"Z"; // sort by nr
     return newObject;
 }
 
 - (Claim *)create {
     Claim *entityObject = [NSEntityDescription insertNewObjectForEntityForName:[self entityName] inManagedObjectContext:self.managedObjectContext];
     entityObject.claimId = [[[NSUUID UUID] UUIDString] lowercaseString];
-    entityObject.statusCode = kClaimStatusCreated;
+    entityObject.statusCode = kClaimStatusUpdating;
     
     NSDate *currentDate = [NSDate date];
-    entityObject.lodgementDate = [[OT dateFormatter] stringFromDate:currentDate];
+    entityObject.lodgementDate = [[[OT dateFormatter] stringFromDate:currentDate] substringToIndex:10];
     
     NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
     [dateComponents setMonth:1];
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDate *challengeExpiryDate = [calendar dateByAddingComponents:dateComponents toDate:currentDate options:0];
-    entityObject.challengeExpiryDate = [[OT dateFormatter] stringFromDate:challengeExpiryDate];
-    entityObject.nr = @"0001";
+    entityObject.challengeExpiryDate = [[[OT dateFormatter] stringFromDate:challengeExpiryDate] substringToIndex:10];
+    entityObject.nr = @"Z"; // sort by nr
     return entityObject;
 }
 

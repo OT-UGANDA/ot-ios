@@ -67,5 +67,6 @@
 - (NSUInteger)noOfLettersInSearch;
 - (NSUInteger)fetchBatchSize;
 - (BOOL)showIndexes;
+- (BOOL)sortAscending;
 
 @end

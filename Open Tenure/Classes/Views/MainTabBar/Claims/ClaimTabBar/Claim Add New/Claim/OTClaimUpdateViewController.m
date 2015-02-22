@@ -40,7 +40,7 @@
 
 #import "PDFClaimExporter.h"
 #import <QuickLook/QuickLook.h>
-
+#import "OTShowcase.h"
 
 typedef NS_ENUM(NSInteger, OTCell) {
     OTCellClaimTypeTag = 1001,
@@ -52,7 +52,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
 @interface OTClaimUpdateViewController () <OTSelectionTabBarViewControllerDelegate, UIPickerViewDelegate, QLPreviewControllerDelegate, QLPreviewControllerDataSource, UIViewControllerTransitioningDelegate> {
     NSURL *documentURL;
     
-  
+    OTShowcase *showcase;
     BOOL multipleShowcase;
     NSInteger currentShowcaseIndex;
 }
@@ -74,7 +74,6 @@ typedef NS_ENUM(NSInteger, OTCell) {
 @property (nonatomic, strong) __block OTFormCell *claimTypeBlock;
 @property (nonatomic, strong) __block OTFormCell *landUseBlock;
 @property (nonatomic, strong) __block OTFormCell *startDateBlock;
-@property (assign) OTViewType viewType;
 
 @property (nonatomic, strong) UIView *pickerViewBackground;
 @property (nonatomic, strong) UIView *datePickerBackground;
@@ -108,8 +107,6 @@ typedef NS_ENUM(NSInteger, OTCell) {
     
     // Dùng để view claim và person sử dụng context khi ở trạng thái select
     [_claim setToTemporary];
-    
-    self.viewType = _claim.getViewType;
 }
 
 - (void)viewDidLoad {
@@ -138,7 +135,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
                                          mandatory:YES
                                   customCellHeight:customCellHeight
                                       keyboardType:UIKeyboardTypeAlphabet
-                                          viewType:self.viewType];
+                                          viewType:_claim.getViewType];
     claimName.didBeginEditingBlock =  ^void(BPFormInputCell *inCell, NSString *inText){
         [self hidePickers];
     };
@@ -146,7 +143,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
         if (inText.length > 0) {
             inCell.validationState = BPFormValidationStateValid;
             inCell.shouldShowInfoCell = NO;
-            if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
+            if (_claim.getViewType != OTViewTypeView)
                 _claim.claimName = inText;
         } else {
             inCell.validationState = BPFormValidationStateInvalid;
@@ -155,7 +152,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
         }
         return YES;
     };
-    if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
+    if (_claim.getViewType != OTViewTypeView)
         [claimName.textField becomeFirstResponder];
     claimName.textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
     
@@ -204,7 +201,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     // Date of right's start (YYYY-MM-DD)
     [self setHeaderTitle:NSLocalizedString(@"date_of_start_label", nil) forSection:3];
     if (_claim.startDate == nil)
-        _claim.startDate = [[OT dateFormatter] stringFromDate:[NSDate date]];
+        _claim.startDate = [[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10];
     
     OTFormCell *startDate = [[OTFormCell alloc] initWithFrame:CGRectZero];
     _startDateBlock = startDate;
@@ -243,13 +240,13 @@ typedef NS_ENUM(NSInteger, OTCell) {
                                          mandatory:NO
                                   customCellHeight:customCellHeight * 1.5
                                       keyboardType:UIKeyboardTypeDefault
-                                          viewType:self.viewType];
+                                          viewType:_claim.getViewType];
     claimNotes.didBeginEditingBlock =  ^void(BPFormInputCell *inCell, NSString *inText){
         [self hidePickers];
     };
     claimNotes.textLabel.numberOfLines = 0;
     claimNotes.shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
-        if (self.viewType == OTViewTypeAdd || self.viewType == OTViewTypeEdit)
+        if (_claim.getViewType != OTViewTypeView)
             _claim.notes = inText;
         return YES;
     };
@@ -315,6 +312,10 @@ typedef NS_ENUM(NSInteger, OTCell) {
     _challengedBlock.imageView.image = _claim.challenged == nil ? [UIImage imageNamed:@"ic_action_add_claimant"] : [UIImage imageNamed:@"ic_action_remove_claimant"];
     NSString *challengedTitle = _claim.challenged != nil ? [_claim.challenged claimName] : NSLocalizedString(@"message_touch_to_select_a_claim", nil);
     _challengedBlock.textLabel.attributedText = [OT getAttributedStringFromText:challengedTitle];
+    
+    if (_claim.getViewType != OTViewTypeView) {
+        [self checkInvalidCell];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -357,7 +358,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
 
 #pragma mark - OTShowcase & OTShowcaseDelegate methods
 - (void)configureShowcase {
-   /* showcase = [[OTShowcase alloc] init];
+    showcase = [[OTShowcase alloc] init];
     showcase.delegate = self;
     [showcase setBackgroundColor:[UIColor otDarkBlue]];
     [showcase setTitleColor:[UIColor greenColor]];
@@ -372,11 +373,11 @@ typedef NS_ENUM(NSInteger, OTCell) {
     showcase.skipActionBlock = ^(void) {
         [showcase_ setShowing:NO];
         [showcase_ showcaseTapped];
-    };*/
+    };
 }
 
 - (IBAction)defaultShowcase:(id)sender {
-  /*  [self configureShowcase];
+    [self configureShowcase];
     if (sender != nil) {
         multipleShowcase = ![[sender objectForKey:@"action"] isEqualToString:@"close"];
     } else {
@@ -387,22 +388,21 @@ typedef NS_ENUM(NSInteger, OTCell) {
     [showcase setIType:[[item objectForKey:@"type"] intValue]];
     [showcase setupShowcaseForTarget:[item objectForKey:@"target"]  title:[item objectForKey:@"title"] details:[item objectForKey:@"detail"]];
     [showcase show];
-   */
 }
 
 #pragma mark - OTShowcaseDelegate methods
 - (void)OTShowcaseShown{
-   /* if (currentShowcaseIndex == _showcaseTargetList.count - 1 && !multipleShowcase) {
+    if (currentShowcaseIndex == _showcaseTargetList.count - 1 && !multipleShowcase) {
         NSString *title = NSLocalizedStringFromTable(@"close", @"Showcase", nil);
         [showcase.nextButton setTitle:title forState:UIControlStateNormal];
         [showcase.nextButton setTitle:title forState:UIControlStateHighlighted];
         
         [showcase.skipButton removeFromSuperview];
-    } */
+    }
 }
 
 - (void)OTShowcaseDismissed {
-  /*  currentShowcaseIndex++;
+    currentShowcaseIndex++;
     if (![showcase isShowing]) {
         currentShowcaseIndex = 0;
         [[NSNotificationCenter defaultCenter] postNotificationName:kSetClaimTabBarIndexNotificationName object:[NSNumber numberWithInteger:0] userInfo:nil];
@@ -418,7 +418,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
             if (multipleShowcase)
                 [[NSNotificationCenter defaultCenter] postNotificationName:kSetClaimTabBarIndexNotificationName object:[NSNumber numberWithInteger:1] userInfo:@{@"action":@"showcase"}];
         }
-    } */
+    }
 }
 
 - (IBAction)addPerson:(id)sender {
@@ -467,8 +467,10 @@ typedef NS_ENUM(NSInteger, OTCell) {
     NSInteger i = 0;
     while (i < self.formCells.count) {
         for (OTFormInputTextFieldCell *cell in self.formCells[i]) {
-            if (cell.validationState == BPFormValidationStateInvalid) {
-                [self performSelector:@selector(showInvalidCell:) withObject:cell afterDelay:3];
+            if ([cell isKindOfClass:[OTFormInputTextFieldCell class]]) {
+                if (cell.validationState == BPFormValidationStateInvalid) {
+                    [self performSelector:@selector(showInvalidCell:) withObject:cell afterDelay:0.3];
+                }
             }
         }
         i++;
@@ -487,6 +489,35 @@ typedef NS_ENUM(NSInteger, OTCell) {
     share.claim = _claim;
 }
 
+- (BOOL)updateClaimStatus {
+    if (_claim.getViewType != OTViewTypeView) {
+        BOOL updating = NO;
+        for (SectionPayload *sectionPayload in _claim.dynamicForm.sectionPayloadList) {
+            for (SectionElementPayload *sectionElementPayload in sectionPayload.sectionElementPayloadList) {
+                for (FieldPayload *fieldPayload in sectionElementPayload.fieldPayloadList) {
+                    if ([fieldPayload.fieldTemplate.fieldType isEqualToString:@"TEXT"]) {
+                        BOOL mandatory = NO;
+                        for (FieldConstraint *fieldConstraint in fieldPayload.fieldTemplate.fieldConstraintList)
+                            if ([fieldConstraint.fieldConstraintType isEqualToString:@"NOT_NULL"]) mandatory = YES;
+                        if (mandatory && fieldPayload.stringPayload.length == 0)
+                            updating = YES;
+                    }
+                }
+            }
+        }
+        if (_claim.mappedGeometry == nil) {
+            _claim.statusCode = kClaimStatusUpdating;
+        } else if (updating) {
+            _claim.statusCode = kClaimStatusUpdating;
+            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"message_error_mandatory_fields", nil)];
+        } else {
+            _claim.statusCode = kClaimStatusCreated;
+            return YES;
+        }
+    }
+    return NO;
+}
+
 static bool allCellChecked = false;
 - (IBAction)save:(id)sender {
     [self.sideBarMenu dismiss];
@@ -496,14 +527,19 @@ static bool allCellChecked = false;
         } else if ([_claim.managedObjectContext hasChanges]) {
             [FileSystemUtilities createClaimFolder:_claim.claimId];
             [self updateShare];
-            [_claim.managedObjectContext save:nil];
-            [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_saved", nil)];
-            [self setupView];
+            if ([self updateClaimStatus]) {
+                if ([_claim.managedObjectContext save:nil])
+                    [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"message_saved", nil)];
+            } else {
+                [_claim.managedObjectContext save:nil];
+            }
         }
     } else {
-        if (!allCellChecked) [self checkInvalidCell];
+        if (!allCellChecked)
+            [self checkInvalidCell];
         [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"message_error_mandatory_fields", nil)];
     }
+    [self setupView];
 }
 
 - (IBAction)cancel:(id)sender {
@@ -513,7 +549,7 @@ static bool allCellChecked = false;
             [_claim.managedObjectContext deleteObject:_claim];
         }];
     } else {
-        if ([_claim.managedObjectContext hasChanges] && self.viewType == OTViewTypeEdit) {
+        if ([_claim.managedObjectContext hasChanges] && _claim.getViewType != OTViewTypeView) {
             [UIAlertView showWithTitle:NSLocalizedStringFromTable(@"title_save_dialog", @"Additional", nil) message:NSLocalizedStringFromTable(@"message_save_dialog", @"Additional", nil)
                                  style:UIAlertViewStyleDefault cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"action_save", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                                      if (buttonIndex == 1) {
@@ -531,7 +567,6 @@ static bool allCellChecked = false;
             [self.navigationController dismissViewControllerAnimated:NO completion:nil];
         }
     }
-    
 }
 
 - (IBAction)done:(id)sender {
@@ -646,7 +681,7 @@ static bool allCellChecked = false;
 }
 
 - (IBAction)pickerClaimTypeShow:(UIGestureRecognizer *)sender {
-    if (self.viewType == OTViewTypeView) return;
+    if (_claim.getViewType == OTViewTypeView) return;
     if (![self isPickerClaimTypeShowing] && ![self isPickerLandUseShowing] && ![self isDatePickerShowing]) {
         [self dismissKeyboard];
         CGRect frame = _claimTypeBlock.textLabel.frame;
@@ -677,7 +712,7 @@ static bool allCellChecked = false;
 }
 
 - (IBAction)pickerLandUseShow:(UIGestureRecognizer *)sender {
-    if (self.viewType == OTViewTypeView) return;
+    if (_claim.getViewType == OTViewTypeView) return;
     if (![self isPickerClaimTypeShowing] && ![self isPickerLandUseShowing] && ![self isDatePickerShowing]) {
         [self dismissKeyboard];
         CGRect frame = _landUseBlock.textLabel.frame;
@@ -708,7 +743,7 @@ static bool allCellChecked = false;
 }
 
 - (IBAction)datePickerShow:(UIGestureRecognizer *)sender {
-    if (self.viewType == OTViewTypeView) return;
+    if (_claim.getViewType == OTViewTypeView) return;
     if (![self isPickerClaimTypeShowing] && ![self isPickerLandUseShowing] && ![self isDatePickerShowing]) {
         [self dismissKeyboard];
         CGRect frame = _startDateBlock.textLabel.frame;
@@ -767,8 +802,8 @@ static bool allCellChecked = false;
 #pragma handle UIDatePicker method
 
 - (IBAction)datePickerChanged:(UIDatePicker *)sender {
-    NSString *dateString = [[OT dateFormatter] stringFromDate:[sender date]];
-    _startDateBlock.textLabel.attributedText = [OT getAttributedStringFromText:[dateString substringToIndex:10]];
+    NSString *dateString = [[[OT dateFormatter] stringFromDate:[sender date]] substringToIndex:10];
+    _startDateBlock.textLabel.attributedText = [OT getAttributedStringFromText:dateString];
     _claim.startDate = dateString;
 }
 
@@ -823,7 +858,7 @@ static bool allCellChecked = false;
 }
 
 - (void)showLandUsePicker {
-    //    if (self.viewType == OTViewTypeView) return;
+    //    if (_claim.getViewType == OTViewTypeView) return;
     //    [_pickerView setPickType:PickTypeList];
     //    [_pickerView setPickItems:_landUseDisplayValue];
     //    [_pickerView attachWithTextField:_landUseBlock.textField];
@@ -832,7 +867,7 @@ static bool allCellChecked = false;
 }
 
 - (void)showStartDatePicker {
-    //    if (self.viewType == OTViewTypeView) return;
+    //    if (_claim.getViewType == OTViewTypeView) return;
     //    [_pickerView attachWithTextField:_startDateBlock.textField];
     //    [_pickerView setPickType:PickTypeDate];
     //    [_startDateBlock.textField becomeFirstResponder];

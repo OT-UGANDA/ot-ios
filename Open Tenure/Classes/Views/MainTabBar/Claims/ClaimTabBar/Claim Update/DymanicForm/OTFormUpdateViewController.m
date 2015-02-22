@@ -104,23 +104,45 @@
             };
             
         } else if ([fieldTemplate.fieldType isEqualToString:@"DECIMAL"]) {
+            // Kiểm tra field NOT_NULL
+            BOOL mandatory = NO;
+            for (FieldConstraint *object in fieldTemplate.fieldConstraintList)
+                if ([object.fieldConstraintType isEqualToString:@"NOT_NULL"]) mandatory = YES;
+            
             cell = [[OTFormInputTextFieldCell alloc] initWithText:[fieldPayload.bigDecimalPayload stringValue]
                                                       placeholder:fieldTemplate.hint
                                                          delegate:self
-                                                        mandatory:NO
+                                                        mandatory:mandatory
                                                  customCellHeight:customCellHeight
                                                      keyboardType:UIKeyboardTypeDefault
                                                          viewType:_claim.getViewType];
-
-            ((OTFormInputTextFieldCell *)cell).shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
-                if (inText.length > 0) {
-                    inCell.validationState = BPFormValidationStateValid;
-                    inCell.shouldShowInfoCell = NO;
-                    if (_claim.getViewType == OTViewTypeAdd || _claim.getViewType == OTViewTypeEdit)
+            if (mandatory) {
+                ((OTFormInputTextFieldCell *)cell).shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
+                    if (inText.length > 0) {
+                        inCell.validationState = BPFormValidationStateValid;
+                        inCell.shouldShowInfoCell = NO;
+                    } else {
+                        inCell.validationState = BPFormValidationStateInvalid;
+                        inCell.infoCell.label.text = NSLocalizedString(@"message_error_mandatory_fields", nil);
+                        inCell.shouldShowInfoCell = YES;
+                    }
+                    if (_claim.getViewType != OTViewTypeView)
                         fieldPayload.bigDecimalPayload = [NSDecimalNumber decimalNumberWithString:inText];
-                }
-                return YES;
-            };
+                    return YES;
+                };
+            } else {
+                ((OTFormInputTextFieldCell *)cell).shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
+                    if (inText.length > 0) {
+                        inCell.shouldShowInfoCell = NO;
+                        if (_claim.getViewType != OTViewTypeView)
+                            fieldPayload.bigDecimalPayload = [NSDecimalNumber decimalNumberWithString:inText];
+                    } else {
+                        if (_claim.getViewType != OTViewTypeView)
+                            fieldPayload.bigDecimalPayload = nil;
+                    }
+                    return YES;
+                };
+            }
         } else if ([fieldTemplate.fieldType isEqualToString:@"DATE"]) {
             cell = [[OTFormCell alloc] initWithFrame:CGRectZero];
 
@@ -132,8 +154,8 @@
             NSString *title = fieldPayload.stringPayload != nil ? fieldPayload.stringPayload : fieldTemplate.hint;
             
             if (fieldPayload.stringPayload == nil || [fieldPayload.stringPayload isEqualToString:@""]) {
-                title = [[OT dateFormatter] stringFromDate:[NSDate date]];
-                fieldPayload.stringPayload = [title substringToIndex:10];
+                title = [[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10];
+                fieldPayload.stringPayload = title;
             }
             
             ((OTFormCell *)cell).selectionStyle = UITableViewCellSelectionStyleNone;
@@ -171,7 +193,6 @@
             BOOL mandatory = NO;
             for (FieldConstraint *object in fieldTemplate.fieldConstraintList)
                 if ([object.fieldConstraintType isEqualToString:@"NOT_NULL"]) mandatory = YES;
-            
             cell = [[OTFormInputTextFieldCell alloc] initWithText:fieldPayload.stringPayload
                                                       placeholder:fieldTemplate.hint
                                                          delegate:self
@@ -179,20 +200,27 @@
                                                  customCellHeight:customCellHeight
                                                      keyboardType:UIKeyboardTypeDefault
                                                          viewType:_claim.getViewType];
-
-            ((OTFormInputTextFieldCell *)cell).shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
-                if (inText.length > 0) {
-                    inCell.validationState = BPFormValidationStateValid;
-                    inCell.shouldShowInfoCell = NO;
-                    if (_claim.getViewType == OTViewTypeAdd || _claim.getViewType == OTViewTypeEdit)
+            if (mandatory) {
+                ((OTFormInputTextFieldCell *)cell).shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
+                    if (inText.length > 0) {
+                        inCell.validationState = BPFormValidationStateValid;
+                        inCell.shouldShowInfoCell = NO;
+                    } else {
+                        inCell.validationState = BPFormValidationStateInvalid;
+                        inCell.infoCell.label.text = NSLocalizedString(@"message_error_mandatory_fields", nil);
+                        inCell.shouldShowInfoCell = YES;
+                    }
+                    if (_claim.getViewType != OTViewTypeView)
                         fieldPayload.stringPayload = inText;
-                } else {
-                    inCell.validationState = BPFormValidationStateInvalid;
-                    inCell.infoCell.label.text = NSLocalizedString(@"message_error_mandatory_fields", nil);
-                    inCell.shouldShowInfoCell = YES;
-                }
-                return YES;
-            };
+                    return YES;
+                };
+            } else {
+                ((OTFormInputTextFieldCell *)cell).shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText) {
+                    if (_claim.getViewType != OTViewTypeView)
+                        fieldPayload.stringPayload = inText;
+                    return YES;
+                };
+            }
             ((OTFormInputTextFieldCell *)cell).textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
         } else { // Chưa rõ
             [UIAlertView showWithTitle:@"Error!" message:[NSString stringWithFormat:@"Unknow field type: %tu", fieldTemplate.fieldConstraintList.count] cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[@"OK"] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
@@ -228,8 +256,20 @@
     self.customSectionHeaderHeight = 20;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if (_claim.getViewType == OTViewTypeView) return;
+    if (!self.allCellsAreValid) {
+        if (!allCellChecked) [self checkInvalidCell];
+        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"message_error_mandatory_fields", nil)];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if (_claim.getViewType != OTViewTypeView) {
+        [self checkInvalidCell];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -237,19 +277,40 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma Bar Buttons Action
+static bool allCellChecked = false;
+- (void)showInvalidCell:(OTFormInputTextFieldCell *)cell {
+    allCellChecked = true;
+    [cell.textField becomeFirstResponder];
+    [cell.textField resignFirstResponder];
+}
+
+- (void)checkInvalidCell {
+    NSInteger i = 0;
+    while (i < self.formCells.count) {
+        for (OTFormInputTextFieldCell *cell in self.formCells[i]) {
+            if ([cell isKindOfClass:[OTFormInputTextFieldCell class]]) {
+                if (cell.validationState == BPFormValidationStateInvalid) {
+                    [self performSelector:@selector(showInvalidCell:) withObject:cell afterDelay:0.3];
+                }
+            }
+        }
+        i++;
+    }
+}
+
 - (IBAction)done:(id)sender {
-    if ([_claim.managedObjectContext hasChanges] && _claim.getViewType == OTViewTypeEdit) {
-        [UIAlertView showWithTitle:NSLocalizedStringFromTable(@"title_save_dialog", @"Additional", nil) message:NSLocalizedStringFromTable(@"message_save_dialog", @"Additional", nil) style:UIAlertViewStyleDefault cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"action_save", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-            if (buttonIndex == 1) {
-                [self.navigationController dismissViewControllerAnimated:NO completion:^{
-                    [_claim.managedObjectContext save:nil];
-                }];
-            } else {
+    if (_claim.getViewType == OTViewTypeView)
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    else if (!self.allCellsAreValid) {
+        if (!allCellChecked) [self checkInvalidCell];
+        [UIAlertView showWithTitle:NSLocalizedString(@"message_error_mandatory_fields", nil) message:nil style:UIAlertViewStyleDefault cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedStringFromTable(@"continue", @"Additional", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+            if (buttonIndex == 0) {
                 [self.navigationController dismissViewControllerAnimated:NO completion:^{
                     [self performSelector:@selector(rollback) withObject:nil afterDelay:0];
                 }];
             }
-            
+
         }];
     } else {
         [self.navigationController dismissViewControllerAnimated:YES completion:nil];
@@ -464,10 +525,10 @@
 #pragma handle UIDatePicker method
 
 - (IBAction)pickerChanged:(UIDatePicker *)sender {
-    NSString *dateString = [[OT dateFormatter] stringFromDate:[sender date]];
+    NSString *dateString = [[[OT dateFormatter] stringFromDate:[sender date]] substringToIndex:10];
     
-    _currentLabel.attributedText = [OT getAttributedStringFromText:[dateString substringToIndex:10]];
-    _currentPickField.stringPayload = [dateString substringToIndex:10];
+    _currentLabel.attributedText = [OT getAttributedStringFromText:dateString];
+    _currentPickField.stringPayload = dateString;
 }
 
 - (IBAction)pickerViewDone:(id)sender {

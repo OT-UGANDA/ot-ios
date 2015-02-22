@@ -32,7 +32,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.fao.sola.clients.ios.$(PRODUCT_NAME:rfc1034identifier)</string>
+	<string>org.fao.sola.clients.ios.OT</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -59,7 +59,9 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Your location is used to show you how to use CoreLocation!</string>
 	<key>UIBackgroundModes</key>
-	<array/>
+	<array>
+		<string>audio</string>
+	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

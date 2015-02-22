@@ -30,10 +30,10 @@
 
 #import "CDRTranslucentSideBar.h"
 #import "OTSideBarItems.h"
-
+#import "OTShowcase.h"
 
 @interface OTNewsViewController () {
-  
+    OTShowcase *showcase;
     BOOL multipleShowcase;
     NSInteger currentShowcaseIndex;
 }
@@ -75,7 +75,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-  
+    [showcase setShowing:NO];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -95,7 +95,7 @@
 
 #pragma mark - OTShowcase & OTShowcaseDelegate methods
 - (void)configureShowcase {
-   /* showcase = [[OTShowcase alloc] init];
+    showcase = [[OTShowcase alloc] init];
     showcase.delegate = self;
     [showcase setBackgroundColor:[UIColor otDarkBlue]];
     [showcase setTitleColor:[UIColor greenColor]];
@@ -110,11 +110,11 @@
     showcase.skipActionBlock = ^(void) {
         [showcase_ setShowing:NO];
         [showcase_ showcaseTapped];
-    };*/
+    };
 }
 
 - (IBAction)defaultShowcase:(id)sender {
- /*   [self configureShowcase];
+    [self configureShowcase];
     if (sender != nil) {
         multipleShowcase = ![[sender objectForKey:@"action"] isEqualToString:@"close"];
     } else {
@@ -124,22 +124,22 @@
     NSDictionary *item = [_showcaseTargetList objectAtIndex:0];
     [showcase setIType:[[item objectForKey:@"type"] intValue]];
     [showcase setupShowcaseForTarget:[item objectForKey:@"target"]  title:[item objectForKey:@"title"] details:[item objectForKey:@"detail"]];
-    [showcase show]; */
+    [showcase show];
 }
 
 #pragma mark - OTShowcaseDelegate methods
 - (void)OTShowcaseShown{
-   /* if (currentShowcaseIndex == _showcaseTargetList.count - 1 && !multipleShowcase) {
+    if (currentShowcaseIndex == _showcaseTargetList.count - 1 && !multipleShowcase) {
         NSString *title = NSLocalizedStringFromTable(@"close", @"Showcase", nil);
         [showcase.nextButton setTitle:title forState:UIControlStateNormal];
         [showcase.nextButton setTitle:title forState:UIControlStateHighlighted];
         
         [showcase.skipButton removeFromSuperview];
-    } */
+    }
 }
 
 - (void)OTShowcaseDismissed {
- /*   currentShowcaseIndex++;
+    currentShowcaseIndex++;
     if (![showcase isShowing]) {
         currentShowcaseIndex = 0;
         [[NSNotificationCenter defaultCenter] postNotificationName:kSetMainTabBarIndexNotificationName object:[NSNumber numberWithInteger:0] userInfo:nil];
@@ -155,7 +155,7 @@
             if (multipleShowcase)
                 [[NSNotificationCenter defaultCenter] postNotificationName:kSetMainTabBarIndexNotificationName object:[NSNumber numberWithInteger:1] userInfo:@{@"action":@"showcase"}];
         }
-    } */
+    }
 }
 
 - (void)configureSideBarMenu {

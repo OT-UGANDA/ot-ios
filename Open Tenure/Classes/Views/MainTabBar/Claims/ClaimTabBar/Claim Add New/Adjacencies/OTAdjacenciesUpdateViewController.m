@@ -32,7 +32,7 @@
 #import "OTMapViewController.h"
 #import "ShapeKit.h"
 #import "OTFormCell.h"
-
+#import "OTShowcase.h"
 
 #define ADJACENT_THRESHOLD 0.0001
 
@@ -42,12 +42,10 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
 }
 
 @interface OTAdjacenciesUpdateViewController () {
-
+    OTShowcase *showcase;
     BOOL multipleShowcase;
     NSInteger currentShowcaseIndex;
 }
-
-@property (assign) OTViewType viewType;
 
 @end
 
@@ -60,7 +58,6 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.viewType = _claim.getViewType;
     self.formCells = [self createAdjacencies];
     [self.tableView reloadData];
 }
@@ -77,10 +74,30 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
 
 #pragma mark - OTShowcase & OTShowcaseDelegate methods
 - (void)configureShowcase {
-   }
+    showcase = [[OTShowcase alloc] init];
+    showcase.delegate = self;
+    [showcase setBackgroundColor:[UIColor otDarkBlue]];
+    [showcase setTitleColor:[UIColor greenColor]];
+    [showcase setDetailsColor:[UIColor whiteColor]];
+    [showcase setHighlightColor:[UIColor whiteColor]];
+    [showcase setContainerView:self.navigationController.navigationBar.superview];
+    __strong typeof(showcase) showcase_ = showcase;
+    showcase.nextActionBlock = ^(void){
+        [showcase_ showcaseTapped];
+    };
+    showcase.skipActionBlock = ^(void) {
+        [showcase_ setShowing:NO];
+        [showcase_ showcaseTapped];
+    };
+}
 
 - (IBAction)defaultShowcase:(id)sender {
-   
+    [self configureShowcase];
+    if (_showcaseTargetList.count == 0 || [showcase isShowing]) return;
+    NSDictionary *item = [_showcaseTargetList objectAtIndex:0];
+    [showcase setIType:[[item objectForKey:@"type"] intValue]];
+    [showcase setupShowcaseForTarget:[item objectForKey:@"target"]  title:[item objectForKey:@"title"] details:[item objectForKey:@"detail"]];
+    [showcase show];
 }
 
 #pragma mark - OTShowcaseDelegate methods
@@ -88,10 +105,29 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
 
 - (void)OTShowcaseDismissed {
     currentShowcaseIndex++;
-  }
+    if (![showcase isShowing]) {
+        currentShowcaseIndex = 0;
+        [[NSNotificationCenter defaultCenter] postNotificationName:kSetClaimTabBarIndexNotificationName object:[NSNumber numberWithInteger:0] userInfo:nil];
+    } else {
+        if (currentShowcaseIndex < _showcaseTargetList.count) {
+            NSDictionary *item = [_showcaseTargetList objectAtIndex:currentShowcaseIndex];
+            [showcase setIType:[[item objectForKey:@"type"] intValue]];
+            [showcase setupShowcaseForTarget:[item objectForKey:@"target"]  title:[item objectForKey:@"title"] details:[item objectForKey:@"detail"]];
+            [showcase show];
+        } else {
+            currentShowcaseIndex = 0;
+            [showcase setShowing:NO];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kSetClaimTabBarIndexNotificationName object:[NSNumber numberWithInteger:4] userInfo:@{@"action":@"showcase"}];
+        }
+    }
+}
 
 - (IBAction)done:(id)sender {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)checkInvalidCell {
+    
 }
 
 - (NSArray *)createAdjacencies {
@@ -133,7 +169,7 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
                                     mandatory:NO
                              customCellHeight:customCellHeight
                                  keyboardType:UIKeyboardTypeDefault
-                                     viewType:_viewType];
+                                     viewType:_claim.getViewType];
     northAdjacency.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText) {
         _claim.northAdjacency = inText;
     };
@@ -145,7 +181,7 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
                                     mandatory:NO
                              customCellHeight:customCellHeight
                                  keyboardType:UIKeyboardTypeDefault
-                                     viewType:_viewType];
+                                     viewType:_claim.getViewType];
     southAdjacency.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText) {
         _claim.southAdjacency = inText;
     };
@@ -157,7 +193,7 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
                                     mandatory:NO
                              customCellHeight:customCellHeight
                                  keyboardType:UIKeyboardTypeDefault
-                                     viewType:_viewType];
+                                     viewType:_claim.getViewType];
     eastAdjacency.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText) {
         _claim.eastAdjacency = inText;
     };
@@ -169,7 +205,7 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
                                     mandatory:NO
                              customCellHeight:customCellHeight
                                  keyboardType:UIKeyboardTypeDefault
-                                     viewType:_viewType];
+                                     viewType:_claim.getViewType];
     westAdjacency.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText) {
         _claim.westAdjacency = inText;
     };

@@ -29,6 +29,7 @@
 #import "OTFormInfoCell.h"
 #import "OTFormInputTextFieldCell.h"
 #import "OTFormCell.h"
+#import "UIImage+OT.h"
 
 @interface OTPersonUpdateViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPickerViewDelegate>
 
@@ -49,6 +50,7 @@
 @property (nonatomic, assign, getter=isPickerIdTypeShowing) BOOL pickerIdTypeShowing;
 @property (nonatomic, assign, getter=isDatePickerShowing) BOOL datePickerShowing;
 
+@property (nonatomic, strong) IBOutlet UIImagePickerController *imagePickerController;
 
 @property (assign) OTViewType viewType;
 
@@ -98,7 +100,7 @@
     UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
     if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];
     imageView.image = personPicture;
-    imageView.backgroundColor = [UIColor whiteColor];
+    imageView.backgroundColor = [UIColor clearColor];
     _personImageView = imageView;
     [headerView addSubview:imageView];
     self.tableView.tableHeaderView = headerView;
@@ -164,7 +166,7 @@
     // DateOfBirth
     [self setHeaderTitle:NSLocalizedString(@"date_of_establishment_label", nil) forSection:1];
     if (_person.birthDate == nil)
-        _person.birthDate = [[OT dateFormatter] stringFromDate:[NSDate date]];
+        _person.birthDate = [[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10];
     
     OTFormCell *dateOfBirth = [[OTFormCell alloc] initWithFrame:CGRectZero];
     _dateOfBirthBlock = dateOfBirth;
@@ -314,7 +316,7 @@
     
     [self setHeaderTitle:NSLocalizedString(@"date_of_birth_label", nil) forSection:2];
     if (_person.birthDate == nil)
-        _person.birthDate = [[OT dateFormatter] stringFromDate:[NSDate date]];
+        _person.birthDate = [[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10];
     
     OTFormCell *dateOfBirth = [[OTFormCell alloc] initWithFrame:CGRectZero];
     _dateOfBirthBlock = dateOfBirth;
@@ -582,8 +584,8 @@
 #pragma handle UIDatePicker method
 
 - (IBAction)datePickerChanged:(UIDatePicker *)sender {
-    NSString *dateString = [[OT dateFormatter] stringFromDate:[sender date]];
-    _dateOfBirthBlock.textLabel.attributedText = [OT getAttributedStringFromText:[dateString substringToIndex:10]];
+    NSString *dateString = [[[OT dateFormatter] stringFromDate:[sender date]] substringToIndex:10];
+    _dateOfBirthBlock.textLabel.attributedText = [OT getAttributedStringFromText:dateString];
     _person.birthDate = dateString;
 }
 
@@ -720,7 +722,7 @@ static bool allCellChecked = false;
         if (_person.name != nil) {
             if (self.allCellsAreValid) {
                 [self.navigationController dismissViewControllerAnimated:NO completion:^{
-                    [self save:nil];
+                    //[self save:nil];
                 }];
             } else {
                 if (!allCellChecked) [self checkInvalidCell];
@@ -740,46 +742,51 @@ static bool allCellChecked = false;
 #pragma mark ActionSheet
 
 - (IBAction)showImagePickerAlert:(id)sender {
-    UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
-    imagePickerController.modalPresentationStyle = UIModalPresentationCurrentContext;
-    imagePickerController.delegate = self;
-
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [UIActionSheet showFromRect:[[sender view] frame] inView:self.view animated:YES withTitle:nil cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[NSLocalizedStringFromTable(@"from_photo_library", @"Additional", nil), NSLocalizedStringFromTable(@"take_new_photo", @"Additional", nil)] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+            
+            UIImagePickerController *picker = [UIImagePickerController new];
+            picker.modalPresentationStyle = UIModalPresentationCurrentContext;
+            picker.delegate = self;
+            picker.navigationBarHidden = NO;
+
             if (buttonIndex == [actionSheet cancelButtonIndex]) return;
             if (buttonIndex == 0) {
-                imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
             } else {
                 if (TARGET_IPHONE_SIMULATOR) return;
-                imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-                imagePickerController.showsCameraControls = YES;
-                imagePickerController.videoQuality = UIImagePickerControllerQualityTypeMedium;
-                imagePickerController.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
-                imagePickerController.cameraDevice= UIImagePickerControllerCameraDeviceRear;
-                imagePickerController.navigationBarHidden = NO;
-                
+                picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+                picker.showsCameraControls = YES;
+                picker.videoQuality = UIImagePickerControllerQualityTypeMedium;
+                picker.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
+                picker.cameraDevice= UIImagePickerControllerCameraDeviceRear;
             }
+            self.imagePickerController = picker;
             dispatch_async(dispatch_get_main_queue(), ^{ // Fixed for Xcode 6, iOS 8
-                [self presentViewController:imagePickerController animated:YES completion:nil];
+                [self presentViewController:self.imagePickerController animated:YES completion:nil];
             });
         }];
     } else {
         [UIActionSheet showFromToolbar:self.navigationController.toolbar withTitle:nil cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[NSLocalizedStringFromTable(@"from_photo_library", @"Additional", nil), NSLocalizedStringFromTable(@"take_new_photo", @"Additional", nil)] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+            
+            UIImagePickerController *picker = [UIImagePickerController new];
+            picker.delegate = self;
+            picker.navigationBarHidden = NO;
+
             if (buttonIndex == [actionSheet cancelButtonIndex]) return;
             if (buttonIndex == 0) {
-                imagePickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+                picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
             } else {
                 if (TARGET_IPHONE_SIMULATOR) return;
-                imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-                imagePickerController.showsCameraControls = YES;
-                imagePickerController.videoQuality = UIImagePickerControllerQualityTypeMedium;
-                imagePickerController.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
-                imagePickerController.cameraDevice= UIImagePickerControllerCameraDeviceRear;
-                imagePickerController.navigationBarHidden = NO;
-                
+                picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+                picker.showsCameraControls = YES;
+                picker.videoQuality = UIImagePickerControllerQualityTypeMedium;
+                picker.cameraCaptureMode = UIImagePickerControllerCameraCaptureModePhoto;
+                picker.cameraDevice= UIImagePickerControllerCameraDeviceRear;
             }
+            self.imagePickerController = picker;
             dispatch_async(dispatch_get_main_queue(), ^{ // Fixed for Xcode 6, iOS 8
-                [self presentViewController:imagePickerController animated:YES completion:nil];
+                [self presentViewController:self.imagePickerController animated:YES completion:nil];
             });
         }];
     }
@@ -788,27 +795,25 @@ static bool allCellChecked = false;
 #pragma mark UIImagePickerViewControllerDelegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    [picker dismissViewControllerAnimated:YES completion:^{
-        UIImage *selectedImage = [info objectForKey:UIImagePickerControllerOriginalImage];
-        if (!selectedImage) return;
-        
-        // Create a thumbnail version of the image for the recipe object.
-        CGFloat newSize = 150.0;
-        CGSize size = selectedImage.size;
-        CGFloat ratio = (size.width > size.height) ? newSize / size.width : newSize / size.height;
-        CGRect rect = CGRectMake(0.0, 0.0, ratio * size.width, ratio * size.height);
-        
-        UIGraphicsBeginImageContext(rect.size);
-        [selectedImage drawInRect:rect];
-        UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        _personImageView.image = newImage;
-        
-        NSString *imageFile = [FileSystemUtilities getClaimantImagePath:_person.personId];
-        NSData *imageData = UIImageJPEGRepresentation(newImage, 1.0);
-        [imageData writeToFile:imageFile atomically:YES];
-    }];
+    UIImage *selectedImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+    if (!selectedImage) return;
+    
+    // Create squared image
+    CGFloat width = selectedImage.size.width < selectedImage.size.height ? selectedImage.size.width : selectedImage.size.height;
+    UIImage *newImage = [selectedImage cropToSize:CGSizeMake(width, width)];
+    
+    // Create a thumbnail version of the image for the recipe object.
+    CGSize newSize = CGSizeMake(150.0, 150.0);
+    newImage = [newImage changeToSize:newSize];
+    _personImageView.image = newImage;
+    
+    NSString *imageFile = [FileSystemUtilities getClaimantImagePath:_person.personId];
+    NSData *imageData = UIImageJPEGRepresentation(newImage, 1.0);
+    [imageData writeToFile:imageFile atomically:YES];
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
+
 
 
 @end

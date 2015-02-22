@@ -60,8 +60,8 @@
     [self.navigationController.toolbar setTintColor:[UIColor otDarkBlue]];
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)];
-    //UIBarButtonItem *reset = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(reInitialization:)];
-    //[self setToolbarItems:@[reset, flexibleSpace, done]];
+  //  UIBarButtonItem *reset = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(reInitialization:)];
+  //  [self setToolbarItems:@[reset, flexibleSpace, done]];
     [self setToolbarItems:@[flexibleSpace, done]];
     
     NSString *buttonTitle = NSLocalizedString(@"title_activity_settings", nil);

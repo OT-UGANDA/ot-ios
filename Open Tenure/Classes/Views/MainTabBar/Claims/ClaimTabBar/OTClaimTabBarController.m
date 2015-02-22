@@ -29,7 +29,6 @@
 #import "OTMapViewController.h"
 #import "OTClaimUpdateViewController.h"
 #import "OTDocumentsUpdateViewController.h"
-#import "OTAdditionalUpdateViewController.h"
 #import "OTAdjacenciesUpdateViewController.h"
 #import "OTChallengesUpdateViewController.h"
 #import "OTSharesUpdateViewController.h"
@@ -84,7 +83,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setTabBarIndex:) name:kSetClaimTabBarIndexNotificationName object:nil];
     
     self.dataSource = self;
@@ -109,7 +107,7 @@
     OTSharesUpdateViewController *shares = [OTSharesUpdateViewController new];
     [shares setClaim:_claim];
     _views = [@[claim, map, documents, adjacencies, challenges, shares] mutableCopy];
-    
+
     [self createBarButtonItems];
     
     // Load dynamic forms
@@ -148,6 +146,38 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+//    if (_claim.getViewType != OTViewTypeView) {
+//        BOOL updating = NO;
+//        for (SectionPayload *sectionPayload in _claim.dynamicForm.sectionPayloadList) {
+//            for (SectionElementPayload *sectionElementPayload in sectionPayload.sectionElementPayloadList) {
+//                for (FieldPayload *fieldPayload in sectionElementPayload.fieldPayloadList) {
+//                    if ([fieldPayload.fieldTemplate.fieldType isEqualToString:@"TEXT"]) {
+//                        BOOL mandatory = NO;
+//                        for (FieldConstraint *fieldConstraint in fieldPayload.fieldTemplate.fieldConstraintList)
+//                            if ([fieldConstraint.fieldConstraintType isEqualToString:@"NOT_NULL"]) mandatory = YES;
+//                        if (mandatory && fieldPayload.stringPayload == nil) {
+//                            updating = YES;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        if (_claim.mappedGeometry == nil) {
+//            _claim.statusCode = kClaimStatusUpdating;
+//            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"not_boundary", nil)];
+//            [_claim.managedObjectContext save:nil];
+//        } else if (updating) {
+//            _claim.statusCode = kClaimStatusUpdating;
+//            [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"message_error_mandatory_fields", nil)];
+//            [_claim.managedObjectContext save:nil];
+//        } else {
+//            _claim.statusCode = kClaimStatusCreated;
+//            [_claim.managedObjectContext save:nil];
+//        }
+//    }
 }
 
 - (void)setTabBarIndex:(NSNotification *)notification {
@@ -283,7 +313,7 @@
     OTMapViewController *mapViewController = (OTMapViewController *)_views[1];
     _myLocation = [[MKUserTrackingBarButtonItem alloc] initWithMapView:mapViewController.mapView];
     
-    _addMarker = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu_add_claim"] style:UIBarButtonItemStylePlain target:_views[1] action:@selector(addMarker:)];
+    _addMarker = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:_views[1] action:@selector(addMarker:)];
     
     _takePhotoDoc = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu_camera"] style:UIBarButtonItemStylePlain target:_views[2] action:@selector(takePhotoDoc:)];
 
@@ -319,7 +349,7 @@
     switch (index) {
         case 0: { // Buttons for Claim tab
             if ([_claim isSaved]) { // View claim
-                if ([_claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local claim
+                if (_claim.getViewType == OTViewTypeEdit) { // Local claim
                     self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _print, _fixedSpace, _export, _fixedSpace, _save, _flexibleSpace];
                     target = @[[OT findBarButtonItem:_save fromNavBar:navBar],
                                [OT findBarButtonItem:_export fromNavBar:navBar],
@@ -357,8 +387,8 @@
             [_zoomToCommunityArea setTarget:_views[index]];
             
             if ([_claim isSaved]) { // View claim
-                if ([_claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local claim
-                    self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _mapSnapshot, _fixedSpace, _zoomToCommunityArea, _fixedSpace, _myLocation, _fixedSpace, _addMarker, _flexibleSpace];
+                if (_claim.getViewType == OTViewTypeEdit) { // Local claim
+                    self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _mapSnapshot, _fixedSpace, _zoomToCommunityArea, _fixedSpace, _myLocation, _fixedSpace, _addMarker, _flexibleSpace];
                     target = @[[OT findBarButtonItem:_addMarker fromNavBar:navBar],
                                [OT findBarButtonItem:_menu fromNavBar:navBar]];
                 } else { // Readonly claim
@@ -366,7 +396,7 @@
                     target = @[_myLocation.customView, [OT findBarButtonItem:_menu fromNavBar:navBar]];
                 }
             } else { // Add claim
-                self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _mapSnapshot, _fixedSpace, _myLocation, _fixedSpace, _addMarker, _flexibleSpace];
+                self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _fixedSpace, _mapSnapshot, _fixedSpace, _myLocation, _fixedSpace, _addMarker, _flexibleSpace];
                 target = @[[OT findBarButtonItem:_addMarker fromNavBar:navBar],
                            [OT findBarButtonItem:_menu fromNavBar:navBar]];
             }
@@ -390,10 +420,10 @@
         case 2: { // Buttons for Documents tab
             [_done setTarget:_views[index]];
             if ([_claim isSaved]) { // View claim
-                if ([_claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local claim
-                    self.navigationItem.rightBarButtonItems = @[_done, _fixedSpace, _takePhotoDoc, _fixedSpace, _attachDoc, _flexibleSpace];
+                if (_claim.getViewType == OTViewTypeEdit) { // Local claim
+                    self.navigationItem.rightBarButtonItems = @[_takePhotoDoc, _fixedSpace, _attachDoc, _flexibleSpace];
                     target = @[[OT findBarButtonItem:_attachDoc fromNavBar:navBar],
-                               [OT findBarButtonItem:_done fromNavBar:navBar]];
+                               [OT findBarButtonItem:_takePhotoDoc fromNavBar:navBar]];
                 } else { // Readonly claim
                     // TODO: Can be edit and save?
                     self.navigationItem.rightBarButtonItems = @[_done, _fixedSpace, _takePhotoDoc, _fixedSpace, _attachDoc, _flexibleSpace];
@@ -401,9 +431,9 @@
                                [OT findBarButtonItem:_done fromNavBar:navBar]];
                 }
             } else { // Add claim
-                self.navigationItem.rightBarButtonItems = @[_done, _fixedSpace, _takePhotoDoc, _fixedSpace, _attachDoc, _flexibleSpace];
+                self.navigationItem.rightBarButtonItems = @[_takePhotoDoc, _fixedSpace, _attachDoc, _flexibleSpace];
                 target = @[[OT findBarButtonItem:_attachDoc fromNavBar:navBar],
-                           [OT findBarButtonItem:_done fromNavBar:navBar]];
+                           [OT findBarButtonItem:_takePhotoDoc fromNavBar:navBar]];
             }
             NSArray *items = @[@{@"type":[NSNumber numberWithInt:0],
                                  @"target":_documentsTabBarLabel,
@@ -419,14 +449,14 @@
         case 3: { // Buttons for Adjacencies tab
             [_done setTarget:_views[index]];
             if ([_claim isSaved]) { // View claim
-                if ([_claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local claim
-                    self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
+                if (_claim.getViewType == OTViewTypeEdit) { // Local claim
+                    self.navigationItem.rightBarButtonItems = @[];
                 } else { // Readonly claim
                     // TODO: Can be edit and save?
                     self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
                 }
             } else { // Add claim
-                self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
+                self.navigationItem.rightBarButtonItems = @[];
             }
             NSArray *items = @[@{@"type":[NSNumber numberWithInt:0],
                                  @"target":_adjacenciesTabBarLabel,
@@ -437,7 +467,16 @@
         }
         case 4: { // Buttons for Challenges tab
             [_done setTarget:_views[index]];
-            self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
+            if ([_claim isSaved]) { // View claim
+                if (_claim.getViewType == OTViewTypeEdit) { // Local claim
+                    self.navigationItem.rightBarButtonItems = @[];
+                } else { // Readonly claim
+                    // TODO: Can be edit and save?
+                    self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
+                }
+            } else { // Add claim
+                self.navigationItem.rightBarButtonItems = @[];
+            }
             NSArray *items = @[@{@"type":[NSNumber numberWithInt:0],
                                  @"target":_challengesTabBarLabel,
                                  @"title":NSLocalizedString(@"title_claim_challenges", nil),
@@ -448,14 +487,14 @@
         case 5: { // Buttons for Shares tab
             [_done setTarget:_views[index]];
             if ([_claim isSaved]) { // View claim
-                if ([_claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local claim
-                    self.navigationItem.rightBarButtonItems = @[_done, _fixedSpace, _addShare, _flexibleSpace];
+                if (_claim.getViewType == OTViewTypeEdit) { // Local claim
+                    self.navigationItem.rightBarButtonItems = @[_addShare, _flexibleSpace];
                 } else { // Readonly claim
                     // TODO: Can be edit and save?
                     self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
                 }
             } else { // Add claim
-                self.navigationItem.rightBarButtonItems = @[_done, _fixedSpace, _addShare, _flexibleSpace];
+                self.navigationItem.rightBarButtonItems = @[_addShare, _flexibleSpace];
             }
             NSArray *items = @[@{@"type":[NSNumber numberWithInt:0],
                                  @"target":_sharesTabBarLabel,
@@ -468,20 +507,20 @@
             [_done setTarget:_views[index]];
             [_addFormSection setTarget:_views[index]];
             if ([_claim isSaved]) { // View claim
-                if ([_claim.statusCode isEqualToString:kClaimStatusCreated]) { // Local claim
+                if (_claim.getViewType == OTViewTypeEdit) { // Local claim
                     if ([[[[_views[index] sectionPayload] sectionTemplate] maxOccurrences] integerValue] > 1)
-                        self.navigationItem.rightBarButtonItems = @[_done, _fixedSpace, _addFormSection, _flexibleSpace];
+                        self.navigationItem.rightBarButtonItems = @[_addFormSection, _flexibleSpace];
                     else
-                        self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
+                        self.navigationItem.rightBarButtonItems = @[];
                 } else { // Readonly claim
                     // TODO: Can be edit and save?
                     self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
                 }
             } else { // Add claim
                 if ([[[[_views[index] sectionPayload] sectionTemplate] maxOccurrences] integerValue] > 1)
-                    self.navigationItem.rightBarButtonItems = @[_done, _fixedSpace, _addFormSection, _flexibleSpace];
+                    self.navigationItem.rightBarButtonItems = @[_addFormSection, _flexibleSpace];
                 else
-                    self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
+                    self.navigationItem.rightBarButtonItems = @[];
             }
             break;
     }

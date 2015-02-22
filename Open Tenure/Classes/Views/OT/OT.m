@@ -82,7 +82,7 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 //    NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
 //    [dateFormatter setTimeZone:gmt];
-    [dateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
+    [dateFormatter setDateFormat:@"yyyy'-'MM'-'dd"];
     return dateFormatter;
 }
 

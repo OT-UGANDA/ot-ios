@@ -50,7 +50,7 @@ static NSURLSessionUploadTask *uploadTask;
 - (id)initWithClaim:(Claim *)claim viewHolder:(id)viewHolder {
     if (self = [super init]) {
         _claim = claim;
-        _claim.lodgementDate = [[OT dateFormatter] stringFromDate:[NSDate date]];
+        _claim.lodgementDate = [[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10];
         _viewHolder = viewHolder;
     }
     return self;
@@ -130,7 +130,7 @@ static NSURLSessionUploadTask *uploadTask;
                                 NSTimeZone *utc = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
                                 [dateFormatter setTimeZone:utc];
                                 NSDate *date = [dateFormatter dateFromString:[returnedData objectForKey:@"challengeExpiryDate"]];
-                                _claim.challengeExpiryDate = [[OT dateFormatter] stringFromDate:date];
+                                _claim.challengeExpiryDate = [[[OT dateFormatter] stringFromDate:date] substringToIndex:10];
                                 
                                 _claim.nr = [returnedData objectForKey:@"nr"];
                                 

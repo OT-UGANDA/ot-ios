@@ -34,10 +34,11 @@
 
 #import "CDRTranslucentSideBar.h"
 #import "OTSideBarItems.h"
-
+#import "OTShowcase.h"
+#import "NSDate+OT.h"
 
 @interface OTClaimsViewController () <UploadChunkTaskDelegate, SaveClaimTaskDelegate, SaveAttachmentTaskDelegate, UploadChunkTaskDelegate> {
-
+    OTShowcase *showcase;
     BOOL multipleShowcase;
     BOOL customShowcases;
     NSInteger currentShowcaseIndex;
@@ -89,15 +90,55 @@
 
 #pragma mark - OTShowcase & OTShowcaseDelegate methods
 - (void)configureShowcase {
-  }
+    showcase = [[OTShowcase alloc] init];
+    showcase.delegate = self;
+    [showcase setBackgroundColor:[UIColor otDarkBlue]];
+    [showcase setTitleColor:[UIColor greenColor]];
+    [showcase setDetailsColor:[UIColor whiteColor]];
+    [showcase setHighlightColor:[UIColor whiteColor]];
+    [showcase setContainerView:[[[[[UIApplication sharedApplication] delegate] window] subviews] objectAtIndex:0]];
+    __strong typeof(showcase) showcase_ = showcase;
+    showcase.nextActionBlock = ^(void){
+        [showcase_ showcaseTapped];
+    };
+    showcase.skipActionBlock = ^(void) {
+        [showcase_ setShowing:NO];
+        [showcase_ showcaseTapped];
+    };
+}
 
 - (IBAction)defaultShowcase:(id)sender {
-   }
+    [self configureShowcase];
+    if (_showcaseTargetList.count == 0 || [showcase isShowing]) return;
+    NSDictionary *item = [_showcaseTargetList objectAtIndex:0];
+    [showcase setIType:[[item objectForKey:@"type"] intValue]];
+    [showcase setupShowcaseForTarget:[item objectForKey:@"target"]  title:[item objectForKey:@"title"] details:[item objectForKey:@"detail"]];
+    [showcase show];
+}
 
 #pragma mark - OTShowcaseDelegate methods
 - (void)OTShowcaseShown{}
 
 - (void)OTShowcaseDismissed {
+    currentShowcaseIndex++;
+    if (![showcase isShowing]) {
+        currentShowcaseIndex = 0;
+        [[NSNotificationCenter defaultCenter] postNotificationName:kSetMainTabBarIndexNotificationName object:[NSNumber numberWithInteger:0] userInfo:nil];
+    } else {
+        if (currentShowcaseIndex < _showcaseTargetList.count) {
+            NSDictionary *item = [_showcaseTargetList objectAtIndex:currentShowcaseIndex];
+            [showcase setIType:[[item objectForKey:@"type"] intValue]];
+            [showcase setupShowcaseForTarget:[item objectForKey:@"target"]  title:[item objectForKey:@"title"] details:[item objectForKey:@"detail"]];
+            [showcase show];
+        } else {
+            currentShowcaseIndex = 0;
+            [showcase setShowing:NO];
+            if ([OT getInitialized])
+                [[NSNotificationCenter defaultCenter] postNotificationName:kSetMainTabBarIndexNotificationName object:[NSNumber numberWithInteger:0] userInfo:nil];
+            else
+                [[NSNotificationCenter defaultCenter] postNotificationName:kSetMainTabBarIndexNotificationName object:[NSNumber numberWithInteger:0] userInfo:@{@"action":@"close"}];
+        }
+    }
 }
 
 - (void)configureSideBarMenu {
@@ -156,7 +197,7 @@
 }
 
 - (NSString *)mainTableSectionNameKeyPath {
-    return @"statusCode";
+    return nil;
 }
 
 - (NSString *)mainTableCache {
@@ -164,7 +205,7 @@
 }
 
 - (NSArray *)sortKeys {
-    return @[@"statusCode", @"claimName"];
+    return @[@"nr"];
 }
 
 - (NSString *)entityName {
@@ -173,6 +214,10 @@
 
 - (BOOL)showIndexes {
     return YES;
+}
+
+- (BOOL)sortAscending {
+    return NO;
 }
 
 - (NSUInteger)fetchBatchSize {
@@ -221,19 +266,19 @@
     UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
     if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];
     imageView.image = personPicture;
-    imageView.backgroundColor = [UIColor whiteColor];
+    imageView.layer.cornerRadius = 24.0;
+    imageView.clipsToBounds = YES;
+    
+    imageView.backgroundColor = [UIColor clearColor];
     
     [container addSubview:imageView];
 
     UIButton *actionBtn = [UIButton  buttonWithType:UIButtonTypeCustom];
-    actionBtn.frame = CGRectMake(60, 0, 50, 40);
-    [actionBtn setBackgroundImage:[UIImage imageNamed:@"ic_submit_big"]
+    actionBtn.frame = CGRectMake(60, 0, 48, 48);
+    NSString *imageName = [object.statusCode isEqualToString:kClaimStatusCreated] ? @"action_submit_claim" : @"action_withdraw_remove_claim";
+    [actionBtn setBackgroundImage:[UIImage imageNamed:imageName]
                          forState:UIControlStateNormal];
     actionBtn.backgroundColor = [UIColor clearColor];
-    
-    actionBtn.layer.borderColor = [UIColor otDarkBlue].CGColor;
-    actionBtn.layer.borderWidth = 0.2;
-    actionBtn.layer.cornerRadius = 5;
     
     actionBtn.tag = indexPath.row;
     [actionBtn addTarget:self action:@selector(checkButtonTapped:event:) forControlEvents:UIControlEventTouchUpInside];
@@ -243,17 +288,35 @@
     cell.accessoryView = container;
     
     cell.textLabel.numberOfLines = 0;
+    cell.textLabel.font = [UIFont systemFontOfSize:12.0];
     cell.detailTextLabel.numberOfLines = 0;
+    cell.detailTextLabel.font = [UIFont systemFontOfSize:16.0];
     
     cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"claim_status_%@", object.statusCode]];
-   // cell.textLabel.text = [NSString stringWithFormat:@"%@, By: %@", object.claimName, [object.person fullNameType:OTFullNameTypeDefault]];
-    if([object.recorderName isEqualToString:@""] || (object.recorderName == nil) )
-        cell.textLabel.text = [NSString stringWithFormat:@"%@, Created by:%@ ", object.claimName, [object.person fullNameType:OTFullNameTypeDefault]];
     
-    else
-        cell.textLabel.text = [NSString stringWithFormat:@"%@, Created by:%@, Uploaded by: %@", object.claimName, [object.person fullNameType:OTFullNameTypeDefault],object.recorderName];
+    NSString *titleFormat = @"%@, %@: %@, %@: %@";
+    NSString *subtitleFormat = @"%@, %@%@\n%@\n%@";
+    NSString *title = @"";
+    NSString *subtitle = @"";
+    if (object.getViewType != OTViewTypeView) {
+        title = [NSString stringWithFormat:titleFormat, @"#", NSLocalizedString(@"by", nil), [object.person fullNameType:OTFullNameTypeDefault], NSLocalizedString(@"type", nil), object.claimType.displayValue];
+    } else {
+        title = [NSString stringWithFormat:titleFormat, object.nr, NSLocalizedString(@"by", nil), [object.person fullNameType:OTFullNameTypeDefault], NSLocalizedString(@"type", nil), object.claimType.displayValue];
+    }
+    NSString *recorderName = [object.recorderName isEqualToString:@""] || (object.recorderName == nil) ? @"?" : object.recorderName;
     
-    cell.detailTextLabel.text = object.notes;
+    NSString *remainingDaysToChallenge = @"";
+    NSDate *challengeExpiryDate = [[OT dateFormatter] dateFromString:[object.challengeExpiryDate substringToIndex:10]];
+    NSInteger remainingDays = challengeExpiryDate ? [NSDate daysToDateTime:challengeExpiryDate] : 0;
+    if (remainingDays >= 0) {
+        remainingDaysToChallenge = [NSString stringWithFormat:@"%@%tu", NSLocalizedString(@"message_remaining_days", nil), remainingDays];
+    }
+    
+    NSString *notes = object.notes ? object.notes : @"";
+    subtitle = [NSString stringWithFormat:subtitleFormat, object.claimName, NSLocalizedString(@"recorded_by", nil), recorderName, remainingDaysToChallenge, notes];
+
+    cell.textLabel.text = title;
+    cell.detailTextLabel.text = subtitle;
 }
 
 - (void)checkButtonTapped:(id)sender event:(id)event{
@@ -280,6 +343,19 @@
 }
 
 #pragma mark - Table View
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *CellIdentifier = @"Cell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    if (cell != nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    }
+    
+    [self configureCell:cell forTableView:tableView atIndexPath:indexPath];
+    return cell;
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     Claim *claim;
@@ -310,13 +386,51 @@
             claim = [_filteredObjects objectAtIndex:indexPath.row];
         CGRect frame = cell.accessoryView.frame;
         frame.origin.x += 60;
-        [UIActionSheet showFromRect:frame inView:cell animated:YES withTitle:@"Claim Actions" cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[@"Submit claim", @"Withdraw", @"Action 3"] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
-            if (buttonIndex == 0) {
-                [self submitClaim:claim];
-            } else if(buttonIndex == 1){
-                [self withdrawClaim:claim];
+        
+        NSArray *actionButtons = nil;
+        NSDate *challengeExpiryDate = [[OT dateFormatter] dateFromString:[claim.challengeExpiryDate substringToIndex:10]];
+        NSInteger remainingDays = challengeExpiryDate ? [NSDate daysToDateTime:challengeExpiryDate] : 0;
+        
+        if (claim.getViewType != OTViewTypeView) {
+            if ([claim.statusCode isEqualToString:kClaimStatusCreated]) {
+                actionButtons = @[NSLocalizedString(@"action_submit", nil), NSLocalizedString(@"delete_locally", nil)];
+            } else {
+                actionButtons = @[NSLocalizedString(@"delete_locally", nil)];
             }
-            
+        } else {
+            if (remainingDays >= 0) {
+                if ([claim.statusCode isEqualToString:kClaimStatusWithdrawn]) {
+                    actionButtons = @[NSLocalizedString(@"delete_locally", nil)];
+                } else {
+                    actionButtons = @[NSLocalizedString(@"withdraw_claim", nil), NSLocalizedString(@"delete_locally", nil)];
+                }
+            } else {
+                actionButtons = @[NSLocalizedString(@"delete_locally", nil)];
+            }
+        }
+
+        [UIActionSheet showFromRect:frame inView:cell animated:YES withTitle:nil cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle:nil otherButtonTitles:actionButtons tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+            if (buttonIndex != actionSheet.cancelButtonIndex) {
+                if ([claim.statusCode isEqualToString:kClaimStatusCreated]) {
+                    if (buttonIndex == actionSheet.firstOtherButtonIndex) {
+                        [self submitClaim:claim];
+                    } else {
+                        [claim.managedObjectContext deleteObject:claim];
+                        [claim.managedObjectContext save:nil];
+                    }
+                } else if (remainingDays >= 0) {
+                    if (buttonIndex == actionSheet.firstOtherButtonIndex && ![claim.statusCode isEqualToString:kClaimStatusWithdrawn]) {
+                        [self withdrawClaim:claim];
+                    } else {
+                        [claim.managedObjectContext deleteObject:claim];
+                        [claim.managedObjectContext save:nil];
+                    }
+                } else {
+                    if (buttonIndex == actionSheet.firstOtherButtonIndex) {
+                        [claim.managedObjectContext deleteObject:claim];
+                        [claim.managedObjectContext save:nil];                    }
+                }
+            }
         }];
     }
 }
@@ -378,7 +492,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 64;
+    return 88;
 }
 
 #pragma Bar Buttons Action

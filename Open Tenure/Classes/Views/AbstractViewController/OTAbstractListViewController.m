@@ -130,6 +130,10 @@
     return NO;
 }
 
+- (BOOL)sortAscending {
+    return YES;
+}
+
 - (NSUInteger)fetchBatchSize {
     return 30;
 }
@@ -162,7 +166,7 @@
             NSMutableArray *descriptors = [NSMutableArray new];
             
             for (NSString *key in sortKeys) {
-                NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:key ascending:YES];
+                NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:key ascending:self.sortAscending];
                 [descriptors addObject:sortDescriptor];
             }
             
@@ -309,7 +313,11 @@
                 NSEntityDescription *entity = [NSEntityDescription entityForName:[self entityName] inManagedObjectContext:self.managedObjectContext];
                 fetchRequest.entity = entity;
                 
-                fetchRequest.predicate = predicate;
+                //NSCompoundPredicate
+                if ([self frcPredicate] != nil)
+                    fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[[self frcPredicate], predicate]];
+                else
+                    fetchRequest.predicate = predicate;
                 
                 NSMutableArray *sortDescriptors = [NSMutableArray new];
                 

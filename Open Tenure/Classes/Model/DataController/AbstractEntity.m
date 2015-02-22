@@ -171,7 +171,11 @@
             NSEntityDescription *entity = [NSEntityDescription entityForName:[self entityName] inManagedObjectContext:self.managedObjectContext];
             fetchRequest.entity = entity;
             
-            fetchRequest.predicate = predicate;
+            //NSCompoundPredicate
+            if ([self frcPredicate] != nil)
+                fetchRequest.predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[[self frcPredicate], predicate]];
+            else
+                fetchRequest.predicate = predicate;
             
             NSMutableArray *sortDescriptors = [NSMutableArray new];
             

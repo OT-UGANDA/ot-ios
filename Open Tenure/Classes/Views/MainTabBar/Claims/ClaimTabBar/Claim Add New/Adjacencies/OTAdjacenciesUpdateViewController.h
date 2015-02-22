@@ -33,6 +33,7 @@
 @property (strong, nonatomic) Claim *claim;
 
 - (IBAction)done:(id)sender;
+- (void)checkInvalidCell;
 
 // Showcase
 @property (nonatomic, strong) NSArray *showcaseTargetList;

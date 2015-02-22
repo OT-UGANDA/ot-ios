@@ -936,3 +936,19 @@
 
 /* loco:54c52dfe14d725972b8b464f */
 "zoom_level_too_low" = "L'area è troppo estesa. Aumenta il livello di zoom prima di scaricare i dati locali per la mappa";
+
+/* --------------------------------*/
+/* Android Commits on Jan 27, 2015 */
+"claim_area_label"="Area";
+"square_meters"="m2";
+
+/* Android Commits on Jan 30, 2015 */
+"created"="created";
+"uploading"="uploading";
+"uploaded"="uploaded";
+"deleted"="deleted";
+"upload_incomplete"="upload incomplete";
+"upload_error"="upload error";
+"download_incomplete"="download incomplete";
+"download_failed"="download faile";
+"downloading"="downloading";

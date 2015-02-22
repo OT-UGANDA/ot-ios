@@ -45,10 +45,13 @@
 
 - (OTViewType)getViewType {
     if ([self isSaved]) { // View claim
-        if ([self.statusCode isEqualToString:kClaimStatusCreated]) { // Local claim
-            return OTViewTypeEdit;
-        } else { // Readonly claim
+        if ([@[kClaimStatusChallenged,
+              kClaimStatusModerated,
+              kClaimStatusUnmoderated,
+              kClaimStatusWithdrawn] containsObject:self.statusCode]) {
             return OTViewTypeView;
+        } else {
+            return OTViewTypeEdit;
         }
     } else { // Add claim
         return OTViewTypeAdd;
@@ -238,16 +241,10 @@
 }
 
 - (BOOL)canBeUploaded {
-    NSArray *conditional = @[kClaimStatusCreated,
-                             kClaimStatusUploading,
-                             kClaimStatusUpdating,
-                             kClaimStatusUploadIncomplete,
-                             kClaimStatusUpdateIncomplete,
-                             kClaimStatusUploadError,
-                             kClaimStatusUpdateError
-                             ];
+    NSArray *conditional = @[kClaimStatusCreated];
     return [conditional containsObject:self.statusCode];
 }
+
 - (void)withDraw{
     if (self.getViewType != OTViewTypeView) return;
     [CommunityServerAPI withdrawClaim:[self claimId] completionHandler:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {

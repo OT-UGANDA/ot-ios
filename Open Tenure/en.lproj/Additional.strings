@@ -4,12 +4,12 @@
 "message_error_creating_additional_info"="Error during creating additonal info";
 "message_select_document_type"="Select document type";
 
-"Select picture"="Select picture";
-"From photo library"="From photo library";
-"Take new photo"="Take new photo";
+"from_photo_library"="From photo library";
+"take_new_photo"="Take new photo";
 
 "title_activity_share_details"="Share details";
 
+"title_tiles_download"="Download tiles";
 "message_downloading_tiles"="Downloaded %tu/%tu tiles. Not all tiles have been downloaded";
 "stop"="Stop";
 "continue"="Continue";
@@ -17,3 +17,23 @@
 "map_type_standard"="Apple Map Type Standard";
 "map_type_satellite"="Apple Map Type Satellite";
 "map_type_hybird"="Apple Map Type Hybird";
+
+/* download document */
+"title_download_document"="Download attachment";
+"message_download_document"="This file does not exist in local. Do you want to download?";
+
+
+/* pdf print */
+"generated_on"="generated on:";
+"title_claimant"="Claimant";
+"title_claim_parcel"="Parcel";
+"title_claim_document_reference"="Reference #";
+"title_claim_document_date"="Document date";
+"title_claim_document_description"="Description";
+"title_claim_area_label"="Area";
+"title_claim_type_label"="Claim type";
+"title_claim_occupied_since"="Occupied since";
+"title_claim_north_adjacency_label"="North adjacency";
+"title_claim_south_adjacency_label"="South adjacency";
+"title_claim_east_label"="East adjacency";
+"title_claim_west_label"="West adjacency";
