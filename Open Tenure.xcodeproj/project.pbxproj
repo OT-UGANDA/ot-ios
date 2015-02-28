@@ -1993,6 +1993,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dependencies",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -2016,6 +2017,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dependencies",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;

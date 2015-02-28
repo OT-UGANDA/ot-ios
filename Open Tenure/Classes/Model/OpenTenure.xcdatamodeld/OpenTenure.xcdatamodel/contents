@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6252" systemVersion="14B25" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14C109" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AdditionalInfo" representedClassName="AdditionalInfo" syncable="YES">
         <attribute name="key" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
@@ -90,7 +90,7 @@
     </entity>
     <entity name="FieldPayload" representedClassName="FieldPayload" syncable="YES">
         <attribute name="attributeId" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="bigDecimalPayload" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="bigDecimalPayload" optional="YES" attributeType="Decimal" syncable="YES"/>
         <attribute name="booleanPayload" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="fieldValueType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="stringPayload" optional="YES" attributeType="String" syncable="YES"/>
