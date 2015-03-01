@@ -558,11 +558,12 @@
 }
 
 - (IBAction)login:(id)sender {
-    if ([OTSetting getInitialization]) {
-        [OT login];
-    } else {
-        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"message_app_not_yet_initialized", nil)];
-    }
+    [OT login];
+//    if ([OTSetting getInitialization]) {
+//        [OT login];
+//    } else {
+//        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"message_app_not_yet_initialized", nil)];
+//    }
 }
 
 - (IBAction)logout:(id)sender {
