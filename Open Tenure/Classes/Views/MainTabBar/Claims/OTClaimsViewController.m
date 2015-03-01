@@ -507,50 +507,50 @@
     [claimEntity setManagedObjectContext:temporaryContext];
     Claim *claim = [claimEntity create];
     
-    FormPayloadEntity *formPayloadEntity = [FormPayloadEntity new];
-    [formPayloadEntity setManagedObjectContext:temporaryContext];
-    FormPayload *formPayload = [formPayloadEntity createObject];
-
     FormTemplateEntity *formTemplateEntity = [FormTemplateEntity new];
     [formTemplateEntity setManagedObjectContext:temporaryContext];
     FormTemplate *formTemplate = [formTemplateEntity getDefaultTemplate];
-    formPayload.formTemplate = formTemplate;
-    
-    SectionPayloadEntity *sectionPayloadEntity = [SectionPayloadEntity new];
-    [sectionPayloadEntity setManagedObjectContext:temporaryContext];
-    SectionElementPayloadEntity *sectionElementPayloadEntity = [SectionElementPayloadEntity new];
-    [sectionElementPayloadEntity setManagedObjectContext:temporaryContext];
-    FieldPayloadEntity *fieldPayloadEntity = [FieldPayloadEntity new];
-    [fieldPayloadEntity setManagedObjectContext:temporaryContext];
-    // Tạo danh sách các sectionPayload (các tab) dựa trên sectiontemplate của formtemplate
-    for (SectionTemplate *sectionTemplate in formTemplate.sectionTemplateList) {
-        SectionPayload *sectionPayload = [sectionPayloadEntity createObject];
-        sectionPayload.formPayload = formPayload;
-        sectionPayload.sectionTemplate = sectionTemplate;
-        // Tạo sectionElementPayload (nếu maxOccurrences = 1).
-        // Nếu maxOccurrences > 1 sẽ tạo trong class OTDynamicFormViewController
-        if ([sectionTemplate.maxOccurrences integerValue] == 1) {
-            SectionElementPayload *sectionElementPayload = [sectionElementPayloadEntity createObject];
-            sectionElementPayload.sectionPayload = sectionPayload;
-            // Tạo các fieldPayload theo danh sách fieldTemplate của sectionTemplate
-            for (FieldTemplate *fieldTemplate in sectionTemplate.fieldTemplateList) {
-                FieldPayload *fieldPayload = [fieldPayloadEntity createObject];
-                if ([fieldTemplate.fieldType isEqualToString:@"BOOL"]) {
-                    fieldPayload.fieldValueType = @"BOOL";
-                    fieldPayload.booleanPayload = [NSNumber numberWithBool:NO];
-                } else if ([fieldTemplate.fieldType isEqualToString:@"DECIMAL"]) {
-                    fieldPayload.fieldValueType = @"NUMBER";
-                } else {
-                    fieldPayload.fieldValueType = @"TEXT";
-                    fieldPayload.stringPayload = @"";
+    if (formTemplate != nil) {
+        FormPayloadEntity *formPayloadEntity = [FormPayloadEntity new];
+        [formPayloadEntity setManagedObjectContext:temporaryContext];
+        FormPayload *formPayload = [formPayloadEntity createObject];
+        formPayload.formTemplate = formTemplate;
+        
+        SectionPayloadEntity *sectionPayloadEntity = [SectionPayloadEntity new];
+        [sectionPayloadEntity setManagedObjectContext:temporaryContext];
+        SectionElementPayloadEntity *sectionElementPayloadEntity = [SectionElementPayloadEntity new];
+        [sectionElementPayloadEntity setManagedObjectContext:temporaryContext];
+        FieldPayloadEntity *fieldPayloadEntity = [FieldPayloadEntity new];
+        [fieldPayloadEntity setManagedObjectContext:temporaryContext];
+        // Tạo danh sách các sectionPayload (các tab) dựa trên sectiontemplate của formtemplate
+        for (SectionTemplate *sectionTemplate in formTemplate.sectionTemplateList) {
+            SectionPayload *sectionPayload = [sectionPayloadEntity createObject];
+            sectionPayload.formPayload = formPayload;
+            sectionPayload.sectionTemplate = sectionTemplate;
+            // Tạo sectionElementPayload (nếu maxOccurrences = 1).
+            // Nếu maxOccurrences > 1 sẽ tạo trong class OTDynamicFormViewController
+            if ([sectionTemplate.maxOccurrences integerValue] == 1) {
+                SectionElementPayload *sectionElementPayload = [sectionElementPayloadEntity createObject];
+                sectionElementPayload.sectionPayload = sectionPayload;
+                // Tạo các fieldPayload theo danh sách fieldTemplate của sectionTemplate
+                for (FieldTemplate *fieldTemplate in sectionTemplate.fieldTemplateList) {
+                    FieldPayload *fieldPayload = [fieldPayloadEntity createObject];
+                    if ([fieldTemplate.fieldType isEqualToString:@"BOOL"]) {
+                        fieldPayload.fieldValueType = @"BOOL";
+                        fieldPayload.booleanPayload = [NSNumber numberWithBool:NO];
+                    } else if ([fieldTemplate.fieldType isEqualToString:@"DECIMAL"]) {
+                        fieldPayload.fieldValueType = @"NUMBER";
+                    } else {
+                        fieldPayload.fieldValueType = @"TEXT";
+                        fieldPayload.stringPayload = @"";
+                    }
+                    fieldPayload.fieldTemplate = fieldTemplate;
+                    fieldPayload.sectionElementPayload = sectionElementPayload;
                 }
-                fieldPayload.fieldTemplate = fieldTemplate;
-                fieldPayload.sectionElementPayload = sectionElementPayload;
             }
         }
+        claim.dynamicForm = formPayload;
     }
-    
-    claim.dynamicForm = formPayload;
     
     [claim setToTemporary];
     UINavigationController *nav = [[self storyboard] instantiateViewControllerWithIdentifier:@"ClaimTabBar"];
