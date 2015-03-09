@@ -270,6 +270,7 @@
        share.denominator = [NSNumber numberWithInteger:100];
        share.nominator = [NSNumber numberWithInteger:[self getFreeShare]];
        share.claim = _claim;
+       [share.managedObjectContext save:nil];
        [share setToTemporary];
        
        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:OTShareViewDetail] forKey:@"OTSelectionAction"];
