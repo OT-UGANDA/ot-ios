@@ -130,6 +130,12 @@
     self.customSectionFooterHeight = 8;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if (_person.claim.getViewType != OTViewTypeView) {
+        [self checkInvalidCell];
+    }
+}
 - (IBAction)singleTapAction:(id)sender {
     [self hidePickers];
 }
@@ -275,7 +281,7 @@
                                   customCellHeight:customCellHeight
                                       keyboardType:UIKeyboardTypeAlphabet
                                           viewType:self.viewType];
-    firstName.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
+    firstName.shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText){
         if (inText.length > 0) {
             inCell.validationState = BPFormValidationStateValid;
             inCell.shouldShowInfoCell = NO;
@@ -286,6 +292,7 @@
             inCell.infoCell.label.text = NSLocalizedString(@"message_error_mandatory_field_first_name", nil);
             inCell.shouldShowInfoCell = YES;
         }
+        return YES;
     };
     if (self.viewType != OTViewTypeView)
         [firstName.textField becomeFirstResponder];
@@ -300,7 +307,7 @@
                                   customCellHeight:customCellHeight
                                       keyboardType:UIKeyboardTypeAlphabet
                                           viewType:self.viewType];
-    lastName.didEndEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
+    lastName.shouldChangeTextBlock = ^BOOL(BPFormInputCell *inCell, NSString *inText){
         if (inText.length > 0) {
             inCell.validationState = BPFormValidationStateValid;
             inCell.shouldShowInfoCell = NO;
@@ -311,6 +318,7 @@
             inCell.infoCell.label.text = NSLocalizedString(@"message_error_mandatory_field_last_name", nil);
             inCell.shouldShowInfoCell = YES;
         }
+        return YES;
     };
     lastName.textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
     
@@ -648,7 +656,7 @@
     while (i < self.formCells.count) {
         for (OTFormInputTextFieldCell *cell in self.formCells[i]) {
             if (cell.validationState == BPFormValidationStateInvalid) {
-                [self performSelector:@selector(showInvalidCell:) withObject:cell afterDelay:3];
+                [self performSelector:@selector(showInvalidCell:) withObject:cell afterDelay:0.3];
             }
         }
         i++;
