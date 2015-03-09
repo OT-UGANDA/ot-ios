@@ -130,7 +130,7 @@
         [_views addObject:formView];
     }
     
-    NSArray *titleArr = @[NSLocalizedString(@"title_claim", @"Claim"), NSLocalizedString(@"title_map", @"Map"), NSLocalizedString(@"title_claim_documents", @"Documents"), NSLocalizedString(@"title_claim_adjacencies", @"Adjacencies"), NSLocalizedString(@"title_claim_challenges", @"Challenges"), NSLocalizedString(@"title_claim_owners", @"Shares")];
+    NSArray *titleArr = @[NSLocalizedString(@"title_claim", @"Claim"), NSLocalizedString(@"title_map", @"Map"), NSLocalizedString(@"title_claim_documents", @"Documents"), NSLocalizedString(@"title_claim_adjacencies", @"Adjacencies"), NSLocalizedString(@"title_claim_challenges", @"Challenges"), NSLocalizedString(@"title_claim_owners", @"Owners")];
     _titles = [titleArr mutableCopy];
     for (SectionTemplate *object in objects) {
         if (object.displayName != nil)
