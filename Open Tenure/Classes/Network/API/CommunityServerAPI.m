@@ -156,9 +156,11 @@ static NSString *destinationPath;
 + (void)getClaimantPhoto:(NSString *)personId {
     NSString *urlString = [NSString stringWithFormat:HTTPS_GETATTACHMENT, [OTSetting getCommunityServerURL], personId];
     NSURL *url = [NSURL URLWithString:urlString];
-    [NSBlockOperation blockOperationWithBlock:^{
-        NSData *data = [NSData dataWithContentsOfURL:url];
-        [data writeToFile:[FileSystemUtilities getClaimantImagePath:personId] atomically:YES];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        NSError *error = nil;
+        NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&error];
+        if (!error)
+            [data writeToFile:[FileSystemUtilities getClaimantImagePath:personId] atomically:YES];
     }];
 }
 
