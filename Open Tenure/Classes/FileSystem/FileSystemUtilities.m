@@ -192,6 +192,18 @@
     return path;
 }
 
++ (NSString *)getClaimantFolder:(NSString *)claimId {
+    NSString *docDir = [[self applicationDocumentsDirectory] path];
+    NSString *claimantsPath = [docDir stringByAppendingPathComponent:_CLAIMANTS_FOLDER];
+    BOOL isDirectory;
+    NSString *claimantFolder = [_CLAIMANT_PREFIX stringByAppendingString:claimId];
+    NSString *path = [claimantsPath stringByAppendingPathComponent:claimantFolder];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
+        [self createClaimantFolder:claimId];
+    }
+    return path;
+}
+
 + (NSString *)getAttachmentFolder:(NSString *)claimId {
     NSString *claimPath = [self getClaimFolder:claimId];
     NSString *path = [claimPath stringByAppendingPathComponent:_ATTACHMENT_FOLDER];
@@ -252,9 +264,8 @@
 }
 
 + (NSString *)getClaimantImagePath:(NSString *)personId {
-    NSString *claimantsPath = [self getClaimantsFolder];
-    NSString *claimantFolder = [_CLAIMANT_PREFIX stringByAppendingString:personId];
-    NSString *path = [[claimantsPath stringByAppendingPathComponent:claimantFolder] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", personId]];
+    NSString *claimantFolder = [self getClaimantFolder:personId];
+    NSString *path = [claimantFolder stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", personId]];
     return path;
 }
 

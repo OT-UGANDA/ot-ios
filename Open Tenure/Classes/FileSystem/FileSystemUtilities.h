@@ -54,6 +54,7 @@
 + (NSString *)getClaimsFolder;
 + (NSString *)getClaimantsFolder;
 + (NSString *)getClaimFolder:(NSString *)claimId;
++ (NSString *)getClaimantFolder:(NSString *)claimId;
 + (NSString *)getAttachmentFolder:(NSString *)claimId;
 + (NSString *)getCompressClaim:(NSString *)claimId;
 + (NSString *)getOpentenureFolder;

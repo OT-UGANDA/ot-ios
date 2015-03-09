@@ -62,9 +62,10 @@
                     [claim importFromJSON:object];
                     _claim = claim;
                     
-                    NSDictionary *d = [object objectForKey:@"dynamicForm"];
-                    if (d != nil) ALog(@"DynamicForm:\n%@", d.description);
-                    
+                    //NSDictionary *d = [object objectForKey:@"dynamicForm"];
+                    //if (d != nil) ALog(@"DynamicForm:\n%@", d.description);
+                    // Download claimant photo:
+                    [CommunityServerAPI getClaimantPhoto:_claim.person.personId];
                     [_delegate downloadClaimTask:self didFinishWithSuccess:YES];
                 }
             } else {

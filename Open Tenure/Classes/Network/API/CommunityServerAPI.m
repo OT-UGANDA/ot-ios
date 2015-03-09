@@ -153,6 +153,15 @@ static NSString *destinationPath;
     [_downloadTask resume];
 }
 
++ (void)getClaimantPhoto:(NSString *)personId {
+    NSString *urlString = [NSString stringWithFormat:HTTPS_GETATTACHMENT, [OTSetting getCommunityServerURL], personId];
+    NSURL *url = [NSURL URLWithString:urlString];
+    [NSBlockOperation blockOperationWithBlock:^{
+        NSData *data = [NSData dataWithContentsOfURL:url];
+        [data writeToFile:[FileSystemUtilities getClaimantImagePath:personId] atomically:YES];
+    }];
+}
+
 + (void)getLandUsesWithCompletionHandler:(CompletionHandler)completionHandler {
     
     NSString *urlString = [NSString stringWithFormat:HTTPS_GETLANDUSE, [OTSetting getCommunityServerURL], [OT getLocalization]];

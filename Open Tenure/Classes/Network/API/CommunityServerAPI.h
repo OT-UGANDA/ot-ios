@@ -41,6 +41,7 @@ typedef void (^CompletionHandler)(NSError *error, NSHTTPURLResponse *httpRespons
 + (void)withdrawClaim:(NSString *)claimId completionHandler:(CompletionHandler)completionHandler;
 + (void)getClaim:(NSString *)claimId completionHandler:(CompletionHandler)completionHandler;
 + (void)getAttachment:(NSString *)attachmentId saveToPath:(NSString *)path;
++ (void)getClaimantPhoto:(NSString *)personId;
 + (void)getLandUsesWithCompletionHandler:(CompletionHandler)completionHandler;
 + (void)getIdTypesWithCompletionHandler:(CompletionHandler)completionHandler;
 + (void)getClaimTypesWithCompletionHandler:(CompletionHandler)completionHandler;
