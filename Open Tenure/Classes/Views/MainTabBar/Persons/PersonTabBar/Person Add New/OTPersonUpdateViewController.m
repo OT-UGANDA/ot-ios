@@ -132,7 +132,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    if (_person.claim.getViewType != OTViewTypeView) {
+    if (_person.getViewType != OTViewTypeView) {
         [self checkInvalidCell];
     }
 }
@@ -724,7 +724,7 @@ static bool allCellChecked = false;
 }
 
 - (IBAction)done:(id)sender {
-    if (self.viewType == OTViewTypeView)
+    if (_person.getViewType == OTViewTypeView)
         [self.navigationController dismissViewControllerAnimated:NO completion:nil];
     else {
         if (_person.name != nil) {

@@ -60,6 +60,17 @@
     return ![[self objectID] isTemporaryID];
 }
 
+- (OTViewType)getViewType {
+    if ([self isSaved]) { // View person/group
+        if (self.owner != nil)
+            return self.owner.claim.getViewType;
+        else
+            return self.claim.getViewType;
+    } else { // Add person/group
+        return OTViewTypeAdd;
+    }
+}
+
 - (NSDictionary *)dictionary {
 
     // matching managedObject vs jsonObject

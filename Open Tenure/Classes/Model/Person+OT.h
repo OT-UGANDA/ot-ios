@@ -41,6 +41,7 @@
  */
 - (NSString *)fullNameType:(OTFullNameType)type;
 - (BOOL)isSaved;
+- (OTViewType)getViewType;
 
 - (NSDictionary *)dictionary;
 
