@@ -75,9 +75,11 @@
 }
 
 - (void) configureUIForStationary{
-    
-    //Cho ảnh kích thước 29x29 @2x:58x58
-    self.image = [UIImage imageNamed:@"ot_blue_marker"];
+    if ([self.reuseIdentifier isEqualToString:@"AdditionalAnnotation"])
+        self.image = [UIImage imageNamed:@"ot_orange_marker"];
+    else
+        //Cho ảnh kích thước 29x29 @2x:58x58
+        self.image = [UIImage imageNamed:@"ot_blue_marker"];
     
     //Offset vị trí xuống chân
     self.centerOffset = CGPointMake(0, -14.5);

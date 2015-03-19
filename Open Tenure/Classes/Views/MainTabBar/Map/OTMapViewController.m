@@ -1695,7 +1695,10 @@
     if ([annotation isKindOfClass:[MKUserLocation class]]) return nil;
     if ([annotation isKindOfClass:[MKPointAnnotation class]]) {
         if ([((MKPointAnnotation *)annotation) isAccessibilityElement]) {
-            static NSString * const annotationIdentifier = @"CustomAnnotation";
+            static NSString *annotationIdentifier = @"CustomAnnotation";
+            if ([((MKPointAnnotation *)annotation) accessibilityValue] != nil)
+                annotationIdentifier = @"AdditionalAnnotation";
+            
             GeoShapeAnnotationView *pin = (GeoShapeAnnotationView *)[_mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
             if (!pin) {
                 pin = [[GeoShapeAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
