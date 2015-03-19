@@ -153,14 +153,19 @@ static NSString *destinationPath;
     [_downloadTask resume];
 }
 
-+ (void)getClaimantPhoto:(NSString *)personId {
++ (void)getClaimantPhoto:(NSString *)claimId personId:(NSString *)personId {
     NSString *urlString = [NSString stringWithFormat:HTTPS_GETATTACHMENT, [OTSetting getCommunityServerURL], personId];
     NSURL *url = [NSURL URLWithString:urlString];
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         NSError *error = nil;
         NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&error];
-        if (!error)
-            [data writeToFile:[FileSystemUtilities getClaimantImagePath:personId] atomically:YES];
+        if (!error) {
+            NSString *imagePath = [FileSystemUtilities getClaimantFolder:claimId];
+            NSString *imageFile = [personId stringByAppendingPathExtension:@"jpg"];
+            imageFile = [imagePath stringByAppendingPathComponent:imageFile];
+
+            [data writeToFile:imageFile atomically:YES];
+        }
     }];
 }
 

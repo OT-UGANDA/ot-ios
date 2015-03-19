@@ -96,7 +96,16 @@
     singleTap.numberOfTapsRequired = 1;
     [imageView addGestureRecognizer:singleTap];
     imageView.userInteractionEnabled = YES;
-    NSString *imageFile = [FileSystemUtilities getClaimantImagePath:_person.personId];
+    
+    NSString *imagePath;
+    NSString *imageFile = [_person.personId stringByAppendingPathExtension:@"jpg"];
+    if (_person.claim == nil) { // owner
+        imagePath = [FileSystemUtilities getClaimantFolder:_person.owner.claim.claimId];
+    } else {
+         imagePath = [FileSystemUtilities getClaimantFolder:_person.claim.claimId];
+    }
+    imageFile = [imagePath stringByAppendingPathComponent:imageFile];
+    
     UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
     if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];
     imageView.image = personPicture;
@@ -130,12 +139,12 @@
     self.customSectionFooterHeight = 8;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    if (_person.getViewType != OTViewTypeView) {
-        [self checkInvalidCell];
-    }
-}
+//- (void)viewDidAppear:(BOOL)animated {
+//    [super viewDidAppear:animated];
+//    if (_person.getViewType != OTViewTypeView && self.allCellsAreValid) {
+//        [self checkInvalidCell];
+//    }
+//}
 - (IBAction)singleTapAction:(id)sender {
     [self hidePickers];
 }
@@ -294,6 +303,10 @@
         }
         return YES;
     };
+    firstName.didBeginEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
+    
+    };
+    
     if (self.viewType != OTViewTypeView)
         [firstName.textField becomeFirstResponder];
     firstName.textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
@@ -320,6 +333,10 @@
         }
         return YES;
     };
+    lastName.didBeginEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
+        
+    };
+
     lastName.textField.autocapitalizationType = UITextAutocapitalizationTypeWords;
     
     [self setHeaderTitle:NSLocalizedString(@"date_of_birth_label", nil) forSection:2];
@@ -750,6 +767,17 @@ static bool allCellChecked = false;
 #pragma mark ActionSheet
 
 - (IBAction)showImagePickerAlert:(id)sender {
+    Claim *claim;
+    if (_person.claim != nil) { // Claimant
+        claim = _person.claim;
+    } else { // owner
+        claim = _person.owner.claim;
+    }
+    
+    if (![_person isSaved] || ![claim canBeUploaded]) {
+        return;
+    }
+    
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [UIActionSheet showFromRect:[[sender view] frame] inView:self.view animated:YES withTitle:nil cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle:nil otherButtonTitles:@[NSLocalizedStringFromTable(@"from_photo_library", @"Additional", nil), NSLocalizedStringFromTable(@"take_new_photo", @"Additional", nil)] tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
             
@@ -811,14 +839,70 @@ static bool allCellChecked = false;
     UIImage *newImage = [selectedImage cropToSize:CGSizeMake(width, width)];
     
     // Create a thumbnail version of the image for the recipe object.
-    CGSize newSize = CGSizeMake(150.0, 150.0);
+    CGSize newSize = CGSizeMake(320.0, 320.0);
     newImage = [newImage changeToSize:newSize];
     _personImageView.image = newImage;
     
-    NSString *imageFile = [FileSystemUtilities getClaimantImagePath:_person.personId];
+    NSString *imagePath;
+    NSString *imageFile = [_person.personId stringByAppendingPathExtension:@"jpg"];
+    if (_person.claim == nil) { // owner
+        imagePath = [FileSystemUtilities getClaimantFolder:_person.owner.claim.claimId];
+    } else {
+        imagePath = [FileSystemUtilities getClaimantFolder:_person.claim.claimId];
+    }
+    imageFile = [imagePath stringByAppendingPathComponent:imageFile];
+
+    BOOL isUpdate = [[NSFileManager defaultManager] fileExistsAtPath:imageFile];
+    ALog(@"%tu", isUpdate);
+    
+    // Update or Create new photo
     NSData *imageData = UIImageJPEGRepresentation(newImage, 1.0);
     [imageData writeToFile:imageFile atomically:YES];
+    NSNumber *fileSize = [NSNumber numberWithUnsignedInteger:imageData.length];
+    NSString *md5 = [imageData md5];
     
+    if (_person.claim != nil) { // claimant
+        Attachment *attachment;
+        if (isUpdate) {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(typeCode.code == %@)", @"personPhoto"];
+            NSSet *personObjects = [_person.claim.attachments filteredSetUsingPredicate:predicate];
+            
+            for (Attachment *att in personObjects) {
+                if ([att.fileName isEqualToString:imageFile]) {
+                    attachment = att;
+                    break;
+                }
+            }
+        }
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(code == %@)", @"personPhoto"];
+        
+        // Nạp lại sau khi claim đã save
+        DocumentTypeEntity *docTypeEntity = [DocumentTypeEntity new];
+        [docTypeEntity setManagedObjectContext:_person.managedObjectContext];
+        NSArray *docTypeCollection = [docTypeEntity getCollection];
+        DocumentType *docType = [[docTypeCollection filteredArrayUsingPredicate:predicate] firstObject];
+
+        if (attachment == nil) {
+            AttachmentEntity *attachmentEntity = [AttachmentEntity new];
+            [attachmentEntity setManagedObjectContext:_person.managedObjectContext];
+            attachment = [attachmentEntity create];
+            attachment.claim = _person.claim;
+            attachment.typeCode = docType;
+            attachment.attachmentId = [[[NSUUID UUID] UUIDString] lowercaseString];
+            attachment.statusCode = kAttachmentStatusCreated;
+        }
+        attachment.documentDate = [[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10];
+        attachment.mimeType = @"image/jpg";
+        attachment.fileName = [imageFile lastPathComponent];
+        attachment.fileExtension = @"jpg";
+        attachment.size = [fileSize stringValue];
+        attachment.md5 = md5;
+        attachment.note = docType.displayValue;
+        [attachment.managedObjectContext save:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"saved", nil)];
+        });
+    }
     [picker dismissViewControllerAnimated:YES completion:nil];
 }
 

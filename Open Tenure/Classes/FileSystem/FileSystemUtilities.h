@@ -63,8 +63,6 @@
 + (NSString *)getJsonAttachment:(NSString *)attachmentId;
 + (NSString *)matchTypeCode:(NSString *)original;
 
-+ (NSString *)getClaimantImagePath:(NSString *)personId;
-
 + (NSURL *)applicationDocumentsDirectory;
 + (NSURL *)applicationHiddenDocumentsDirectory;
 

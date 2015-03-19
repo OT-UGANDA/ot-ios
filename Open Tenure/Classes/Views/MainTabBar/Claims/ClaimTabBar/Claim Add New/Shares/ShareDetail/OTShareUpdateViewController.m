@@ -238,7 +238,15 @@
     }
     cell.detailTextLabel.text = person.idTypeCode;
     
-    NSString *imageFile = [FileSystemUtilities getClaimantImagePath:person.personId];
+    NSString *imagePath;
+    NSString *imageFile = [person.personId stringByAppendingPathExtension:@"jpg"];
+    if (person.claim == nil) { // owner
+        imagePath = [FileSystemUtilities getClaimantFolder:person.owner.claim.claimId];
+    } else {
+        imagePath = [FileSystemUtilities getClaimantFolder:person.claim.claimId];
+    }
+    imageFile = [imagePath stringByAppendingPathComponent:imageFile];
+
     UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
     if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];
     cell.imageView.image = personPicture;

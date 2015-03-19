@@ -70,7 +70,7 @@
         self.textField.keyboardType = keyboardType;
         if ((viewType != OTViewTypeView) && mandatory) {
             // Set init to invalid
-            self.validationState = BPFormValidationStateInvalid;
+            if (text.length == 0) self.validationState = BPFormValidationStateInvalid;
             // Clear validation state when begin editing
             self.didBeginEditingBlock = ^void(BPFormInputCell *inCell, NSString *inText){
                 inCell.validationState = BPFormValidationStateNone;

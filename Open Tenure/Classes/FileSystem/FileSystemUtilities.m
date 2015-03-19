@@ -263,12 +263,6 @@
     return nil;
 }
 
-+ (NSString *)getClaimantImagePath:(NSString *)personId {
-    NSString *claimantFolder = [self getClaimantFolder:personId];
-    NSString *path = [claimantFolder stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.jpg", personId]];
-    return path;
-}
-
 /**
  *
  * Returns the path to the application's documents directory.

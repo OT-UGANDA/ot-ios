@@ -262,7 +262,11 @@
     // Tạo claimant image
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 48, 48)];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
-    NSString *imageFile = [FileSystemUtilities getClaimantImagePath:object.person.personId];
+    
+    NSString *imagePath = [FileSystemUtilities getClaimantFolder:object.claimId];
+    NSString *imageFile = [object.person.personId stringByAppendingPathExtension:@"jpg"];
+    imageFile = [imagePath stringByAppendingPathComponent:imageFile];
+
     UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
     if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];
     imageView.image = personPicture;

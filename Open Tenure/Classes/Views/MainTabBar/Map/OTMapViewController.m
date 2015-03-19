@@ -1316,7 +1316,7 @@
     });
 
     // Kiểm tra phiên bản map attached. Xóa nếu tồn tại bản cũ
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(typeCode.code CONTAINS[cd] %@)", @"cadastralMap"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(typeCode.code == %@)", @"cadastralMap"];
     NSSet *cadastralObjects = [_claim.attachments filteredSetUsingPredicate:predicate];
 
     for (Attachment *attachment in cadastralObjects)
@@ -1430,7 +1430,8 @@
         NSString *md5 = [imageData md5];
         NSString *fileName = @"_map_.png";
         NSString *file = [[FileSystemUtilities getAttachmentFolder:_claim.claimId] stringByAppendingPathComponent:fileName];
-        [imageData writeToFile:file atomically:NO];
+        ALog(@"%@", md5);
+        [imageData writeToFile:file atomically:YES];
         NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
         [dictionary setValue:[[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10] forKey:@"documentDate"];
         [dictionary setValue:@"image/png" forKey:@"mimeType"];
@@ -1452,7 +1453,7 @@
         
         attachment.claim = _claim;
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(code CONTAINS[cd] %@)", @"cadastralMap"];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(code == %@)", @"cadastralMap"];
         
         // Nạp lại sau khi claim đã save
         DocumentTypeEntity *docTypeEntity = [DocumentTypeEntity new];

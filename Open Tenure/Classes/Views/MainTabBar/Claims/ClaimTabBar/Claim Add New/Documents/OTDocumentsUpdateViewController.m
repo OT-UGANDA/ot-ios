@@ -396,8 +396,14 @@
         attachment = [_fetchedResultsController objectAtIndexPath:indexPath];
     else
         attachment = [_filteredObjects objectAtIndex:indexPath.row];
+    
     NSString *filePath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
+    if ([attachment.typeCode.code isEqualToString:@"personPhoto"]) {
+        filePath = [FileSystemUtilities getClaimantFolder:_claim.claimId];
+        ALog(@"%@", filePath);
+    }
     filePath = [filePath stringByAppendingPathComponent:attachment.fileName];
+    ALog(@"%@", filePath);
     NSURL *fileUrl = [NSURL fileURLWithPath:filePath];
     
     BOOL isFileExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];

@@ -313,7 +313,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     NSString *challengedTitle = _claim.challenged != nil ? [_claim.challenged claimName] : NSLocalizedString(@"message_touch_to_select_a_claim", nil);
     _challengedBlock.textLabel.attributedText = [OT getAttributedStringFromText:challengedTitle];
     
-    if (_claim.getViewType != OTViewTypeView) {
+    if (_claim.getViewType != OTViewTypeView && self.allCellsAreValid) {
         [self checkInvalidCell];
     }
 }
