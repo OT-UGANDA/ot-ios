@@ -483,10 +483,27 @@ typedef NS_ENUM(NSInteger, OTCell) {
     [shareEntity setManagedObjectContext:_claim.managedObjectContext];
     Share *share = [shareEntity create];
     share.shareId = [[[NSUUID UUID] UUIDString] lowercaseString];
-    [share addOwnersObject:[_claim.person clone]];
+    Person *newPerson = [_claim.person clone];
+    [share addOwnersObject:newPerson];
     share.denominator = [NSNumber numberWithInteger:100];
     share.nominator = [NSNumber numberWithInteger:100];
     share.claim = _claim;
+    
+    // Copy claimant photo
+    NSString *imagePath = [FileSystemUtilities getClaimantFolder:_claim.claimId];
+    NSString *imageFile = [_claim.person.personId stringByAppendingPathExtension:@"jpg"];
+    imageFile = [imagePath stringByAppendingPathComponent:imageFile];
+    
+    UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
+    if (personPicture != nil) {
+        NSError *error;
+        imagePath = [FileSystemUtilities getClaimantFolder:_claim.claimId];
+        NSString *newImageFile = [newPerson.personId stringByAppendingPathExtension:@"jpg"];
+        newImageFile = [imagePath stringByAppendingPathComponent:newImageFile];
+        if (![[NSFileManager defaultManager] copyItemAtPath:imageFile toPath:newImageFile error:&error]) {
+            ALog(@"Copy %@ to %@ error: %@", imageFile, newImageFile, error.localizedDescription);
+        }
+    }
 }
 
 - (BOOL)updateClaimStatus {
