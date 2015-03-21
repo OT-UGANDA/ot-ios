@@ -230,6 +230,7 @@
             annotation.coordinate = point.geometry.coordinate;
             annotation.isAccessibilityElement = YES;
             annotation.accessibilityValue = [location.objectID.URIRepresentation lastPathComponent];
+            annotation.accessibilityHint = @"AdditionalAnnotation";
             annotation.title = location.note;
             [_mapView addAnnotation:annotation];
             [_additionalMarkers addObject:annotation];
@@ -1048,6 +1049,7 @@
                                   [location.managedObjectContext save:nil];
                                   
                                   point.title = title;
+                                  point.accessibilityHint = @"AdditionalAnnotation";
                                   point.accessibilityValue = [location.objectID.URIRepresentation lastPathComponent];
                                   
                                   [_mapView addAnnotation:point];
@@ -1391,6 +1393,22 @@
                 [pinImage drawAtPoint:point];
             }
         }
+        
+        // Vẽ additional marker
+        pin = [[MKPinAnnotationView alloc] initWithAnnotation:nil reuseIdentifier:@"AdditionalAnnotation"];
+        pinImage = [UIImage imageNamed:@"ot_orange_marker"];
+        
+        pin.centerOffset = CGPointMake(0, -14);
+        
+        for (Location *location in _claim.locations) {
+            ShapeKitPoint *shapeKitPoint = [[ShapeKitPoint alloc] initWithWKT:location.mappedLocation];
+            CGPoint point = [snapshot pointForCoordinate:shapeKitPoint.geometry.coordinate];
+            if (CGRectContainsPoint(finalImageRect, point)) { // this is too conservative, but you get the idea
+                point.x -= 14.5;
+                point.y -= 29.0;
+                [pinImage drawAtPoint:point];
+            }
+        }
 
         // Tạo điểm và nhãn cho polygon theo tâm của đường bao.
         TBClusterAnnotation *center = [[TBClusterAnnotation alloc] initWithCoordinate:shape.coordinate count:1];
@@ -1695,8 +1713,8 @@
     if ([annotation isKindOfClass:[MKUserLocation class]]) return nil;
     if ([annotation isKindOfClass:[MKPointAnnotation class]]) {
         if ([((MKPointAnnotation *)annotation) isAccessibilityElement]) {
-            static NSString *annotationIdentifier = @"CustomAnnotation";
-            if ([((MKPointAnnotation *)annotation) accessibilityValue] != nil)
+            NSString *annotationIdentifier = @"CustomAnnotation";
+            if ([[((MKPointAnnotation *)annotation) accessibilityHint] isEqualToString:@"AdditionalAnnotation"])
                 annotationIdentifier = @"AdditionalAnnotation";
             
             GeoShapeAnnotationView *pin = (GeoShapeAnnotationView *)[_mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
