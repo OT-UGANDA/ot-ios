@@ -77,11 +77,13 @@ static NSURLSessionUploadTask *uploadTask;
                     id returnedData = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&parseError];
                     
                     if (!returnedData) {
-                        [OT handleError:parseError];
+                        NSString *message = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                        [OT handleErrorWithMessage:[NSString stringWithFormat:@"%@\nMessage: '%@'", parseError.localizedDescription, message]];
                     } else {
                         ALog(@"Response code: %tu; Error: %@", httpResponse.statusCode, error.localizedDescription);
                         switch (httpResponse.statusCode) {
                             case 100: /* UnknownHostException: */
+                                ALog(@"Error 100");
                                 if (([_claim.statusCode isEqualToString:kClaimStatusCreated]
                                      || [_claim.statusCode isEqualToString:kClaimStatusUploadIncomplete])
                                     && [_claim.statusCode isEqualToString:kClaimStatusUploadError]) {
@@ -96,6 +98,7 @@ static NSURLSessionUploadTask *uploadTask;
                                 break;
                                 
                             case 105: /* IOException: */
+                                ALog(@"Error 105");
                                 if (([_claim.statusCode isEqualToString:kClaimStatusCreated]
                                      || [_claim.statusCode isEqualToString:kClaimStatusUploadIncomplete])
                                     && [_claim.statusCode isEqualToString:kClaimStatusUploadError]) {
@@ -110,6 +113,7 @@ static NSURLSessionUploadTask *uploadTask;
                                 break;
                                 
                             case 110:
+                                ALog(@"Error 110");
                                 if (([_claim.statusCode isEqualToString:kClaimStatusCreated]
                                      || [_claim.statusCode isEqualToString:kClaimStatusUploadIncomplete])
                                     && [_claim.statusCode isEqualToString:kClaimStatusUploadError]) {
@@ -146,13 +150,14 @@ static NSURLSessionUploadTask *uploadTask;
                                 
                             case 403:
                             case 404:{ /* Error Login */
+                                ALog(@"Error 403, 404");
                                 [OT handleErrorWithMessage:NSLocalizedString(@"message_login_no_more_valid", nil)];
                                 [OT login];
                                 break;
                             }
 
                             case 452: { /* Missing Attachments */
-                                
+                                ALog(@"Error 452");
                                 if (([_claim.statusCode isEqualToString:kClaimStatusCreated]
                                      || [_claim.statusCode isEqualToString:kClaimStatusUploadIncomplete])
                                      && [_claim.statusCode isEqualToString:kClaimStatusUploadError]) {
@@ -195,6 +200,7 @@ static NSURLSessionUploadTask *uploadTask;
                                 break;
                             }
                             case 450: {
+                                ALog(@"Error 450");
                                 if ([_claim.statusCode isEqualToString:kClaimStatusCreated]
                                     || [_claim.statusCode isEqualToString:kClaimStatusUploading]
                                     || [_claim.statusCode isEqualToString:kClaimStatusUploadIncomplete]
@@ -208,7 +214,7 @@ static NSURLSessionUploadTask *uploadTask;
                                 break;
                             }
                             case 400:
-                                ALog(@"%@", [returnedData description]);
+                                ALog(@"Error 400");
                                 if ([_claim.statusCode isEqualToString:kClaimStatusCreated]
                                     || [_claim.statusCode isEqualToString:kClaimStatusUploading]
                                     || [_claim.statusCode isEqualToString:kClaimStatusUploadIncomplete]
