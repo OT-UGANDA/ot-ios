@@ -60,9 +60,9 @@
     [self.navigationController.toolbar setTintColor:[UIColor otDarkBlue]];
     UIBarButtonItem *flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
     UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)];
-  //  UIBarButtonItem *reset = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(reInitialization:)];
-  //  [self setToolbarItems:@[reset, flexibleSpace, done]];
-    [self setToolbarItems:@[flexibleSpace, done]];
+    UIBarButtonItem *reset = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(reInitialization:)];
+    [self setToolbarItems:@[reset, flexibleSpace, done]];
+  //  [self setToolbarItems:@[flexibleSpace, done]];
     
     NSString *buttonTitle = NSLocalizedString(@"title_activity_settings", nil);
     UIBarButtonItem *logo = [OT logoButtonWithTitle:buttonTitle];
@@ -75,9 +75,9 @@
 }
 
 - (IBAction)reInitialization:(id)sender {
-    [UIAlertView showWithTitle:@"Reset all data?" message:nil cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"confirm", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+    [UIAlertView showWithTitle:@"This action will reset all data.." message:nil cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"confirm", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
         if (buttonIndex != alertView.cancelButtonIndex) {
-            [SVProgressHUD showWithStatus:@"Please wait until OpenTenure is finished running... and start running OpenTenure again" maskType:SVProgressHUDMaskTypeBlack];
+            [SVProgressHUD showWithStatus:@"Please run OT again to make settings effected... " maskType:SVProgressHUDMaskTypeBlack];
             [OTSetting setReInitialization:YES];
             [self performSelector:@selector(abortApp) withObject:self afterDelay:5.0];
         }
