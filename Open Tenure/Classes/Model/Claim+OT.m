@@ -241,7 +241,7 @@
 }
 
 - (BOOL)canBeUploaded {
-    NSArray *conditional = @[kClaimStatusCreated];
+    NSArray *conditional = @[kClaimStatusCreated, kClaimStatusUpdateError, kClaimStatusUpdateIncomplete, kClaimStatusUpdating, kClaimStatusUploadError, kClaimStatusUploadIncomplete, kClaimStatusUploading];
     return [conditional containsObject:self.statusCode];
 }
 
