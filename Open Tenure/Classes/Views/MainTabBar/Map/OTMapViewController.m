@@ -1834,7 +1834,9 @@
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
     
     CLLocationCoordinate2D coordinate = [view.annotation coordinate];
-//    GeoShapeVertex *templateVertex = [[GeoShapeVertex alloc] initWithLatitude:coordinate.latitude longitude:coordinate.longitude];
+
+    BOOL additionalMarker = [[((MKPointAnnotation *)view.annotation) accessibilityHint] isEqualToString:@"AdditionalAnnotation"];
+    
     NSInteger tag = 0;
     NSString *title = [view.annotation title];
     if (title != nil) tag = [title integerValue];
@@ -1846,59 +1848,73 @@
         // Duyệt các vertex của workingOverlay để xác định điểm nào sẽ di chuyển
         // sau đó [vertex setDragging:YES];
         // workingVertex = vertex
-        for (GeoShapeVertex *vertex in _shapes.workingOverlay.vertices) {
-            if (vertex.tag == tag) {
-                [vertex setDragging:YES];
-                workingVertex = vertex;
+        if (!additionalMarker) {
+            for (GeoShapeVertex *vertex in _shapes.workingOverlay.vertices) {
+                if (vertex.tag == tag) {
+                    [vertex setDragging:YES];
+                    workingVertex = vertex;
+                }
             }
-//            if ([vertex isEqual:templateVertex]) {
-//                [vertex setDragging:YES];
-//                workingVertex = vertex;
-//            }
         }
     } else if (newState == MKAnnotationViewDragStateEnding) {
-        for (GeoShapeVertex *vertex in _shapes.workingOverlay.vertices) {
-            if ([vertex isDragging]) {
-                workingVertex = vertex;
-                ALog(@"found");
-                break;
+        if (!additionalMarker) {
+            for (GeoShapeVertex *vertex in _shapes.workingOverlay.vertices) {
+                if ([vertex isDragging]) {
+                    workingVertex = vertex;
+                    ALog(@"found");
+                    break;
+                }
+            }
+            if (snapped) {
+                CLLocationCoordinate2D snappedCoord = [_shapes snappedCoordinate];
+                workingVertex.latitude = snappedCoord.latitude;
+                workingVertex.longitude = snappedCoord.longitude;
+            } else {
+                // Trả lại trạng thái cho workingVertex
+                workingVertex.latitude = coordinate.latitude;
+                workingVertex.longitude = coordinate.longitude;
+            }
+            [self updateOverlay:_shapes];
+            [workingVertex setDragging:NO];
+            [_mapView removeAnnotation:view.annotation];
+            [_workingAnnotations removeObject:view.annotation];
+            
+            // Làm cho annotation không select
+            MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
+            point.title = [@(workingVertex.tag) stringValue];
+            point.subtitle = workingVertex.locationAsString;
+            point.coordinate = workingVertex.coordinate;
+            point.isAccessibilityElement = YES;
+            [self addAnnotation:point];
+        } else {
+            NSString *objectIDString = [(MKPointAnnotation *)[view annotation] accessibilityValue];
+            if (objectIDString != nil) { // Not boundary marker
+                for (Location *location in _claim.locations) {
+                    if ([objectIDString isEqualToString:[location.objectID.URIRepresentation lastPathComponent]]) {
+                        ShapeKitPoint *point = [[ShapeKitPoint alloc] initWithCoordinate:view.annotation.coordinate];
+                        location.mappedLocation = point.wktGeom;
+                    }
+                }
             }
         }
-        if (snapped) {
-            CLLocationCoordinate2D snappedCoord = [_shapes snappedCoordinate];
-            workingVertex.latitude = snappedCoord.latitude;
-            workingVertex.longitude = snappedCoord.longitude;
-        } else {
-            // Trả lại trạng thái cho workingVertex
+    } else if (newState == MKAnnotationViewDragStateNone && oldState == MKAnnotationViewDragStateCanceling) {
+        if (!additionalMarker) {
+            for (GeoShapeVertex *vertex in _shapes.workingOverlay.vertices) {
+                if ([vertex isDragging]) {
+                    workingVertex = vertex;
+                    ALog(@"found");
+                    break;
+                }
+            }
             workingVertex.latitude = coordinate.latitude;
             workingVertex.longitude = coordinate.longitude;
+            [self updateOverlay:_shapes];
+            [self setDragging:NO];
         }
-        [self updateOverlay:_shapes];
-        [workingVertex setDragging:NO];
-        [_mapView removeAnnotation:view.annotation];
-        [_workingAnnotations removeObject:view.annotation];
-        
-        // Làm cho annotation không select
-        MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
-        point.title = [@(workingVertex.tag) stringValue];
-        point.subtitle = workingVertex.locationAsString;
-        point.coordinate = workingVertex.coordinate;
-        point.isAccessibilityElement = YES;
-        [self addAnnotation:point];
-    } else if (newState == MKAnnotationViewDragStateNone && oldState == MKAnnotationViewDragStateCanceling) {
-        for (GeoShapeVertex *vertex in _shapes.workingOverlay.vertices) {
-            if ([vertex isDragging]) {
-                workingVertex = vertex;
-                ALog(@"found");
-                break;
-            }
-        }
-        workingVertex.latitude = coordinate.latitude;
-        workingVertex.longitude = coordinate.longitude;
-        [self updateOverlay:_shapes];
-        [self setDragging:NO];
     } else if (newState == MKAnnotationViewDragStateDragging) {
-        [self setDragging:YES];
+        if (!additionalMarker) {
+            [self setDragging:YES];
+        }
     }
 }
 
