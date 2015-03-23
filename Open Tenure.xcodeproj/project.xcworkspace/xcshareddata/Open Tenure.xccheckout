@@ -12,8 +12,6 @@
 	<dict>
 		<key>2E98E54B-A260-40D8-BD87-995EF2B92FEA</key>
 		<string>https://github.com/chuyentt/ot-ios.git</string>
-		<key>9863DF73E141BFFC4228BCCFD26DF39E2E3D0D89</key>
-		<string>https://github.com/chuyentt/ot-ios.git</string>
 		<key>A9D1B49B7616A73877963044EAB6F8DD7FD4F7C6</key>
 		<string>https://github.com/OpenTenure/ot-ios.git</string>
 	</dict>
@@ -22,18 +20,16 @@
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>2E98E54B-A260-40D8-BD87-995EF2B92FEA</key>
-		<string>../../../Open Tenure</string>
-		<key>9863DF73E141BFFC4228BCCFD26DF39E2E3D0D89</key>
-		<string>../..</string>
+		<string>../../../../../../../../../../../../Open Tenure</string>
 		<key>A9D1B49B7616A73877963044EAB6F8DD7FD4F7C6</key>
 		<string>../../../Open%20Tenure</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/chuyentt/ot-ios.git</string>
+	<string>https://github.com/OpenTenure/ot-ios.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>9863DF73E141BFFC4228BCCFD26DF39E2E3D0D89</string>
+	<string>A9D1B49B7616A73877963044EAB6F8DD7FD4F7C6</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
@@ -56,7 +52,7 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>9863DF73E141BFFC4228BCCFD26DF39E2E3D0D89</string>
+			<string>A9D1B49B7616A73877963044EAB6F8DD7FD4F7C6</string>
 			<key>IDESourceControlWCCName</key>
 			<string>ot-ios</string>
 		</dict>

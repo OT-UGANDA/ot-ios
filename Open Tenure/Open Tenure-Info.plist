@@ -44,18 +44,9 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.1.4</string>
+	<string>1.1.5</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>MKDirectionsApplicationSupportedModes</key>
-	<array>
-		<string>MKDirectionsModePlane</string>
-		<string>MKDirectionsModePedestrian</string>
-		<string>MKDirectionsModePedestrian</string>
-		<string>MKDirectionsModeSubway</string>
-		<string>MKDirectionsModeTaxi</string>
-		<string>MKDirectionsModeBus</string>
-	</array>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Your location is used to show you how to use CoreLocation!</string>
 	<key>UIBackgroundModes</key>
