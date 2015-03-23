@@ -774,7 +774,7 @@ static bool allCellChecked = false;
         claim = _person.owner.claim;
     }
     
-    if (![_person isSaved] || ![claim canBeUploaded]) {
+    if (![claim canBeUploaded]) {
         return;
     }
     

@@ -1887,6 +1887,7 @@
             point.isAccessibilityElement = YES;
             [self addAnnotation:point];
         } else {
+            _dashboardActionShowing = YES;
             NSString *objectIDString = [(MKPointAnnotation *)[view annotation] accessibilityValue];
             if (objectIDString != nil) { // Not boundary marker
                 for (Location *location in _claim.locations) {
@@ -1896,6 +1897,7 @@
                     }
                 }
             }
+            [self performSelector:@selector(setDashboardActionShowing:) withObject:nil afterDelay:0.05];
         }
     } else if (newState == MKAnnotationViewDragStateNone && oldState == MKAnnotationViewDragStateCanceling) {
         if (!additionalMarker) {
