@@ -847,7 +847,10 @@ static bool allCellChecked = false;
 
 // tell the picker how many rows are available for a given component
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    return _claimTypeCollection.count;
+    if (_pickerClaimTypeShowing)
+        return _claimTypeCollection.count;
+    else
+        return _landUseCollection.count;
 }
 
 // tell the picker how many components it will have
