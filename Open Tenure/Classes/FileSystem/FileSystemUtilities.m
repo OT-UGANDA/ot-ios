@@ -91,10 +91,10 @@
     NSString *claimsPath = [self getClaimsFolder];
     NSString *claimFolder = [_CLAIM_PREFIX stringByAppendingString:claimId];
     NSString *path = [claimsPath stringByAppendingPathComponent:claimFolder];
-    
-    if ([self createFolder:path]) {
+    NSString *fullPath = [[[self applicationDocumentsDirectory] path] stringByAppendingPathComponent:path];
+    if ([self createFolder:fullPath]) {
         path = [path stringByAppendingPathComponent:_ATTACHMENT_FOLDER];
-        return [self createFolder:path];
+        return [self createFolder:fullPath];
     }
     return NO;
 }
@@ -103,6 +103,7 @@
     NSString *claimantsPath = [self getClaimantsFolder];
     NSString *claimantFolder = [_CLAIMANT_PREFIX stringByAppendingString:personId];
     NSString *path = [claimantsPath stringByAppendingPathComponent:claimantFolder];
+    path = [[[self applicationDocumentsDirectory] path] stringByAppendingPathComponent:path];
     return [self createFolder:path];
 }
 
@@ -110,6 +111,7 @@
     NSString *claimantsPath = [self getClaimantsFolder];
     NSString *claimantFolder = [_CLAIMANT_PREFIX stringByAppendingString:personId];
     NSString *path = [claimantsPath stringByAppendingPathComponent:claimantFolder];
+    path = [[[self applicationDocumentsDirectory] path] stringByAppendingPathComponent:path];
     return [self deleteFile:path];
 }
 
@@ -117,6 +119,7 @@
     NSString *claimsPath = [self getClaimsFolder];
     NSString *claimFolder = [_CLAIM_PREFIX stringByAppendingString:claimId];
     NSString *path = [claimsPath stringByAppendingPathComponent:claimFolder];
+    path = [[[self applicationDocumentsDirectory] path] stringByAppendingPathComponent:path];
     return [self deleteFile:path];
 }
 
@@ -124,6 +127,7 @@
     NSString *claimantsPath = [self getClaimantsFolder];
     NSString *claimantFolder = [_CLAIMANT_PREFIX stringByAppendingString:personId];
     NSString *path = [claimantsPath stringByAppendingPathComponent:claimantFolder];
+    path = [[[self applicationDocumentsDirectory] path] stringByAppendingPathComponent:path];
     return [self deleteFile:path];
 }
 
@@ -167,7 +171,7 @@
     if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
         [self createClaimsFolder];
     }
-    return path;
+    return _CLAIMS_FOLDER;
 }
 
 + (NSString *)getClaimantsFolder {
@@ -177,7 +181,7 @@
     if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
         [self createClaimantsFolder];
     }
-    return path;
+    return _CLAIMANTS_FOLDER;
 }
 
 + (NSString *)getClaimFolder:(NSString *)claimId {
@@ -189,7 +193,7 @@
     if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
         [self createClaimFolder:claimId];
     }
-    return path;
+    return [[self getClaimsFolder] stringByAppendingPathComponent:claimFolder];
 }
 
 + (NSString *)getClaimantFolder:(NSString *)claimId {
@@ -201,15 +205,16 @@
     if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
         [self createClaimantFolder:claimId];
     }
-    return path;
+    return [[self getClaimantsFolder] stringByAppendingPathComponent:claimantFolder];
 }
 
 + (NSString *)getAttachmentFolder:(NSString *)claimId {
     NSString *claimPath = [self getClaimFolder:claimId];
     NSString *path = [claimPath stringByAppendingPathComponent:_ATTACHMENT_FOLDER];
     BOOL isDirectory;
-    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
-        [self createFolder:path];
+    NSString *fullPath = [[[self applicationDocumentsDirectory] path] stringByAppendingPathComponent:path];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:fullPath isDirectory:&isDirectory]) {
+        [self createFolder:fullPath];
     }
     return path;
 }
@@ -229,7 +234,7 @@
     if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
         [self createOpenTenureFolder];
     }
-    return path;
+    return _OPEN_TENURE_FOLDER;
 }
 
 + (BOOL)copyFileInAttachFolder:(NSString *)destination source:(NSString *)source {
@@ -250,7 +255,7 @@
     NSString *claimFolder = [self getClaimFolder:claimId];
     NSString *jsonFile = [claimFolder stringByAppendingPathComponent:@"claim.json"];
     NSString *jsonString = [NSString stringWithContentsOfFile:jsonFile encoding:NSUTF8StringEncoding error:nil];
-    return jsonString;
+    return [[[self applicationDocumentsDirectory] path] stringByAppendingPathComponent:jsonString];
 }
 
 + (NSString *)getJsonAttachment:(NSString *)attachmentId {

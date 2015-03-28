@@ -115,6 +115,7 @@
 }
 
 + (SectionElementPayload *)getEntityById:(NSString *)attributeId {
+    [self context]->_filteredResults = nil;
     [[self context] filterContentForSearchText:attributeId scope:0];
     if ([self context]->_filteredObjects.count > 0) {
         return [[self context]->_filteredObjects firstObject];

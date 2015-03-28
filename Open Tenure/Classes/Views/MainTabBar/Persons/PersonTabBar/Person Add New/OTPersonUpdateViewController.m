@@ -100,9 +100,9 @@
     NSString *imagePath;
     NSString *imageFile = [_person.personId stringByAppendingPathExtension:@"jpg"];
     if (_person.claim == nil) { // owner
-        imagePath = [FileSystemUtilities getClaimantFolder:_person.owner.claim.claimId];
+        imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:_person.owner.claim.claimId]];
     } else {
-         imagePath = [FileSystemUtilities getClaimantFolder:_person.claim.claimId];
+         imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:_person.claim.claimId]];
     }
     imageFile = [imagePath stringByAppendingPathComponent:imageFile];
     
@@ -843,13 +843,18 @@ static bool allCellChecked = false;
     newImage = [newImage changeToSize:newSize];
     _personImageView.image = newImage;
     
+    NSString *filePath;
     NSString *imagePath;
     NSString *imageFile = [_person.personId stringByAppendingPathExtension:@"jpg"];
     if (_person.claim == nil) { // owner
-        imagePath = [FileSystemUtilities getClaimantFolder:_person.owner.claim.claimId];
+        filePath = [FileSystemUtilities getClaimantFolder:_person.owner.claim.claimId];
+        imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:filePath];
     } else {
-        imagePath = [FileSystemUtilities getClaimantFolder:_person.claim.claimId];
+        filePath = [FileSystemUtilities getClaimantFolder:_person.claim.claimId];
+        imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:filePath];
     }
+    filePath = [filePath stringByAppendingPathComponent:imageFile];
+    
     imageFile = [imagePath stringByAppendingPathComponent:imageFile];
 
     BOOL isUpdate = [[NSFileManager defaultManager] fileExistsAtPath:imageFile];
@@ -893,7 +898,7 @@ static bool allCellChecked = false;
         }
         attachment.documentDate = [[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10];
         attachment.mimeType = @"image/jpg";
-        attachment.fileName = [imageFile lastPathComponent];
+        attachment.fileName = filePath;
         attachment.fileExtension = @"jpg";
         attachment.size = [fileSize stringValue];
         attachment.md5 = md5;

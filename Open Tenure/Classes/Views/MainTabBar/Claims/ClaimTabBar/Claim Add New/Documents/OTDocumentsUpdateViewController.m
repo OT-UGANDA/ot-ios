@@ -178,7 +178,8 @@
 }
 
 - (NSPredicate *)frcPredicate {
-    return [NSPredicate predicateWithFormat:@"(claim = %@)", _claim];
+//    return [NSPredicate predicateWithFormat:@"(claim == %@)", _claim];
+    return [NSPredicate predicateWithFormat:@"(claim == %@) AND (typeCode.code <> %@)", _claim, @"personPhoto"];
 }
 
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
@@ -294,7 +295,7 @@
         attachment.typeCode = docType;
         
         if (attachment != nil) {
-            NSString *destination = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
+            NSString *destination = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getAttachmentFolder:_claim.claimId]];
             destination = [destination stringByAppendingPathComponent:attachment.fileName];
             BOOL success = [FileSystemUtilities copyFileInAttachFolder:destination source:[_dictionary valueForKey:@"filePath"]];
             if (success) {
@@ -354,9 +355,10 @@
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     
-    NSString *filePath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
-    filePath = [filePath stringByAppendingPathComponent:attachment.fileName];
-    BOOL isFileExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+    NSString *fullPath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
+    fullPath = [fullPath stringByAppendingPathComponent:[attachment.fileName lastPathComponent]];
+    fullPath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:fullPath];
+    BOOL isFileExist = [[NSFileManager defaultManager] fileExistsAtPath:fullPath];
     if (!isFileExist) {
         cell.accessoryType = UITableViewCellAccessoryDetailButton;
         cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_menu_download_document"]];
@@ -397,23 +399,19 @@
     else
         attachment = [_filteredObjects objectAtIndex:indexPath.row];
     
-    NSString *filePath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
-    if ([attachment.typeCode.code isEqualToString:@"personPhoto"]) {
-        filePath = [FileSystemUtilities getClaimantFolder:_claim.claimId];
-        ALog(@"%@", filePath);
-    }
-    filePath = [filePath stringByAppendingPathComponent:attachment.fileName];
-    ALog(@"%@", filePath);
-    NSURL *fileUrl = [NSURL fileURLWithPath:filePath];
+    NSString *fullPath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
+    fullPath = [fullPath stringByAppendingPathComponent:[attachment.fileName lastPathComponent]];
+    fullPath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:fullPath];
+    NSURL *fileUrl = [NSURL fileURLWithPath:fullPath];
     
-    BOOL isFileExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
+    BOOL isFileExist = [[NSFileManager defaultManager] fileExistsAtPath:fullPath];
     if (!isFileExist) {
         NSString *title = NSLocalizedStringFromTable(@"title_download_document", @"Additional", nil);
         NSString *message = NSLocalizedStringFromTable(@"message_download_document", @"Additional", nil);
         [UIAlertView showWithTitle:title message:message cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"OK", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
             if (buttonIndex != alertView.cancelButtonIndex) {
-                [FileSystemUtilities createClaimFolder:attachment.claim.claimId];
-                [CommunityServerAPI getAttachment:attachment.attachmentId saveToPath:filePath];
+                [FileSystemUtilities createClaimFolder:_claim.claimId];
+                [CommunityServerAPI getAttachment:attachment.attachmentId saveToPath:fullPath];
             }
         }];
     } else {
@@ -444,7 +442,7 @@
         attachment = [_fetchedResultsController objectAtIndexPath:indexPath];
     else
         attachment = [_filteredObjects objectAtIndex:indexPath.row];
-    NSString *filePath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
+    NSString *filePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getAttachmentFolder:_claim.claimId]];
     filePath = [filePath stringByAppendingPathComponent:attachment.fileName];
     
     NSString *title = NSLocalizedString(@"app_name", nil);

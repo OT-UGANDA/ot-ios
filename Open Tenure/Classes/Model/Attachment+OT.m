@@ -49,7 +49,9 @@
         [dict setObject:self.typeCode.code forKey:@"typeCode"];
     else
         [dict setObject:[NSNull null] forKey:@"typeCode"];
-
+    
+    [dict setObject:[self.fileName lastPathComponent] forKey:@"fileName"];
+    
     return dict;
 }
 

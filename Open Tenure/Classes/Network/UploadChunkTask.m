@@ -98,9 +98,9 @@
 }
 
 - (void)main {
-    NSString *attachmentFolder = [FileSystemUtilities getAttachmentFolder:_attachment.claim.claimId];
-    NSString *attachmentPath = [attachmentFolder stringByAppendingPathComponent:_attachment.fileName];
-    
+    //NSString *attachmentFolder = [FileSystemUtilities getAttachmentFolder:_attachment.claim.claimId];
+    //NSString *attachmentPath = [attachmentFolder stringByAppendingPathComponent:_attachment.fileName];
+    NSString *attachmentPath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:_attachment.fileName];
     NSData *fileData = [NSData dataWithContentsOfFile:attachmentPath];
     NSUInteger totalFileSize = [fileData length];
     int totalChunks = round((totalFileSize/kChunkSize)+0.5);

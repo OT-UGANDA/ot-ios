@@ -32,6 +32,6 @@
 
 + (BOOL)addFilesWithAESEncryption:(NSString *)password claimId:(NSString *)claimId {
     NSString *zipFile = [FileSystemUtilities getCompressClaim:claimId];
-    return [SSZipArchive createZipFileAtPath:zipFile withContentsOfDirectory:[FileSystemUtilities getClaimFolder:claimId] password:password];}
+    return [SSZipArchive createZipFileAtPath:zipFile withContentsOfDirectory:[[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimFolder:claimId]] password:password];}
                                                       
 @end

@@ -263,7 +263,7 @@
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 48, 48)];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     
-    NSString *imagePath = [FileSystemUtilities getClaimantFolder:object.claimId];
+    NSString *imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:object.claimId]];
     NSString *imageFile = [object.person.personId stringByAppendingPathExtension:@"jpg"];
     imageFile = [imagePath stringByAppendingPathComponent:imageFile];
 

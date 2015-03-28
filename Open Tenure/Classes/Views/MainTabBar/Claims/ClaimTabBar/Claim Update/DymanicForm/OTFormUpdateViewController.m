@@ -176,14 +176,17 @@
             if (fieldPayload.stringPayload != nil && ![fieldPayload.stringPayload isEqualToString:@""]) {
                 FieldConstraintOption *fieldConstraintOption = [FieldConstraintOptionEntity getEntityById:fieldPayload.stringPayload];
                 title = fieldConstraintOption.displayName;
+                ALog(@"ABABAB %@", fieldConstraintOption);
             } else { // Lấy phần tử đầu tiên trong list option mặc định
                 FieldConstraintOption *fieldConstraintOption = [[fieldConstraint.fieldConstraintOptionList allObjects] firstObject];
                 title = fieldConstraintOption.displayName;
+                ALog(@"ABABAB %@", title);
                 fieldPayload.stringPayload = fieldConstraintOption.attributeId;
             }
 
             ((OTFormCell *)cell).selectionStyle = UITableViewCellSelectionStyleNone;
             ((OTFormCell *)cell).imageView.image = [UIImage imageNamed:@"ic_action_picker"];
+
             ((OTFormCell *)cell).textLabel.attributedText = [OT getAttributedStringFromText:title];
             ((OTFormCell *)cell).imageView.userInteractionEnabled = YES;
             ((OTFormCell *)cell).imageView.tag = _pickFields.count - 1;
@@ -486,7 +489,6 @@ static bool allCellChecked = false;
     FieldConstraintOption *fieldConstraintOption = [options objectAtIndex:row];
 
     _currentPickField.stringPayload = fieldConstraintOption.name;
-    
     _currentLabel.attributedText = [OT getAttributedStringFromText:fieldConstraintOption.displayName];
 }
 

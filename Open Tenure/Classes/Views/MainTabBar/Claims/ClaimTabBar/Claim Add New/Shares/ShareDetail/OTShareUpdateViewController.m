@@ -241,9 +241,9 @@
     NSString *imagePath;
     NSString *imageFile = [person.personId stringByAppendingPathExtension:@"jpg"];
     if (person.claim == nil) { // owner
-        imagePath = [FileSystemUtilities getClaimantFolder:person.owner.claim.claimId];
+        imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:person.owner.claim.claimId]];
     } else {
-        imagePath = [FileSystemUtilities getClaimantFolder:person.claim.claimId];
+        imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:person.claim.claimId]];
     }
     imageFile = [imagePath stringByAppendingPathComponent:imageFile];
 

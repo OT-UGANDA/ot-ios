@@ -160,7 +160,7 @@ static NSString *destinationPath;
         NSError *error = nil;
         NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&error];
         if (!error) {
-            NSString *imagePath = [FileSystemUtilities getClaimantFolder:claimId];
+            NSString *imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:claimId]];
             NSString *imageFile = [personId stringByAppendingPathExtension:@"jpg"];
             imageFile = [imagePath stringByAppendingPathComponent:imageFile];
 

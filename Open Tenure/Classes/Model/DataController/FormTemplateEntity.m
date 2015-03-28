@@ -125,6 +125,7 @@
 }
 
 + (FormTemplate *)getEntityByName:(NSString *)name {
+    [self context]->_filteredResults = nil;
     [[self context] filterContentForSearchText:name scope:0];
     if ([self context]->_filteredObjects.count > 0) {
         return [[self context]->_filteredObjects firstObject];
@@ -133,6 +134,7 @@
 }
 
 - (FormTemplate *)getEntityByName:(NSString *)name {
+    self->_filteredResults = nil;
     [self filterContentForSearchText:name scope:0];
     if (self->_filteredObjects.count > 0) {
         return [self->_filteredObjects firstObject];
@@ -141,6 +143,7 @@
 }
 
 - (FormTemplate *)getDefaultTemplate {
+    self->_filteredResults = nil;
     [self filterContentForSearchText:@"1" scope:1];
     if (self->_filteredObjects.count > 0) {
         return [self->_filteredObjects firstObject];

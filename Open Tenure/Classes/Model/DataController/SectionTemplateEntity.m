@@ -121,6 +121,7 @@
 }
 
 + (SectionTemplate *)getEntityById:(NSString *)attributeId {
+    [self context]->_filteredResults = nil;
     [[self context] filterContentForSearchText:attributeId scope:0];
     if ([self context]->_filteredObjects.count > 0) {
         return [[self context]->_filteredObjects firstObject];
@@ -129,6 +130,7 @@
 }
 
 + (SectionTemplate *)getEntityByName:(NSString *)name {
+    [self context]->_filteredResults = nil;
     [[self context] filterContentForSearchText:name scope:1];
     if ([self context]->_filteredObjects.count > 0) {
         return [[self context]->_filteredObjects firstObject];
@@ -137,6 +139,7 @@
 }
 
 - (SectionTemplate *)getEntityById:(NSString *)attributeId {
+    self->_filteredResults = nil;
     [self filterContentForSearchText:attributeId scope:0];
     if (self->_filteredObjects.count > 0) {
         return [self->_filteredObjects firstObject];
@@ -145,6 +148,7 @@
 }
 
 - (SectionTemplate *)getEntityByName:(NSString *)name {
+    self->_filteredResults = nil;
     [self filterContentForSearchText:name scope:1];
     if (self->_filteredObjects.count > 0) {
         return [self->_filteredObjects firstObject];

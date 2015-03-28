@@ -436,6 +436,7 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
 }
 
 + (NSAttributedString *)getAttributedStringFromText:(NSString *)text {
+    if (text == nil) return nil;
     NSMutableParagraphStyle *style =  [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     style.alignment = NSTextAlignmentLeft;
     style.firstLineHeadIndent = 5.0f;

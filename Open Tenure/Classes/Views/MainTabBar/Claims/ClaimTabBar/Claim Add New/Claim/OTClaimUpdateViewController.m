@@ -490,14 +490,14 @@ typedef NS_ENUM(NSInteger, OTCell) {
     share.claim = _claim;
     
     // Copy claimant photo
-    NSString *imagePath = [FileSystemUtilities getClaimantFolder:_claim.claimId];
+    NSString *imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:_claim.claimId]];
     NSString *imageFile = [_claim.person.personId stringByAppendingPathExtension:@"jpg"];
     imageFile = [imagePath stringByAppendingPathComponent:imageFile];
     
     UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
     if (personPicture != nil) {
         NSError *error;
-        imagePath = [FileSystemUtilities getClaimantFolder:_claim.claimId];
+        imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:_claim.claimId]];
         NSString *newImageFile = [newPerson.personId stringByAppendingPathExtension:@"jpg"];
         newImageFile = [imagePath stringByAppendingPathComponent:newImageFile];
         if (![[NSFileManager defaultManager] copyItemAtPath:imageFile toPath:newImageFile error:&error]) {
@@ -622,7 +622,7 @@ static bool allCellChecked = false;
 }
 
 - (BOOL)createClaimJsonFile {
-    NSString *claimFolder = [FileSystemUtilities getClaimFolder:_claim.claimId];
+    NSString *claimFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimFolder:_claim.claimId]];
     NSString *claimJsonFile = [claimFolder stringByAppendingPathComponent:@"claim.json"];
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:_claim.dictionary options:NSJSONWritingPrettyPrinted error:&error];

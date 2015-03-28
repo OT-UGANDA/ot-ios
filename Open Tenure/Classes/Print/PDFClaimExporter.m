@@ -416,7 +416,7 @@
 - (void)setupPDFWithName:(NSString *)name pageSize:(CGSize)pageSize {
     [FileSystemUtilities createClaimFolder:_claim.claimId];
     [FileSystemUtilities createClaimantFolder:_claim.claimId];
-    NSString *claimFolder = [FileSystemUtilities getClaimFolder:_claim.claimId];
+    NSString *claimFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimFolder:_claim.claimId]];
     filePath = [claimFolder stringByAppendingPathComponent:name];
     UIGraphicsBeginPDFContextToFile(filePath, CGRectZero, nil);
 }
@@ -535,7 +535,7 @@
             cadastralMap = attachment.fileName;
         }
     }
-    NSString *claimImagePath = [[FileSystemUtilities getAttachmentFolder:_claim.claimId] stringByAppendingPathComponent:cadastralMap];
+    NSString *claimImagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[[FileSystemUtilities getAttachmentFolder:_claim.claimId] stringByAppendingPathComponent:cadastralMap]];
     UIImage *image = [UIImage imageWithContentsOfFile:claimImagePath];
     if (image) {
         CGFloat width = image.size.width < image.size.height ? image.size.width : image.size.height;

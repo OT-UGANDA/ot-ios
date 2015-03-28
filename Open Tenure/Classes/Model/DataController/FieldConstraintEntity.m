@@ -82,7 +82,7 @@
  Override định nghĩa câu truy vấn
  */
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
-    return [NSPredicate predicateWithFormat:@"(attributeId == %@)", searchText];
+    return [NSPredicate predicateWithFormat:@"(name == %@)", searchText];
 }
 
 #pragma mark - Entity
@@ -115,6 +115,7 @@
 }
 
 + (FieldConstraint *)getEntityById:(NSString *)attributeId {
+    [self context]->_filteredResults = nil;
     [[self context] filterContentForSearchText:attributeId scope:0];
     if ([self context]->_filteredObjects.count > 0) {
         return [[self context]->_filteredObjects firstObject];

@@ -1448,12 +1448,12 @@
         NSString *md5 = [imageData md5];
         NSString *fileName = @"_map_.png";
         NSString *file = [[FileSystemUtilities getAttachmentFolder:_claim.claimId] stringByAppendingPathComponent:fileName];
-        ALog(@"%@", md5);
-        [imageData writeToFile:file atomically:YES];
+        ALog(@"%@", file);
+        [imageData writeToFile:[[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:file] atomically:YES];
         NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
         [dictionary setValue:[[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10] forKey:@"documentDate"];
         [dictionary setValue:@"image/png" forKey:@"mimeType"];
-        [dictionary setValue:fileName  forKey:@"fileName"];
+        [dictionary setValue:file  forKey:@"fileName"];
         [dictionary setValue:@"png" forKey:@"fileExtension"];
         [dictionary setValue:[[[NSUUID UUID] UUIDString] lowercaseString] forKey:@"id"];
         [dictionary setValue:fileSize forKey:@"size"];
@@ -1472,7 +1472,6 @@
         attachment.claim = _claim;
         
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(code == %@)", @"cadastralMap"];
-        
         // Nạp lại sau khi claim đã save
         DocumentTypeEntity *docTypeEntity = [DocumentTypeEntity new];
         [docTypeEntity setManagedObjectContext:_claim.managedObjectContext];

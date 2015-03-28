@@ -180,10 +180,17 @@ static NSURLSessionUploadTask *uploadTask;
                                     if (![attachment.statusCode isEqualToString:kAttachmentStatusUploaded]) {
                                         totalAttachments++;
                                         // calculate total chunks
-                                        NSString *attachmentFolder = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
-                                        NSString *attachmentPath = [attachmentFolder stringByAppendingPathComponent:attachment.fileName];
+                                        
+                                        NSString *fullPath = nil;
+                                        if ([attachment.typeCode.code isEqualToString:@"personPhoto"]) {
+                                            fullPath = [FileSystemUtilities getClaimantFolder:_claim.claimId];
+                                        } else {
+                                            fullPath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
+                                        }
+                                        fullPath = [fullPath stringByAppendingPathComponent:[attachment.fileName lastPathComponent]];
+                                        fullPath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:fullPath];
 
-                                        NSData *fileData = [NSData dataWithContentsOfFile:attachmentPath];
+                                        NSData *fileData = [NSData dataWithContentsOfFile:fullPath];
                                         NSUInteger totalFileSize = [fileData length];
                                         totalChunks += round((totalFileSize/kChunkSize)+0.5);
 
