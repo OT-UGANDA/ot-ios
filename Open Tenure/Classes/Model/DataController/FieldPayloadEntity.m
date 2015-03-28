@@ -84,7 +84,7 @@
  Override định nghĩa câu truy vấn
  */
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
-    return [NSPredicate predicateWithFormat:@"(attributeId CONTAINS[cd] %@)", searchText];
+    return [NSPredicate predicateWithFormat:@"(attributeId == %@)", searchText];
 }
 
 #pragma mark - Entity

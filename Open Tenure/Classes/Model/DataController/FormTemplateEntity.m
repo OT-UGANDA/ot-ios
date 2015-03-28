@@ -84,7 +84,7 @@
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
     switch (scope) {
         case 0:
-            return [NSPredicate predicateWithFormat:@"(name CONTAINS[cd] %@)", searchText];
+            return [NSPredicate predicateWithFormat:@"name == %@", searchText];
             break;
             
         case 1:
@@ -92,7 +92,7 @@
             break;
             
         default:
-            return [NSPredicate predicateWithFormat:@"(name CONTAINS[cd] %@)", searchText];
+            return [NSPredicate predicateWithFormat:@"name == %@", searchText];
             break;
     }
 }

@@ -84,13 +84,13 @@
 - (NSPredicate *)searchPredicateWithSearchText:(NSString *)searchText scope:(NSInteger)scope {
     switch (scope) {
         case 0:
-            return [NSPredicate predicateWithFormat:@"(attributeId CONTAINS[cd] %@)", searchText];
+            return [NSPredicate predicateWithFormat:@"attributeId == %@", searchText];
             break;
         case 1:
-            return [NSPredicate predicateWithFormat:@"(name CONTAINS[cd] %@)", searchText];
+            return [NSPredicate predicateWithFormat:@"name = %@", searchText];
             break;
     }
-    return [NSPredicate predicateWithFormat:@"(attributeId CONTAINS[cd] %@)", searchText];
+    return [NSPredicate predicateWithFormat:@"attributeId == %@", searchText];
 }
 
 #pragma mark - Entity
