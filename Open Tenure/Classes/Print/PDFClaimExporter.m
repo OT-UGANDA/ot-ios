@@ -532,7 +532,7 @@
     for (Attachment *attachment in _claim.attachments) {
         if ([attachment.typeCode.code isEqualToString:@"cadastralMap"] &&
             [attachment.note isEqualToString:@"Map"]) {
-            cadastralMap = attachment.fileName;
+            cadastralMap = [attachment.fileName lastPathComponent];
         }
     }
     NSString *claimImagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[[FileSystemUtilities getAttachmentFolder:_claim.claimId] stringByAppendingPathComponent:cadastralMap]];
@@ -543,7 +543,7 @@
         CGSize newSize = CGSizeMake(scale * size.width, scale * size.height);
         return [image cropToSize:newSize];
     }
-    return nil;
+    return image;
 }
 
 - (void)finishPDF {
