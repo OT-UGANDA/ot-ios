@@ -176,12 +176,10 @@
             if (fieldPayload.stringPayload != nil && ![fieldPayload.stringPayload isEqualToString:@""]) {
                 FieldConstraintOption *fieldConstraintOption = [FieldConstraintOptionEntity getEntityById:fieldPayload.stringPayload];
                 title = fieldConstraintOption.displayName;
-                ALog(@"ABABAB %@", fieldConstraintOption);
             } else { // Lấy phần tử đầu tiên trong list option mặc định
                 FieldConstraintOption *fieldConstraintOption = [[fieldConstraint.fieldConstraintOptionList allObjects] firstObject];
                 title = fieldConstraintOption.displayName;
-                ALog(@"ABABAB %@", title);
-                fieldPayload.stringPayload = fieldConstraintOption.attributeId;
+                fieldPayload.stringPayload = fieldConstraintOption.name;
             }
 
             ((OTFormCell *)cell).selectionStyle = UITableViewCellSelectionStyleNone;
