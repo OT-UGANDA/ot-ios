@@ -50,9 +50,7 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Your location is used to show you how to use CoreLocation!</string>
 	<key>UIBackgroundModes</key>
-	<array>
-		<string>audio</string>
-	</array>
+	<array/>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

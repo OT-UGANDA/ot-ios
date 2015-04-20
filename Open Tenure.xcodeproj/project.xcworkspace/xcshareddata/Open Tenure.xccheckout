@@ -7,22 +7,18 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>BA7A2877-3252-462F-87A1-B8285A28C049</string>
 	<key>IDESourceControlProjectName</key>
-	<string>Open Tenure</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>2E98E54B-A260-40D8-BD87-995EF2B92FEA</key>
-		<string>https://github.com/chuyentt/ot-ios.git</string>
 		<key>A9D1B49B7616A73877963044EAB6F8DD7FD4F7C6</key>
 		<string>https://github.com/OpenTenure/ot-ios.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Open Tenure.xcodeproj</string>
+	<string>Open Tenure.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>2E98E54B-A260-40D8-BD87-995EF2B92FEA</key>
-		<string>../../../../../../../../../../../../Open Tenure</string>
 		<key>A9D1B49B7616A73877963044EAB6F8DD7FD4F7C6</key>
-		<string>../../../Open%20Tenure</string>
+		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/OpenTenure/ot-ios.git</string>
@@ -36,25 +32,9 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>2E98E54B-A260-40D8-BD87-995EF2B92FEA</string>
-			<key>IDESourceControlWCCName</key>
-			<string>Open Tenure</string>
-		</dict>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
 			<string>A9D1B49B7616A73877963044EAB6F8DD7FD4F7C6</string>
 			<key>IDESourceControlWCCName</key>
-			<string>Open%20Tenure</string>
-		</dict>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>A9D1B49B7616A73877963044EAB6F8DD7FD4F7C6</string>
-			<key>IDESourceControlWCCName</key>
-			<string>ot-ios</string>
+			<string>OpenTenure</string>
 		</dict>
 	</array>
 </dict>

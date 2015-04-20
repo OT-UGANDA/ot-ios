@@ -224,9 +224,9 @@
             }
             ((OTFormInputTextFieldCell *)cell).textField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
         } else { // Chưa rõ
-            [UIAlertView showWithTitle:@"Error!" message:[NSString stringWithFormat:@"Unknow field type: %tu", fieldTemplate.fieldConstraintList.count] cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[@"OK"] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-                
-            }];
+//            [UIAlertView showWithTitle:@"Error!" message:[NSString stringWithFormat:@"Unknow field type: %tu", fieldTemplate.fieldConstraintList.count] cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[@"OK"] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+//                
+//            }];
             cell = [[OTFormInputTextFieldCell alloc] initWithText:fieldPayload.stringPayload
                                                       placeholder:fieldTemplate.hint
                                                          delegate:self
