@@ -106,7 +106,12 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
 }
 
 + (NSString *)getLocalization {
-    return @"en-us"; //[[[NSBundle mainBundle] preferredLocalizations] firstObject];
+    NSArray *languages = @[@"en-us", @"ru-ru", @"ar-jo", @"fr-fr", @"es-es", @"sq-al", @"pt-br", @"km-kh", @"zh-cn"];
+    NSString *key = [[[NSBundle mainBundle] preferredLocalizations] firstObject];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS[cd] %@", key];
+    NSString *value = [[languages filteredArrayUsingPredicate:predicate] firstObject];
+    if (value != nil) return value;
+    return @"en-us";
 }
 
 + (NSString *)getCookie {
