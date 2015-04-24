@@ -198,7 +198,13 @@
         // Lấy dữ liệu polygon
         ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:_claim.mappedGeometry];
         // Zoom đến polygon
-        [_mapView setRegion:MKCoordinateRegionForMapRect(polygon.geometry.boundingMapRect) animated:YES];
+        MKMapRect mapRect = polygon.geometry.boundingMapRect;
+        CGFloat width = mapRect.size.width > mapRect.size.height ? mapRect.size.width : mapRect.size.height;
+        mapRect.origin.x -= (width - mapRect.size.width) / 2.0;
+        mapRect.origin.y -= (width - mapRect.size.height) / 2.0;
+        mapRect.size.width = width;
+        mapRect.size.height = width;
+        [_mapView setVisibleMapRect:mapRect edgePadding:UIEdgeInsetsMake(50, 50, 50, 50) animated:YES];
         
         // Tạo workingOverlay
         GeoShape *shape = [_shapes createShapeWithTitle:_claim.claimName subtitle:nil];
@@ -1297,21 +1303,39 @@
     }];
 }
 
+- (UIImage *)screenshot {
+    UIGraphicsBeginImageContextWithOptions(self.mapView.bounds.size, NO, [UIScreen mainScreen].scale);
+    
+    [self.mapView drawViewHierarchyInRect:self.mapView.bounds afterScreenUpdates:YES];
+    
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
 - (IBAction)mapSnapshot:(id)sender {
+    GeoShape *shape = _shapes.workingOverlay;
+    [shape updatePoints];
+    // Zoom đến polygon
+    MKMapRect mapRect = shape.boundingMapRect;
+    CGFloat width = mapRect.size.width > mapRect.size.height ? mapRect.size.width : mapRect.size.height;
+    mapRect.origin.x -= (width - mapRect.size.width) / 2.0;
+    mapRect.origin.y -= (width - mapRect.size.height) / 2.0;
+    mapRect.size.width = width;
+    mapRect.size.height = width;
+    [_mapView setVisibleMapRect:mapRect edgePadding:UIEdgeInsetsMake(50, 50, 50, 50) animated:YES];
+    
     // Lưu claim trước khi snapshot
     [_claim.managedObjectContext save:nil];
     
     [FileSystemUtilities createClaimFolder:_claim.claimId];
     
-    GeoShape *shape = _shapes.workingOverlay;
-    // Zoom đến polygon
-    [_mapView setRegion:shape.region animated:NO];
     MKMapSnapshotOptions *options = [[MKMapSnapshotOptions alloc] init];
     options.region = shape.region;
     options.scale = [UIScreen mainScreen].scale;
     options.size = self.mapView.frame.size;
     
-    MKMapSnapshotter *snapshotter = [[MKMapSnapshotter alloc] initWithOptions:options];
+    //MKMapSnapshotter *snapshotter = [[MKMapSnapshotter alloc] initWithOptions:options];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [SVProgressHUD show];
@@ -1325,6 +1349,56 @@
         [_claim.managedObjectContext deleteObject:attachment];
     [_claim.managedObjectContext save:nil];
     
+    UIImage *finalImage = [self screenshot];
+    CGFloat scale = [[UIScreen mainScreen] scale];
+    CGSize size = finalImage.size;
+    float min = size.width < size.height ? size.width : size.height;
+    size.height = min * scale;
+    size.width = min * scale;
+    finalImage = [finalImage cropToSize:size];
+    
+    NSData *imageData = UIImagePNGRepresentation(finalImage);
+    NSNumber *fileSize = [NSNumber numberWithUnsignedInteger:imageData.length];
+    NSString *md5 = [imageData md5];
+    NSString *fileName = @"_map_.png";
+    NSString *file = [[FileSystemUtilities getAttachmentFolder:_claim.claimId] stringByAppendingPathComponent:fileName];
+    ALog(@"%@", file);
+    [imageData writeToFile:[[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:file] atomically:YES];
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    [dictionary setValue:[[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10] forKey:@"documentDate"];
+    [dictionary setValue:@"image/png" forKey:@"mimeType"];
+    [dictionary setValue:file  forKey:@"fileName"];
+    [dictionary setValue:@"png" forKey:@"fileExtension"];
+    [dictionary setValue:[[[NSUUID UUID] UUIDString] lowercaseString] forKey:@"id"];
+    [dictionary setValue:fileSize forKey:@"size"];
+    [dictionary setValue:md5 forKey:@"md5"];
+    [dictionary setValue:kAttachmentStatusCreated forKey:@"status"];
+    [dictionary setValue:file forKey:@"filePath"];
+    
+    [dictionary setValue:@"Map" forKey:@"description"];
+    [dictionary setValue:@"cadastralMap" forKey:@"typeCode"];
+    
+    AttachmentEntity *attachmentEntity = [AttachmentEntity new];
+    [attachmentEntity setManagedObjectContext:_claim.managedObjectContext];
+    Attachment *attachment = [attachmentEntity create];
+    [attachment importFromJSON:dictionary];
+    
+    attachment.claim = _claim;
+    
+    predicate = [NSPredicate predicateWithFormat:@"(code == %@)", @"cadastralMap"];
+    // Nạp lại sau khi claim đã save
+    DocumentTypeEntity *docTypeEntity = [DocumentTypeEntity new];
+    [docTypeEntity setManagedObjectContext:_claim.managedObjectContext];
+    NSArray *docTypeCollection = [docTypeEntity getCollection];
+    
+    DocumentType *docType = [[docTypeCollection filteredArrayUsingPredicate:predicate] firstObject];
+    attachment.typeCode = docType;
+    
+    [attachment.managedObjectContext save:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"saved", nil)];
+    });
+    /*
     [snapshotter startWithQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) completionHandler:^(MKMapSnapshot *snapshot, NSError *error) {
         
         // get the image associated with the snapshot
@@ -1442,7 +1516,7 @@
         UIGraphicsEndImageContext();
         
         // and save it
-        
+        finalImage = [self screenshot];
         NSData *imageData = UIImagePNGRepresentation(finalImage);
         NSNumber *fileSize = [NSNumber numberWithUnsignedInteger:imageData.length];
         NSString *md5 = [imageData md5];
@@ -1485,6 +1559,7 @@
             [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"saved", nil)];
         });
     }];
+     */
 }
 
 - (IBAction)done:(id)sender {

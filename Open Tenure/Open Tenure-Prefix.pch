@@ -65,6 +65,7 @@
 /*!
  Classes Category
  */
+#import "UIImage+OT.h"
 #import "UIColor+OT.h"
 #import "NSDictionary+OT.h"
 #import "UIAlertView+Blocks.h"
