@@ -234,7 +234,7 @@
     if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
         [self createOpenTenureFolder];
     }
-    return _OPEN_TENURE_FOLDER;
+    return path;
 }
 
 + (BOOL)copyFileInAttachFolder:(NSString *)destination source:(NSString *)source {

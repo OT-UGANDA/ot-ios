@@ -573,7 +573,6 @@
 
         NSString *temporaryFileName = @"_selectedImage_.png";
         NSString *temporaryFilePath = [[FileSystemUtilities getOpentenureFolder] stringByAppendingPathComponent:temporaryFileName];
-        temporaryFilePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:temporaryFilePath];
         NSString *fileName = [[[[NSUUID UUID] UUIDString] lowercaseString] stringByAppendingPathExtension:@"jpg"];
         BOOL success = [imageData writeToURL:[[NSURL alloc] initFileURLWithPath:temporaryFilePath] atomically:YES];
         NSDictionary *dict = [[NSFileManager defaultManager] attributesOfItemAtPath:temporaryFilePath error:nil];
