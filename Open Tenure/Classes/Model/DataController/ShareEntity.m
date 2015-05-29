@@ -129,7 +129,7 @@
     
     Share *newObject = [self create];
     
-    newObject.ShareId = [dictionary objectForKey:@"shareId"];
+    newObject.shareId = [dictionary objectForKey:@"shareId"];
     newObject.nominator = [dictionary objectForKey:@"nominator"];
     newObject.denominator = [dictionary objectForKey:@"denominator"];
     
