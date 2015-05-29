@@ -379,6 +379,41 @@
     }
 }
 
+- (BOOL)createJsonFileForClaim:(Claim *)claim {
+    NSString *claimFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimFolder:claim.claimId]];
+    NSString *claimJsonFile = [claimFolder stringByAppendingPathComponent:@"claim.json"];
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:claim.dictionary options:NSJSONWritingPrettyPrinted error:&error];
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    return [jsonString writeToFile:claimJsonFile atomically:NO encoding:NSUTF8StringEncoding error:&error];
+}
+
+- (void)exportClaim:(Claim *)claim {
+    [self.sideBarMenu dismiss];
+    [FileSystemUtilities createClaimFolder:claim.claimId];
+    [FileSystemUtilities createClaimantFolder:claim.claimId];
+    
+    NSString *title = NSLocalizedString(@"title_export", nil);
+    NSString *message = nil;
+    NSString *cancelButtonTitle = NSLocalizedString(@"cancel", nil);
+    NSString *otherButtonTitle = NSLocalizedString(@"action_export", nil);
+    [UIAlertView showWithTitle:title message:message style:UIAlertViewStyleSecureTextInput cancelButtonTitle:cancelButtonTitle otherButtonTitles:@[otherButtonTitle] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+        if (buttonIndex != alertView.cancelButtonIndex) {
+            [SVProgressHUD showWithStatus:NSLocalizedString(@"message_export", nil)];
+            NSString *password = [[alertView textFieldAtIndex:0] text];
+            // Tạo
+            BOOL success = NO;
+            if ([self createJsonFileForClaim:claim]) {
+                success = [ZipUtilities addFilesWithAESEncryption:password claimId:claim.claimId];
+            }
+            if (success)
+                [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:NSLocalizedString(@"message_claim_exported", nil), [claim.claimName UTF8String]]];
+            else
+                [OT handleErrorWithMessage:NSLocalizedString(@"message_encryption_failed", nil)];
+        }
+    }];
+}
+
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if (cell != nil) {
@@ -397,19 +432,19 @@
         
         if (claim.getViewType != OTViewTypeView) {
             if ([claim.statusCode isEqualToString:kClaimStatusCreated]) {
-                actionButtons = @[NSLocalizedString(@"action_submit", nil), NSLocalizedString(@"delete_locally", nil)];
+                actionButtons = @[NSLocalizedString(@"action_submit", nil), NSLocalizedString(@"title_export", nil), NSLocalizedString(@"delete_locally", nil)];
             } else {
-                actionButtons = @[NSLocalizedString(@"delete_locally", nil)];
+                actionButtons = @[NSLocalizedString(@"action_submit", nil), NSLocalizedString(@"title_export", nil), NSLocalizedString(@"delete_locally", nil)];
             }
         } else {
             if (remainingDays >= 0) {
                 if ([claim.statusCode isEqualToString:kClaimStatusWithdrawn]) {
-                    actionButtons = @[NSLocalizedString(@"delete_locally", nil)];
+                    actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"delete_locally", nil)];
                 } else {
-                    actionButtons = @[NSLocalizedString(@"withdraw_claim", nil), NSLocalizedString(@"delete_locally", nil)];
+                    actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"withdraw_claim", nil), NSLocalizedString(@"delete_locally", nil)];
                 }
             } else {
-                actionButtons = @[NSLocalizedString(@"delete_locally", nil)];
+                actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"delete_locally", nil)];
             }
         }
 
@@ -418,12 +453,16 @@
                 if ([claim.statusCode isEqualToString:kClaimStatusCreated]) {
                     if (buttonIndex == actionSheet.firstOtherButtonIndex) {
                         [self submitClaim:claim];
+                    } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
+                        [self exportClaim:claim];
                     } else {
                         [claim.managedObjectContext deleteObject:claim];
                         [claim.managedObjectContext save:nil];
                     }
                 } else if (remainingDays >= 0) {
-                    if (buttonIndex == actionSheet.firstOtherButtonIndex && ![claim.statusCode isEqualToString:kClaimStatusWithdrawn]) {
+                    if (buttonIndex == actionSheet.firstOtherButtonIndex) {
+                        [self exportClaim:claim];
+                    } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1 && ![claim.statusCode isEqualToString:kClaimStatusWithdrawn]) {
                         [self withdrawClaim:claim];
                     } else {
                         [claim.managedObjectContext deleteObject:claim];
@@ -431,6 +470,8 @@
                     }
                 } else {
                     if (buttonIndex == actionSheet.firstOtherButtonIndex) {
+                        [self exportClaim:claim];
+                    } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
                         [claim.managedObjectContext deleteObject:claim];
                         [claim.managedObjectContext save:nil];                    }
                 }

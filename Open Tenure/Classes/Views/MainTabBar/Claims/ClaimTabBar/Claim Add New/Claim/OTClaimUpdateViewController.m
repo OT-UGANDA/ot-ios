@@ -649,7 +649,7 @@ static bool allCellChecked = false;
                 success = [ZipUtilities addFilesWithAESEncryption:password claimId:_claim.claimId];
             }
             if (success)
-                [SVProgressHUD showSuccessWithStatus:@""];
+                [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:NSLocalizedString(@"message_claim_exported", nil), [_claim.claimName UTF8String]]];
             else
                 [OT handleErrorWithMessage:NSLocalizedString(@"message_encryption_failed", nil)];
         }
