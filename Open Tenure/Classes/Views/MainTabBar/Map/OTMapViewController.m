@@ -1323,7 +1323,7 @@
     mapRect.origin.y -= (width - mapRect.size.height) / 2.0;
     mapRect.size.width = width;
     mapRect.size.height = width;
-    [_mapView setVisibleMapRect:mapRect edgePadding:UIEdgeInsetsMake(50, 50, 50, 50) animated:YES];
+    [_mapView setVisibleMapRect:mapRect];
     
     // Lưu claim trước khi snapshot
     [_claim.managedObjectContext save:nil];
