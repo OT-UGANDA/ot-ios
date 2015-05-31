@@ -257,7 +257,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
     _claimantBlock = claimant;
     claimant.tag = OTCellClaimantTag;
     
-    UITapGestureRecognizer *claimantTapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showClaimant)];
+    UITapGestureRecognizer *claimantTapped = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showClaimant:)];
     claimantTapped.numberOfTapsRequired = 1;
     
     NSString *claimantTitle = _claim.person != nil ? [_claim.person fullNameType:OTFullNameTypeDefault] : NSLocalizedString(@"message_touch_to_select_a_person", nil);
@@ -894,21 +894,43 @@ static bool allCellChecked = false;
     //    [_pickerView showPopOverList];
 }
 
-- (void)showClaimant {
+- (void)showClaimant:(id)sender {
     if (![self isPickerClaimTypeShowing] && ![self isPickerLandUseShowing] && ![self isDatePickerShowing]) {
         if (_claim.person == nil) {
             [self addPerson:nil];
         } else {
             // Delete / Edit
-            [_claim.person setToTemporary];
-            OTAppDelegate* appDelegate = (OTAppDelegate*)[[UIApplication sharedApplication] delegate];
-            id main = appDelegate.window.rootViewController;
-            UINavigationController *nav = [[main storyboard] instantiateViewControllerWithIdentifier:@"PersonTabBar"];
-            if (nav != nil) {
-                [self.navigationController presentViewController:nav animated:YES completion:nil];
-            }
+            UIView *view = [sender view];
+            NSArray *actionButtons = @[NSLocalizedString(@"action_modify_claimant", nil), NSLocalizedString(@"action_change_claimant", nil)];
+            [UIActionSheet showFromRect:view.frame inView:view.superview animated:YES withTitle:nil cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle:nil otherButtonTitles:actionButtons tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
+                if (buttonIndex != actionSheet.cancelButtonIndex) {
+                    if (_claim.getViewType != OTViewTypeView) {
+                        if (buttonIndex == actionSheet.firstOtherButtonIndex) {
+                            [self performSelector:@selector(modifyClaimant) withObject:nil afterDelay:0.3];
+                        } else {
+                            [self performSelector:@selector(changeClaimant) withObject:nil afterDelay:0.3];
+                        }
+                    }
+                }
+            }];
         }
     } else [self hidePickers];
+}
+
+- (IBAction)modifyClaimant {
+    [_claim.person setToTemporary];
+    OTAppDelegate* appDelegate = (OTAppDelegate*)[[UIApplication sharedApplication] delegate];
+    id main = appDelegate.window.rootViewController;
+    UINavigationController *nav = [[main storyboard] instantiateViewControllerWithIdentifier:@"PersonTabBar"];
+    if (nav != nil) {
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
+}
+
+- (IBAction)changeClaimant {
+    _claim.person = nil;
+    [_claim.person.managedObjectContext deleteObject:_claim.person];
+    [self addPerson:nil];
 }
 
 - (void)showSelectChallenged {

@@ -267,7 +267,6 @@
 		DE1FB89E1A748BA100864885 /* km */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = km; path = km.lproj/Additional.strings; sourceTree = "<group>"; };
 		DE1FB8A41A754DC900864885 /* OTShowcase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTShowcase.h; path = Classes/Views/OTShowcase/OTShowcase.h; sourceTree = "<group>"; };
 		DE1FB8A51A754DC900864885 /* OTShowcase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTShowcase.m; path = Classes/Views/OTShowcase/OTShowcase.m; sourceTree = "<group>"; };
-		DE1FB8A71A757BF000864885 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Showcase.strings; sourceTree = "<group>"; };
 		DE20FE6919D40DD5008504E8 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DE3124571A2C51D6001D5069 /* OTDynamicFormViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTDynamicFormViewController.h; path = "Classes/Views/MainTabBar/Claims/ClaimTabBar/Claim Update/DymanicForm/OTDynamicFormViewController.h"; sourceTree = "<group>"; };
 		DE3124581A2C51D6001D5069 /* OTDynamicFormViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTDynamicFormViewController.m; path = "Classes/Views/MainTabBar/Claims/ClaimTabBar/Claim Update/DymanicForm/OTDynamicFormViewController.m"; sourceTree = "<group>"; };
@@ -1834,7 +1833,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				DE1FB8991A74335600864885 /* en */,
-				DE1FB8A71A757BF000864885 /* vi */,
 			);
 			name = Showcase.strings;
 			sourceTree = "<group>";
