@@ -899,6 +899,7 @@ static bool allCellChecked = false;
         if (_claim.person == nil) {
             [self addPerson:nil];
         } else {
+            // Delete / Edit
             [_claim.person setToTemporary];
             OTAppDelegate* appDelegate = (OTAppDelegate*)[[UIApplication sharedApplication] delegate];
             id main = appDelegate.window.rootViewController;

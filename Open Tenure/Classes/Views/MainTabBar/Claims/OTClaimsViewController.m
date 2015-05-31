@@ -431,16 +431,22 @@
         NSInteger remainingDays = challengeExpiryDate ? [NSDate daysToDateTime:challengeExpiryDate] : 0;
         
         if (claim.getViewType != OTViewTypeView) {
+            // Có thể sửa
             if ([claim.statusCode isEqualToString:kClaimStatusCreated]) {
+                // Submit | Export | Delete locally
                 actionButtons = @[NSLocalizedString(@"action_submit", nil), NSLocalizedString(@"title_export", nil), NSLocalizedString(@"delete_locally", nil)];
             } else {
-                actionButtons = @[NSLocalizedString(@"action_submit", nil), NSLocalizedString(@"title_export", nil), NSLocalizedString(@"delete_locally", nil)];
+                // Export | Delete locally
+                actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"delete_locally", nil)];
             }
         } else {
+            // Không thể sửa
             if (remainingDays >= 0) {
                 if ([claim.statusCode isEqualToString:kClaimStatusWithdrawn]) {
+                    // Export | Delete locally
                     actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"delete_locally", nil)];
                 } else {
+                    // Export | Withdraw | Delete locally
                     actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"withdraw_claim", nil), NSLocalizedString(@"delete_locally", nil)];
                 }
             } else {
@@ -450,6 +456,57 @@
 
         [UIActionSheet showFromRect:frame inView:cell animated:YES withTitle:nil cancelButtonTitle:NSLocalizedString(@"cancel", nil) destructiveButtonTitle:nil otherButtonTitles:actionButtons tapBlock:^(UIActionSheet *actionSheet, NSInteger buttonIndex) {
             if (buttonIndex != actionSheet.cancelButtonIndex) {
+                if (claim.getViewType != OTViewTypeView) {
+                    // Có thể sửa
+                    if ([claim.statusCode isEqualToString:kClaimStatusCreated]) {
+                        // Submit | Export | Delete locally
+                        if (buttonIndex == actionSheet.firstOtherButtonIndex) {
+                            [self submitClaim:claim];
+                        } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
+                            [self exportClaim:claim];
+                        } else {
+                            [self deleteClaim:claim];
+                        }
+                    } else {
+                        // Export | Delete locally
+                        if (buttonIndex == actionSheet.firstOtherButtonIndex) {
+                            [self exportClaim:claim];
+                        } else {
+                            [self deleteClaim:claim];
+                        }
+                    }
+                } else {
+                    // Không thể sửa
+                    if (remainingDays >= 0) {
+                        if ([claim.statusCode isEqualToString:kClaimStatusWithdrawn]) {
+                            // Export | Delete locally
+                            if (buttonIndex == actionSheet.firstOtherButtonIndex) {
+                                [self exportClaim:claim];
+                            } else {
+                                [self deleteClaim:claim];
+                            }
+                        } else {
+                            // Export | Withdraw | Delete locally
+                            if (buttonIndex == actionSheet.firstOtherButtonIndex) {
+                                [self exportClaim:claim];
+                            } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
+                                [self withdrawClaim:claim];
+                            } else {
+                                [self deleteClaim:claim];
+                            }
+                        }
+                    } else {
+                        if (buttonIndex == actionSheet.firstOtherButtonIndex) {
+                            [self exportClaim:claim];
+                        } else {
+                            [self deleteClaim:claim];
+                        }
+                    }
+                }
+                
+                
+                
+                
                 if ([claim.statusCode isEqualToString:kClaimStatusCreated]) {
                     if (buttonIndex == actionSheet.firstOtherButtonIndex) {
                         [self submitClaim:claim];
