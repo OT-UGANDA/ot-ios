@@ -350,16 +350,14 @@
         case 0: { // Buttons for Claim tab
             if ([_claim isSaved]) { // View claim
                 if (_claim.getViewType == OTViewTypeEdit) { // Local claim
-                    self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _print, _fixedSpace, _export, _fixedSpace, _save, _flexibleSpace];
+                    self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _print, _fixedSpace, _save, _flexibleSpace];
                     target = @[[OT findBarButtonItem:_save fromNavBar:navBar],
-                               [OT findBarButtonItem:_export fromNavBar:navBar],
                                [OT findBarButtonItem:_print fromNavBar:navBar],
                                [OT findBarButtonItem:_done fromNavBar:navBar],
                                [OT findBarButtonItem:_menu fromNavBar:navBar]];
                 } else { // Readonly claim
-                    self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _print, _fixedSpace, _export,  _flexibleSpace];
-                    target = @[[OT findBarButtonItem:_export fromNavBar:navBar],
-                               [OT findBarButtonItem:_print fromNavBar:navBar],
+                    self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _print, _flexibleSpace];
+                    target = @[[OT findBarButtonItem:_print fromNavBar:navBar],
                                [OT findBarButtonItem:_done fromNavBar:navBar],
                                [OT findBarButtonItem:_menu fromNavBar:navBar]];
                 }

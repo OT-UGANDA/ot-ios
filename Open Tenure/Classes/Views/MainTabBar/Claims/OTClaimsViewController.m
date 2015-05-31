@@ -279,7 +279,7 @@
 
     UIButton *actionBtn = [UIButton  buttonWithType:UIButtonTypeCustom];
     actionBtn.frame = CGRectMake(60, 0, 48, 48);
-    NSString *imageName = [object.statusCode isEqualToString:kClaimStatusCreated] ? @"action_submit_claim" : @"action_withdraw_remove_claim";
+    NSString *imageName = @"action_submit_claim"; //[object.statusCode isEqualToString:kClaimStatusCreated] ? @"action_submit_claim" : @"action_withdraw_remove_claim";
     [actionBtn setBackgroundImage:[UIImage imageNamed:imageName]
                          forState:UIControlStateNormal];
     actionBtn.backgroundColor = [UIColor clearColor];
