@@ -1349,6 +1349,11 @@
         [_claim.managedObjectContext deleteObject:attachment];
     [_claim.managedObjectContext save:nil];
     
+    // process
+    [self performSelector:@selector(processMapSnapshot) withObject:nil afterDelay:0.3];
+}
+
+- (void)processMapSnapshot {
     UIImage *finalImage = [self screenshot];
     CGFloat scale = [[UIScreen mainScreen] scale];
     CGSize size = finalImage.size;
@@ -1385,7 +1390,7 @@
     
     attachment.claim = _claim;
     
-    predicate = [NSPredicate predicateWithFormat:@"(code == %@)", @"cadastralMap"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(code == %@)", @"cadastralMap"];
     // Nạp lại sau khi claim đã save
     DocumentTypeEntity *docTypeEntity = [DocumentTypeEntity new];
     [docTypeEntity setManagedObjectContext:_claim.managedObjectContext];
@@ -1398,168 +1403,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"saved", nil)];
     });
-    /*
-    [snapshotter startWithQueue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) completionHandler:^(MKMapSnapshot *snapshot, NSError *error) {
-        
-        // get the image associated with the snapshot
-        
-        UIImage *image = snapshot.image;
-        
-        // Get the size of the final image
-        
-        CGRect finalImageRect = CGRectMake(0, 0, image.size.width, image.size.height);
-        
-        // ok, let's start to create our final image
-        
-        UIGraphicsBeginImageContextWithOptions(image.size, YES, image.scale);
-        
-        // first, draw the image from the snapshotter
-        
-        [image drawAtPoint:CGPointMake(0, 0)];
-        MKZoomScale currentZoomScale = _mapView.bounds.size.width / _mapView.visibleMapRect.size.width;
-        NSMutableArray *overlays = [NSMutableArray arrayWithArray:[_shapes shapesInMapRect:_mapView.visibleMapRect zoomScale:currentZoomScale]];
-        [overlays removeObject:shape];
-        
-        CGContextRef context = UIGraphicsGetCurrentContext();
-        CGContextSetStrokeColorWithColor(context, [[UIColor otEarth] CGColor]);
-        CGContextSetLineWidth(context, 2.0f);
-        CGContextBeginPath(context);
-        
-        // Vẽ các thửa liền kề
-        for (GeoShape *aShape in overlays) {
-            CLLocationCoordinate2D *coordinates = aShape.coordinates;
-            CGPoint point = [snapshot pointForCoordinate:coordinates[0]];
-            CGContextMoveToPoint(context, point.x, point.y);
-            for (int i = 1; i < aShape.pointCount; i++) {
-                CGPoint point = [snapshot pointForCoordinate:coordinates[i]];
-                CGContextAddLineToPoint(context, point.x, point.y);
-            }
-            CGContextClosePath(context);
-        }
-        CGContextStrokePath(context);
-        
-        // Vẽ thửa chính
-        CGContextSetStrokeColorWithColor(context, [[UIColor otDarkBlue] CGColor]);
-        CLLocationCoordinate2D *coordinates = shape.coordinates;
-        for (int i = 0; i < shape.pointCount; i++) {
-            CGPoint point = [snapshot pointForCoordinate:coordinates[i]];
-            if (i == 0) {
-                CGContextMoveToPoint(context, point.x, point.y);
-            } else {
-                CGContextAddLineToPoint(context, point.x, point.y);
-            }
-        }
-        CGContextClosePath(context);
-        
-        CGContextStrokePath(context);
-
-        // Vẽ đỉnh của thửa
-        MKAnnotationView *pin = [[MKPinAnnotationView alloc] initWithAnnotation:nil reuseIdentifier:@"CustomAnnotation"];
-        UIImage *pinImage = [UIImage imageNamed:@"ot_blue_marker"];
-        
-        pin.centerOffset = CGPointMake(0, -14);
-        
-        for (int i = 0; i < shape.pointCount; i++) {
-            CGPoint point = [snapshot pointForCoordinate:coordinates[i]];
-            if (CGRectContainsPoint(finalImageRect, point)) { // this is too conservative, but you get the idea
-                point.x -= 14.5;
-                point.y -= 29.0;
-                [pinImage drawAtPoint:point];
-            }
-        }
-        
-        // Vẽ additional marker
-        pin = [[MKPinAnnotationView alloc] initWithAnnotation:nil reuseIdentifier:@"AdditionalAnnotation"];
-        pinImage = [UIImage imageNamed:@"ot_orange_marker"];
-        
-        pin.centerOffset = CGPointMake(0, -14);
-        
-        for (Location *location in _claim.locations) {
-            ShapeKitPoint *shapeKitPoint = [[ShapeKitPoint alloc] initWithWKT:location.mappedLocation];
-            CGPoint point = [snapshot pointForCoordinate:shapeKitPoint.geometry.coordinate];
-            if (CGRectContainsPoint(finalImageRect, point)) { // this is too conservative, but you get the idea
-                point.x -= 14.5;
-                point.y -= 29.0;
-                [pinImage drawAtPoint:point];
-            }
-        }
-
-        // Tạo điểm và nhãn cho polygon theo tâm của đường bao.
-        TBClusterAnnotation *center = [[TBClusterAnnotation alloc] initWithCoordinate:shape.coordinate count:1];
-        center.title = _claim.claimName;
-        pinImage = [UIImage imageNamed:@"centroid"];
-        CGPoint point = [snapshot pointForCoordinate:center.coordinate];
-        if (CGRectContainsPoint(finalImageRect, point)) { // this is too conservative, but you get the idea
-            point.x -= 14.5;
-            point.y -= 14.5;
-            [pinImage drawAtPoint:point];
-            
-            // Vẽ nhãn
-            NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
-            //Set line break mode
-            paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-            //Set text alignment
-            paragraphStyle.alignment = NSTextAlignmentCenter;
-            NSShadow *shadow = [[NSShadow alloc] init];
-            shadow.shadowColor = [UIColor lightGrayColor];
-            shadow.shadowBlurRadius = 0.0;
-            shadow.shadowOffset = CGSizeMake(0.5, 0.5);
-            NSDictionary *attributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:12], NSForegroundColorAttributeName:[UIColor otDarkBlue], NSShadowAttributeName:shadow, NSParagraphStyleAttributeName:paragraphStyle};
-            point.y += 30;
-            [_claim.claimName drawAtPoint:point withAttributes:attributes];
-        }
-        
-
-        // grab the final image
-        
-        UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        
-        // and save it
-        finalImage = [self screenshot];
-        NSData *imageData = UIImagePNGRepresentation(finalImage);
-        NSNumber *fileSize = [NSNumber numberWithUnsignedInteger:imageData.length];
-        NSString *md5 = [imageData md5];
-        NSString *fileName = @"_map_.png";
-        NSString *file = [[FileSystemUtilities getAttachmentFolder:_claim.claimId] stringByAppendingPathComponent:fileName];
-        ALog(@"%@", file);
-        [imageData writeToFile:[[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:file] atomically:YES];
-        NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
-        [dictionary setValue:[[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10] forKey:@"documentDate"];
-        [dictionary setValue:@"image/png" forKey:@"mimeType"];
-        [dictionary setValue:file  forKey:@"fileName"];
-        [dictionary setValue:@"png" forKey:@"fileExtension"];
-        [dictionary setValue:[[[NSUUID UUID] UUIDString] lowercaseString] forKey:@"id"];
-        [dictionary setValue:fileSize forKey:@"size"];
-        [dictionary setValue:md5 forKey:@"md5"];
-        [dictionary setValue:kAttachmentStatusCreated forKey:@"status"];
-        [dictionary setValue:file forKey:@"filePath"];
-        
-        [dictionary setValue:@"Map" forKey:@"description"];
-        [dictionary setValue:@"cadastralMap" forKey:@"typeCode"];
-        
-        AttachmentEntity *attachmentEntity = [AttachmentEntity new];
-        [attachmentEntity setManagedObjectContext:_claim.managedObjectContext];
-        Attachment *attachment = [attachmentEntity create];
-        [attachment importFromJSON:dictionary];
-        
-        attachment.claim = _claim;
-        
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(code == %@)", @"cadastralMap"];
-        // Nạp lại sau khi claim đã save
-        DocumentTypeEntity *docTypeEntity = [DocumentTypeEntity new];
-        [docTypeEntity setManagedObjectContext:_claim.managedObjectContext];
-        NSArray *docTypeCollection = [docTypeEntity getCollection];
-        
-        DocumentType *docType = [[docTypeCollection filteredArrayUsingPredicate:predicate] firstObject];
-        attachment.typeCode = docType;
-        
-        [attachment.managedObjectContext save:nil];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"saved", nil)];
-        });
-    }];
-     */
 }
 
 - (IBAction)done:(id)sender {
