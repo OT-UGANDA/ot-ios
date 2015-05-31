@@ -503,33 +503,6 @@
                         }
                     }
                 }
-                
-                
-                
-                
-                if ([claim.statusCode isEqualToString:kClaimStatusCreated]) {
-                    if (buttonIndex == actionSheet.firstOtherButtonIndex) {
-                        [self submitClaim:claim];
-                    } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
-                        [self exportClaim:claim];
-                    } else {
-                        [self deleteClaim:claim];
-                    }
-                } else if (remainingDays >= 0) {
-                    if (buttonIndex == actionSheet.firstOtherButtonIndex) {
-                        [self exportClaim:claim];
-                    } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1 && ![claim.statusCode isEqualToString:kClaimStatusWithdrawn]) {
-                        [self withdrawClaim:claim];
-                    } else {
-                        [self deleteClaim:claim];
-                    }
-                } else {
-                    if (buttonIndex == actionSheet.firstOtherButtonIndex) {
-                        [self exportClaim:claim];
-                    } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
-                        [self deleteClaim:claim];
-                    }
-                }
             }
         }];
     }
