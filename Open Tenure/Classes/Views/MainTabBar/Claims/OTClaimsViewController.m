@@ -456,8 +456,7 @@
                     } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
                         [self exportClaim:claim];
                     } else {
-                        [claim.managedObjectContext deleteObject:claim];
-                        [claim.managedObjectContext save:nil];
+                        [self deleteClaim:claim];
                     }
                 } else if (remainingDays >= 0) {
                     if (buttonIndex == actionSheet.firstOtherButtonIndex) {
@@ -465,15 +464,14 @@
                     } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1 && ![claim.statusCode isEqualToString:kClaimStatusWithdrawn]) {
                         [self withdrawClaim:claim];
                     } else {
-                        [claim.managedObjectContext deleteObject:claim];
-                        [claim.managedObjectContext save:nil];
+                        [self deleteClaim:claim];
                     }
                 } else {
                     if (buttonIndex == actionSheet.firstOtherButtonIndex) {
                         [self exportClaim:claim];
                     } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
-                        [claim.managedObjectContext deleteObject:claim];
-                        [claim.managedObjectContext save:nil];                    }
+                        [self deleteClaim:claim];
+                    }
                 }
             }
         }];
@@ -623,6 +621,15 @@
     
     [claim withDraw];
 
+}
+
+- (IBAction)deleteClaim:(Claim *)claim {
+    if (![OTAppDelegate authenticated]) {
+        [SVProgressHUD showErrorWithStatus:NSLocalizedStringFromTable(@"message_login_before", @"ActivityLogin", nil)];
+        return;
+    }
+    [claim.managedObjectContext deleteObject:claim];
+    [claim.managedObjectContext save:nil];
 }
 
 - (IBAction)submitClaim:(Claim *)claim {
