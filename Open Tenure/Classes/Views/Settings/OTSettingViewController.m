@@ -170,8 +170,8 @@
         NSString *title = NSLocalizedString(@"form_template_url_pref_dialog_title", nil);
         [UIAlertView showWithTitle:title
                            message:nil
-                       placeholder:@"https://ot.flossola.org"
-                       defaultText:[OTSetting getFormURL]
+                       placeholder:[OTSetting getFormURL]
+                       defaultText:nil
                              style:UIAlertViewStylePlainTextInput
                  cancelButtonTitle:NSLocalizedString(@"cancel", nil)
                  otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
