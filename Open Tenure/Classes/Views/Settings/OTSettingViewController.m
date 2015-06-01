@@ -170,7 +170,7 @@
         NSString *title = NSLocalizedString(@"form_template_url_pref_dialog_title", nil);
         [UIAlertView showWithTitle:title
                            message:nil
-                       placeholder:[OTSetting getFormURL]
+                       placeholder:@"https://ot.flossola.org"
                        defaultText:[OTSetting getFormURL]
                              style:UIAlertViewStylePlainTextInput
                  cancelButtonTitle:NSLocalizedString(@"cancel", nil)
@@ -178,6 +178,8 @@
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                               if (buttonIndex != alertView.cancelButtonIndex) {
                                   NSString *urlString = [[alertView textFieldAtIndex:0] text];
+                                  if (urlString.length == 0)
+                                      urlString = @"https://ot.flossola.org";
                                   NSURL *theURL = [NSURL URLWithString:urlString];
                                   if (theURL && theURL.scheme && theURL.host) {
                                       [OTSetting setFormURL:theURL.absoluteString];
