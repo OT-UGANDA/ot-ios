@@ -33,7 +33,8 @@
 - (NSDictionary *)dictionary {
     
     // matching managedObject vs jsonObject
-    NSDictionary * const matching = @{@"attributeId": @"id"};
+    NSDictionary * const matching = @{@"attributeId": @"id",
+                                      @"ordering":@"itemOrder"};
     
     NSArray *keys = [[[self entity] attributesByName] allKeys];
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:[self dictionaryWithValuesForKeys:keys]];
@@ -64,7 +65,8 @@
 - (void)importFromJSON:(NSDictionary *)keyedValues {
     [self entityWithDictionary:keyedValues];
     
-    NSDictionary * const matching = @{@"attributeId": @"id"};
+    NSDictionary * const matching = @{@"attributeId": @"id",
+                                      @"ordering":@"itemOrder"};
     
     NSDictionary *attributes = [[self entity] attributesByName];
     for (NSString *key in matching.allKeys) {

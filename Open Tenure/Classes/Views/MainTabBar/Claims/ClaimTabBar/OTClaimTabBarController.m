@@ -117,7 +117,8 @@
         id formView;
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sectionTemplate = %@", object];
         SectionPayload *sectionPayload = [[[_claim.dynamicForm.sectionPayloadList allObjects] filteredArrayUsingPredicate:predicate] firstObject];
-        if ([object.maxOccurrences integerValue] > 1) {
+        if ([object.maxOccurrences integerValue] > 1 ||
+            [object.maxOccurrences integerValue] == 0) {
             formView = [OTDynamicFormViewController new];
         } else {
             formView = [OTFormUpdateViewController new];
@@ -506,7 +507,8 @@
             [_addFormSection setTarget:_views[index]];
             if ([_claim isSaved]) { // View claim
                 if (_claim.getViewType == OTViewTypeEdit) { // Local claim
-                    if ([[[[_views[index] sectionPayload] sectionTemplate] maxOccurrences] integerValue] > 1)
+                    if ([[[[_views[index] sectionPayload] sectionTemplate] maxOccurrences] integerValue] > 1 ||
+                        [[[[_views[index] sectionPayload] sectionTemplate] maxOccurrences] integerValue] == 0)
                         self.navigationItem.rightBarButtonItems = @[_addFormSection, _flexibleSpace];
                     else
                         self.navigationItem.rightBarButtonItems = @[];
@@ -515,7 +517,8 @@
                     self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
                 }
             } else { // Add claim
-                if ([[[[_views[index] sectionPayload] sectionTemplate] maxOccurrences] integerValue] > 1)
+                if ([[[[_views[index] sectionPayload] sectionTemplate] maxOccurrences] integerValue] > 1 ||
+                    [[[[_views[index] sectionPayload] sectionTemplate] maxOccurrences] integerValue] == 0)
                     self.navigationItem.rightBarButtonItems = @[_addFormSection, _flexibleSpace];
                 else
                     self.navigationItem.rightBarButtonItems = @[];

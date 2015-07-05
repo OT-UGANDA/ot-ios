@@ -35,7 +35,7 @@
     
     NSDictionary * const matching = @{
                                       @"attributeId": @"id",
-                                      };
+                                      @"ordering":@"itemOrder"};
     
     NSDictionary *attributes = [[self entity] attributesByName];
     for (NSString *key in matching.allKeys) {

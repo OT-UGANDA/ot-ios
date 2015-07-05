@@ -103,7 +103,8 @@
                 [self switchValueDidChange:switches];
             };
             
-        } else if ([fieldTemplate.fieldType isEqualToString:@"DECIMAL"]) {
+        } else if ([fieldTemplate.fieldType isEqualToString:@"DECIMAL"] ||
+                   [fieldTemplate.fieldType isEqualToString:@"INTEGER"]) {
             // Kiểm tra field NOT_NULL
             BOOL mandatory = NO;
             for (FieldConstraint *object in fieldTemplate.fieldConstraintList)

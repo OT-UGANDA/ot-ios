@@ -35,7 +35,7 @@
     
     NSDictionary * const matching = @{
                                       @"attributeId": @"id",
-                                      };
+                                      @"ordering":@"itemOrder"};
     
     NSDictionary *attributes = [[self entity] attributesByName];
     for (NSString *key in matching.allKeys) {
@@ -58,14 +58,11 @@
     FieldConstraintEntity *entity = [FieldConstraintEntity new];
     [entity setManagedObjectContext:self.managedObjectContext];
     NSArray *objects = [keyedValues objectForKey:@"fieldConstraintList"];
-    NSInteger ordering = 0;
     for (NSDictionary *object in objects) {
         FieldConstraint *entityObject = [FieldConstraintEntity getEntityById:[object objectForKey:@"id"]];
         if (entityObject == nil)
             entityObject = [entity createObject];
         [entityObject importFromJSON:object];
-        [entityObject setOrdering:[NSNumber numberWithInteger:ordering]];
-        ordering++;
         entityObject.fieldTemplate = self;
     }
 }

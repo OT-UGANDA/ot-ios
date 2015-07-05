@@ -33,7 +33,7 @@
 - (void)importFromJSON:(NSDictionary *)keyedValues {
     [self entityWithDictionary:keyedValues];
     
-    NSDictionary * const matching = @{};
+    NSDictionary * const matching = @{@"ordering":@"itemOrder"};
     
     NSDictionary *attributes = [[self entity] attributesByName];
     for (NSString *key in matching.allKeys) {
@@ -59,14 +59,11 @@
     SectionTemplateEntity *entity = [SectionTemplateEntity new];
     [entity setManagedObjectContext:self.managedObjectContext];
     NSArray *objects = [keyedValues objectForKey:@"sectionTemplateList"];
-    NSInteger ordering = 0;
     for (NSDictionary *object in objects) {
         SectionTemplate *entityObject = [SectionTemplateEntity getEntityById:[object objectForKey:@"id"]];
         if (entityObject == nil)
             entityObject = [entity createObject];
         [entityObject importFromJSON:object];
-        [entityObject setOrdering:[NSNumber numberWithInteger:ordering]];
-        ordering++;
         entityObject.formTemplate = self;
     }
 }

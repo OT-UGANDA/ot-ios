@@ -164,7 +164,8 @@
         if ([fieldTemplate.fieldType isEqualToString:@"BOOL"]) {
             fieldPayload.fieldValueType = @"BOOL";
             fieldPayload.booleanPayload = [NSNumber numberWithBool:NO];
-        } else if ([fieldTemplate.fieldType isEqualToString:@"DECIMAL"]) {
+        } else if ([fieldTemplate.fieldType isEqualToString:@"DECIMAL"] ||
+                   [fieldTemplate.fieldType isEqualToString:@"INTEGER"]) {
             fieldPayload.fieldValueType = @"NUMBER";
         } else {
             fieldPayload.fieldValueType = @"TEXT";
