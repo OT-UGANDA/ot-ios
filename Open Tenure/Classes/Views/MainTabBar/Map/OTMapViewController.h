@@ -50,5 +50,6 @@
 - (void)configureCommunityArea;
 - (IBAction)downloadMapTiles:(id)sender;
 - (IBAction)defaultShowcase:(id)sender;
+- (void)processClaim:(Claim *)claim;
 
 @end

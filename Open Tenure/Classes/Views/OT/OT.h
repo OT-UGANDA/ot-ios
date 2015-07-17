@@ -45,6 +45,7 @@ extern NSString * const kResponseClaimsMessageErrorKey;
 
 extern NSString * const kWithdrawClaimSuccessNotificationName;
 extern NSString * const kGetClaimSuccessNotificationName;
+extern NSString * const kUpdateGeometryNotificationName;
 
 /*!
  Claim status

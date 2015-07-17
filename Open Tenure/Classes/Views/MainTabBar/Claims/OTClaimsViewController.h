@@ -51,5 +51,6 @@
 - (IBAction)showMenu:(id)sender;
 - (IBAction)cancel:(id)sender;
 - (IBAction)defaultShowcase:(id)sender;
+- (IBAction)showImportClaim:(id)sender;
 
 @end

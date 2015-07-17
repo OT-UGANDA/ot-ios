@@ -50,6 +50,7 @@
 @property (nonatomic) UIBarButtonItem *downloadClaims;
 @property (nonatomic) UIBarButtonItem *addPerson;
 @property (nonatomic) UIBarButtonItem *addClaim;
+@property (nonatomic) UIBarButtonItem *import;
 @property (nonatomic) UIBarButtonItem *login;
 @property (nonatomic) UIBarButtonItem *logout;
 @property (nonatomic) UIBarButtonItem *menu;
@@ -265,6 +266,8 @@
     
     _addClaim = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu_add_claim"] style:UIBarButtonItemStylePlain target:_views[listOfClaimsTabIndex] action:@selector(addClaim:)];
     
+    _import = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu_import"] style:UIBarButtonItemStylePlain target:_views[2] action:@selector(showImportClaim:)];
+    
     _login = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"login_door"] style:UIBarButtonItemStylePlain target:_views[listOfClaimsTabIndex] action:@selector(login:)];
     
     _logout = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"logout_door"] style:UIBarButtonItemStylePlain target:_views[listOfClaimsTabIndex] action:@selector(logout:)];
@@ -347,7 +350,7 @@
             break;
         }
         case 2:
-            self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, login, _fixedSpace, _addClaim, _flexibleSpace];
+            self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, login, _fixedSpace, _import, _fixedSpace, _addClaim, _flexibleSpace];
             // Showcase
             NSArray *items2 = @[@{@"type":[NSNumber numberWithInt:0],
                                   @"target":_claimsLabel,

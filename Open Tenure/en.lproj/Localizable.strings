@@ -967,3 +967,16 @@
 "title_claim_south_adjacency_label"="South adjacency";
 "title_claim_east_label"="East adjacency";
 "title_claim_west_label"="West adjacency";
+
+"delete_this_document_notification"="Delete this document?";
+"action_change_claimant"="Change claimant";
+"action_modify_claimant"="Modify claimant";
+"extract_file_notification"="Are you sure you want to extract %@ file?";
+"extracting_file"="Extracting...";
+"extrac_error"="Extract error!";
+"folder_is_empty_notification"="Folder is empty, you can import from email attachments or via iTunes File Sharing on iPhone, iPad";
+"back_to_folder"="Back to folder";
+"resources_management"="Resources management";
+"documents"="Documents";
+"icloud_documents"="iCloud Drive";
+"local_data"="Local Data";

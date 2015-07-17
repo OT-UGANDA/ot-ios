@@ -29,6 +29,12 @@
 #import <QuickLook/QuickLook.h>
 #import "DirectoryWatcher.h"
 
+#define OTDocTypeImage          @"public.image"
+#define OTDocTypeArchiveZip     @"public.zip-archive"
+#define OTDocTypeArchiveTgz     @"org.gnu.gnu-zip-tar-archive"
+#define OTDocTypeFolder         @"public.data"
+#define OTDocTypeESRI           @"com.esri.shp"
+
 @class OTFileChooserViewController;
 
 @protocol OTFileChooserViewControllerDelegate <NSObject>
@@ -41,6 +47,7 @@
 
 @interface OTFileChooserViewController : UITableViewController <QLPreviewControllerDataSource, QLPreviewControllerDelegate, DirectoryWatcherDelegate, UIDocumentInteractionControllerDelegate>
 
+@property (strong, nonatomic) NSString *watchFolder;
 @property (weak, nonatomic) id<OTFileChooserViewControllerDelegate>delegate;
 
 @end

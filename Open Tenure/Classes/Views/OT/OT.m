@@ -40,6 +40,7 @@ NSString * const kResponseClaimsMessageErrorKey = @"ResponseClaimsMessageErrorKe
 
 NSString * const kWithdrawClaimSuccessNotificationName = @"WithdrawClaimSuccessNotificationName";
 NSString * const kGetClaimSuccessNotificationName = @"GetClaimSuccessNotificationName";
+NSString * const kUpdateGeometryNotificationName = @"UpdateGeometryNotificationName";
 
 NSString * const kClaimStatusCreated = @"created";
 NSString * const kClaimStatusUploading = @"uploading";

@@ -27,15 +27,11 @@
  */
 
 #import "OTFileChooserViewController.h"
+#import "SSZipArchive.h"
 
 #define kRowHeight 58.0f
 
-#define OTDocTypeImage          @"public.image"
-#define OTDocTypeArchiveZip     @"public.zip-archive"
-#define OTDocTypeArchiveTgz     @"org.gnu.gnu-zip-tar-archive"
-#define OTDocTypeFolder         @"public.data"
-
-@interface OTFileChooserViewController ()
+@interface OTFileChooserViewController () <SSZipArchiveDelegate>
 
 @property (nonatomic, strong) DirectoryWatcher *docWatcher;
 @property (nonatomic, strong) NSMutableArray *documentList;
@@ -44,6 +40,7 @@
 @end
 
 @implementation OTFileChooserViewController
+@synthesize watchFolder = _watchFolder;
 
 - (void)setupDocumentControllerWithURL:(NSURL *)url
 {
@@ -68,7 +65,9 @@
     self.documentURLs = [NSMutableArray array];
     self.documentList = [NSMutableArray array];
     // scan for existing documents
-    self.docWatcher = [DirectoryWatcher watchFolderWithPath:[self applicationDocumentsDirectory] delegate:self];
+    if (_watchFolder == nil)
+        _watchFolder = [self applicationDocumentsDirectory];
+    self.docWatcher = [DirectoryWatcher watchFolderWithPath:_watchFolder delegate:self];
     [self directoryDidChange:self.docWatcher];
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -90,6 +89,7 @@
 
 - (IBAction)cancel:(id)sender {
     [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)reloadContents:(id)sender {
@@ -115,12 +115,12 @@
     {
         NSIndexPath *cellIndexPath = [self.tableView indexPathForRowAtPoint:[longPressGesture locationInView:self.tableView]];
         
-		NSURL *fileURL;
+        NSURL *fileURL;
         // for secton 1, we preview the docs found in the Documents folder
         fileURL = [self.documentURLs objectAtIndex:cellIndexPath.row];
         self.docInteractionController.URL = fileURL;
-		
-		[self.docInteractionController presentOptionsMenuFromRect:longPressGesture.view.frame
+        
+        [self.docInteractionController presentOptionsMenuFromRect:longPressGesture.view.frame
                                                            inView:longPressGesture.view
                                                          animated:YES];
     }
@@ -129,7 +129,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if ([self.docWatcher.currentPath isEqualToString:[self applicationDocumentsDirectory]]) {
+    if ([self.docWatcher.currentPath isEqualToString:[self watchFolder]]) {
         return 1;
     } else
         return 2;
@@ -154,19 +154,21 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    NSString *title = @"Documents";
+    self.title = [_docWatcher.currentPath lastPathComponent];
+
+    NSString *title = [_docWatcher.currentPath lastPathComponent];//NSLocalizedString(@"documents", nil);
     if ([tableView numberOfSections] == 1) {
         if (self.documentURLs.count == 0)
-            title = @"This folder is empty";
+            title = NSLocalizedString(@"folder_is_empty_notification", nil);
     } else {
         switch (section) {
             case 0:
-                title = @"Back to folder";
+                title = NSLocalizedString(@"back_to_folder", nil);
                 break;
                 
             default:
                 if (self.documentURLs.count == 0)
-                    title = @"This folder is empty";
+                    title = NSLocalizedString(@"folder_is_empty_notification", nil);
                 break;
         }
     }
@@ -189,6 +191,10 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
+//    cell.tintColor = [UIColor extSegmentedTintColor];
+//    cell.textLabel.textColor = [UIColor extSegmentedTintColor];
+//    cell.detailTextLabel.textColor = [UIColor extSegmentedTintColor];
+    
     if (([tableView numberOfSections] == 2 && indexPath.section == 0) || self.documentURLs.count == 0) {
         cell.accessoryType = UITableViewCellAccessoryNone;
         NSString *previousPath = [self.docWatcher.currentPath stringByDeletingLastPathComponent];
@@ -257,20 +263,22 @@
         BOOL isDirectory;
         [[NSFileManager defaultManager] fileExistsAtPath:[fileURL path] isDirectory:&isDirectory];
         // proceed to add the document URL to our list (ignore the "Inbox" folder)
+        ALog(@"%@", self.docInteractionController.UTI);
         if (isDirectory) {
             self.docWatcher = [DirectoryWatcher watchFolderWithPath:[fileURL path] delegate:self];;
             [self directoryDidChange:self.docWatcher];
-        } else {
+        } else if ([self.docInteractionController.UTI isEqualToString:OTDocTypeArchiveZip]) {
             [_delegate fileChooserController:self didSelectFile:[fileURL path] uti:self.docInteractionController.UTI];
             [self.navigationController popViewControllerAnimated:YES];
-            
-//            // for case 3 we use the QuickLook APIs directly to preview the document -
-//            QLPreviewController *previewController = [[QLPreviewController alloc] init];
-//            previewController.dataSource = self;
-//            previewController.delegate = self;
-//            // start previewing the document at the current section index
-//            previewController.currentPreviewItemIndex = indexPath.row;
-//            [[self navigationController] pushViewController:previewController animated:YES];
+        } else {
+            ALog(@"%@", self.docInteractionController.UTI);
+            // for case 3 we use the QuickLook APIs directly to preview the document -
+            QLPreviewController *previewController = [[QLPreviewController alloc] init];
+            previewController.dataSource = self;
+            previewController.delegate = self;
+            // start previewing the document at the current section index
+            previewController.currentPreviewItemIndex = indexPath.row;
+            [[self navigationController] pushViewController:previewController animated:YES];
         }
     }
 }
@@ -278,20 +286,28 @@
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Return NO if you do not want the specified item to be editable.
+    if (tableView.numberOfSections == 2) {
+        if (indexPath.section == 0)
+            return NO;
+    }
     return YES;
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSError* error;
-        if ([fileManager removeItemAtURL:[self.documentURLs objectAtIndex:indexPath.row]  error:&error]) {
-            if (error) {
-                ALog(@"Unresolved error %@, %@", error, [error userInfo]);
-            } else {
-                [self.documentURLs removeObjectAtIndex:indexPath.row];
+        [UIAlertView showWithTitle:NSLocalizedString(@"delete_this_document_notification", nil) message:nil cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"confirm", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+            if (buttonIndex != alertView.cancelButtonIndex) {
+                NSError* error;
+                if ([fileManager removeItemAtURL:[self.documentURLs objectAtIndex:indexPath.row]  error:&error]) {
+                    if (error) {
+                        ALog(@"Unresolved error %@, %@", error, [error userInfo]);
+                    } else {
+                        [self.documentURLs removeObjectAtIndex:indexPath.row];
+                    }
+                }
             }
-        }
+        }];
     }
 }
 
@@ -333,36 +349,72 @@
 
 #pragma mark - File system support
 
-- (NSString *)applicationDocumentsDirectory
-{
-	return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+- (NSString *)applicationDocumentsDirectory {
+    return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
 }
 
-- (void)directoryDidChange:(DirectoryWatcher *)folderWatcher
-{
-	[self.documentURLs removeAllObjects];    // clear out the old docs and start over
-	
-	NSString *documentsDirectoryPath = folderWatcher.currentPath;
-	
-	NSArray *documentsDirectoryContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:documentsDirectoryPath error:NULL];
+- (void)directoryDidChange:(DirectoryWatcher *)folderWatcher {
+    [self.documentURLs removeAllObjects];    // clear out the old docs and start over
     
-	for (NSString* curFileName in [documentsDirectoryContents objectEnumerator])
-	{
-		NSString *filePath = [documentsDirectoryPath stringByAppendingPathComponent:curFileName];
-		NSURL *fileURL = [NSURL fileURLWithPath:filePath];
-		
-		BOOL isDirectory;
+    NSString *documentsDirectoryPath = folderWatcher.currentPath;
+    
+    NSArray *documentsDirectoryContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:documentsDirectoryPath error:NULL];
+    
+    for (NSString* curFileName in [documentsDirectoryContents objectEnumerator])
+    {
+        NSString *filePath = [documentsDirectoryPath stringByAppendingPathComponent:curFileName];
+        NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+        
+        BOOL isDirectory;
         [[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDirectory];
         // proceed to add the document URL to our list (ignore the ".DS_Store" file)
-        if (![curFileName isEqualToString:@".DS_Store"] &&
-            ![curFileName isEqualToString:@"Open Tenure"] &&
-            ![curFileName isEqualToString:@"claims"] &&
-            ![curFileName isEqualToString:@"claimants"] &&
-            ![curFileName isEqualToString:@"MapTiles"]) {
+        if (![curFileName isEqualToString:@".DS_Store"]
+            // &&
+            //![curFileName isEqualToString:@"gmap_tiles_standard"] &&
+            //![curFileName isEqualToString:@"gmap_tiles_satellite"] &&
+            //![curFileName isEqualToString:@"gmap_tiles_hybrid"] &&
+            //![curFileName isEqualToString:@"gmap_tiles_terrain"] &&
+            //![curFileName isEqualToString:@"wms_tiles"])
+            ) {
             [self.documentURLs addObject:fileURL];
         }
-	}
+    }
     [self.tableView reloadData];
+}
+
+
+- (void)unzipFileAtPath:(NSString *)filePath {
+    NSString *title = NSLocalizedString(@"extract_file_notification", nil);
+    title = [NSString stringWithFormat:title, [filePath lastPathComponent]];
+    NSString *cancelButtonTitle = NSLocalizedString(@"cancel", nil);
+    NSString *okButtonTitle = NSLocalizedString(@"confirm", nil);
+    [UIAlertView showWithTitle:title message:nil cancelButtonTitle:cancelButtonTitle otherButtonTitles:@[okButtonTitle] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+        if (buttonIndex != alertView.cancelButtonIndex) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+//                NSString *path = [[filePath stringByDeletingPathExtension] lastPathComponent];
+//                path = [[[Utilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:path];
+//                BOOL OK = [Utilities createDirectoryAtURL:[[NSURL alloc] initFileURLWithPath:path]];
+//                if (OK) {
+//                    BOOL success = [SSZipArchive unzipFileAtPath:filePath toDestination:path delegate:self];
+//                    if(!success)
+//                        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"extrac_error", nil)];
+//                }
+            });
+        }
+    }];
+    
+}
+
+#pragma mark - Unzip delegate
+- (void)zipArchiveProgressEvent:(NSInteger)loaded total:(NSInteger)total {
+    double progress = (double)loaded / (double)total;
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [SVProgressHUD showProgress:progress
+                             status:NSLocalizedString(@"extracting_file", nil)
+                           maskType:SVProgressHUDMaskTypeGradient];
+        if (loaded == total)
+            [SVProgressHUD dismiss];
+    }];
 }
 
 @end

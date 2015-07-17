@@ -66,6 +66,7 @@ typedef struct unz_file_info_s
 
 + (BOOL)unzipFileAtPath:(NSString *)path toDestination:(NSString *)destination delegate:(id<SSZipArchiveDelegate>)delegate;
 + (BOOL)unzipFileAtPath:(NSString *)path toDestination:(NSString *)destination overwrite:(BOOL)overwrite password:(NSString *)password error:(NSError **)error delegate:(id<SSZipArchiveDelegate>)delegate;
++ (BOOL)isEncrypted:(NSString *)path;
 
 // Zip
 + (BOOL)createZipFileAtPath:(NSString *)path withFilesAtPaths:(NSArray *)filenames password:(NSString *)password;

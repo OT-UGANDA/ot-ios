@@ -661,6 +661,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(databaseDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:dataContext];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(databaseDidSave:) name:NSManagedObjectContextDidSaveNotification object:dataContext];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(processClaimNotification:) name:kUpdateGeometryNotificationName object:nil];
 }
 
 /*!
@@ -1496,6 +1498,13 @@
         } // TODO check for updateable
     }
     return newClaimIds;
+}
+
+- (void)processClaimNotification:(NSNotification *)notification {
+    Claim *claim = [notification object];
+    [self processClaim:claim];
+    [_coordinateQuadTree buildTreeFromAnnotations:_annotations];
+    [self mapView:_mapView regionDidChangeAnimated:NO];
 }
 
 /*!

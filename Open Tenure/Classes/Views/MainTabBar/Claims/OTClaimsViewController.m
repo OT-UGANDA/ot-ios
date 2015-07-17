@@ -36,8 +36,9 @@
 #import "OTSideBarItems.h"
 #import "OTShowcase.h"
 #import "NSDate+OT.h"
+#import "OTFileChooserViewController.h"
 
-@interface OTClaimsViewController () <UploadChunkTaskDelegate, SaveClaimTaskDelegate, SaveAttachmentTaskDelegate, UploadChunkTaskDelegate> {
+@interface OTClaimsViewController () <UploadChunkTaskDelegate, SaveClaimTaskDelegate, SaveAttachmentTaskDelegate, UploadChunkTaskDelegate, OTFileChooserViewControllerDelegate, SSZipArchiveDelegate> {
     OTShowcase *showcase;
     BOOL multipleShowcase;
     BOOL customShowcases;
@@ -568,7 +569,23 @@
     return 88;
 }
 
-#pragma Bar Buttons Action
+#pragma mark - Bar Buttons Action
+
+- (IBAction)showImportClaim:(id)sender {
+    if (![OTSetting getInitialization]) {
+        [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"message_app_not_yet_initialized", nil)];
+        return;
+    }
+    OTFileChooserViewController *vc = [[OTFileChooserViewController alloc] initWithStyle:UITableViewStyleGrouped];
+    [vc setDelegate:self];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+    double delayInSeconds = 0.2;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [self presentViewController:nav animated:YES completion:nil];
+    });
+}
 
 - (IBAction)addClaim:(id)sender {
     if (![OTSetting getInitialization]) {
@@ -629,6 +646,15 @@
     [claim setToTemporary];
     UINavigationController *nav = [[self storyboard] instantiateViewControllerWithIdentifier:@"ClaimTabBar"];
     [self.navigationController presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)importClaim:(NSDictionary *)claimJson {
+    ClaimEntity *claimEntity = [ClaimEntity new];
+    [claimEntity setManagedObjectContext:temporaryContext];
+    Claim *claim = [claimEntity create];
+    [claim importFromJSON:claimJson];
+    [claim.managedObjectContext save:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateGeometryNotificationName object:claim];
 }
 
 - (IBAction)login:(id)sender {
@@ -756,6 +782,102 @@
     UINavigationController *settingViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"SettingViewController"];
     settingViewController.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:settingViewController animated:YES completion:nil];
+}
+
+#pragma mark - OTFileChooserViewControllerDelegate method
+- (void)fileChooserController:(OTFileChooserViewController *)controller didSelectFile:(NSString *)file uti:(NSString *)uti {
+    if ([uti isEqualToString:OTDocTypeArchiveZip]) {
+        [self performSelector:@selector(confirmUnzipFileAtPath:) withObject:file afterDelay:0.2];
+    }
+//    else if ([uti isEqualToString:OTDocTypeArchiveZip]) {
+//        NSString *title = NSLocalizedString(@"import_claim_notification", nil);
+//        title = [NSString stringWithFormat:title, [file lastPathComponent]];
+//        NSString *cancelButtonTitle = NSLocalizedString(@"cancel", nil);
+//        NSString *okButtonTitle = NSLocalizedString(@"ok", nil);
+//        [UIAlertView showWithTitle:title message:nil cancelButtonTitle:cancelButtonTitle otherButtonTitles:@[okButtonTitle] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+//            if (buttonIndex != alertView.cancelButtonIndex) {
+//                [controller.navigationController dismissViewControllerAnimated:YES completion:nil];
+//                [self performSelector:@selector(importClaim:) withObject:file afterDelay:0.2];
+//            }
+//        }];
+//    }
+}
+
+- (void)confirmUnzipFileAtPath:(NSString *)filePath {
+    NSString *title = NSLocalizedString(@"extract_file_notification", nil);
+    title = [NSString stringWithFormat:title, [filePath lastPathComponent]];
+    NSString *cancelButtonTitle = NSLocalizedString(@"cancel", nil);
+    NSString *okButtonTitle = NSLocalizedString(@"confirm", nil);
+    [UIAlertView showWithTitle:title message:nil cancelButtonTitle:cancelButtonTitle otherButtonTitles:@[okButtonTitle] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+        if (buttonIndex != alertView.cancelButtonIndex) {
+            //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+                [self unzipFileAtPath:filePath];
+            //});
+        }
+    }];
+    
+}
+
+- (void)unzipFileAtPath:(NSString *)filePath {
+    NSString *path = [[filePath stringByDeletingPathExtension] lastPathComponent];
+    path = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:path];
+    BOOL OK = [FileSystemUtilities createFolder:path];
+    if (OK) {
+        if ([SSZipArchive isEncrypted:filePath]) {
+            NSString *cancelButtonTitle = NSLocalizedString(@"cancel", nil);
+            NSString *okButtonTitle = NSLocalizedString(@"confirm", nil);
+            [UIAlertView showWithTitle:NSLocalizedString(@"password", nil) message:nil style:UIAlertViewStyleSecureTextInput cancelButtonTitle:cancelButtonTitle otherButtonTitles:@[okButtonTitle] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                if (buttonIndex != alertView.cancelButtonIndex) {
+                    NSString *password = [[alertView textFieldAtIndex:0] text];
+                    BOOL success = [SSZipArchive unzipFileAtPath:filePath toDestination:path overwrite:YES password:password error:nil delegate:self];
+                    if(!success)
+                        [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"extrac_error", nil)];
+                }
+            }];
+        } else {
+            BOOL success = [SSZipArchive unzipFileAtPath:filePath toDestination:path delegate:self];
+            if(!success)
+                [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"extrac_error", nil)];
+        }
+    }
+
+}
+
+#pragma mark - Unzip delegate
+- (void)zipArchiveProgressEvent:(NSInteger)loaded total:(NSInteger)total {
+    double progress = (double)loaded / (double)total;
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [SVProgressHUD showProgress:progress
+                             status:NSLocalizedString(@"extracting_file", nil)
+                           maskType:SVProgressHUDMaskTypeGradient];
+        if (loaded == total) {
+            [SVProgressHUD dismiss];
+            //[self performSelector:@selector(importClaim:) withObject:file afterDelay:0.2];
+        }
+    }];
+}
+
+- (void)zipArchiveDidUnzipArchiveAtPath:(NSString *)path zipInfo:(unz_global_info)zipInfo unzippedPath:(NSString *)unzippedPath {
+    NSString *claimJsonFile = [unzippedPath stringByAppendingPathComponent:@"claim.json"];
+    BOOL existingClaim = [[NSFileManager defaultManager] fileExistsAtPath:claimJsonFile];
+    if (existingClaim) {
+        NSData *data = [NSData dataWithContentsOfFile:claimJsonFile];
+        NSError *error;
+        NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        NSString *claimId = [jsonDict objectForKey:@"id"];
+        // Tạo folder claim_claimId
+        [FileSystemUtilities createClaimFolder:claimId];
+        NSString *claimFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimFolder:claimId]];
+        claimFolder = [claimFolder stringByAppendingPathComponent:@"attachments"];
+        NSString *folderToMove = [unzippedPath stringByAppendingPathComponent:@"attachments"];
+        // Copy attachments sang
+        if (![[NSFileManager defaultManager] moveItemAtPath:folderToMove toPath:claimFolder error:&error]) {
+            ALog(@"Eror %@", error.description);
+        }
+        // Xóa folder
+        [[NSFileManager defaultManager] removeItemAtPath:unzippedPath error:nil];
+        [self importClaim:jsonDict];
+    }
 }
 
 @end
