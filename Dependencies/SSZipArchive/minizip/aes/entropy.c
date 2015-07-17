@@ -16,7 +16,7 @@ int entropy_fun(unsigned char buf[], unsigned int len)
         rlen = read(frand, buf, len);
         close(frand);
     }
-    return rlen;
+    return (int)rlen;
 }
     
 #if defined(__cplusplus)

@@ -477,7 +477,7 @@
     } else {
         NSData *data = [ NSData dataWithContentsOfFile:path];
         uLong crcValue = crc32( 0L,NULL, 0L );
-		crcValue = crc32(crcValue, (const Bytef*)[data bytes], [data length] );
+		crcValue = crc32(crcValue, (const Bytef*)[data bytes], (int)[data length] );
         zipOpenNewFileInZip3(_zip, afileName, &zipInfo, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_BEST_SPEED, 0, 15, 8, Z_DEFAULT_STRATEGY, [password cStringUsingEncoding:NSASCIIStringEncoding], crcValue);
     }
     
