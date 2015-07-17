@@ -39,7 +39,6 @@
 		DE3ACE3A1A88B8CF00FFCA66 /* UIImage+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DE3ACE391A88B8CF00FFCA66 /* UIImage+OT.m */; };
 		DE3DBE1B1A6B8AEF00807C83 /* Showcase.strings in Resources */ = {isa = PBXBuildFile; fileRef = DE3DBE191A6B8AEF00807C83 /* Showcase.strings */; };
 		DE4AEBB91A8DF5FF00DB6067 /* NSDate+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DE4AEBB81A8DF5FF00DB6067 /* NSDate+OT.m */; };
-		DE5448C0198A8D7400221700 /* libSSZipArchive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE5448BD198A8D7400221700 /* libSSZipArchive.a */; };
 		DE5448C1198A8D7400221700 /* libGEOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE5448BE198A8D7400221700 /* libGEOS.a */; };
 		DE5448C8198A8F4300221700 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE5448C7198A8F4300221700 /* QuartzCore.framework */; };
 		DE5448D8198AA62100221700 /* OTNewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE5448D7198AA62100221700 /* OTNewsViewController.m */; };
@@ -197,6 +196,21 @@
 		DEEF29EA1A2334B9002A3AA6 /* SectionTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = DEEF29E91A2334B9002A3AA6 /* SectionTemplate.m */; };
 		DEEF29F01A2336CD002A3AA6 /* SectionPayload+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DEEF29EF1A2336CD002A3AA6 /* SectionPayload+OT.m */; };
 		DEEF29F31A2336F5002A3AA6 /* SectionPayloadEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = DEEF29F21A2336F5002A3AA6 /* SectionPayloadEntity.m */; };
+		DEFD1AD21B59525F00FBF11B /* aes.txt in Resources */ = {isa = PBXBuildFile; fileRef = DEFD1AB11B59525F00FBF11B /* aes.txt */; };
+		DEFD1AD31B59525F00FBF11B /* aes_modes.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1AB21B59525F00FBF11B /* aes_modes.c */; };
+		DEFD1AD41B59525F00FBF11B /* aescrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1AB51B59525F00FBF11B /* aescrypt.c */; };
+		DEFD1AD51B59525F00FBF11B /* aeskey.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1AB61B59525F00FBF11B /* aeskey.c */; };
+		DEFD1AD61B59525F00FBF11B /* aestab.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1AB81B59525F00FBF11B /* aestab.c */; };
+		DEFD1AD71B59525F00FBF11B /* entropy.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1ABC1B59525F00FBF11B /* entropy.c */; };
+		DEFD1AD81B59525F00FBF11B /* fileenc.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1ABE1B59525F00FBF11B /* fileenc.c */; };
+		DEFD1AD91B59525F00FBF11B /* hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1AC01B59525F00FBF11B /* hmac.c */; };
+		DEFD1ADA1B59525F00FBF11B /* prng.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1AC21B59525F00FBF11B /* prng.c */; };
+		DEFD1ADB1B59525F00FBF11B /* pwd2key.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1AC41B59525F00FBF11B /* pwd2key.c */; };
+		DEFD1ADC1B59525F00FBF11B /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1AC61B59525F00FBF11B /* sha1.c */; };
+		DEFD1ADD1B59525F00FBF11B /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1AC91B59525F00FBF11B /* ioapi.c */; };
+		DEFD1ADE1B59525F00FBF11B /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1ACB1B59525F00FBF11B /* unzip.c */; };
+		DEFD1ADF1B59525F00FBF11B /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1ACD1B59525F00FBF11B /* zip.c */; };
+		DEFD1AE01B59525F00FBF11B /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1AD11B59525F00FBF11B /* SSZipArchive.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -520,7 +534,6 @@
 		DED374EC198E8A1900B48E7A /* UITextField+BPForms.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+BPForms.m"; sourceTree = "<group>"; };
 		DED374ED198E8A1900B48E7A /* UITextView+BPForms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextView+BPForms.h"; sourceTree = "<group>"; };
 		DED374EE198E8A1900B48E7A /* UITextView+BPForms.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+BPForms.m"; sourceTree = "<group>"; };
-		DEDD9FD8198A44E400900345 /* SSZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SSZipArchive.h; path = Dependencies/include/SSZipArchive/SSZipArchive.h; sourceTree = "<group>"; };
 		DEE8797B1A5E1E890047C48F /* OTFormInputTextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTFormInputTextViewCell.h; path = Classes/Views/OTForms/Cells/OTFormInputTextViewCell.h; sourceTree = "<group>"; };
 		DEE8797C1A5E1E890047C48F /* OTFormInputTextViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTFormInputTextViewCell.m; path = Classes/Views/OTForms/Cells/OTFormInputTextViewCell.m; sourceTree = "<group>"; };
 		DEE8797E1A5EB1760047C48F /* OTFormSwitchCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTFormSwitchCell.h; path = Classes/Views/OTForms/Cells/OTFormSwitchCell.h; sourceTree = "<group>"; };
@@ -595,6 +608,40 @@
 		DEEF29EF1A2336CD002A3AA6 /* SectionPayload+OT.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SectionPayload+OT.m"; path = "Classes/Model/SectionPayload+OT.m"; sourceTree = "<group>"; };
 		DEEF29F11A2336F5002A3AA6 /* SectionPayloadEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SectionPayloadEntity.h; path = Classes/Model/DataController/SectionPayloadEntity.h; sourceTree = "<group>"; };
 		DEEF29F21A2336F5002A3AA6 /* SectionPayloadEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SectionPayloadEntity.m; path = Classes/Model/DataController/SectionPayloadEntity.m; sourceTree = "<group>"; };
+		DEFD1AB01B59525F00FBF11B /* aes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aes.h; sourceTree = "<group>"; };
+		DEFD1AB11B59525F00FBF11B /* aes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = aes.txt; sourceTree = "<group>"; };
+		DEFD1AB21B59525F00FBF11B /* aes_modes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = aes_modes.c; sourceTree = "<group>"; };
+		DEFD1AB31B59525F00FBF11B /* aes_via_ace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aes_via_ace.h; sourceTree = "<group>"; };
+		DEFD1AB41B59525F00FBF11B /* aescpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aescpp.h; sourceTree = "<group>"; };
+		DEFD1AB51B59525F00FBF11B /* aescrypt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = aescrypt.c; sourceTree = "<group>"; };
+		DEFD1AB61B59525F00FBF11B /* aeskey.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = aeskey.c; sourceTree = "<group>"; };
+		DEFD1AB71B59525F00FBF11B /* aesopt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aesopt.h; sourceTree = "<group>"; };
+		DEFD1AB81B59525F00FBF11B /* aestab.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = aestab.c; sourceTree = "<group>"; };
+		DEFD1AB91B59525F00FBF11B /* aestab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aestab.h; sourceTree = "<group>"; };
+		DEFD1ABA1B59525F00FBF11B /* brg_endian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = brg_endian.h; sourceTree = "<group>"; };
+		DEFD1ABB1B59525F00FBF11B /* brg_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = brg_types.h; sourceTree = "<group>"; };
+		DEFD1ABC1B59525F00FBF11B /* entropy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = entropy.c; sourceTree = "<group>"; };
+		DEFD1ABD1B59525F00FBF11B /* entropy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = entropy.h; sourceTree = "<group>"; };
+		DEFD1ABE1B59525F00FBF11B /* fileenc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fileenc.c; sourceTree = "<group>"; };
+		DEFD1ABF1B59525F00FBF11B /* fileenc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fileenc.h; sourceTree = "<group>"; };
+		DEFD1AC01B59525F00FBF11B /* hmac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hmac.c; sourceTree = "<group>"; };
+		DEFD1AC11B59525F00FBF11B /* hmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hmac.h; sourceTree = "<group>"; };
+		DEFD1AC21B59525F00FBF11B /* prng.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = prng.c; sourceTree = "<group>"; };
+		DEFD1AC31B59525F00FBF11B /* prng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = prng.h; sourceTree = "<group>"; };
+		DEFD1AC41B59525F00FBF11B /* pwd2key.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pwd2key.c; sourceTree = "<group>"; };
+		DEFD1AC51B59525F00FBF11B /* pwd2key.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pwd2key.h; sourceTree = "<group>"; };
+		DEFD1AC61B59525F00FBF11B /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
+		DEFD1AC71B59525F00FBF11B /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
+		DEFD1AC81B59525F00FBF11B /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
+		DEFD1AC91B59525F00FBF11B /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
+		DEFD1ACA1B59525F00FBF11B /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
+		DEFD1ACB1B59525F00FBF11B /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
+		DEFD1ACC1B59525F00FBF11B /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
+		DEFD1ACD1B59525F00FBF11B /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
+		DEFD1ACE1B59525F00FBF11B /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
+		DEFD1ACF1B59525F00FBF11B /* SSZipArchive-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SSZipArchive-Prefix.pch"; sourceTree = "<group>"; };
+		DEFD1AD01B59525F00FBF11B /* SSZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSZipArchive.h; sourceTree = "<group>"; };
+		DEFD1AD11B59525F00FBF11B /* SSZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSZipArchive.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -602,7 +649,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE5448C0198A8D7400221700 /* libSSZipArchive.a in Frameworks */,
 				DE5448C1198A8D7400221700 /* libGEOS.a in Frameworks */,
 				DE7F68EA19896CF10063047F /* libc++.dylib in Frameworks */,
 				DECBE8B119855AC900D475F6 /* libz.dylib in Frameworks */,
@@ -902,6 +948,7 @@
 		DE3EE36B1989DF9800CD5568 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				DEFD1AAD1B59525F00FBF11B /* SSZipArchive */,
 				DEE8799B1A62BFE10047C48F /* CDRTranslucentSideBar */,
 				DEB89C4B199A14B300BBC9D3 /* DirectoryWatcher */,
 				DED374B0198E8A1900B48E7A /* BPForms */,
@@ -1507,7 +1554,6 @@
 			isa = PBXGroup;
 			children = (
 				DE5448C2198A8D9800221700 /* geos_c.h */,
-				DEDD9FD8198A44E400900345 /* SSZipArchive.h */,
 			);
 			name = include;
 			sourceTree = "<group>";
@@ -1531,6 +1577,64 @@
 				DEB89C49199A13B200BBC9D3 /* OTFileChooserViewController.m */,
 			);
 			name = OT;
+			sourceTree = "<group>";
+		};
+		DEFD1AAD1B59525F00FBF11B /* SSZipArchive */ = {
+			isa = PBXGroup;
+			children = (
+				DEFD1AAE1B59525F00FBF11B /* minizip */,
+				DEFD1ACF1B59525F00FBF11B /* SSZipArchive-Prefix.pch */,
+				DEFD1AD01B59525F00FBF11B /* SSZipArchive.h */,
+				DEFD1AD11B59525F00FBF11B /* SSZipArchive.m */,
+			);
+			name = SSZipArchive;
+			path = Dependencies/SSZipArchive;
+			sourceTree = "<group>";
+		};
+		DEFD1AAE1B59525F00FBF11B /* minizip */ = {
+			isa = PBXGroup;
+			children = (
+				DEFD1AAF1B59525F00FBF11B /* aes */,
+				DEFD1AC81B59525F00FBF11B /* crypt.h */,
+				DEFD1AC91B59525F00FBF11B /* ioapi.c */,
+				DEFD1ACA1B59525F00FBF11B /* ioapi.h */,
+				DEFD1ACB1B59525F00FBF11B /* unzip.c */,
+				DEFD1ACC1B59525F00FBF11B /* unzip.h */,
+				DEFD1ACD1B59525F00FBF11B /* zip.c */,
+				DEFD1ACE1B59525F00FBF11B /* zip.h */,
+			);
+			path = minizip;
+			sourceTree = "<group>";
+		};
+		DEFD1AAF1B59525F00FBF11B /* aes */ = {
+			isa = PBXGroup;
+			children = (
+				DEFD1AB01B59525F00FBF11B /* aes.h */,
+				DEFD1AB11B59525F00FBF11B /* aes.txt */,
+				DEFD1AB21B59525F00FBF11B /* aes_modes.c */,
+				DEFD1AB31B59525F00FBF11B /* aes_via_ace.h */,
+				DEFD1AB41B59525F00FBF11B /* aescpp.h */,
+				DEFD1AB51B59525F00FBF11B /* aescrypt.c */,
+				DEFD1AB61B59525F00FBF11B /* aeskey.c */,
+				DEFD1AB71B59525F00FBF11B /* aesopt.h */,
+				DEFD1AB81B59525F00FBF11B /* aestab.c */,
+				DEFD1AB91B59525F00FBF11B /* aestab.h */,
+				DEFD1ABA1B59525F00FBF11B /* brg_endian.h */,
+				DEFD1ABB1B59525F00FBF11B /* brg_types.h */,
+				DEFD1ABC1B59525F00FBF11B /* entropy.c */,
+				DEFD1ABD1B59525F00FBF11B /* entropy.h */,
+				DEFD1ABE1B59525F00FBF11B /* fileenc.c */,
+				DEFD1ABF1B59525F00FBF11B /* fileenc.h */,
+				DEFD1AC01B59525F00FBF11B /* hmac.c */,
+				DEFD1AC11B59525F00FBF11B /* hmac.h */,
+				DEFD1AC21B59525F00FBF11B /* prng.c */,
+				DEFD1AC31B59525F00FBF11B /* prng.h */,
+				DEFD1AC41B59525F00FBF11B /* pwd2key.c */,
+				DEFD1AC51B59525F00FBF11B /* pwd2key.h */,
+				DEFD1AC61B59525F00FBF11B /* sha1.c */,
+				DEFD1AC71B59525F00FBF11B /* sha1.h */,
+			);
+			path = aes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1564,12 +1668,16 @@
 				ORGANIZATIONNAME = "Food and Agriculture Organization of the United Nations (FAO)";
 				TargetAttributes = {
 					DE7952F01976AF9800AAA157 = {
+						DevelopmentTeam = 62RSNGGTGD;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
 							com.apple.DataProtection = {
 								enabled = 1;
+							};
+							com.apple.GameCenter = {
+								enabled = 0;
 							};
 						};
 					};
@@ -1606,6 +1714,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEFD1AD21B59525F00FBF11B /* aes.txt in Resources */,
 				DEA1379B1976B82E00C0C232 /* Localizable.strings in Resources */,
 				DE610B091A051CE100647B8B /* Launch Screen.xib in Resources */,
 				DE3DBE1B1A6B8AEF00807C83 /* Showcase.strings in Resources */,
@@ -1630,6 +1739,7 @@
 				DE5A68F319B0944C00D15B08 /* SaveAttachmentTask.m in Sources */,
 				DE6D1DA119CDEA780096C50B /* GeoShapeVertex.m in Sources */,
 				DEE879A11A62C36B0047C48F /* OTSideBarItems.m in Sources */,
+				DEFD1ADC1B59525F00FBF11B /* sha1.c in Sources */,
 				DEB89CFA199DFEA400BBC9D3 /* IdType.m in Sources */,
 				DEEF29C31A22E4D1002A3AA6 /* FieldConstraint+OT.m in Sources */,
 				DE825C7219D2586800D07FDA /* LandUse+OT.m in Sources */,
@@ -1660,10 +1770,13 @@
 				DE373FB41A71724400360AA2 /* OTWMSTileOverlay.m in Sources */,
 				DED374EF198E8A1900B48E7A /* BPAppearance.m in Sources */,
 				DEC6184A19D1607500A89485 /* Person.m in Sources */,
+				DEFD1AD91B59525F00FBF11B /* hmac.c in Sources */,
 				DED374FC198E8A1900B48E7A /* MASCompositeConstraint.m in Sources */,
 				DE825C6C19D2578300D07FDA /* DocumentType+OT.m in Sources */,
 				DE1F361D198F41B70035F7D7 /* BPFormFloatInputTextFieldCell.m in Sources */,
+				DEFD1ADA1B59525F00FBF11B /* prng.c in Sources */,
 				DE86CE111A2C1F63000DD7AC /* SectionElementPayload.m in Sources */,
+				DEFD1ADE1B59525F00FBF11B /* unzip.c in Sources */,
 				DED374FA198E8A1900B48E7A /* JVFloatLabeledTextView.m in Sources */,
 				DEB89C9E199B6DBB00BBC9D3 /* NSData+OT.m in Sources */,
 				DE94CBDA19B950BD00636189 /* LandUse.m in Sources */,
@@ -1693,6 +1806,7 @@
 				DE5A14E319FD75D6005643DE /* OTShareUpdateViewController.m in Sources */,
 				DED37506198E8A1900B48E7A /* UITextView+BPForms.m in Sources */,
 				DED37503198E8A1900B48E7A /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
+				DEFD1AD81B59525F00FBF11B /* fileenc.c in Sources */,
 				DEB89C36199647AF00BBC9D3 /* OTChallengesUpdateViewController.m in Sources */,
 				DEEF29A51A22D7AA002A3AA6 /* FieldConstraint.m in Sources */,
 				DEC2B2D71A5AACA20060536A /* OTFormButtonCell.m in Sources */,
@@ -1700,6 +1814,7 @@
 				DEEF29E71A2334B8002A3AA6 /* FormPayload.m in Sources */,
 				DEE8798A1A5EE7DF0047C48F /* OTFormTextField.m in Sources */,
 				DE1F361F198F41B70035F7D7 /* BPFormFloatLabelTextField.m in Sources */,
+				DEFD1ADD1B59525F00FBF11B /* ioapi.c in Sources */,
 				DE8134F11A135C31000B7051 /* OTTileOverlay.m in Sources */,
 				DE7F647719895BFF0063047F /* ShapeKitGeometry+Topology.m in Sources */,
 				DEB89CA3199DA5F500BBC9D3 /* OTFormFloatLabelTextField.m in Sources */,
@@ -1711,13 +1826,16 @@
 				DED37500198E8A1900B48E7A /* MASViewAttribute.m in Sources */,
 				DED374F9198E8A1900B48E7A /* JVFloatLabeledTextField.m in Sources */,
 				DEEE28CC1991316E00B69E94 /* OT.m in Sources */,
+				DEFD1ADF1B59525F00FBF11B /* zip.c in Sources */,
 				DE6D1DA019CDEA780096C50B /* GeoShapeOverlayRenderer.m in Sources */,
 				DEB89C1F199616FC00BBC9D3 /* Claim+OT.m in Sources */,
 				DE1F3642198FF4D20035F7D7 /* UIAlertView+Blocks.m in Sources */,
 				DEB89CF1199DFEA300BBC9D3 /* AdditionalInfo.m in Sources */,
+				DEFD1AD71B59525F00FBF11B /* entropy.c in Sources */,
 				DE5CFBFF19ABADD400E253B0 /* NSManagedObject+OT.m in Sources */,
 				DEEF29D21A231DAB002A3AA6 /* FieldConstraintEntity.m in Sources */,
 				DE5A68FE19B8271400D15B08 /* UploadChunkTask.m in Sources */,
+				DEFD1AD61B59525F00FBF11B /* aestab.c in Sources */,
 				DEB89CF7199DFEA400BBC9D3 /* Attachment.m in Sources */,
 				DED37502198E8A1900B48E7A /* NSArray+MASAdditions.m in Sources */,
 				DEEF29BD1A22E481002A3AA6 /* SectionTemplate+OT.m in Sources */,
@@ -1734,6 +1852,7 @@
 				DE1F3628198F97F80035F7D7 /* OTFormInputTextFieldCell.m in Sources */,
 				DE6D1D9E19CDEA780096C50B /* GeoShapeAnnotationView.m in Sources */,
 				DE8134ED1A1336DB000B7051 /* OTSetting.m in Sources */,
+				DEFD1AE01B59525F00FBF11B /* SSZipArchive.m in Sources */,
 				DED374FF198E8A1900B48E7A /* MASLayoutConstraint.m in Sources */,
 				DEB89C2D199646E000BBC9D3 /* OTDocumentsUpdateViewController.m in Sources */,
 				DED37504198E8A1900B48E7A /* View+MASAdditions.m in Sources */,
@@ -1763,15 +1882,19 @@
 				DEEF29C61A22E4E8002A3AA6 /* FieldConstraintOption+OT.m in Sources */,
 				DEEE28F6199223D700B69E94 /* DocumentTypeEntity.m in Sources */,
 				DED374F1198E8A1900B48E7A /* BPFormTextView.m in Sources */,
+				DEFD1ADB1B59525F00FBF11B /* pwd2key.c in Sources */,
+				DEFD1AD51B59525F00FBF11B /* aeskey.c in Sources */,
 				DEEF29C01A22E49B002A3AA6 /* FieldTemplate+OT.m in Sources */,
 				DEEF29C91A22E779002A3AA6 /* FormTemplateEntity.m in Sources */,
 				DEEF29B11A22D7AB002A3AA6 /* FormTemplate.m in Sources */,
 				DEEE28D81991D21000B69E94 /* ClaimEntity.m in Sources */,
 				DEEF29CC1A230A7D002A3AA6 /* SectionTemplateEntity.m in Sources */,
 				DEC6184719D1607400A89485 /* Share.m in Sources */,
+				DEFD1AD41B59525F00FBF11B /* aescrypt.c in Sources */,
 				DED374FE198E8A1900B48E7A /* MASConstraintMaker.m in Sources */,
 				DED374F7198E8A1900B48E7A /* BPFormInputTextFieldCell.m in Sources */,
 				DE0D2CAC198156B200D248B9 /* CommunityServerAPIUtilities.m in Sources */,
+				DEFD1AD31B59525F00FBF11B /* aes_modes.c in Sources */,
 				DE1F362B198F99320035F7D7 /* OTFormViewController.m in Sources */,
 				DE86CE141A2C201B000DD7AC /* FieldPayload.m in Sources */,
 				DE0D2CB31981716100D248B9 /* SVProgressHUD.m in Sources */,
@@ -1888,8 +2011,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				FRAMEWORK_SEARCH_PATHS = "";
@@ -1941,8 +2064,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1979,8 +2102,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Open Tenure/Open Tenure-Prefix.pch";
@@ -1993,7 +2116,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "7814cd18-a523-4be3-996a-e1621815af4e";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2003,8 +2126,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Open Tenure/Open Tenure-Prefix.pch";
@@ -2017,7 +2140,7 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "7814cd18-a523-4be3-996a-e1621815af4e";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
