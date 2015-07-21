@@ -788,6 +788,7 @@
 - (void)fileChooserController:(OTFileChooserViewController *)controller didSelectFile:(NSString *)file uti:(NSString *)uti {
     if ([uti isEqualToString:OTDocTypeArchiveZip]) {
         [self performSelector:@selector(confirmUnzipFileAtPath:) withObject:file afterDelay:0.2];
+        [controller dismissViewControllerAnimated:YES completion:nil];
     }
 //    else if ([uti isEqualToString:OTDocTypeArchiveZip]) {
 //        NSString *title = NSLocalizedString(@"import_claim_notification", nil);
