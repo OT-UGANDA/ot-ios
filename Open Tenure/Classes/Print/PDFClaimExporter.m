@@ -30,6 +30,8 @@
 #import "ShapeKit.h"
 #import "UIImage+OT.h"
 
+#define NSStringFromBOOL(aBOOL)    aBOOL? @"YES" : @"NO"
+
 @interface PDFClaimExporter () {
     NSString *filePath;
     CGSize pageSize;
@@ -146,6 +148,54 @@
             rect.size.width = INNER_WIDTH;
             rect.size.height = 0.5;
             rect = [self addDashLineInRect:rect withColor:[UIColor otGreen]];
+        }
+    }
+    
+    // Dynamic form
+    rect = [self pdfSubTitle:NSLocalizedString(@"dymamic_information", nil) inRect:rect];
+    if (_claim.dynamicForm.sectionPayloadList.count == 0 || _claim.dynamicForm == nil) {
+        rect = [self addText:nil inRect:rect withAttributes:@{NSFontAttributeName:[UIFont italicSystemFontOfSize:DEFAULT_FONT_SIZE], NSParagraphStyleAttributeName:paragraphStyle}];
+        if (rect.size.height == 0.0) rect.size.height = DEFAULT_LINE_SPACING;
+    } else {
+        // Load dynamic forms
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ordering" ascending:YES];
+        NSArray *objects = [_claim.dynamicForm.formTemplate.sectionTemplateList sortedArrayUsingDescriptors:@[sortDescriptor]];
+        for (SectionTemplate *object in objects) {
+            if (object.displayName != nil)
+                rect.origin.x = DEFAULT_LEFT_MARGIN + DEFAULT_TEXT_INDENT;
+            rect.origin.y += rect.size.height + DEFAULT_LINE_SPACING;
+            rect.size.width = INNER_WIDTH;
+            NSString *title = object.displayName;
+            rect = [self addText:title inRect:rect withAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:DEFAULT_FONT_SIZE], NSParagraphStyleAttributeName:paragraphStyle}];
+            rect.origin.x = DEFAULT_LEFT_MARGIN;
+            rect.origin.y += rect.size.height;
+            rect.size.width = INNER_WIDTH;
+            rect.size.height = 0.5;
+            rect = [self addLineInRect:rect withColor:[UIColor otGreen]];
+            
+            rect.origin.x = DEFAULT_LEFT_MARGIN + DEFAULT_TEXT_INDENT;
+            rect.origin.y += rect.size.height;
+            rect.size.width = INNER_WIDTH;
+            
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"sectionTemplate = %@", object];
+            SectionPayload *sectionPayload = [[[_claim.dynamicForm.sectionPayloadList allObjects] filteredArrayUsingPredicate:predicate] firstObject];
+            NSArray *sectionElementPayloadList = [sectionPayload.sectionElementPayloadList allObjects];
+            if ([object.maxOccurrences integerValue] > 1 && sectionElementPayloadList.count > 1) {
+                // Nhiều bản ghi
+                int i = 1;
+                for (SectionElementPayload *sectionElementPayload in sectionElementPayloadList) {
+                    NSString *title = [NSString stringWithFormat:@"No. %tu", i++];
+                    rect.size.width = INNER_WIDTH;
+                    rect = [self addText:title inRect:rect withAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:DEFAULT_FONT_SIZE], NSParagraphStyleAttributeName:paragraphStyle}];
+                    rect = [self pdfSectionElementPayload:sectionElementPayload inRect:rect];
+                    rect.origin.y += rect.size.height + DEFAULT_LINE_SPACING;
+                }
+            } else {
+                // Một bản ghi
+                SectionElementPayload *sectionElementPayload = [sectionElementPayloadList firstObject];
+                rect = [self pdfSectionElementPayload:sectionElementPayload inRect:rect];
+                rect.origin.y += rect.size.height;
+            }
         }
     }
     
@@ -405,6 +455,82 @@
     rect = [self addText:addressText inRect:rect withAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:DEFAULT_FONT_SIZE], NSParagraphStyleAttributeName:paragraphStyle}];
     rect.size.height = DEFAULT_FONT_SIZE * 2.5;
     return rect;
+}
+
+- (CGRect)pdfSectionElementPayload:(SectionElementPayload *)sectionElementPayload inRect:(CGRect)rect {
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"ordering" ascending:YES];
+    NSArray *fieldTemplateList = [[sectionElementPayload.sectionPayload.sectionTemplate.fieldTemplateList allObjects] sortedArrayUsingDescriptors:@[sortDescriptor]];
+    for (int i = 0; i < fieldTemplateList.count; i += 2) {
+        // Col 1 title
+        FieldTemplate *fieldTemplate1 = [fieldTemplateList objectAtIndex:i];
+        NSString *title1 = fieldTemplate1.displayName;
+        rect.origin.x = DEFAULT_LEFT_MARGIN + DEFAULT_TEXT_INDENT;
+        rect.origin.y += rect.size.height + DEFAULT_LINE_SPACING;
+        rect.size.width = INNER_WIDTH / 2.0 - 2.0 * DEFAULT_TEXT_INDENT;
+        rect = [self addText:title1 inRect:rect withAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:DEFAULT_FONT_SIZE], NSParagraphStyleAttributeName:paragraphStyle}];
+
+        if (i < fieldTemplateList.count - 1) {
+            // Col 2 title
+            int i2 = i+1;
+            FieldTemplate *fieldTemplate2 = [fieldTemplateList objectAtIndex:i2];
+            NSString *title2 = fieldTemplate2.displayName;
+            rect.origin.x = DEFAULT_LEFT_MARGIN + INNER_WIDTH / 2.0;
+            rect.size.width = INNER_WIDTH / 2.0 - 2.0 * DEFAULT_TEXT_INDENT;
+            rect = [self addText:title2 inRect:rect withAttributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:DEFAULT_FONT_SIZE], NSParagraphStyleAttributeName:paragraphStyle}];
+        }
+        // Col 1 value
+        NSString *value1 = [self valueForSectionElementPayload:sectionElementPayload fieldTemplate:fieldTemplate1];
+        
+        rect.origin.x = DEFAULT_LEFT_MARGIN + DEFAULT_TEXT_INDENT;
+        rect.origin.y += rect.size.height;
+        rect.size.width = INNER_WIDTH / 2.0 - 2.0 * DEFAULT_TEXT_INDENT;
+        rect = [self addText:value1 inRect:rect withAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:DEFAULT_FONT_SIZE], NSParagraphStyleAttributeName:paragraphStyle}];
+        
+        if (i < fieldTemplateList.count - 1) {
+            // Col 2 value
+            int i2 = i+1;
+            FieldTemplate *fieldTemplate2 = [fieldTemplateList objectAtIndex:i2];
+            NSString *value2 = [self valueForSectionElementPayload:sectionElementPayload fieldTemplate:fieldTemplate2];
+            rect.origin.x = DEFAULT_LEFT_MARGIN + INNER_WIDTH / 2.0;
+            rect.size.width = INNER_WIDTH / 2.0 - 2.0 * DEFAULT_TEXT_INDENT;
+            rect = [self addText:value2 inRect:rect withAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:DEFAULT_FONT_SIZE], NSParagraphStyleAttributeName:paragraphStyle}];
+        }
+    }
+    
+    return rect;
+}
+
+- (NSString *)valueForSectionElementPayload:(SectionElementPayload *)sectionElementPayload fieldTemplate:(FieldTemplate *)fieldTemplate {
+    NSString *value = @"-";
+    FieldPayloadEntity *fieldPayloadEntity = [FieldPayloadEntity new];
+    [fieldPayloadEntity setManagedObjectContext:sectionElementPayload.managedObjectContext];
+    FieldPayload *fieldPayload = [fieldPayloadEntity getObjectBySectionElementPayload:sectionElementPayload andFieldTemplate:fieldTemplate sortKeys:@[@"attributeId"]];
+    
+    FieldConstraint *fieldConstraint;
+    for (FieldConstraint *object in fieldTemplate.fieldConstraintList)
+        if ([object.fieldConstraintType isEqualToString:@"OPTION"]) fieldConstraint = object;
+    
+    if ([fieldTemplate.fieldType isEqualToString:@"BOOL"]) {
+        value = NSStringFromBOOL([fieldPayload.booleanPayload boolValue]);
+    } else if ([fieldTemplate.fieldType isEqualToString:@"DECIMAL"] ||
+               [fieldTemplate.fieldType isEqualToString:@"INTEGER"]) {
+        value = [fieldPayload.bigDecimalPayload stringValue];
+    } else if ([fieldTemplate.fieldType isEqualToString:@"DATE"]) {
+        NSString *title = fieldPayload.stringPayload != nil ? fieldPayload.stringPayload : fieldTemplate.hint;
+        value = title;
+    } else if ([fieldTemplate.fieldType isEqualToString:@"TEXT"] && [fieldConstraint.fieldConstraintType isEqualToString:@"OPTION"]) { // Text picker
+        NSString *title = fieldPayload.stringPayload != nil ? fieldPayload.stringPayload : fieldTemplate.hint;
+        if (fieldPayload.stringPayload != nil && ![fieldPayload.stringPayload isEqualToString:@""]) {
+            FieldConstraintOption *fieldConstraintOption = [FieldConstraintOptionEntity getEntityById:fieldPayload.stringPayload];
+            title = fieldConstraintOption.displayName;
+        }
+        value = title;
+    } else if ([fieldTemplate.fieldType isEqualToString:@"TEXT"]) { // Text thường
+        value = fieldPayload.stringPayload;
+    } else { // Chưa rõ
+        value = fieldPayload.stringPayload;
+    }
+    return value;
 }
 
 #pragma mark - PDFCreator

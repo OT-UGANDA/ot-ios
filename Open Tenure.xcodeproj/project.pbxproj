@@ -38,6 +38,7 @@
 		DE373FBA1A72547B00360AA2 /* FileDownloadInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = DE373FB91A72547B00360AA2 /* FileDownloadInfo.m */; };
 		DE3ACE3A1A88B8CF00FFCA66 /* UIImage+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DE3ACE391A88B8CF00FFCA66 /* UIImage+OT.m */; };
 		DE3DBE1B1A6B8AEF00807C83 /* Showcase.strings in Resources */ = {isa = PBXBuildFile; fileRef = DE3DBE191A6B8AEF00807C83 /* Showcase.strings */; };
+		DE497C8A1B5EAC02001BBF05 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE497C891B5EAC02001BBF05 /* QuickLook.framework */; };
 		DE4AEBB91A8DF5FF00DB6067 /* NSDate+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DE4AEBB81A8DF5FF00DB6067 /* NSDate+OT.m */; };
 		DE5448C1198A8D7400221700 /* libGEOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DE5448BE198A8D7400221700 /* libGEOS.a */; };
 		DE5448C8198A8F4300221700 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE5448C7198A8F4300221700 /* QuartzCore.framework */; };
@@ -107,7 +108,6 @@
 		DEB89C3D19970F4400BBC9D3 /* OTSelectionTabBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C3C19970F4400BBC9D3 /* OTSelectionTabBarViewController.m */; };
 		DEB89C4A199A13B200BBC9D3 /* OTFileChooserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C49199A13B200BBC9D3 /* OTFileChooserViewController.m */; };
 		DEB89C4E199A14B300BBC9D3 /* DirectoryWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C4D199A14B300BBC9D3 /* DirectoryWatcher.m */; };
-		DEB89C50199A2DCD00BBC9D3 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEB89C4F199A2DCD00BBC9D3 /* QuickLook.framework */; };
 		DEB89C6E199A8E6400BBC9D3 /* AttachmentEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C6D199A8E6400BBC9D3 /* AttachmentEntity.m */; };
 		DEB89C8C199B059B00BBC9D3 /* AdditionalInfoEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C8B199B059B00BBC9D3 /* AdditionalInfoEntity.m */; };
 		DEB89C9B199B6D9D00BBC9D3 /* NSString+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C9A199B6D9D00BBC9D3 /* NSString+OT.m */; };
@@ -294,6 +294,7 @@
 		DE373FB91A72547B00360AA2 /* FileDownloadInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileDownloadInfo.m; path = Classes/Network/FileDownloadInfo.m; sourceTree = "<group>"; };
 		DE3ACE381A88B8CF00FFCA66 /* UIImage+OT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+OT.h"; path = "Classes/Category/UIImage+OT.h"; sourceTree = "<group>"; };
 		DE3ACE391A88B8CF00FFCA66 /* UIImage+OT.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+OT.m"; path = "Classes/Category/UIImage+OT.m"; sourceTree = "<group>"; };
+		DE497C891B5EAC02001BBF05 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		DE4AEBB71A8DF5FF00DB6067 /* NSDate+OT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSDate+OT.h"; path = "Classes/Category/NSDate+OT.h"; sourceTree = "<group>"; };
 		DE4AEBB81A8DF5FF00DB6067 /* NSDate+OT.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSDate+OT.m"; path = "Classes/Category/NSDate+OT.m"; sourceTree = "<group>"; };
 		DE5448BD198A8D7400221700 /* libSSZipArchive.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSSZipArchive.a; path = Dependencies/libSSZipArchive.a; sourceTree = "<group>"; };
@@ -427,7 +428,6 @@
 		DEB89C49199A13B200BBC9D3 /* OTFileChooserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTFileChooserViewController.m; path = Classes/Views/OT/OTFileChooserViewController.m; sourceTree = "<group>"; };
 		DEB89C4C199A14B300BBC9D3 /* DirectoryWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryWatcher.h; sourceTree = "<group>"; };
 		DEB89C4D199A14B300BBC9D3 /* DirectoryWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DirectoryWatcher.m; sourceTree = "<group>"; };
-		DEB89C4F199A2DCD00BBC9D3 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		DEB89C6C199A8E6400BBC9D3 /* AttachmentEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AttachmentEntity.h; path = Classes/Model/DataController/AttachmentEntity.h; sourceTree = "<group>"; };
 		DEB89C6D199A8E6400BBC9D3 /* AttachmentEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AttachmentEntity.m; path = Classes/Model/DataController/AttachmentEntity.m; sourceTree = "<group>"; };
 		DEB89C8A199B059B00BBC9D3 /* AdditionalInfoEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AdditionalInfoEntity.h; path = Classes/Model/DataController/AdditionalInfoEntity.h; sourceTree = "<group>"; };
@@ -649,12 +649,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE497C8A1B5EAC02001BBF05 /* QuickLook.framework in Frameworks */,
 				DE5448C1198A8D7400221700 /* libGEOS.a in Frameworks */,
 				DE7F68EA19896CF10063047F /* libc++.dylib in Frameworks */,
 				DECBE8B119855AC900D475F6 /* libz.dylib in Frameworks */,
 				DE62D1C01A6599D000582B0C /* CoreText.framework in Frameworks */,
 				DE20FE6A19D40DD5008504E8 /* CoreLocation.framework in Frameworks */,
-				DEB89C50199A2DCD00BBC9D3 /* QuickLook.framework in Frameworks */,
 				DEC58328198E36F100C21824 /* CoreData.framework in Frameworks */,
 				DE5448C8198A8F4300221700 /* QuartzCore.framework in Frameworks */,
 				DE7953341976B5B600AAA157 /* CFNetwork.framework in Frameworks */,
@@ -1070,13 +1070,13 @@
 		DE7952F31976AF9800AAA157 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DE497C891B5EAC02001BBF05 /* QuickLook.framework */,
 				DE5448BD198A8D7400221700 /* libSSZipArchive.a */,
 				DE5448BE198A8D7400221700 /* libGEOS.a */,
 				DE7F68E919896CF10063047F /* libc++.dylib */,
 				DECBE8B019855AC900D475F6 /* libz.dylib */,
 				DE62D1BF1A6599D000582B0C /* CoreText.framework */,
 				DE20FE6919D40DD5008504E8 /* CoreLocation.framework */,
-				DEB89C4F199A2DCD00BBC9D3 /* QuickLook.framework */,
 				DEC58327198E36F100C21824 /* CoreData.framework */,
 				DE5448C7198A8F4300221700 /* QuartzCore.framework */,
 				DE7953331976B5B600AAA157 /* CFNetwork.framework */,
