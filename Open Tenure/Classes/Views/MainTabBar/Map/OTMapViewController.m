@@ -37,6 +37,7 @@
 #import "GeoShapeCollection.h"
 #import "GeoShapeOverlayRenderer.h"
 #import "GeoShapeAnnotationView.h"
+#import "OTPolylineRenderer.h"
 
 #import "OTAnnotationView1.h"
 
@@ -60,7 +61,9 @@
     OTShowcase *showcase;
     BOOL multipleShowcase;
     NSInteger currentShowcaseIndex;
-    
+    BOOL measuring;
+    id selectedAnnotation;
+    MKPolyline *lineSegment;
     MKPolygon *communityArea;
 }
 
@@ -1424,6 +1427,11 @@
     [self confirmAddingMarkerFromAnnotation:mylocation];
 }
 
+- (IBAction)measureAction:(id)sender {
+    measuring = YES;
+    [self closeDashboard];
+}
+
 - (IBAction)showMenu:(id)sender {
     if ([self.sideBarMenu hasShown])
         [self.sideBarMenu dismiss];
@@ -1610,12 +1618,17 @@
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id<MKOverlay>)overlay {
     if ([overlay isKindOfClass:[MKPolyline class]]) {
-        MKPolylineRenderer *polylineView = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
-        polylineView.strokeColor = [UIColor otDarkBlue];
-        polylineView.lineWidth = 2.0;
-        
-        return polylineView;
-        
+        if ([overlay isEqual:lineSegment]) {
+            OTPolylineRenderer *polylineRenderer = [[OTPolylineRenderer alloc] initWithPolyline:overlay];
+            polylineRenderer.strokeColor = [UIColor blueColor];
+            polylineRenderer.lineWidth = 1;
+            return polylineRenderer;
+        } else {
+            MKPolylineRenderer *polylineView = [[MKPolylineRenderer alloc] initWithOverlay:overlay];
+            polylineView.strokeColor = [UIColor otDarkBlue];
+            polylineView.lineWidth = 2.0;
+            return polylineView;
+        }
     } else if ([overlay isKindOfClass:[MKPolygon class]]) {
         MKPolygonRenderer *polygonView = [[MKPolygonRenderer alloc] initWithOverlay:overlay];
         polygonView.strokeColor = [UIColor otEarth];
@@ -1739,7 +1752,27 @@
             [self.mapView setCenterCoordinate:annotation.coordinate animated:YES];
         }
     } else if ([view isKindOfClass:[GeoShapeAnnotationView class]]) {
-        if (!_dashboardActionShowing) {
+        if (measuring && !_dashboardActionShowing) {
+            if (_mapView.selectedAnnotations.count > 0) {
+                if (selectedAnnotation == nil) {
+                    selectedAnnotation = [view annotation];
+                } else {
+                    CLLocationCoordinate2D coord1 = [selectedAnnotation coordinate];
+                    CLLocationCoordinate2D coord2 = [[view annotation] coordinate];
+                    CLLocationDistance d1 = MKMetersBetweenMapPoints(MKMapPointForCoordinate(coord1), MKMapPointForCoordinate(coord2));
+                    
+                    CLLocationCoordinate2D *coords = malloc(sizeof(CLLocationCoordinate2D) * 2);
+                    coords[0] = coord1;
+                    coords[1] = coord2;
+                    [mapView removeOverlay:lineSegment];
+                    lineSegment = [MKPolyline polylineWithCoordinates:coords count:2];
+                    [lineSegment setAccessibilityLabel:[@(d1) stringValue]];
+                    free(coords);
+                    [mapView addOverlay:lineSegment level:MKOverlayLevelAboveLabels];
+                    [mapView deselectAnnotation:view.annotation animated:NO];
+                }
+            }
+        } else if (!_dashboardActionShowing) {
             _dashboardMenuShowing = (_claim.getViewType == OTViewTypeView) ? NO : YES;
             _selectedMarkerView = view; // Dùng để xác định frame khi hiện bảng điều khiển marker
             NSInteger tag = 0;
@@ -1759,7 +1792,6 @@
 
 - (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view {
     // Remove marker control
-    
 }
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view didChangeDragState:(MKAnnotationViewDragState)newState fromOldState:(MKAnnotationViewDragState)oldState {
@@ -1849,6 +1881,18 @@
             [self setDragging:YES];
         }
     }
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (measuring) { // Bỏ chọn để chọn lại điểm đầu
+        UITouch *touch = [[event allTouches] anyObject];
+        if (![touch.view isKindOfClass:[GeoShapeAnnotationView class]]) {
+            selectedAnnotation = nil;
+            [_mapView removeOverlay:lineSegment];
+            measuring = NO;
+        }
+    }
+    [super touchesEnded:touches withEvent:event];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {

@@ -952,3 +952,32 @@
 "download_incomplete"="download incomplete";
 "download_failed"="download faile";
 "downloading"="downloading";
+
+/* iOS new string */
+"generated_on"="generated on:";
+"title_claimant"="Claimant";
+"title_claim_parcel"="Parcel";
+"title_claim_document_reference"="Reference #";
+"title_claim_document_date"="Document date";
+"title_claim_document_description"="Description";
+"title_claim_area_label"="Area";
+"title_claim_type_label"="Claim type";
+"title_claim_occupied_since"="Occupied since";
+"title_claim_north_adjacency_label"="North adjacency";
+"title_claim_south_adjacency_label"="South adjacency";
+"title_claim_east_label"="East adjacency";
+"title_claim_west_label"="West adjacency";
+
+"delete_this_document_notification"="Delete this document?";
+"action_change_claimant"="Change claimant";
+"action_modify_claimant"="Modify claimant";
+"extract_file_notification"="Are you sure you want to extract %@ file?";
+"extracting_file"="Extracting...";
+"extrac_error"="Extract error!";
+"folder_is_empty_notification"="Folder is empty, you can import from email attachments or via iTunes File Sharing on iPhone, iPad";
+"back_to_folder"="Back to folder";
+"resources_management"="Resources management";
+"documents"="Documents";
+"icloud_documents"="iCloud Drive";
+"local_data"="Local Data";
+"dymamic_information"="Dynamic information";

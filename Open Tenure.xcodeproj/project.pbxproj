@@ -119,6 +119,7 @@
 		DEB89CF7199DFEA400BBC9D3 /* Attachment.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89CF6199DFEA400BBC9D3 /* Attachment.m */; };
 		DEB89CFA199DFEA400BBC9D3 /* IdType.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89CF9199DFEA400BBC9D3 /* IdType.m */; };
 		DEB89D03199DFEA600BBC9D3 /* DocumentType.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89D02199DFEA600BBC9D3 /* DocumentType.m */; };
+		DEBF8ECF1B6251B20046DEB0 /* OTPolylineRenderer.m in Sources */ = {isa = PBXBuildFile; fileRef = DEBF8ECE1B6251B20046DEB0 /* OTPolylineRenderer.m */; };
 		DEC18F99198BF5FA00CCEF37 /* ViewPagerController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC18F98198BF5FA00CCEF37 /* ViewPagerController.m */; };
 		DEC18F9D198BF84000CCEF37 /* OTMainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC18F9C198BF84000CCEF37 /* OTMainTabBarController.m */; };
 		DEC256F01A05669F0005D245 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC256EF1A05669F0005D245 /* Location.m */; };
@@ -450,6 +451,8 @@
 		DEB89CF9199DFEA400BBC9D3 /* IdType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IdType.m; path = Classes/Model/IdType.m; sourceTree = "<group>"; };
 		DEB89D01199DFEA600BBC9D3 /* DocumentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DocumentType.h; path = Classes/Model/DocumentType.h; sourceTree = "<group>"; };
 		DEB89D02199DFEA600BBC9D3 /* DocumentType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DocumentType.m; path = Classes/Model/DocumentType.m; sourceTree = "<group>"; };
+		DEBF8ECD1B6251B20046DEB0 /* OTPolylineRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTPolylineRenderer.h; path = Classes/Views/MainTabBar/Map/OTPolylineRenderer.h; sourceTree = "<group>"; };
+		DEBF8ECE1B6251B20046DEB0 /* OTPolylineRenderer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTPolylineRenderer.m; path = Classes/Views/MainTabBar/Map/OTPolylineRenderer.m; sourceTree = "<group>"; };
 		DEC18F97198BF5FA00CCEF37 /* ViewPagerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewPagerController.h; path = Dependencies/ICViewPager/ViewPagerController.h; sourceTree = "<group>"; };
 		DEC18F98198BF5FA00CCEF37 /* ViewPagerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ViewPagerController.m; path = Dependencies/ICViewPager/ViewPagerController.m; sourceTree = "<group>"; };
 		DEC18F9B198BF84000CCEF37 /* OTMainTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTMainTabBarController.h; path = Classes/Views/MainTabBar/OTMainTabBarController.h; sourceTree = "<group>"; };
@@ -976,6 +979,8 @@
 			children = (
 				DE5448D9198AA62F00221700 /* OTMapViewController.h */,
 				DE5448DA198AA62F00221700 /* OTMapViewController.m */,
+				DEBF8ECD1B6251B20046DEB0 /* OTPolylineRenderer.h */,
+				DEBF8ECE1B6251B20046DEB0 /* OTPolylineRenderer.m */,
 			);
 			name = Map;
 			sourceTree = "<group>";
@@ -1876,6 +1881,7 @@
 				DEED932E1A7E91B3007091B1 /* PDFClaimExporter.m in Sources */,
 				DE56148A1A10BA2F0075ABD5 /* OTSettingViewController.m in Sources */,
 				DEB89C4E199A14B300BBC9D3 /* DirectoryWatcher.m in Sources */,
+				DEBF8ECF1B6251B20046DEB0 /* OTPolylineRenderer.m in Sources */,
 				DE6D1D9D19CDEA780096C50B /* GeoShape.m in Sources */,
 				DEEF29F01A2336CD002A3AA6 /* SectionPayload+OT.m in Sources */,
 				DE1F360F198EB95E0035F7D7 /* Person+OT.m in Sources */,

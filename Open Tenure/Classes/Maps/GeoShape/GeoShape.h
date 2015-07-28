@@ -35,6 +35,7 @@ MK_EXTERN long at(long i, long n);
  */
 MK_EXTERN bool isPointInsideAB(MKMapPoint A, MKMapPoint B, MKMapPoint P);
 MK_EXTERN MKMapPoint MKMapPointPerpendicular(MKMapPoint point, MKMapPoint A, MKMapPoint B);
+MK_EXTERN CLLocationDistance CLLocationDistanceGlobe(MKMapPoint p1, MKMapPoint p2);
 
 @interface GeoShape : MKShape {
     NSString *_title;

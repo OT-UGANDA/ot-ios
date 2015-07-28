@@ -56,6 +56,7 @@
 @property (nonatomic) UIBarButtonItem *menu;
 @property (nonatomic) UIBarButtonItem *addFormSection;
 @property (nonatomic) UIBarButtonItem *zoomToCommunityArea;
+@property (nonatomic) UIBarButtonItem *measure;
 
 @property (strong, nonatomic) Claim *claim;
 
@@ -332,6 +333,7 @@
 
     _zoomToCommunityArea = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu_community_area"] style:UIBarButtonItemStylePlain target:_views[1] action:@selector(zoomToCommunityArea:)];
 
+    _measure = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ruler_blue"] style:UIBarButtonItemStylePlain target:_views[1] action:@selector(measureAction:)];
 }
 
 - (void)setBarButtonItemsForTabBarIndex:(NSInteger)index {
@@ -387,16 +389,16 @@
             
             if ([_claim isSaved]) { // View claim
                 if (_claim.getViewType == OTViewTypeEdit) { // Local claim
-                    self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _mapSnapshot, _fixedSpace, _zoomToCommunityArea, _fixedSpace, _myLocation, _fixedSpace, _addMarker, _flexibleSpace];
-                    target = @[[OT findBarButtonItem:_addMarker fromNavBar:navBar],
+                    self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _mapSnapshot, _fixedSpace, _zoomToCommunityArea, _fixedSpace, _myLocation, _fixedSpace, _addMarker, _fixedSpace, _measure, _flexibleSpace];
+                    target = @[[OT findBarButtonItem:_measure fromNavBar:navBar],
                                [OT findBarButtonItem:_menu fromNavBar:navBar]];
                 } else { // Readonly claim
-                    self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _zoomToCommunityArea, _fixedSpace, _myLocation, _flexibleSpace];
-                    target = @[_myLocation.customView, [OT findBarButtonItem:_menu fromNavBar:navBar]];
+                    self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _done, _fixedSpace, _zoomToCommunityArea, _fixedSpace, _myLocation, _fixedSpace, _measure, _flexibleSpace];
+                    target = @[[OT findBarButtonItem:_measure fromNavBar:navBar], [OT findBarButtonItem:_menu fromNavBar:navBar]];
                 }
             } else { // Add claim
-                self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _fixedSpace, _mapSnapshot, _fixedSpace, _myLocation, _fixedSpace, _addMarker, _flexibleSpace];
-                target = @[[OT findBarButtonItem:_addMarker fromNavBar:navBar],
+                self.navigationItem.rightBarButtonItems = @[_menu, _fixedSpace, _fixedSpace, _mapSnapshot, _fixedSpace, _myLocation, _fixedSpace, _addMarker, _fixedSpace, _measure, _flexibleSpace];
+                target = @[[OT findBarButtonItem:_measure fromNavBar:navBar],
                            [OT findBarButtonItem:_menu fromNavBar:navBar]];
             }
             

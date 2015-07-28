@@ -51,5 +51,6 @@
 - (IBAction)downloadMapTiles:(id)sender;
 - (IBAction)defaultShowcase:(id)sender;
 - (void)processClaim:(Claim *)claim;
+- (IBAction)measureAction:(id)sender;
 
 @end

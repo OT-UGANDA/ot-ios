@@ -178,18 +178,19 @@ NS_INLINE bool isCross(MKMapPoint A, MKMapPoint B, MKMapPoint C, MKMapPoint D, b
 /*!
  Chiều dài cung tròn của 2 điểm theo bề mặt trái đất
  */
-NS_INLINE CLLocationDistance CLLocationDistanceGlobe(MKMapPoint p1, MKMapPoint p2) {
-    static const double EARTH_RADIUS_IN_METERS = 6372797.560856;
-    CLLocationCoordinate2D cd1 = MKCoordinateForMapPoint(p1);
-    CLLocationCoordinate2D cd2 = MKCoordinateForMapPoint(p2);
-    double latitudeArc  = (cd1.latitude - cd2.latitude) * M_PI / 180.0;
-    double longitudeArc = (cd1.longitude - cd2.longitude) * M_PI / 180.0;
-    double latitudeH = sin(latitudeArc * 0.5);
-    latitudeH *= latitudeH;
-    double lontitudeH = sin(longitudeArc * 0.5);
-    lontitudeH *= lontitudeH;
-    double tmp = 1.0;//cos(cd1.latitude*DEG_TO_RAD) * cos(cd2.latitude*DEG_TO_RAD);
-    return EARTH_RADIUS_IN_METERS * 2.0 * asin(sqrt(latitudeH + tmp*lontitudeH));
+CLLocationDistance CLLocationDistanceGlobe(MKMapPoint p1, MKMapPoint p2) {
+    return MKMetersBetweenMapPoints(p1, p2);
+//    static const double EARTH_RADIUS_IN_METERS = 6372797.560856;
+//    CLLocationCoordinate2D cd1 = MKCoordinateForMapPoint(p1);
+//    CLLocationCoordinate2D cd2 = MKCoordinateForMapPoint(p2);
+//    double latitudeArc  = (cd1.latitude - cd2.latitude) * M_PI / 180.0;
+//    double longitudeArc = (cd1.longitude - cd2.longitude) * M_PI / 180.0;
+//    double latitudeH = sin(latitudeArc * 0.5);
+//    latitudeH *= latitudeH;
+//    double lontitudeH = sin(longitudeArc * 0.5);
+//    lontitudeH *= lontitudeH;
+//    double tmp = 1.0;//cos(cd1.latitude*DEG_TO_RAD) * cos(cd2.latitude*DEG_TO_RAD);
+//    return EARTH_RADIUS_IN_METERS * 2.0 * asin(sqrt(latitudeH + tmp*lontitudeH));
 }
 
 /*!
