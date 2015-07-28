@@ -1770,6 +1770,7 @@
                     free(coords);
                     [mapView addOverlay:lineSegment level:MKOverlayLevelAboveLabels];
                     [mapView deselectAnnotation:view.annotation animated:NO];
+                    selectedAnnotation = [view annotation];
                 }
             }
         } else if (!_dashboardActionShowing) {
