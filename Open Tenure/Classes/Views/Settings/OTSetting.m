@@ -65,7 +65,7 @@
 
 + (NSString *)getFormURL {
     NSString *url = [[NSUserDefaults standardUserDefaults] stringForKey:@"FormURL"];
-    //if (url == nil) url = @"https://ot.flossola.org";
+    if (url == nil) url = @"https://ot.flossola.org";
     return url;
 }
 

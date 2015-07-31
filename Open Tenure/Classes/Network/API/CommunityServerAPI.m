@@ -364,7 +364,7 @@ static NSString *destinationPath;
 
 + (void)getDefaultFormTemplate:(CompletionHandler)completionHandler {
     
-    NSString *urlString = [NSString stringWithFormat:HTTPS_GETDEFAULTFORMTEMPLATE, [OTSetting getCommunityServerURL], [OT getLocalization]];
+    NSString *urlString = [NSString stringWithFormat:HTTPS_GETDEFAULTFORMTEMPLATE, [OTSetting getFormURL], [OT getLocalization]];
     NSURL *url = [NSURL URLWithString:urlString];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
