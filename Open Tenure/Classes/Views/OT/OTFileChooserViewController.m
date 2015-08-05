@@ -251,6 +251,8 @@
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    BOOL attachDoc = [NSStringFromClass([self.delegate class]) isEqualToString:@"OTDocumentsUpdateViewController"];
+    BOOL importClaim = [NSStringFromClass([self.delegate class]) isEqualToString:@"OTClaimsViewController"];
     if ([tableView numberOfSections] == 2 & indexPath.section == 0) {
         NSString *previousPath = [self.docWatcher.currentPath stringByDeletingLastPathComponent];
         self.docWatcher = [DirectoryWatcher watchFolderWithPath:previousPath delegate:self];
@@ -267,7 +269,10 @@
         if (isDirectory) {
             self.docWatcher = [DirectoryWatcher watchFolderWithPath:[fileURL path] delegate:self];;
             [self directoryDidChange:self.docWatcher];
-        } else if ([self.docInteractionController.UTI isEqualToString:OTDocTypeArchiveZip]) {
+        } else if ([self.docInteractionController.UTI isEqualToString:OTDocTypeArchiveZip] && importClaim) {
+            [_delegate fileChooserController:self didSelectFile:[fileURL path] uti:self.docInteractionController.UTI];
+            [self.navigationController popViewControllerAnimated:YES];
+        } else if (attachDoc) {
             [_delegate fileChooserController:self didSelectFile:[fileURL path] uti:self.docInteractionController.UTI];
             [self.navigationController popViewControllerAnimated:YES];
         } else {
