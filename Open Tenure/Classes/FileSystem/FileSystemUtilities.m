@@ -221,7 +221,7 @@
 
 + (NSString *)getCompressClaim:(NSString *)claimId {
     NSString *openTenurePath = [self getOpentenureFolder];
-    NSString *compressedClaim = [@"Claim_" stringByAppendingString:claimId];
+    NSString *compressedClaim = [@"claim_" stringByAppendingString:claimId];
     NSString *compressedClaimPath = [openTenurePath stringByAppendingPathComponent:compressedClaim];
     NSString *path = [compressedClaimPath stringByAppendingPathExtension:@"zip"];
     return path;

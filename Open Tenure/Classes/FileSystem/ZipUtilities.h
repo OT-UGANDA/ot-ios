@@ -38,5 +38,6 @@
  **/
 
 + (BOOL)addFilesWithAESEncryption:(NSString *)password claimId:(NSString *)claimId;
++ (BOOL)addFilesWithAESEncryption:(NSString *)password zipFile:(NSString *)zipFile contentsOfDirectory:(NSString *)contents;
 
 @end

@@ -405,7 +405,31 @@
             // Tạo
             BOOL success = NO;
             if ([self createJsonFileForClaim:claim]) {
-                success = [ZipUtilities addFilesWithAESEncryption:password claimId:claim.claimId];
+                // Tạo thư mục Export
+                NSString *exportPath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:@"Export"];
+                [FileSystemUtilities createFolder:exportPath];
+                
+                // Tạo thư mục Claim_ClaimName_Date
+                NSString *zipFileName = [NSString stringWithFormat:@"Claim_%@_%@", claim.claimName, [[OT dateFormatter] stringFromDate:[NSDate date]]];
+                NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:zipFileName];
+                
+                [FileSystemUtilities createFolder:tmpPath];
+                [FileSystemUtilities createFolder:[tmpPath stringByAppendingPathComponent:[NSString stringWithFormat:@"claim_%@", claim.claimId]]];
+                
+                // Copy file qua để thêm attachments: claimant photo,...
+                [FileSystemUtilities copyFileFromSource:[NSURL fileURLWithPath:[[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimFolder:claim.claimId]]] toDestination:[NSURL fileURLWithPath:[tmpPath stringByAppendingPathComponent:[NSString stringWithFormat:@"claim_%@", claim.claimId]]]];
+                
+                // Thêm claimant photo
+                NSString *tmpAttachments = [tmpPath stringByAppendingPathComponent:[NSString stringWithFormat:@"claim_%@", claim.claimId]];
+                tmpAttachments = [tmpAttachments stringByAppendingPathComponent:@"attachments"];
+                
+                NSString *claimants = [FileSystemUtilities getClaimantFolder:claim.claimId];
+                claimants = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:claimants];
+                [FileSystemUtilities copyFileFromSource:[NSURL fileURLWithPath:claimants] toDestination:[NSURL fileURLWithPath:tmpAttachments]];
+
+                NSString *zipFilePath = [exportPath stringByAppendingPathComponent:zipFileName];
+                ALog(@"%@\n%@", zipFilePath, tmpPath);
+                success = [ZipUtilities addFilesWithAESEncryption:password zipFile:[zipFilePath stringByAppendingPathExtension:@"zip"] contentsOfDirectory:tmpPath];
             }
             if (success)
                 [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:NSLocalizedString(@"message_claim_exported", nil), [claim.claimName UTF8String]]];
