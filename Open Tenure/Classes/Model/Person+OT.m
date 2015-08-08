@@ -133,4 +133,11 @@
     return person;
 }
 
+- (NSString *)photoPathForClaimId:(NSString *)claimId {
+    NSString *imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:claimId]];
+    NSString *imageFile = [self.personId stringByAppendingPathExtension:@"jpg"];
+    imagePath = [imagePath stringByAppendingPathComponent:imageFile];
+    return imagePath;
+}
+
 @end

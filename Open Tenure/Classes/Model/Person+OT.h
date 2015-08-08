@@ -48,5 +48,6 @@
 - (void)importFromJSON:(NSDictionary *)keyedValues;
 
 - (Person *)clone;
+- (NSString *)photoPathForClaimId:(NSString *)claimId;
 
 @end

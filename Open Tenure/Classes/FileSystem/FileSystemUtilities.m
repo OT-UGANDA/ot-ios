@@ -310,6 +310,7 @@
     // For the purposes of testing, remove any esisting file at the destination.
     [fileManager removeItemAtURL:destination error:NULL];
     BOOL success = [fileManager copyItemAtURL:source toURL:destination error:&errorCopy];
+    
     return success;
 }
 

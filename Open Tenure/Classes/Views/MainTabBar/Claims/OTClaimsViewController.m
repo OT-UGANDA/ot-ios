@@ -419,14 +419,21 @@
                 // Copy file qua để thêm attachments: claimant photo,...
                 [FileSystemUtilities copyFileFromSource:[NSURL fileURLWithPath:[[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimFolder:claim.claimId]]] toDestination:[NSURL fileURLWithPath:[tmpPath stringByAppendingPathComponent:[NSString stringWithFormat:@"claim_%@", claim.claimId]]]];
                 
-                // Thêm claimant photo
                 NSString *tmpAttachments = [tmpPath stringByAppendingPathComponent:[NSString stringWithFormat:@"claim_%@", claim.claimId]];
                 tmpAttachments = [tmpAttachments stringByAppendingPathComponent:@"attachments"];
+                // Thêm owners photo
+                for (Share *share in claim.shares) {
+                    for (Person *person in share.owners) {
+                        NSString *photoPath = [person photoPathForClaimId:claim.claimId];
+                        NSString *photoFileName = [photoPath lastPathComponent];
+                        [FileSystemUtilities copyFileFromSource:[NSURL fileURLWithPath:photoPath] toDestination:[NSURL fileURLWithPath:[tmpAttachments stringByAppendingPathComponent:photoFileName]]];
+                    }
+                }
+                // Thêm person photo
+                NSString *photoPath = [claim.person photoPathForClaimId:claim.claimId];
+                NSString *photoFileName = [photoPath lastPathComponent];
+                [FileSystemUtilities copyFileFromSource:[NSURL fileURLWithPath:photoPath] toDestination:[NSURL fileURLWithPath:[tmpAttachments stringByAppendingPathComponent:photoFileName]]];
                 
-                NSString *claimants = [FileSystemUtilities getClaimantFolder:claim.claimId];
-                claimants = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:claimants];
-                [FileSystemUtilities copyFileFromSource:[NSURL fileURLWithPath:claimants] toDestination:[NSURL fileURLWithPath:tmpAttachments]];
-
                 NSString *zipFilePath = [exportPath stringByAppendingPathComponent:zipFileName];
                 ALog(@"%@\n%@", zipFilePath, tmpPath);
                 success = [ZipUtilities addFilesWithAESEncryption:password zipFile:[zipFilePath stringByAppendingPathExtension:@"zip"] contentsOfDirectory:tmpPath];
@@ -883,6 +890,12 @@
 }
 
 - (void)zipArchiveDidUnzipArchiveAtPath:(NSString *)path zipInfo:(unz_global_info)zipInfo unzippedPath:(NSString *)unzippedPath {
+#warning chưa import được cấu trúc mới
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSArray *dirContents = [fm contentsOfDirectoryAtPath:unzippedPath error:nil];
+    NSPredicate *fltr = [NSPredicate predicateWithFormat:@"self LIKE 'claim_%'"];
+    NSArray *json = [dirContents filteredArrayUsingPredicate:fltr];
+    ALog(@"%@ \n %@",dirContents, json);
     NSString *claimJsonFile = [unzippedPath stringByAppendingPathComponent:@"claim.json"];
     BOOL existingClaim = [[NSFileManager defaultManager] fileExistsAtPath:claimJsonFile];
     if (existingClaim) {
