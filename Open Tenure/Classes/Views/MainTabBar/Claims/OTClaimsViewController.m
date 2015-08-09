@@ -890,12 +890,15 @@
 }
 
 - (void)zipArchiveDidUnzipArchiveAtPath:(NSString *)path zipInfo:(unz_global_info)zipInfo unzippedPath:(NSString *)unzippedPath {
-#warning chưa import được cấu trúc mới
     NSFileManager *fm = [NSFileManager defaultManager];
     NSArray *dirContents = [fm contentsOfDirectoryAtPath:unzippedPath error:nil];
-    NSPredicate *fltr = [NSPredicate predicateWithFormat:@"self LIKE 'claim_%'"];
+    NSPredicate *fltr = [NSPredicate predicateWithFormat:@"self CONTAINS[cd] 'claim_'"];
     NSArray *json = [dirContents filteredArrayUsingPredicate:fltr];
-    ALog(@"%@ \n %@",dirContents, json);
+    if (json.count != 1) {
+        // Message
+        return;
+    }
+    unzippedPath = [unzippedPath stringByAppendingPathComponent:json.firstObject];
     NSString *claimJsonFile = [unzippedPath stringByAppendingPathComponent:@"claim.json"];
     BOOL existingClaim = [[NSFileManager defaultManager] fileExistsAtPath:claimJsonFile];
     if (existingClaim) {
