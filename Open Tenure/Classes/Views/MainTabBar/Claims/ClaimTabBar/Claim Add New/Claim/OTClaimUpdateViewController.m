@@ -490,18 +490,16 @@ typedef NS_ENUM(NSInteger, OTCell) {
     share.claim = _claim;
     
     // Copy claimant photo
-    NSString *imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:_claim.claimId]];
-    NSString *imageFile = [_claim.person.personId stringByAppendingPathExtension:@"jpg"];
-    imageFile = [imagePath stringByAppendingPathComponent:imageFile];
+    NSString *claimAttachmentsFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getAttachmentFolder:_claim.claimId]];
+    NSString *fileName = [_claim.person.personId stringByAppendingPathExtension:@"jpg"];
+    NSString *fullPath = [claimAttachmentsFolder stringByAppendingPathComponent:fileName];
     
-    UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
+    UIImage *personPicture = [UIImage imageWithContentsOfFile:fullPath];
     if (personPicture != nil) {
         NSError *error;
-        imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:_claim.claimId]];
-        NSString *newImageFile = [newPerson.personId stringByAppendingPathExtension:@"jpg"];
-        newImageFile = [imagePath stringByAppendingPathComponent:newImageFile];
-        if (![[NSFileManager defaultManager] copyItemAtPath:imageFile toPath:newImageFile error:&error]) {
-            ALog(@"Copy %@ to %@ error: %@", imageFile, newImageFile, error.localizedDescription);
+        NSString *newFullPath = [claimAttachmentsFolder stringByAppendingPathComponent:[newPerson.personId stringByAppendingPathExtension:@"jpg"]];
+        if (![[NSFileManager defaultManager] copyItemAtPath:fullPath toPath:newFullPath error:&error]) {
+            ALog(@"Copy %@ to %@ error: %@", fullPath, newFullPath, error.localizedDescription);
         }
     }
 }
@@ -633,7 +631,7 @@ static bool allCellChecked = false;
 - (IBAction)export:(id)sender {
     [self.sideBarMenu dismiss];
     [FileSystemUtilities createClaimFolder:_claim.claimId];
-    [FileSystemUtilities createClaimantFolder:_claim.claimId];
+    //[FileSystemUtilities createClaimantFolder:_claim.claimId];
     
     NSString *title = NSLocalizedString(@"title_export", nil);
     NSString *message = nil;

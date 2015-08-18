@@ -96,7 +96,6 @@
     [sectionPayloadEntity setManagedObjectContext:self.managedObjectContext];
     for (NSDictionary *object in objects) {
         SectionPayload *entityObject = [sectionPayloadEntity createObject];
-        ALog(@"SectionPayload %@", object);
         [entityObject importFromJSON:object];
         entityObject.formPayload = self;
         

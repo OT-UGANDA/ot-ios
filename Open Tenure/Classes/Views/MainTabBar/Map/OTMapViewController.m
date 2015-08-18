@@ -1184,8 +1184,12 @@
 
 - (void)databaseDidSave:(NSNotification *)notification {
     for (Person *person in _handleDeletedPersons) {
-        BOOL success = [FileSystemUtilities deleteClaimant:person.personId];
-        ALog(@"Delete claimamt folder: %d", success);
+        NSString *fileName = [person.personId stringByAppendingPathExtension:@"jpg"];
+        NSString *fullPath = [[person getFullPath] stringByAppendingPathComponent:fileName];
+        if ([person getFullPath]) {
+            BOOL success = [FileSystemUtilities deleteFile:fullPath];
+            ALog(@"Delete claimamt folder: %d", success);
+        }
     }
     for (Claim *claim in _handleDeletedClaims) {
         // Xóa annotation

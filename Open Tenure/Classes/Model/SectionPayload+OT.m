@@ -99,7 +99,6 @@
     SectionElementPayloadEntity *sectionElementPayloadEntity = [SectionElementPayloadEntity new];
     [sectionElementPayloadEntity setManagedObjectContext:self.managedObjectContext];
     for (NSDictionary *object in objects) {
-        ALog(@"SectionPayload %@", object);
         SectionElementPayload *entityObject = [sectionElementPayloadEntity createObject];
         [entityObject importFromJSON:object];
         entityObject.sectionPayload = self;

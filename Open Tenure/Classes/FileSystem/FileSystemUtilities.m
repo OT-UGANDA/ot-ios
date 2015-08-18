@@ -81,12 +81,6 @@
     return [self createFolder:path];
 }
 
-+ (BOOL)createClaimantsFolder {
-    NSString *docDir = [[self applicationDocumentsDirectory] path];
-    NSString *path = [docDir stringByAppendingPathComponent:_CLAIMANTS_FOLDER];
-    return [self createFolder:path];
-}
-
 + (BOOL)createClaimFolder:(NSString *)claimId {
     NSString *claimsPath = [self getClaimsFolder];
     NSString *claimFolder = [_CLAIM_PREFIX stringByAppendingString:claimId];
@@ -99,34 +93,10 @@
     return NO;
 }
 
-+ (BOOL)createClaimantFolder:(NSString *)personId {
-    NSString *claimantsPath = [self getClaimantsFolder];
-    NSString *claimantFolder = [_CLAIMANT_PREFIX stringByAppendingString:personId];
-    NSString *path = [claimantsPath stringByAppendingPathComponent:claimantFolder];
-    path = [[[self applicationDocumentsDirectory] path] stringByAppendingPathComponent:path];
-    return [self createFolder:path];
-}
-
-+ (BOOL)removeClaimantFolder:(NSString *)personId {
-    NSString *claimantsPath = [self getClaimantsFolder];
-    NSString *claimantFolder = [_CLAIMANT_PREFIX stringByAppendingString:personId];
-    NSString *path = [claimantsPath stringByAppendingPathComponent:claimantFolder];
-    path = [[[self applicationDocumentsDirectory] path] stringByAppendingPathComponent:path];
-    return [self deleteFile:path];
-}
-
 + (BOOL)deleteClaim:(NSString *)claimId {
     NSString *claimsPath = [self getClaimsFolder];
     NSString *claimFolder = [_CLAIM_PREFIX stringByAppendingString:claimId];
     NSString *path = [claimsPath stringByAppendingPathComponent:claimFolder];
-    path = [[[self applicationDocumentsDirectory] path] stringByAppendingPathComponent:path];
-    return [self deleteFile:path];
-}
-
-+ (BOOL)deleteClaimant:(NSString *)personId {
-    NSString *claimantsPath = [self getClaimantsFolder];
-    NSString *claimantFolder = [_CLAIMANT_PREFIX stringByAppendingString:personId];
-    NSString *path = [claimantsPath stringByAppendingPathComponent:claimantFolder];
     path = [[[self applicationDocumentsDirectory] path] stringByAppendingPathComponent:path];
     return [self deleteFile:path];
 }
@@ -174,16 +144,6 @@
     return _CLAIMS_FOLDER;
 }
 
-+ (NSString *)getClaimantsFolder {
-    NSString *docDir = [[self applicationDocumentsDirectory] path];
-    NSString *path = [docDir stringByAppendingPathComponent:_CLAIMANTS_FOLDER];
-    BOOL isDirectory;
-    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
-        [self createClaimantsFolder];
-    }
-    return _CLAIMANTS_FOLDER;
-}
-
 + (NSString *)getClaimFolder:(NSString *)claimId {
     NSString *docDir = [[self applicationDocumentsDirectory] path];
     NSString *claimsPath = [docDir stringByAppendingPathComponent:_CLAIMS_FOLDER];
@@ -194,18 +154,6 @@
         [self createClaimFolder:claimId];
     }
     return [[self getClaimsFolder] stringByAppendingPathComponent:claimFolder];
-}
-
-+ (NSString *)getClaimantFolder:(NSString *)claimId {
-    NSString *docDir = [[self applicationDocumentsDirectory] path];
-    NSString *claimantsPath = [docDir stringByAppendingPathComponent:_CLAIMANTS_FOLDER];
-    BOOL isDirectory;
-    NSString *claimantFolder = [_CLAIMANT_PREFIX stringByAppendingString:claimId];
-    NSString *path = [claimantsPath stringByAppendingPathComponent:claimantFolder];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
-        [self createClaimantFolder:claimId];
-    }
-    return [[self getClaimantsFolder] stringByAppendingPathComponent:claimantFolder];
 }
 
 + (NSString *)getAttachmentFolder:(NSString *)claimId {

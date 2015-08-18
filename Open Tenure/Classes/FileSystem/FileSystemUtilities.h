@@ -32,29 +32,21 @@
 @interface FileSystemUtilities : NSObject
 
 #define _CLAIMS_FOLDER @"claims"
-#define _CLAIMANTS_FOLDER @"claimants"
 #define _CLAIM_PREFIX @"claim_"
-#define _CLAIMANT_PREFIX @"claimant_"
 #define _ATTACHMENT_FOLDER @"attachments"
 #define _OPEN_TENURE_FOLDER @"Open Tenure"
 
 + (BOOL)createFolder:(NSString *)folderName;
 + (BOOL)createClaimsFolder;
 + (BOOL)createOpenTenureFolder;
-+ (BOOL)createClaimantsFolder;
 + (BOOL)createClaimFolder:(NSString *)claimId;
-+ (BOOL)createClaimantFolder:(NSString *)personId;
-+ (BOOL)removeClaimantFolder:(NSString *)personId;
 + (BOOL)deleteClaim:(NSString *)claimId;
-+ (BOOL)deleteClaimant:(NSString *)personId;
 + (BOOL)deleteFile:(NSString *)file;
 + (BOOL)deleteDocumentsFolder;
 + (BOOL)deleteCompressedClaim:(NSString *)claimId;
 + (int)getUploadProgress:(Claim *)claim;
 + (NSString *)getClaimsFolder;
-+ (NSString *)getClaimantsFolder;
 + (NSString *)getClaimFolder:(NSString *)claimId;
-+ (NSString *)getClaimantFolder:(NSString *)claimId;
 + (NSString *)getAttachmentFolder:(NSString *)claimId;
 + (NSString *)getCompressClaim:(NSString *)claimId;
 + (NSString *)getOpentenureFolder;

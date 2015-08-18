@@ -133,11 +133,18 @@
     return person;
 }
 
-- (NSString *)photoPathForClaimId:(NSString *)claimId {
-    NSString *imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:claimId]];
-    NSString *imageFile = [self.personId stringByAppendingPathExtension:@"jpg"];
-    imagePath = [imagePath stringByAppendingPathComponent:imageFile];
-    return imagePath;
+- (NSString *)getFullPath {
+    NSString *claimAttachmentsFolder = nil;
+    if (self.claim != nil) {
+        claimAttachmentsFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getAttachmentFolder:self.claim.claimId]];
+    } else if (self.owner != nil) {
+        claimAttachmentsFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getAttachmentFolder:self.owner.claim.claimId]];
+    }
+    if (claimAttachmentsFolder != nil) {
+        NSString *fileName = [self.personId stringByAppendingPathExtension:@"jpg"];
+        return [claimAttachmentsFolder stringByAppendingPathComponent:fileName];
+    }
+    return nil;
 }
 
 @end

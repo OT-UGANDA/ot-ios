@@ -238,10 +238,12 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
             // Tạo claimant image
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 46, 46)];
             imageView.contentMode = UIViewContentModeScaleAspectFit;
-            NSString *imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:claim.claimId]];
-            NSString *imageFile = [claim.person.personId stringByAppendingPathExtension:@"jpg"];
-            imageFile = [imagePath stringByAppendingPathComponent:imageFile];
-            UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
+            
+            NSString *claimAttachmentsFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getAttachmentFolder:claim.claimId]];
+            NSString *fileName = [claim.person.personId stringByAppendingPathExtension:@"jpg"];
+            NSString *fullPath = [claimAttachmentsFolder stringByAppendingPathComponent:fileName];
+
+            UIImage *personPicture = [UIImage imageWithContentsOfFile:fullPath];
             if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];
             imageView.image = personPicture;
             imageView.backgroundColor = [UIColor whiteColor];

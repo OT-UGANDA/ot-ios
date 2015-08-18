@@ -264,11 +264,7 @@
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 48, 48)];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     
-    NSString *imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:object.claimId]];
-    NSString *imageFile = [object.person.personId stringByAppendingPathExtension:@"jpg"];
-    imageFile = [imagePath stringByAppendingPathComponent:imageFile];
-
-    UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
+    UIImage *personPicture = [UIImage imageWithContentsOfFile:[object.person getFullPath]];
     if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];
     imageView.image = personPicture;
     imageView.layer.cornerRadius = 24.0;
@@ -392,7 +388,6 @@
 - (void)exportClaim:(Claim *)claim {
     [self.sideBarMenu dismiss];
     [FileSystemUtilities createClaimFolder:claim.claimId];
-    [FileSystemUtilities createClaimantFolder:claim.claimId];
     
     NSString *title = NSLocalizedString(@"title_export", nil);
     NSString *message = nil;
@@ -411,32 +406,8 @@
                 
                 // Tạo thư mục Claim_ClaimName_Date
                 NSString *zipFileName = [NSString stringWithFormat:@"Claim_%@_%@", claim.claimName, [[OT dateFormatter] stringFromDate:[NSDate date]]];
-                NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:zipFileName];
-                
-                [FileSystemUtilities createFolder:tmpPath];
-                [FileSystemUtilities createFolder:[tmpPath stringByAppendingPathComponent:[NSString stringWithFormat:@"claim_%@", claim.claimId]]];
-                
-                // Copy file qua để thêm attachments: claimant photo,...
-                [FileSystemUtilities copyFileFromSource:[NSURL fileURLWithPath:[[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimFolder:claim.claimId]]] toDestination:[NSURL fileURLWithPath:[tmpPath stringByAppendingPathComponent:[NSString stringWithFormat:@"claim_%@", claim.claimId]]]];
-                
-                NSString *tmpAttachments = [tmpPath stringByAppendingPathComponent:[NSString stringWithFormat:@"claim_%@", claim.claimId]];
-                tmpAttachments = [tmpAttachments stringByAppendingPathComponent:@"attachments"];
-                // Thêm owners photo
-                for (Share *share in claim.shares) {
-                    for (Person *person in share.owners) {
-                        NSString *photoPath = [person photoPathForClaimId:claim.claimId];
-                        NSString *photoFileName = [photoPath lastPathComponent];
-                        [FileSystemUtilities copyFileFromSource:[NSURL fileURLWithPath:photoPath] toDestination:[NSURL fileURLWithPath:[tmpAttachments stringByAppendingPathComponent:photoFileName]]];
-                    }
-                }
-                // Thêm person photo
-                NSString *photoPath = [claim.person photoPathForClaimId:claim.claimId];
-                NSString *photoFileName = [photoPath lastPathComponent];
-                [FileSystemUtilities copyFileFromSource:[NSURL fileURLWithPath:photoPath] toDestination:[NSURL fileURLWithPath:[tmpAttachments stringByAppendingPathComponent:photoFileName]]];
-                
                 NSString *zipFilePath = [exportPath stringByAppendingPathComponent:zipFileName];
-                ALog(@"%@\n%@", zipFilePath, tmpPath);
-                success = [ZipUtilities addFilesWithAESEncryption:password zipFile:[zipFilePath stringByAppendingPathExtension:@"zip"] contentsOfDirectory:tmpPath];
+                success = [ZipUtilities addFilesWithAESEncryption:password zipFile:[zipFilePath stringByAppendingPathExtension:@"zip"] contentsOfDirectory:[claim getFullPath]];
             }
             if (success)
                 [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:NSLocalizedString(@"message_claim_exported", nil), [claim.claimName UTF8String]]];
@@ -584,9 +555,10 @@
         claim = [_filteredObjects objectAtIndex:indexPath.row];
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [_filteredObjects removeObject:claim];
-        if (_filteredObjects != nil)
+        if (_filteredObjects != nil) {
+            [_filteredObjects removeObject:claim];
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        }
         [claim setChallenged:nil]; // Fixed delete challeged claim
         [claim.managedObjectContext deleteObject:claim];
         NSError *error;
@@ -679,13 +651,14 @@
     [self.navigationController presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)importClaim:(NSDictionary *)claimJson {
+- (Claim *)importClaim:(NSDictionary *)claimJson {
     ClaimEntity *claimEntity = [ClaimEntity new];
     [claimEntity setManagedObjectContext:temporaryContext];
     Claim *claim = [claimEntity create];
     [claim importFromJSON:claimJson];
     [claim.managedObjectContext save:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateGeometryNotificationName object:claim];
+    return claim;
 }
 
 - (IBAction)login:(id)sender {
@@ -821,18 +794,6 @@
         [self performSelector:@selector(confirmUnzipFileAtPath:) withObject:file afterDelay:0.2];
         [controller dismissViewControllerAnimated:YES completion:nil];
     }
-//    else if ([uti isEqualToString:OTDocTypeArchiveZip]) {
-//        NSString *title = NSLocalizedString(@"import_claim_notification", nil);
-//        title = [NSString stringWithFormat:title, [file lastPathComponent]];
-//        NSString *cancelButtonTitle = NSLocalizedString(@"cancel", nil);
-//        NSString *okButtonTitle = NSLocalizedString(@"ok", nil);
-//        [UIAlertView showWithTitle:title message:nil cancelButtonTitle:cancelButtonTitle otherButtonTitles:@[okButtonTitle] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
-//            if (buttonIndex != alertView.cancelButtonIndex) {
-//                [controller.navigationController dismissViewControllerAnimated:YES completion:nil];
-//                [self performSelector:@selector(importClaim:) withObject:file afterDelay:0.2];
-//            }
-//        }];
-//    }
 }
 
 - (void)confirmUnzipFileAtPath:(NSString *)filePath {
@@ -898,8 +859,8 @@
         // Message
         return;
     }
-    unzippedPath = [unzippedPath stringByAppendingPathComponent:json.firstObject];
-    NSString *claimJsonFile = [unzippedPath stringByAppendingPathComponent:@"claim.json"];
+    NSString *tmpClaimFullPath = [unzippedPath stringByAppendingPathComponent:json.firstObject];
+    NSString *claimJsonFile = [tmpClaimFullPath stringByAppendingPathComponent:@"claim.json"];
     BOOL existingClaim = [[NSFileManager defaultManager] fileExistsAtPath:claimJsonFile];
     if (existingClaim) {
         NSData *data = [NSData dataWithContentsOfFile:claimJsonFile];
@@ -908,16 +869,14 @@
         NSString *claimId = [jsonDict objectForKey:@"id"];
         // Tạo folder claim_claimId
         [FileSystemUtilities createClaimFolder:claimId];
-        NSString *claimFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimFolder:claimId]];
-        claimFolder = [claimFolder stringByAppendingPathComponent:@"attachments"];
-        NSString *folderToMove = [unzippedPath stringByAppendingPathComponent:@"attachments"];
-        // Copy attachments sang
-        if (![[NSFileManager defaultManager] moveItemAtPath:folderToMove toPath:claimFolder error:&error]) {
-            ALog(@"Eror %@", error.description);
-        }
+        // Chuyển thư mục attachments vào
+        NSString *sourceAttachmentsFullPath = [tmpClaimFullPath stringByAppendingPathComponent:_ATTACHMENT_FOLDER];
+        Claim *claim = [self importClaim:jsonDict];
+        NSString *claimFullPath = [claim getFullPath];
+        NSString *claimAttachmentsFullPath = [claimFullPath stringByAppendingPathComponent:_ATTACHMENT_FOLDER];
+        [[NSFileManager defaultManager] moveItemAtPath:sourceAttachmentsFullPath toPath:claimAttachmentsFullPath error:nil];
         // Xóa folder
         [[NSFileManager defaultManager] removeItemAtPath:unzippedPath error:nil];
-        [self importClaim:jsonDict];
     }
 }
 

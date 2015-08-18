@@ -182,11 +182,7 @@ static NSURLSessionUploadTask *uploadTask;
                                         // calculate total chunks
                                         
                                         NSString *fullPath = nil;
-                                        if ([attachment.typeCode.code isEqualToString:@"personPhoto"]) {
-                                            fullPath = [FileSystemUtilities getClaimantFolder:_claim.claimId];
-                                        } else {
-                                            fullPath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
-                                        }
+                                        fullPath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
                                         fullPath = [fullPath stringByAppendingPathComponent:[attachment.fileName lastPathComponent]];
                                         fullPath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:fullPath];
 

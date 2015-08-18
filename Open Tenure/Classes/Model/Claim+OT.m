@@ -230,7 +230,6 @@
     
     // create dynamicForm
     NSDictionary *dynamicFormJSON = [keyedValues objectForKey:@"dynamicForm"];
-    ALog(@"dy: %@", dynamicFormJSON.description);
     if (dynamicFormJSON != nil && ![dynamicFormJSON isKindOfClass:[NSNull class]]) {
         FormPayloadEntity *entity = [FormPayloadEntity new];
         [entity setManagedObjectContext:self.managedObjectContext];
@@ -272,4 +271,17 @@
     }
     return area_;
 }
+
+- (NSString *)getFullPath {
+    NSString *docDir = [[FileSystemUtilities applicationDocumentsDirectory] path];
+    NSString *claimsPath = [docDir stringByAppendingPathComponent:_CLAIMS_FOLDER];
+    NSString *claimFolder = [_CLAIM_PREFIX stringByAppendingString:self.claimId];
+    NSString *path = [claimsPath stringByAppendingPathComponent:claimFolder];
+    BOOL isDirectory;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDirectory]) {
+        [FileSystemUtilities createClaimFolder:self.claimId];
+    }
+    return path;
+}
+
 @end

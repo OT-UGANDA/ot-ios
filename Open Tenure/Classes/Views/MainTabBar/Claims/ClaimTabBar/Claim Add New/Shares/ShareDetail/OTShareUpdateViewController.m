@@ -238,16 +238,7 @@
     }
     cell.detailTextLabel.text = person.idTypeCode;
     
-    NSString *imagePath;
-    NSString *imageFile = [person.personId stringByAppendingPathExtension:@"jpg"];
-    if (person.claim == nil) { // owner
-        imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:person.owner.claim.claimId]];
-    } else {
-        imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:person.claim.claimId]];
-    }
-    imageFile = [imagePath stringByAppendingPathComponent:imageFile];
-
-    UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
+    UIImage *personPicture = [UIImage imageWithContentsOfFile:[person getFullPath]];
     if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];
     cell.imageView.image = personPicture;
 }
@@ -310,6 +301,12 @@
         person = [_filteredObjects objectAtIndex:indexPath.row];
     
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+        NSString *fileName = [person.personId stringByAppendingPathExtension:@"jpg"];
+        NSString *fullPath = [[person getFullPath] stringByAppendingPathComponent:fileName];
+        
+        BOOL success = [FileSystemUtilities deleteFile:fullPath];
+        ALog(@"Delete claimamt folder: %d", success);
+
         [self.managedObjectContext deleteObject:person];
         [self.managedObjectContext save:nil];
     }

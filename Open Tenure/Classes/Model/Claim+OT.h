@@ -42,5 +42,6 @@
 - (BOOL)canBeUploaded;
 - (void)withDraw;
 - (double)area;
+- (NSString *)getFullPath;
 
 @end

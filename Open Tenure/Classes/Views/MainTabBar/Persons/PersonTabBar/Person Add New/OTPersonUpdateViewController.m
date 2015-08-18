@@ -97,16 +97,7 @@
     [imageView addGestureRecognizer:singleTap];
     imageView.userInteractionEnabled = YES;
     
-    NSString *imagePath;
-    NSString *imageFile = [_person.personId stringByAppendingPathExtension:@"jpg"];
-    if (_person.claim == nil) { // owner
-        imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:_person.owner.claim.claimId]];
-    } else {
-         imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimantFolder:_person.claim.claimId]];
-    }
-    imageFile = [imagePath stringByAppendingPathComponent:imageFile];
-    
-    UIImage *personPicture = [UIImage imageWithContentsOfFile:imageFile];
+    UIImage *personPicture = [UIImage imageWithContentsOfFile:[_person getFullPath]];
     if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];
     imageView.image = personPicture;
     imageView.backgroundColor = [UIColor clearColor];
@@ -696,8 +687,6 @@ static bool allCellChecked = false;
 - (IBAction)save:(id)sender {
     if (self.allCellsAreValid) {
         if ([_person.managedObjectContext hasChanges]) {
-            [FileSystemUtilities createClaimantsFolder];
-            [FileSystemUtilities createClaimantFolder:_person.personId];
             [self updateShare];
             [_person.managedObjectContext save:nil];
             [self setupView];
@@ -842,27 +831,13 @@ static bool allCellChecked = false;
     CGSize newSize = CGSizeMake(320.0, 320.0);
     newImage = [newImage changeToSize:newSize];
     _personImageView.image = newImage;
-    
-    NSString *filePath;
-    NSString *imagePath;
-    NSString *imageFile = [_person.personId stringByAppendingPathExtension:@"jpg"];
-    if (_person.claim == nil) { // owner
-        filePath = [FileSystemUtilities getClaimantFolder:_person.owner.claim.claimId];
-        imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:filePath];
-    } else {
-        filePath = [FileSystemUtilities getClaimantFolder:_person.claim.claimId];
-        imagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:filePath];
-    }
-    filePath = [filePath stringByAppendingPathComponent:imageFile];
-    
-    imageFile = [imagePath stringByAppendingPathComponent:imageFile];
 
-    BOOL isUpdate = [[NSFileManager defaultManager] fileExistsAtPath:imageFile];
+    BOOL isUpdate = [[NSFileManager defaultManager] fileExistsAtPath:[_person getFullPath]];
     ALog(@"%tu", isUpdate);
     
     // Update or Create new photo
     NSData *imageData = UIImageJPEGRepresentation(newImage, 1.0);
-    [imageData writeToFile:imageFile atomically:YES];
+    [imageData writeToFile:[_person getFullPath] atomically:YES];
     NSNumber *fileSize = [NSNumber numberWithUnsignedInteger:imageData.length];
     NSString *md5 = [imageData md5];
     
@@ -873,7 +848,7 @@ static bool allCellChecked = false;
             NSSet *personObjects = [_person.claim.attachments filteredSetUsingPredicate:predicate];
             
             for (Attachment *att in personObjects) {
-                if ([att.fileName isEqualToString:imageFile]) {
+                if ([att.fileName isEqualToString:[_person getFullPath]]) {
                     attachment = att;
                     break;
                 }
@@ -898,7 +873,7 @@ static bool allCellChecked = false;
         }
         attachment.documentDate = [[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10];
         attachment.mimeType = @"image/jpg";
-        attachment.fileName = filePath;
+        attachment.fileName = [_person.personId stringByAppendingPathExtension:@"jpg"];
         attachment.fileExtension = @"jpg";
         attachment.size = [fileSize stringValue];
         attachment.md5 = md5;

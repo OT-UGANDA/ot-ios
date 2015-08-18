@@ -355,9 +355,8 @@
     if (cell == nil)
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     
-    NSString *fullPath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
+    NSString *fullPath = [[_claim getFullPath] stringByAppendingPathComponent:_ATTACHMENT_FOLDER];
     fullPath = [fullPath stringByAppendingPathComponent:[attachment.fileName lastPathComponent]];
-    fullPath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:fullPath];
     BOOL isFileExist = [[NSFileManager defaultManager] fileExistsAtPath:fullPath];
     if (!isFileExist) {
         cell.accessoryType = UITableViewCellAccessoryDetailButton;
@@ -399,9 +398,10 @@
     else
         attachment = [_filteredObjects objectAtIndex:indexPath.row];
     
-    NSString *fullPath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
-    fullPath = [fullPath stringByAppendingPathComponent:[attachment.fileName lastPathComponent]];
-    fullPath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:fullPath];
+    NSString *claimFullPath = [_claim getFullPath]; [FileSystemUtilities getAttachmentFolder:_claim.claimId];
+    NSString *claimAttachmentsFullPath = [claimFullPath stringByAppendingPathComponent:_ATTACHMENT_FOLDER];
+
+    NSString *fullPath = [claimAttachmentsFullPath stringByAppendingPathComponent:[attachment.fileName lastPathComponent]];
     NSURL *fileUrl = [NSURL fileURLWithPath:fullPath];
     
     BOOL isFileExist = [[NSFileManager defaultManager] fileExistsAtPath:fullPath];
@@ -419,7 +419,6 @@
         QLPreviewController *previewController = [[QLPreviewController alloc] init];
         previewController.delegate = self;
         previewController.dataSource = self;
-        previewController.currentPreviewItemIndex = 0;
         [self presentViewController:previewController animated:YES completion:^{
             UIView *view = [[[previewController.view.subviews lastObject] subviews] lastObject];
             if ([view isKindOfClass:[UINavigationBar class]])
@@ -490,7 +489,7 @@
 }
 
 // returns the item that the preview controller should preview
-- (id)previewController:(QLPreviewController *)previewController previewItemAtIndex:(NSInteger)idx {
+- (id <QLPreviewItem>)previewController:(QLPreviewController *)controller previewItemAtIndex:(NSInteger)index {
     return documentURL;
 }
 

@@ -369,7 +369,8 @@
             NSString *fullFilePath = [directoryPath stringByAppendingPathComponent:fileName];
             [fileManager fileExistsAtPath:fullFilePath isDirectory:&isDir];
             if (!isDir) {
-                [zipArchive writeFileAtPath:fullFilePath withFileName:fileName password:password];
+                NSString *newFileName = [[directoryPath lastPathComponent] stringByAppendingPathComponent:fileName];
+                [zipArchive writeFileAtPath:fullFilePath withFileName:newFileName password:password];
             }
         }
         success = [zipArchive close];

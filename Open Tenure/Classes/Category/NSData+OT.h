@@ -31,5 +31,6 @@
 @interface NSData (OT)
 
 - (NSString *)md5;
+- (BOOL)isImage;
 
 @end

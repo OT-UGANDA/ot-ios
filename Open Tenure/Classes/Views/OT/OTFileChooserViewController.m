@@ -373,7 +373,8 @@
         BOOL isDirectory;
         [[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDirectory];
         // proceed to add the document URL to our list (ignore the ".DS_Store" file)
-        if (![curFileName isEqualToString:@".DS_Store"]
+        if (![curFileName isEqualToString:@".DS_Store"] &&
+            ![curFileName isEqualToString:_CLAIMS_FOLDER]
             // &&
             //![curFileName isEqualToString:@"gmap_tiles_standard"] &&
             //![curFileName isEqualToString:@"gmap_tiles_satellite"] &&

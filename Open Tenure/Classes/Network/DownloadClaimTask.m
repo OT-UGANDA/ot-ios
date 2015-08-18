@@ -61,11 +61,28 @@
                     Claim *claim = [claimEntity create];
                     [claim importFromJSON:object];
                     _claim = claim;
+                                        
+                    // Dowload person
+                    NSString *urlString = [NSString stringWithFormat:HTTPS_GETATTACHMENT, [OTSetting getCommunityServerURL], _claim.person.personId];
+                    NSURL *url = [NSURL URLWithString:urlString];
+                    NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedAlways error:&error];
+                    if (error == nil && [data isImage]) {
+                        [data writeToFile:[_claim.person getFullPath] atomically:YES];
+                    }
                     
-                    //NSDictionary *d = [object objectForKey:@"dynamicForm"];
-                    //if (d != nil) ALog(@"DynamicForm:\n%@", d.description);
-                    // Download claimant photo:
-                    [CommunityServerAPI getClaimantPhoto:_claim.claimId personId:_claim.person.personId];
+                    // Download owners
+                    for (Share *share in _claim.shares) {
+                        for (Person *person in share.owners) {
+                            NSString *urlString = [NSString stringWithFormat:HTTPS_GETATTACHMENT, [OTSetting getCommunityServerURL], person.personId];
+                            NSURL *url = [NSURL URLWithString:urlString];
+                            NSError *error = nil;
+                            NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedAlways error:&error];
+                            if (error == nil && [data isImage]) {
+                                [data writeToFile:[person getFullPath] atomically:YES];
+                            }
+                        }
+                    }
+                    
                     [_delegate downloadClaimTask:self didFinishWithSuccess:YES];
                 }
             } else {

@@ -541,9 +541,7 @@
 
 - (void)setupPDFWithName:(NSString *)name pageSize:(CGSize)pageSize {
     [FileSystemUtilities createClaimFolder:_claim.claimId];
-    [FileSystemUtilities createClaimantFolder:_claim.claimId];
-    NSString *claimFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimFolder:_claim.claimId]];
-    filePath = [claimFolder stringByAppendingPathComponent:name];
+    filePath = [[_claim getFullPath] stringByAppendingPathComponent:name];
     UIGraphicsBeginPDFContextToFile(filePath, CGRectZero, nil);
 }
 
