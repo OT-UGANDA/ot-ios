@@ -333,7 +333,7 @@ NS_INLINE MKMapPoint intersectPoint(MKMapPoint A, MKMapPoint B, MKMapPoint C, MK
 
 - (void)insertVertex:(GeoShapeVertex *)vertex currentZoomScale:(double)currentZoomScale {
     for (GeoShapeVertex *storedVertex in _vertices)
-        if ([storedVertex isEqual:vertex]) return;
+        if ([storedVertex isEqual:vertex] && currentZoomScale != CGFLOAT_MIN) return;
     if (_vertices.count < 3 || currentZoomScale == CGFLOAT_MIN) {
         [_vertices addObject:vertex];
         _pointCount++;

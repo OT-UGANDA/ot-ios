@@ -43,5 +43,6 @@
 - (void)withDraw;
 - (double)area;
 - (NSString *)getFullPath;
+- (NSString *)getCSVGeoData;
 
 @end

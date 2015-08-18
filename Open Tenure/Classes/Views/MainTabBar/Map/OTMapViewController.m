@@ -65,6 +65,7 @@
     id selectedAnnotation;
     MKPolyline *lineSegment;
     MKPolygon *communityArea;
+    GeoShape *gpsOverlay;
 }
 
 @property (nonatomic, strong) CDRTranslucentSideBar *sideBarMenu;
@@ -191,13 +192,13 @@
 
     _shapes = [[GeoShapeCollection alloc] init];
     [_mapView addOverlay:_shapes level:MKOverlayLevelAboveLabels];
-
-    self.workingAnnotations = [NSMutableArray array];
     
     // Vẽ các thửa trước
     [self drawMappedGeometry];
     
     if (_claim.mappedGeometry != nil) {
+        self.workingAnnotations = [NSMutableArray array];
+
         // Lấy dữ liệu polygon
         ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:_claim.mappedGeometry];
         // Zoom đến polygon
@@ -227,8 +228,17 @@
             [_workingAnnotations addObject:pointAnnotation];
             [_mapView addAnnotation:pointAnnotation];
         }
-    } else {
-        
+
+        // Tạo gpsOverlay
+        gpsOverlay = [[GeoShape alloc] initWithTitle:_claim.claimName subtitle:nil];
+        if ((_claim.gpsGeometry != nil) && [[_claim.gpsGeometry substringToIndex:7] isEqualToString:@"POLYGON"]) {
+            ShapeKitPolygon *gpsPolygon = [[ShapeKitPolygon alloc] initWithWKT:_claim.gpsGeometry];
+            // Chuyển các đỉnh gpsPolygon vào gpsOverlay
+            for (NSInteger i = 0; i < gpsPolygon.geometry.pointCount-1; i++) {
+                CLLocationCoordinate2D coordinate = MKCoordinateForMapPoint(gpsPolygon.geometry.points[i]);
+                [gpsOverlay addCoordinate:coordinate currentZoomScale:CGFLOAT_MIN];
+            }
+        }
     }
     
     self.additionalMarkers = [NSMutableArray array];
@@ -260,11 +270,19 @@
         ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithCoordinates:shape.coordinates count:(unsigned int)pointCount];
         
         // Tạo điểm và nhãn cho polygon theo tâm của đường bao.
-        ShapeKitPoint *point = [[ShapeKitPoint alloc] initWithCoordinate:shape.coordinate];
+        // ShapeKitPoint *point = [[ShapeKitPoint alloc] initWithCoordinate:shape.coordinate];
         
-        _claim.gpsGeometry = point.wktGeom;
+        //_claim.gpsGeometry = point.wktGeom;
+        
         _claim.mappedGeometry = polygon.wktGeom;
         
+        // Tạo gpsGeometry từ gpsOverlay
+        if (gpsOverlay.pointCount > 2) {
+            ShapeKitPolygon *gpsPolygon = [[ShapeKitPolygon alloc] initWithCoordinates:gpsOverlay.coordinates count:(unsigned int)gpsOverlay.pointCount];
+            _claim.gpsGeometry = gpsPolygon.wktGeom;
+        } else {
+            _claim.gpsGeometry = nil;
+        }
     } else {
         _claim.gpsGeometry = nil;
         _claim.mappedGeometry = nil;
@@ -1016,6 +1034,12 @@
         point.title = @"1";
         [_mapView addAnnotation:point];
         [_workingAnnotations addObject:point];
+        
+        // Tạo mới gpsOverlay
+        gpsOverlay = [[GeoShape alloc] initWithCenterCoordinate:_mapView.userLocation.coordinate];
+        gpsOverlay.title = shape.title;
+        gpsOverlay.subtitle = shape.subtitle;
+        [gpsOverlay updatePoints];
     } else {
         MKZoomScale currentZoomScale = _mapView.bounds.size.width / _mapView.visibleMapRect.size.width;
         if (!remove) {
@@ -1023,11 +1047,18 @@
             point.title = [@(tag) stringValue];
             [_mapView addAnnotation:point];
             [_workingAnnotations addObject:point];
+            
+            // Thêm GPS vào gpsOverlay
+            [gpsOverlay addCoordinate:_mapView.userLocation.coordinate currentZoomScale:CGFLOAT_MIN];
+            [gpsOverlay updatePoints];
         } else {
             [_shapes removePointFromWorkingOverlay:point.coordinate];
             [_mapView removeAnnotation:point];
             [self updateOverlay:_shapes];
             [_workingAnnotations removeObject:point];
+            
+            // Gỡ điểm ra khỏi gpsOverlay
+            // ???
             ALog(@"Working annotations count : %tu", _workingAnnotations.count);
         }
     }

@@ -385,6 +385,18 @@
     return [jsonString writeToFile:claimJsonFile atomically:NO encoding:NSUTF8StringEncoding error:&error];
 }
 
+- (void)exportClaimGeo:(Claim *)claim {
+    NSString *exportPath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:@"Export"];
+    [FileSystemUtilities createFolder:exportPath];
+    NSString *csvFileName = [NSString stringWithFormat:@"Claim_%@_%@", claim.claimName, [[OT dateFormatter] stringFromDate:[NSDate date]]];
+    NSString *csvFilePath = [exportPath stringByAppendingPathComponent:[csvFileName stringByAppendingPathExtension:@"csv"]];
+    BOOL success = [[claim getCSVGeoData] writeToFile:csvFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    if (success)
+        [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:NSLocalizedString(@"message_claim_exported", nil), [claim.claimName UTF8String]]];
+    else
+        [OT handleErrorWithMessage:NSLocalizedString(@"message_encryption_failed", nil)];
+}
+
 - (void)exportClaim:(Claim *)claim {
     [self.sideBarMenu dismiss];
     [FileSystemUtilities createClaimFolder:claim.claimId];
@@ -437,23 +449,23 @@
             // Có thể sửa
             if ([claim.statusCode isEqualToString:kClaimStatusCreated]) {
                 // Submit | Export | Delete locally
-                actionButtons = @[NSLocalizedString(@"action_submit", nil), NSLocalizedString(@"title_export", nil), NSLocalizedString(@"delete_locally", nil)];
+                actionButtons = @[NSLocalizedString(@"action_submit", nil), NSLocalizedString(@"title_export", nil), NSLocalizedString(@"action_export_geo", nil), NSLocalizedString(@"delete_locally", nil)];
             } else {
                 // Export | Delete locally
-                actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"delete_locally", nil)];
+                actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"action_export_geo", nil), NSLocalizedString(@"delete_locally", nil)];
             }
         } else {
             // Không thể sửa
             if (remainingDays >= 0) {
                 if ([claim.statusCode isEqualToString:kClaimStatusWithdrawn]) {
                     // Export | Delete locally
-                    actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"delete_locally", nil)];
+                    actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"action_export_geo", nil), NSLocalizedString(@"delete_locally", nil)];
                 } else {
                     // Export | Withdraw | Delete locally
-                    actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"withdraw_claim", nil), NSLocalizedString(@"delete_locally", nil)];
+                    actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"action_export_geo", nil), NSLocalizedString(@"withdraw_claim", nil), NSLocalizedString(@"delete_locally", nil)];
                 }
             } else {
-                actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"delete_locally", nil)];
+                actionButtons = @[NSLocalizedString(@"title_export", nil), NSLocalizedString(@"action_export_geo", nil), NSLocalizedString(@"delete_locally", nil)];
             }
         }
 
@@ -467,6 +479,8 @@
                             [self submitClaim:claim];
                         } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
                             [self exportClaim:claim];
+                        } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 2) {
+                            [self exportClaimGeo:claim];
                         } else {
                             [self deleteClaim:claim];
                         }
@@ -474,6 +488,8 @@
                         // Export | Delete locally
                         if (buttonIndex == actionSheet.firstOtherButtonIndex) {
                             [self exportClaim:claim];
+                        } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
+                            [self exportClaimGeo:claim];
                         } else {
                             [self deleteClaim:claim];
                         }
@@ -485,6 +501,8 @@
                             // Export | Delete locally
                             if (buttonIndex == actionSheet.firstOtherButtonIndex) {
                                 [self exportClaim:claim];
+                            } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
+                                [self exportClaimGeo:claim];
                             } else {
                                 [self deleteClaim:claim];
                             }
@@ -493,6 +511,8 @@
                             if (buttonIndex == actionSheet.firstOtherButtonIndex) {
                                 [self exportClaim:claim];
                             } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
+                                [self exportClaimGeo:claim];
+                            } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 2) {
                                 [self withdrawClaim:claim];
                             } else {
                                 [self deleteClaim:claim];
@@ -501,6 +521,8 @@
                     } else {
                         if (buttonIndex == actionSheet.firstOtherButtonIndex) {
                             [self exportClaim:claim];
+                        } else if (buttonIndex == actionSheet.firstOtherButtonIndex + 1) {
+                            [self exportClaimGeo:claim];
                         } else {
                             [self deleteClaim:claim];
                         }
