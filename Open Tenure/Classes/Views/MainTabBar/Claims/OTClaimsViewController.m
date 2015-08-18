@@ -386,9 +386,9 @@
 }
 
 - (void)exportClaimGeo:(Claim *)claim {
-    NSString *exportPath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:@"Export"];
+    NSString *exportPath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:@"Geom"];
     [FileSystemUtilities createFolder:exportPath];
-    NSString *csvFileName = [NSString stringWithFormat:@"Claim_%@_%@", claim.claimName, [[OT dateFormatter] stringFromDate:[NSDate date]]];
+    NSString *csvFileName = [NSString stringWithFormat:@"%@_geom", claim.claimName];
     NSString *csvFilePath = [exportPath stringByAppendingPathComponent:[csvFileName stringByAppendingPathExtension:@"csv"]];
     BOOL success = [[claim getCSVGeoData] writeToFile:csvFilePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
     if (success)

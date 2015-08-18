@@ -285,7 +285,7 @@
 }
 
 - (NSString *)getCSVGeoData {
-    NSMutableString *csvString = [NSMutableString stringWithString:@"SEQUENCE_NUMBER\tGPS_LAT\tGPS_LON\tMAP_LAT\tMAP_LON\n"];
+    NSMutableString *csvString = [NSMutableString stringWithString:@"SEQUENCE_NUMBER,GPS_LAT,GPS_LON,MAP_LAT,MAP_LON\n"];
     if (self.mappedGeometry != nil) {
         if (self.gpsGeometry != nil && [[self.gpsGeometry substringToIndex:7] isEqualToString:@"POLYGON"]) {
             ShapeKitPolygon *gpsPolygon = [[ShapeKitPolygon alloc] initWithWKT:self.gpsGeometry];
@@ -296,13 +296,13 @@
                 if (i < gpsPolygon.geometry.pointCount) {
                     gpsCoord = MKCoordinateForMapPoint(gpsPolygon.geometry.points[i]);
                 }
-                [csvString appendFormat:@"%d\t%f\t%f\t%f\t%f\n", i, gpsCoord.latitude, gpsCoord.longitude, coord.latitude, coord.longitude];
+                [csvString appendFormat:@"%d,%f,%f,%f,%f\n", i, gpsCoord.latitude, gpsCoord.longitude, coord.latitude, coord.longitude];
             }
         } else {
             ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:self.mappedGeometry];
             for (int i = 0; i < polygon.geometry.pointCount; i++) {
                 CLLocationCoordinate2D coord = MKCoordinateForMapPoint(polygon.geometry.points[i]);
-                [csvString appendFormat:@"%d\t%f\t%f\t%f\t%f\n", i, coord.latitude, coord.longitude, coord.latitude, coord.longitude];
+                [csvString appendFormat:@"%d,%f,%f,%f,%f\n", i, coord.latitude, coord.longitude, coord.latitude, coord.longitude];
             }
         }
         return csvString;
