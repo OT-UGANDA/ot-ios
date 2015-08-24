@@ -77,6 +77,8 @@
         }
     }
     
+    [dict setObject:[NSNull null] forKey:@"gpsGeometry"];
+    
     if (self.landUse != nil)
         [dict setObject:self.landUse.code forKey:@"landUseCode"];
     else

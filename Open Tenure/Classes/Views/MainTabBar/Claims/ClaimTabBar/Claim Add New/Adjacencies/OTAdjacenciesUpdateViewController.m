@@ -239,9 +239,7 @@ static inline double azimuth(MKMapPoint p1, MKMapPoint p2) {
             UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 46, 46)];
             imageView.contentMode = UIViewContentModeScaleAspectFit;
             
-            NSString *claimAttachmentsFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getAttachmentFolder:claim.claimId]];
-            NSString *fileName = [claim.person.personId stringByAppendingPathExtension:@"jpg"];
-            NSString *fullPath = [claimAttachmentsFolder stringByAppendingPathComponent:fileName];
+            NSString *fullPath = [claim.person getFullPath];
 
             UIImage *personPicture = [UIImage imageWithContentsOfFile:fullPath];
             if (personPicture == nil) personPicture = [UIImage imageNamed:@"ic_person_picture"];

@@ -87,4 +87,11 @@
     self.typeCode = documentType;
 }
 
+- (NSString *)getFullPath {
+    NSString *claimsPath = [self.claim getFullPath];
+    NSString *path = [claimsPath stringByAppendingPathComponent:_ATTACHMENT_FOLDER];
+    path = [path stringByAppendingPathComponent:self.fileName];
+    return path;
+}
+
 @end

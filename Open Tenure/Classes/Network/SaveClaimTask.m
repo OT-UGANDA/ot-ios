@@ -181,10 +181,7 @@ static NSURLSessionUploadTask *uploadTask;
                                         totalAttachments++;
                                         // calculate total chunks
                                         
-                                        NSString *fullPath = nil;
-                                        fullPath = [FileSystemUtilities getAttachmentFolder:_claim.claimId];
-                                        fullPath = [fullPath stringByAppendingPathComponent:[attachment.fileName lastPathComponent]];
-                                        fullPath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:fullPath];
+                                        NSString *fullPath = [attachment getFullPath];
 
                                         NSData *fileData = [NSData dataWithContentsOfFile:fullPath];
                                         NSUInteger totalFileSize = [fileData length];

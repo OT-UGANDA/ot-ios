@@ -659,7 +659,8 @@
             cadastralMap = [attachment.fileName lastPathComponent];
         }
     }
-    NSString *claimImagePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[[FileSystemUtilities getAttachmentFolder:_claim.claimId] stringByAppendingPathComponent:cadastralMap]];
+    NSString *claimImagePath = [[[_claim getFullPath] stringByAppendingPathComponent:_ATTACHMENT_FOLDER] stringByAppendingPathComponent:cadastralMap];
+    
     UIImage *image = [UIImage imageWithContentsOfFile:claimImagePath];
     if (image) {
         CGFloat width = image.size.width < image.size.height ? image.size.width : image.size.height;

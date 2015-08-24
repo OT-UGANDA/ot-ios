@@ -848,7 +848,7 @@ static bool allCellChecked = false;
             NSSet *personObjects = [_person.claim.attachments filteredSetUsingPredicate:predicate];
             
             for (Attachment *att in personObjects) {
-                if ([att.fileName isEqualToString:[_person getFullPath]]) {
+                if ([att.fileName isEqualToString:[[_person getFullPath] lastPathComponent]]) {
                     attachment = att;
                     break;
                 }

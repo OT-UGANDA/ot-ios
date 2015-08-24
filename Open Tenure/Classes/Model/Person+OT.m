@@ -136,9 +136,13 @@
 - (NSString *)getFullPath {
     NSString *claimAttachmentsFolder = nil;
     if (self.claim != nil) {
-        claimAttachmentsFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getAttachmentFolder:self.claim.claimId]];
+        claimAttachmentsFolder = [[self.claim getFullPath] stringByAppendingPathComponent:_ATTACHMENT_FOLDER];
     } else if (self.owner != nil) {
-        claimAttachmentsFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getAttachmentFolder:self.owner.claim.claimId]];
+        claimAttachmentsFolder = [[self.owner.claim getFullPath] stringByAppendingPathComponent:_ATTACHMENT_FOLDER];
+    }
+    BOOL isDirectory = NO;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:claimAttachmentsFolder isDirectory:&isDirectory]) {
+        [FileSystemUtilities createFolder:claimAttachmentsFolder];
     }
     if (claimAttachmentsFolder != nil) {
         NSString *fileName = [self.personId stringByAppendingPathExtension:@"jpg"];

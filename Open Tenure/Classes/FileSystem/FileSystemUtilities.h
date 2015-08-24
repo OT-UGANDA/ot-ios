@@ -47,7 +47,6 @@
 + (int)getUploadProgress:(Claim *)claim;
 + (NSString *)getClaimsFolder;
 + (NSString *)getClaimFolder:(NSString *)claimId;
-+ (NSString *)getAttachmentFolder:(NSString *)claimId;
 + (NSString *)getCompressClaim:(NSString *)claimId;
 + (NSString *)getOpentenureFolder;
 + (BOOL)copyFileInAttachFolder:(NSString *)claimId source:(NSString *)source;

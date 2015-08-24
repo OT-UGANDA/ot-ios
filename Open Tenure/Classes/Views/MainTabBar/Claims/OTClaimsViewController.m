@@ -377,8 +377,7 @@
 }
 
 - (BOOL)createJsonFileForClaim:(Claim *)claim {
-    NSString *claimFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getClaimFolder:claim.claimId]];
-    NSString *claimJsonFile = [claimFolder stringByAppendingPathComponent:@"claim.json"];
+    NSString *claimJsonFile = [[claim getFullPath] stringByAppendingPathComponent:@"claim.json"];
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:claim.dictionary options:NSJSONWritingPrettyPrinted error:&error];
     NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];

@@ -1411,19 +1411,20 @@
     NSNumber *fileSize = [NSNumber numberWithUnsignedInteger:imageData.length];
     NSString *md5 = [imageData md5];
     NSString *fileName = @"_map_.png";
-    NSString *file = [[FileSystemUtilities getAttachmentFolder:_claim.claimId] stringByAppendingPathComponent:fileName];
-    ALog(@"%@", file);
-    [imageData writeToFile:[[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:file] atomically:YES];
+    
+    NSString *fullPath = [[[_claim getFullPath] stringByAppendingPathComponent:_ATTACHMENT_FOLDER] stringByAppendingPathComponent:fileName];
+    
+    [imageData writeToFile:fullPath atomically:YES];
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
     [dictionary setValue:[[[OT dateFormatter] stringFromDate:[NSDate date]] substringToIndex:10] forKey:@"documentDate"];
     [dictionary setValue:@"image/png" forKey:@"mimeType"];
-    [dictionary setValue:file  forKey:@"fileName"];
+    [dictionary setValue:fileName  forKey:@"fileName"];
     [dictionary setValue:@"png" forKey:@"fileExtension"];
     [dictionary setValue:[[[NSUUID UUID] UUIDString] lowercaseString] forKey:@"id"];
     [dictionary setValue:fileSize forKey:@"size"];
     [dictionary setValue:md5 forKey:@"md5"];
     [dictionary setValue:kAttachmentStatusCreated forKey:@"status"];
-    [dictionary setValue:file forKey:@"filePath"];
+    [dictionary setValue:fullPath forKey:@"filePath"];
     
     [dictionary setValue:@"Map" forKey:@"description"];
     [dictionary setValue:@"cadastralMap" forKey:@"typeCode"];

@@ -156,17 +156,6 @@
     return [[self getClaimsFolder] stringByAppendingPathComponent:claimFolder];
 }
 
-+ (NSString *)getAttachmentFolder:(NSString *)claimId {
-    NSString *claimPath = [self getClaimFolder:claimId];
-    NSString *path = [claimPath stringByAppendingPathComponent:_ATTACHMENT_FOLDER];
-    BOOL isDirectory;
-    NSString *fullPath = [[[self applicationDocumentsDirectory] path] stringByAppendingPathComponent:path];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:fullPath isDirectory:&isDirectory]) {
-        [self createFolder:fullPath];
-    }
-    return path;
-}
-
 + (NSString *)getCompressClaim:(NSString *)claimId {
     NSString *openTenurePath = [self getOpentenureFolder];
     NSString *compressedClaim = [@"claim_" stringByAppendingString:claimId];

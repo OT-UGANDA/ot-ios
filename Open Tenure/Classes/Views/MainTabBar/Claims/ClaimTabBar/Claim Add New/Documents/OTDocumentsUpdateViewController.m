@@ -295,8 +295,7 @@
         attachment.typeCode = docType;
         
         if (attachment != nil) {
-            NSString *destination = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getAttachmentFolder:_claim.claimId]];
-            destination = [destination stringByAppendingPathComponent:attachment.fileName];
+            NSString *destination = [attachment getFullPath];
             BOOL success = [FileSystemUtilities copyFileInAttachFolder:destination source:[_dictionary valueForKey:@"filePath"]];
             if (success) {
                 attachment.claim = _claim;
@@ -398,10 +397,8 @@
     else
         attachment = [_filteredObjects objectAtIndex:indexPath.row];
     
-    NSString *claimFullPath = [_claim getFullPath]; [FileSystemUtilities getAttachmentFolder:_claim.claimId];
-    NSString *claimAttachmentsFullPath = [claimFullPath stringByAppendingPathComponent:_ATTACHMENT_FOLDER];
-
-    NSString *fullPath = [claimAttachmentsFullPath stringByAppendingPathComponent:[attachment.fileName lastPathComponent]];
+    NSString *fullPath =  [attachment getFullPath];
+    
     NSURL *fileUrl = [NSURL fileURLWithPath:fullPath];
     
     BOOL isFileExist = [[NSFileManager defaultManager] fileExistsAtPath:fullPath];
@@ -441,8 +438,6 @@
         attachment = [_fetchedResultsController objectAtIndexPath:indexPath];
     else
         attachment = [_filteredObjects objectAtIndex:indexPath.row];
-    NSString *filePath = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:[FileSystemUtilities getAttachmentFolder:_claim.claimId]];
-    filePath = [filePath stringByAppendingPathComponent:attachment.fileName];
     
     NSString *title = NSLocalizedString(@"app_name", nil);
     NSString *message = nil;

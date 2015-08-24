@@ -33,4 +33,6 @@
 
 - (void)importFromJSON:(NSDictionary *)keyedValues;
 
+- (NSString *)getFullPath;
+
 @end
