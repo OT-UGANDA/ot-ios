@@ -196,8 +196,8 @@
     // Vẽ các thửa trước
     [self drawMappedGeometry];
     
+    self.workingAnnotations = [NSMutableArray array];
     if (_claim.mappedGeometry != nil) {
-        self.workingAnnotations = [NSMutableArray array];
 
         // Lấy dữ liệu polygon
         ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:_claim.mappedGeometry];
