@@ -48,6 +48,9 @@
 + (NSString *)getCommunityArea;
 + (void)setCommunityArea:(NSString *)communityArea;
 
++ (BOOL)getParcelGeomRequired;
++ (void)setParcelGeomRequired:(BOOL)required;
+
 + (BOOL)getInitialization;
 + (void)setInitialization:(BOOL)initialized;
 

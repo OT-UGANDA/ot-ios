@@ -95,6 +95,15 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++ (BOOL)getParcelGeomRequired {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"ParcelGeomRequired"];
+}
+
++ (void)setParcelGeomRequired:(BOOL)required {
+    [[NSUserDefaults standardUserDefaults] setObject:@(required) forKey:@"ParcelGeomRequired"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 + (BOOL)getInitialization {
     return [[NSUserDefaults standardUserDefaults] boolForKey:@"initialized"];
 }

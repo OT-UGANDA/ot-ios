@@ -360,6 +360,20 @@ static NSString *destinationPath;
     }];
 }
 
++ (void)getParcelGeomRequired:(CompletionHandler)completionHandler {
+    
+    NSString *urlString = [NSString stringWithFormat:HTTPS_GETPARACELGEOMREQUIRED, [OTSetting getCommunityServerURL], [OT getLocalization]];
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completionHandler(error, httpResponse, data);
+        });
+    }];
+}
+
 #pragma for upload chunk
 + (NSString *)generateBoundaryString {
     CFUUIDRef       uuid;

@@ -506,7 +506,7 @@ typedef NS_ENUM(NSInteger, OTCell) {
                 }
             }
         }
-        if (_claim.mappedGeometry == nil) {
+        if (_claim.mappedGeometry == nil && [OTSetting getParcelGeomRequired]) {
             _claim.statusCode = kClaimStatusUpdating;
         } else if (updating) {
             _claim.statusCode = kClaimStatusUpdating;

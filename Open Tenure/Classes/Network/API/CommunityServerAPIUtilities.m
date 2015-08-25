@@ -59,3 +59,5 @@ NSString *HTTPS_GETCOMMUNITYAREA = @"%@/ws/%@/ref/getcommunityarea";
 NSString *HTTPS_WITHDRAWCLAIM = @"%@/ws/%@/claim/withdrawclaim/%@";
 
 NSString *HTTPS_GETDEFAULTFORMTEMPLATE = @"%@/ws/%@/claim/getDefaultFormTemplate";
+
+NSString *HTTPS_GETPARACELGEOMREQUIRED = @"%@/ws/%@/claim/getParcelGeomRequired";

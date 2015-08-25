@@ -123,6 +123,7 @@ typedef NS_ENUM(NSInteger, OTFullNameType) {
 + (void)updateDocumentType;
 + (void)updateDefaultFormTemplate;
 + (void)updateCommunityArea;
++ (void)updateParcelGeomRequired;
 
 /*!
  Lưu và lấy ra trạng thái khởi tạo

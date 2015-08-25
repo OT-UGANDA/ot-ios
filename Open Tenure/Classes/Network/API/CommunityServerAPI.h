@@ -53,4 +53,6 @@ typedef void (^CompletionHandler)(NSError *error, NSHTTPURLResponse *httpRespons
 
 + (void)getDefaultFormTemplate:(CompletionHandler)completionHandler;
 
++ (void)getParcelGeomRequired:(CompletionHandler)completionHandler;
+
 @end

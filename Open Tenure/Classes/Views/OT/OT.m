@@ -317,6 +317,32 @@ NSString * const kAttachmentStatusDownloading = @"downloading";
     }];
 }
 
++ (void)updateParcelGeomRequired {
+    [CommunityServerAPI getParcelGeomRequired:^(NSError *error, NSHTTPURLResponse *httpResponse, NSData *data) {
+        if (error != nil) {
+            [OT handleError:error];
+        } else {
+            if ((([httpResponse statusCode]/100) == 2) && [[httpResponse MIMEType] isEqual:@"application/json"]) {
+                NSError *errorJSON = nil;
+                NSDictionary *objects = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:&errorJSON];
+                if (errorJSON != nil) {
+                    [OT handleError:errorJSON];
+                } else {
+                    BOOL parcelGeomRequired = [[objects valueForKey:@"result"] boolValue];
+                    [OTSetting setParcelGeomRequired:parcelGeomRequired];
+                }
+            } else {
+                NSString *errorString = NSLocalizedStringFromTable(@"error_generic_conection", @"ActivityLogin", nil);
+                NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
+                NSError *reportError = [NSError errorWithDomain:@"HTTP"
+                                                           code:[httpResponse statusCode]
+                                                       userInfo:userInfo];
+                [OT handleError:reportError];
+            }
+        }
+    }];
+}
+
 + (void)login {
     if ([OTAppDelegate authenticated]) {
         // Logout
