@@ -107,7 +107,7 @@
     [challenges setClaim:_claim];
     OTSharesUpdateViewController *shares = [OTSharesUpdateViewController new];
     [shares setClaim:_claim];
-    _views = [@[claim, map, documents, adjacencies, challenges, shares] mutableCopy];
+    _views = [@[claim, shares, documents, adjacencies, map, challenges] mutableCopy];
 
     [self createBarButtonItems];
     
@@ -132,7 +132,7 @@
         [_views addObject:formView];
     }
     
-    NSArray *titleArr = @[NSLocalizedString(@"title_claim", @"Claim"), NSLocalizedString(@"title_map", @"Map"), NSLocalizedString(@"title_claim_documents", @"Documents"), NSLocalizedString(@"title_claim_adjacencies", @"Adjacencies"), NSLocalizedString(@"title_claim_challenges", @"Challenges"), NSLocalizedString(@"title_claim_owners", @"Owners")];
+    NSArray *titleArr = @[NSLocalizedString(@"title_claim", @"Claim"), NSLocalizedString(@"title_claim_owners", @"Owners"), NSLocalizedString(@"title_claim_documents", @"Documents"), NSLocalizedString(@"title_claim_adjacencies", @"Adjacencies"), NSLocalizedString(@"title_map", @"Map"), NSLocalizedString(@"title_claim_challenges", @"Challenges")];
     _titles = [titleArr mutableCopy];
     for (SectionTemplate *object in objects) {
         if (object.displayName != nil)
@@ -310,18 +310,18 @@
 
     _done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:_views[0] action:@selector(done:)];
     
-    _mapSnapshot = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu_snapshot"] style:UIBarButtonItemStylePlain target:_views[1] action:@selector(mapSnapshot:)];
+    _mapSnapshot = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu_snapshot"] style:UIBarButtonItemStylePlain target:_views[4] action:@selector(mapSnapshot:)];
     
-    OTMapViewController *mapViewController = (OTMapViewController *)_views[1];
+    OTMapViewController *mapViewController = (OTMapViewController *)_views[4];
     _myLocation = [[MKUserTrackingBarButtonItem alloc] initWithMapView:mapViewController.mapView];
     
-    _addMarker = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:_views[1] action:@selector(addMarker:)];
+    _addMarker = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:_views[4] action:@selector(addMarker:)];
     
     _takePhotoDoc = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu_camera"] style:UIBarButtonItemStylePlain target:_views[2] action:@selector(takePhotoDoc:)];
 
     _attachDoc = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu_attachment"] style:UIBarButtonItemStylePlain target:_views[2] action:@selector(attachDoc:)];
 
-    _addShare = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:_views[5] action:@selector(addShare:)];
+    _addShare = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:_views[1] action:@selector(addShare:)];
     
     _menu = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu"] style:UIBarButtonItemStylePlain target:_views[0] action:@selector(showMenu:)];
     
@@ -331,9 +331,9 @@
     
     _addFormSection = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:nil action:@selector(addFormSection:)];
 
-    _zoomToCommunityArea = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu_community_area"] style:UIBarButtonItemStylePlain target:_views[1] action:@selector(zoomToCommunityArea:)];
+    _zoomToCommunityArea = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ic_menu_community_area"] style:UIBarButtonItemStylePlain target:_views[4] action:@selector(zoomToCommunityArea:)];
 
-    _measure = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ruler_blue"] style:UIBarButtonItemStylePlain target:_views[1] action:@selector(measureAction:)];
+    _measure = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"ruler_blue"] style:UIBarButtonItemStylePlain target:_views[4] action:@selector(measureAction:)];
 }
 
 - (void)setBarButtonItemsForTabBarIndex:(NSInteger)index {
@@ -382,7 +382,7 @@
             [_views[index] setShowcaseTargetList:items];
             break;
         }
-        case 1: { // Buttons for Map tab
+        case 4: { // Buttons for Map tab
             _myLocation.mapView = [(OTMapViewController *)_views[index] mapView];
             [_done setTarget:_views[index]];
             [_zoomToCommunityArea setTarget:_views[index]];
@@ -449,15 +449,16 @@
         }
         case 3: { // Buttons for Adjacencies tab
             [_done setTarget:_views[index]];
+            [_save setTarget:_views[0]];
             if ([_claim isSaved]) { // View claim
                 if (_claim.getViewType == OTViewTypeEdit) { // Local claim
-                    self.navigationItem.rightBarButtonItems = @[];
+                    self.navigationItem.rightBarButtonItems = @[_save];
                 } else { // Readonly claim
                     // TODO: Can be edit and save?
                     self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
                 }
             } else { // Add claim
-                self.navigationItem.rightBarButtonItems = @[];
+                self.navigationItem.rightBarButtonItems = @[_save];
             }
             NSArray *items = @[@{@"type":[NSNumber numberWithInt:0],
                                  @"target":_adjacenciesTabBarLabel,
@@ -466,7 +467,7 @@
             [_views[index] setShowcaseTargetList:items];
             break;
         }
-        case 4: { // Buttons for Challenges tab
+        case 5: { // Buttons for Challenges tab
             [_done setTarget:_views[index]];
             if ([_claim isSaved]) { // View claim
                 if (_claim.getViewType == OTViewTypeEdit) { // Local claim
@@ -485,7 +486,7 @@
             [_views[index] setShowcaseTargetList:items];
             break;
         }
-        case 5: { // Buttons for Shares tab
+        case 1: { // Buttons for Shares tab
             [_done setTarget:_views[index]];
             if ([_claim isSaved]) { // View claim
                 if (_claim.getViewType == OTViewTypeEdit) { // Local claim
