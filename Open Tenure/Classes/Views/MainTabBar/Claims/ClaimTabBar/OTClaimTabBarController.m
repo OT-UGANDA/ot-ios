@@ -508,13 +508,14 @@
         default: // Buttons for Dynamic form
             [_done setTarget:_views[index]];
             [_addFormSection setTarget:_views[index]];
+            [_save setTarget:_views[0]];
             if ([_claim isSaved]) { // View claim
                 if (_claim.getViewType == OTViewTypeEdit) { // Local claim
                     if ([[[[_views[index] sectionPayload] sectionTemplate] maxOccurrences] integerValue] > 1 ||
                         [[[[_views[index] sectionPayload] sectionTemplate] maxOccurrences] integerValue] == 0)
                         self.navigationItem.rightBarButtonItems = @[_addFormSection, _flexibleSpace];
                     else
-                        self.navigationItem.rightBarButtonItems = @[];
+                        self.navigationItem.rightBarButtonItems = @[_save, _flexibleSpace];
                 } else { // Readonly claim
                     // TODO: Can be edit and save?
                     self.navigationItem.rightBarButtonItems = @[_done, _flexibleSpace];
@@ -524,7 +525,7 @@
                     [[[[_views[index] sectionPayload] sectionTemplate] maxOccurrences] integerValue] == 0)
                     self.navigationItem.rightBarButtonItems = @[_addFormSection, _flexibleSpace];
                 else
-                    self.navigationItem.rightBarButtonItems = @[];
+                    self.navigationItem.rightBarButtonItems = @[_save, _flexibleSpace];
             }
             break;
     }
