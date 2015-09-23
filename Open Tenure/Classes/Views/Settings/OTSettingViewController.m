@@ -28,6 +28,8 @@
 
 #import "OTSettingViewController.h"
 
+#define TILESPROVIDER @[NSLocalizedString(@"wtms_url_pref_title", nil), NSLocalizedString(@"tms_url_pref_title", nil), NSLocalizedString(@"map_provider_geoserver", nil)]
+
 @interface OTSettingViewController ()
 
 @end
@@ -38,17 +40,26 @@
     [super viewDidLoad];
     
     [self configureToolBar];
-    
+
+    if (self.sections == nil)
+        self.sections = @[NSLocalizedString(@"general", nil),
+                          NSLocalizedString(@"map_sources", nil),
+                          NSLocalizedString(@"dynamic_form", nil)];
     if (self.cells == nil)
-        self.cells = @[@{@"title" : NSLocalizedString(@"cs_url_pref_title", nil),
-                         @"subtitle" : NSLocalizedString(@"cs_url_pref_summary", nil)},
-                       @{@"title" : NSLocalizedString(@"geoserver_url_pref_title", nil),
-                         @"subtitle" : NSLocalizedString(@"geoserver_url_pref_summary", nil)},
-                       @{@"title" : NSLocalizedString(@"geoserver_layer_pref_title", nil),
-                         @"subtitle" : NSLocalizedString(@"geoserver_layer_pref_summary", nil)},
-                       @{@"title" : NSLocalizedString(@"form_template_url_pref_title", nil),
-                         @"subtitle" : NSLocalizedString(@"form_template_url_pref_summary", nil)},
-                       ];
+        self.cells = @[@[@{@"title" : NSLocalizedString(@"cs_url_pref_title", nil),
+                           @"subtitle" : NSLocalizedString(@"cs_url_pref_summary", nil)}],
+                       @[@{@"title" : NSLocalizedString(@"tiles_provider", nil),
+                           @"subtitle" : TILESPROVIDER[[OTSetting getOMTPType]]},
+                         @{@"title" : NSLocalizedString(@"geoserver_url_pref_title", nil),
+                           @"subtitle" : NSLocalizedString(@"geoserver_url_pref_summary", nil)},
+                         @{@"title" : NSLocalizedString(@"geoserver_layer_pref_title", nil),
+                           @"subtitle" : NSLocalizedString(@"geoserver_layer_pref_summary", nil)},
+                         @{@"title" : NSLocalizedString(@"tms_url_pref_title", nil),
+                           @"subtitle" : NSLocalizedString(@"tms_url_pref_summary", nil)},
+                         @{@"title" : NSLocalizedString(@"wtms_url_pref_title", nil),
+                           @"subtitle" : NSLocalizedString(@"wtms_url_pref_summary", nil)}],
+                       @[@{@"title" : NSLocalizedString(@"form_template_url_pref_title", nil),
+                           @"subtitle" : NSLocalizedString(@"form_template_url_pref_summary", nil)}]];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -91,17 +102,23 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return self.cells.count;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return _cells.count;
+    return [_cells[section] count];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return _sections[section];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    cell.textLabel.text = [[_cells objectAtIndex:indexPath.row] objectForKey:@"title"];
-    cell.detailTextLabel.text = [[_cells objectAtIndex:indexPath.row] objectForKey:@"subtitle"];
+    NSArray *cells = _cells[indexPath.section];
+    cell.textLabel.text = [[cells objectAtIndex:indexPath.row] objectForKey:@"title"];
+    cell.detailTextLabel.text = [[cells objectAtIndex:indexPath.row] objectForKey:@"subtitle"];
+    
     return cell;
  }
 
@@ -179,10 +196,63 @@
                               if (buttonIndex != alertView.cancelButtonIndex) {
                                   NSString *urlString = [[alertView textFieldAtIndex:0] text];
                                   if (urlString.length == 0)
-                                      urlString = @"https://ot.flossola.org";
+                                      urlString = nil;
                                   NSURL *theURL = [NSURL URLWithString:urlString];
                                   if (theURL && theURL.scheme && theURL.host) {
                                       [OTSetting setFormURL:theURL.absoluteString];
+                                  } else {
+                                      [OT handleErrorWithMessage:@"This URL which has no scheme or host"];
+                                  }
+                              }
+                          }];
+    } else if ([cell.textLabel.text isEqualToString:NSLocalizedString(@"tiles_provider", nil)]) {
+        NSString *title = NSLocalizedString(@"tiles_provider_dialog_title", nil);
+        [UIAlertView showWithTitle:title
+                           message:nil
+                 cancelButtonTitle:NSLocalizedString(@"cancel", nil)
+                 otherButtonTitles:@[TILESPROVIDER[0],TILESPROVIDER[1],TILESPROVIDER[2]] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                     if (buttonIndex != alertView.cancelButtonIndex) {
+                         [OTSetting setOMTPType:buttonIndex - 1];
+                         cell.detailTextLabel.text = TILESPROVIDER[[OTSetting getOMTPType]];
+                     }
+                 }];
+    } else if ([cell.textLabel.text isEqualToString:NSLocalizedString(@"tms_url_pref_title", nil)]) {
+        NSString *title = NSLocalizedString(@"tms_url_pref_dialog_title", nil);
+        [UIAlertView showWithTitle:title
+                           message:nil
+                       placeholder:[OTSetting getTMSURL]
+                       defaultText:[OTSetting getTMSURL]
+                             style:UIAlertViewStylePlainTextInput
+                 cancelButtonTitle:NSLocalizedString(@"cancel", nil)
+                 otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
+                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                              if (buttonIndex != alertView.cancelButtonIndex) {
+                                  NSString *urlString = [[alertView textFieldAtIndex:0] text];
+                                  urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                                  NSURL *theURL = [NSURL URLWithString:urlString];
+                                  if (theURL && theURL.scheme && theURL.host) {
+                                      [OTSetting setTMSURL:[theURL.absoluteString stringByRemovingPercentEncoding]];
+                                  } else {
+                                      [OT handleErrorWithMessage:@"This URL which has no scheme or host"];
+                                  }
+                              }
+                          }];
+    } else if ([cell.textLabel.text isEqualToString:NSLocalizedString(@"wtms_url_pref_title", nil)]) {
+        NSString *title = NSLocalizedString(@"wtms_url_pref_dialog_title", nil);
+        [UIAlertView showWithTitle:title
+                           message:nil
+                       placeholder:[OTSetting getWTMSURL]
+                       defaultText:[OTSetting getWTMSURL]
+                             style:UIAlertViewStylePlainTextInput
+                 cancelButtonTitle:NSLocalizedString(@"cancel", nil)
+                 otherButtonTitles:@[NSLocalizedString(@"OK", nil)]
+                          tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+                              if (buttonIndex != alertView.cancelButtonIndex) {
+                                  NSString *urlString = [[alertView textFieldAtIndex:0] text];
+                                  urlString = [urlString stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                                  NSURL *theURL = [NSURL URLWithString:urlString];
+                                  if (theURL && theURL.scheme && theURL.host) {
+                                      [OTSetting setWTMSURL:[theURL.absoluteString stringByRemovingPercentEncoding]];
                                   } else {
                                       [OT handleErrorWithMessage:@"This URL which has no scheme or host"];
                                   }

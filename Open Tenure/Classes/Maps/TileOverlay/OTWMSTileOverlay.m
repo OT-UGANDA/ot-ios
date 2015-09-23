@@ -28,50 +28,6 @@
 
 #import "OTWMSTileOverlay.h"
 
-#define MAP_TILES   @"MapTiles"
-#define SRID        @"900913"
-#define TO_RADIANS  M_PI/180.0f
-#define TO_DEGREES  180.0f/M_PI
-
-typedef struct {
-    CGFloat minx;
-    CGFloat miny;
-    CGFloat maxx;
-    CGFloat maxy;
-} BBOX;
-
-typedef struct {
-    int NORTH_EAST_X;
-    int NORTH_EAST_Y;
-    int SOUTH_WEST_X;
-    int SOUTH_WEST_Y;
-} TILE;
-
-typedef struct {
-    int x;
-    int y;
-} POINT;
-
-typedef struct {
-    CLLocationCoordinate2D northeast;
-    CLLocationCoordinate2D southwest;
-} LatLngBounds;
-
-NS_INLINE double MercatorFromLatitude(CLLocationDegrees latitude) {
-    double radians = log(tan(TO_RADIANS*(latitude+90.0f)/2.0f));
-    double mercator = TO_DEGREES*radians;
-    return mercator;
-}
-
-NS_INLINE POINT TileOfCoordinate(CLLocationCoordinate2D coord, int zoom) {
-    POINT result;
-    int noTiles = (1 << zoom);
-    double longitudeSpan = 360.0 / noTiles;
-    result.x = (int)((coord.longitude +180.0)/longitudeSpan);
-    result.y = -(int)((noTiles * (MercatorFromLatitude(coord.latitude) - 180.0))/360.0);
-    return result;
-}
-
 @interface OTWMSTileOverlay () {
     // array indexes for array to hold bounding boxes.
     int MINX;
@@ -150,46 +106,44 @@ NS_INLINE POINT TileOfCoordinate(CLLocationCoordinate2D coord, int zoom) {
     return self;
 }
 
-
-- (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *, NSError *))result {
-    NSURL *url = [self URLForTilePath:path];
+- (void)loadTileAtPath:(MKTileOverlayPath)path result:(void (^)(NSData *data, NSError *error))result {
+    if (!result) return;
     NSString *filePath = [self filePathForTilePath:path];
-    
-    if ([self isOffline]) { // Local data
-        // Kiểm tra nếu tile file đang tồn tại
-        if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-            NSData *tileData = [NSData dataWithContentsOfFile:filePath];
-            result(tileData, nil);
-        } else {
-            result(nil, nil);
-        }
-    } else {
-        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url];
+    NSPurgeableData *cachedData = [NSPurgeableData dataWithContentsOfFile:filePath];
+    if (cachedData) {
+        result([NSData dataWithData:cachedData], nil);
+    } else if ([self isGeoServerWMS]) {
+        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[self URLForTilePath:path] cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:20];
         [NSURLConnection sendAsynchronousRequest:urlRequest
                                            queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   if (error) {
-                                       NSLog(@"Error downloading tile ! \n");
-                                       result(nil, error);
-                                   }
-                                   else {
-                                       [data writeToFile:filePath atomically:YES];
-                                       result(data, nil);
-                                   }
-                               }];
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+             NSPurgeableData *cachedData = nil;
+             if (data) {
+                 cachedData = [NSPurgeableData dataWithData:data];
+                 [cachedData writeToFile:filePath atomically:YES];
+             }
+             result(data, connectionError);
+         }];
     }
 }
 
+
 #pragma mark - Custom for WMS
-- (id)initWithWMSUrlString:(NSString *)urlString layers:(NSString *)layers tileSize:(CGSize)tileSize {
+- (id)initWithWMSUrlString:(NSString *)urlString tileSize:(CGSize)tileSize {
     if (self = [self init]) {
-        NSString *stringFormat = @"/wms?layers=%@&version=%@&service=%@&request=%@&transparent=true&styles=%@&format=%@&srs=%@%@&width=%tu&height=%tu";
-        URL_STRING = [urlString stringByAppendingString:[NSString stringWithFormat:stringFormat, layers, version, service, request, styles, format, srs, @"&bbox=%f,%f,%f,%f", (long)tileSize.width, (long)tileSize.height]];
+        if ([self URLTemplate] == nil) {
+            URL_STRING  = [urlString stringByAppendingString:[NSString stringWithFormat:@"&width=%tu&height=%tu", (long)tileSize.width, (long)tileSize.height]];
+            URL_STRING = [URL_STRING stringByAppendingString:@"&bbox=%f,%f,%f,%f"];
+            self.geoServerWMS = YES;
+        }
     }
-    MKTileOverlayPath path;
-    path.x = 1;
-    path.y = 2;
-    path.z = 3;
+    return self;
+}
+
+- (instancetype)initWithURLTemplate:(NSString *)URLTemplate {
+    if (self = [super initWithURLTemplate:URLTemplate]) {
+        URL_STRING = [self URLTemplate];
+    }
     return self;
 }
 
@@ -208,8 +162,12 @@ NS_INLINE POINT TileOfCoordinate(CLLocationCoordinate2D coord, int zoom) {
 }
 
 - (NSURL *)URLForTilePath:(MKTileOverlayPath)path {
-    BBOX bbox = [self bboxForPath:path];
-    NSString *urlString = [NSString stringWithFormat:URL_STRING, bbox.minx, bbox.miny, bbox.maxx, bbox.maxy];
+    NSString *urlString;
+    if ([self URLTemplate] == nil) {
+        BBOX bbox = [self bboxForPath:path];
+        urlString = [NSString stringWithFormat:URL_STRING, bbox.minx, bbox.miny, bbox.maxx, bbox.maxy];
+    } else
+        return [super URLForTilePath:path];
     return [NSURL URLWithString:urlString];
 }
 
@@ -223,7 +181,7 @@ NS_INLINE POINT TileOfCoordinate(CLLocationCoordinate2D coord, int zoom) {
     return tile;
 }
 
-- (NSArray *)tilesForNorthEast:(CLLocationCoordinate2D)neCoord southWest:(CLLocationCoordinate2D)swCoord startZoom:(int)startZoom endZoom:(int)endZoom {
+- (NSArray *)tilesForNorthEast:(CLLocationCoordinate2D)neCoord southWest:(CLLocationCoordinate2D)swCoord startZoom:(int)startZoom endZoom:(int)endZoom canReplace:(BOOL)canReplace {
     NSMutableArray *tiles = [NSMutableArray array];
     POINT northeast = TileOfCoordinate(neCoord, startZoom);
     POINT southwest = TileOfCoordinate(swCoord, startZoom);
@@ -236,9 +194,8 @@ NS_INLINE POINT TileOfCoordinate(CLLocationCoordinate2D coord, int zoom) {
                 path.z = zoom;
                 NSURL *sourceUrl = [self URLForTilePath:path];
                 NSURL *destinationUrl = [NSURL URLWithString:[self filePathForTilePath:path]];
-                NSString *filePath = [NSString stringWithFormat:@"%tu/%tu/%tu.png", zoom, x, y];
-                if (![[NSFileManager defaultManager] fileExistsAtPath:[destinationUrl path]]) {
-                    [tiles addObject:@{@"sourceUrl":sourceUrl, @"filePath":filePath}];
+                if (![[NSFileManager defaultManager] fileExistsAtPath:[destinationUrl path]] || canReplace) {
+                    [tiles addObject:@{@"sourceUrl":sourceUrl, @"destinationUrl":destinationUrl}];
                 }
             }
         }
@@ -252,14 +209,17 @@ NS_INLINE POINT TileOfCoordinate(CLLocationCoordinate2D coord, int zoom) {
 }
 
 - (NSString *)filePathForTilePath:(MKTileOverlayPath)path {
-    NSString *tilesFolder = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingString:@"/tiles"];
-    [FileSystemUtilities createFolder:tilesFolder];
+    NSString *tilesRoot = [[[FileSystemUtilities applicationDocumentsDirectory] path] stringByAppendingPathComponent:MAP_TILES];
+    [FileSystemUtilities createDirectoryAtURL:[NSURL fileURLWithPath:tilesRoot isDirectory:YES]];
+    
+    NSString *tilesFolder = [tilesRoot stringByAppendingPathComponent:URL_STRING.md5];
+    [FileSystemUtilities createDirectoryAtURL:[NSURL fileURLWithPath:tilesFolder isDirectory:YES]];
     
     NSString *zPath = [NSString stringWithFormat:@"%@/%tu", tilesFolder, path.z];
     NSString *xPath = [NSString stringWithFormat:@"%@/%tu/%tu", tilesFolder, path.z, path.x];
-    [FileSystemUtilities createFolder:zPath];
-    [FileSystemUtilities createFolder:xPath];
-
+    [FileSystemUtilities createDirectoryAtURL:[NSURL fileURLWithPath:zPath isDirectory:YES]];
+    [FileSystemUtilities createDirectoryAtURL:[NSURL fileURLWithPath:xPath isDirectory:YES]];
+    
     NSString *filePath = [NSString stringWithFormat:@"%tu/%tu/%tu.png", path.z, path.x, path.y];
     return [tilesFolder stringByAppendingPathComponent:filePath];
 }

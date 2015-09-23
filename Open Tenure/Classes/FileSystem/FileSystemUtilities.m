@@ -31,6 +31,28 @@
 @implementation FileSystemUtilities
 
 
++ (BOOL)createDirectoryAtURL:(NSURL *)url {
+    NSError *error = nil;
+    if (![[NSFileManager defaultManager] createDirectoryAtURL:url withIntermediateDirectories:YES attributes:nil error:&error]) {
+        // Handle error.
+        NSString *errMsg = [NSString stringWithFormat:@"Failed creating directory [%@], %@", [url.path lastPathComponent], error.localizedDescription];
+        [OT handleErrorWithMessage:errMsg];
+    } else
+        return YES;
+    return NO;
+}
+
++ (BOOL)createDirectoryAtPath:(NSString *)path {
+    NSError *error = nil;
+    if (![[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error]) {
+        // Handle error.
+        NSString *errMsg = [NSString stringWithFormat:@"Failed creating directory [%@], %@", [path lastPathComponent], error.localizedDescription];
+        [OT handleErrorWithMessage:errMsg];
+    } else
+        return YES;
+    return NO;
+}
+
 /**
  *
  * Create the folder under the application's documents directory.

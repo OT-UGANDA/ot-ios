@@ -38,6 +38,7 @@
 
 @interface OTSettingViewController : UITableViewController
 
+@property (strong, nonatomic) NSArray *sections;
 @property (strong, nonatomic) NSArray *cells;
 
 @property (weak, nonatomic) id <OTSettingViewControllerDelegate> delegate;

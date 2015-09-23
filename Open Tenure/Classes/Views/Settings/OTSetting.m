@@ -27,12 +27,13 @@
  */
 
 #import "OTSetting.h"
+#define defaultGeoServerUrl @"https://demo.opentenure.org/geoserver"
 
 @implementation OTSetting
 
 + (NSString *)getCommunityServerURL {
     NSString *url = [[NSUserDefaults standardUserDefaults] stringForKey:@"CommunityServerURL"];
-    if (url == nil) url = @"https://ot.flossola.org";
+    if (url == nil) url = @"https://demo.opentenure.org";
     return url;
 }
 
@@ -41,9 +42,17 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++ (NSString *)getGeoServerWMSURL {
+    NSString *url = [self getGeoServerURL];
+    if (url == nil) url = defaultGeoServerUrl;
+    url = [url stringByAppendingString:@"/ows?service=WMS&request=GetMap&layers=%@&styles=&srs=EPSG:900913&transparent=true&format=image/png"];
+    url = [NSString stringWithFormat:url, [self getGeoServerLayers]];
+    return url;
+}
+
 + (NSString *)getGeoServerURL {
     NSString *url = [[NSUserDefaults standardUserDefaults] stringForKey:@"GeoServerURL"];
-    if (url == nil) url = @"http://demo.flossola.org/geoserver/sola";
+    if (url == nil) url = defaultGeoServerUrl;
     return url;
 }
 
@@ -65,13 +74,62 @@
 
 + (NSString *)getFormURL {
     NSString *url = [[NSUserDefaults standardUserDefaults] stringForKey:@"FormURL"];
-    if (url == nil) url = @"https://ot.flossola.org";
+    if (url == nil) url = [self getCommunityServerURL];
     return url;
 }
 
 + (void)setFormURL:(NSString *)url {
     [[NSUserDefaults standardUserDefaults] setObject:url forKey:@"FormURL"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (OTOMTPType)getOMTPType {
+    OTOMTPType omtpType = [[NSUserDefaults standardUserDefaults] integerForKey:@"OMTPType"];
+    return omtpType;
+}
+
++ (void)setOMTPType:(OTOMTPType)omtpType {
+    [[NSUserDefaults standardUserDefaults] setObject:@(omtpType) forKey:@"OMTPType"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (NSString *)getTMSURL {
+    NSString *url = [[NSUserDefaults standardUserDefaults] stringForKey:@"TMSURL"];
+    if (url == nil) url = @"https://mts0.google.com/vt/lyrs=s,l,r&x={x}&y={y}&z={z}scale={scale}";
+    return url;
+}
+
++ (void)setTMSURL:(NSString *)url {
+    [[NSUserDefaults standardUserDefaults] setObject:url forKey:@"TMSURL"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (NSString *)getWTMSURL {
+    NSString *url = [[NSUserDefaults standardUserDefaults] stringForKey:@"WTMSURL"];
+    if (url == nil) url = @"https://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
+    return url;
+}
+
++ (void)setWTMSURL:(NSString *)url {
+    [[NSUserDefaults standardUserDefaults] setObject:url forKey:@"WTMSURL"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (NSString *)getOfflineMapURL {
+    NSString *url = [self getGeoServerWMSURL];
+    switch ([self getOMTPType]) {
+        case WTMS:
+            url = [self getWTMSURL];
+            break;
+            
+        case TMS:
+            url = [self getTMSURL];
+            break;
+            
+        default:
+            break;
+    }
+    return url;
 }
 
 + (NSString *)getWMSVersion {

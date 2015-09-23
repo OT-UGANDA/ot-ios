@@ -65,12 +65,15 @@
     
     _searchBar.placeholder = NSLocalizedString(@"hint_type_to_filter", @"Search");
     
-    if (self.cells == nil)
-        self.cells = @[@{@"title" : @"http://ot.flossola.org",
+    if (self.cells == nil) {
+        NSString *csUrl = [OTSetting getCommunityServerURL];
+        NSString *homeUrl = [csUrl stringByAppendingPathComponent:@"home"];
+        self.cells = @[@{@"title" : csUrl,
                          @"subtitle" : @"OpenTenure Community: visit the OpenTenure Community web site and tell us what you think."},
-                       @{@"title" : @"http://www.flossola.org/home",
+                       @{@"title" : homeUrl,
                          @"subtitle" : @"FLOSS SOLA: look at the latest news on FLOSS SOLA web site."}
                        ];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {

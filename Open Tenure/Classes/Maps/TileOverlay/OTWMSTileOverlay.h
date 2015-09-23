@@ -28,12 +28,59 @@
 
 #import <MapKit/MapKit.h>
 
+typedef struct {
+    CGFloat minx;
+    CGFloat miny;
+    CGFloat maxx;
+    CGFloat maxy;
+} BBOX;
+
+#define SRID        @"900913"
+#define TO_RADIANS  M_PI/180.0f
+#define TO_DEGREES  180.0f/M_PI
+
+typedef struct {
+    int NORTH_EAST_X;
+    int NORTH_EAST_Y;
+    int SOUTH_WEST_X;
+    int SOUTH_WEST_Y;
+} TILE;
+
+typedef struct {
+    int x;
+    int y;
+} POINT;
+
+typedef struct {
+    CLLocationCoordinate2D northeast;
+    CLLocationCoordinate2D southwest;
+} LatLngBounds;
+
+NS_INLINE double MercatorFromLatitude(CLLocationDegrees latitude) {
+    double radians = log(tan(TO_RADIANS*(latitude+90.0f)/2.0f));
+    double mercator = TO_DEGREES*radians;
+    return mercator;
+}
+
+NS_INLINE POINT TileOfCoordinate(CLLocationCoordinate2D coord, int zoom) {
+    POINT result;
+    int noTiles = (1 << zoom);
+    double longitudeSpan = 360.0 / noTiles;
+    result.x = (int)((coord.longitude +180.0)/longitudeSpan);
+    result.y = -(int)((noTiles * (MercatorFromLatitude(coord.latitude) - 180.0))/360.0);
+    return result;
+}
+
 @interface OTWMSTileOverlay : MKTileOverlay
 
-@property (nonatomic, assign, getter=isOffline) BOOL offline;
+@property (nonatomic, getter=isGeoServerWMS) BOOL geoServerWMS;
 
-- (id)initWithWMSUrlString:(NSString *)urlString layers:(NSString *)layers tileSize:(CGSize)tileSize;
+- (id)initWithWMSUrlString:(NSString *)urlString tileSize:(CGSize)tileSize;
 
-- (NSArray *)tilesForNorthEast:(CLLocationCoordinate2D)neCoord southWest:(CLLocationCoordinate2D)swCoord startZoom:(int)startZoom endZoom:(int)endZoom;
+- (NSArray *)tilesForNorthEast:(CLLocationCoordinate2D)neCoord southWest:(CLLocationCoordinate2D)swCoord startZoom:(int)startZoom endZoom:(int)endZoom canReplace:(BOOL)canReplace;
+
+- (BBOX)bboxForPath:(MKTileOverlayPath)path;
+- (NSString *)filePathForTilePath:(MKTileOverlayPath)path;
+- (NSURL *)URLForTilePath:(MKTileOverlayPath)path;
 
 @end

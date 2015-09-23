@@ -500,9 +500,9 @@
                 }
                 [self_.mapView setMapType:MKMapTypeStandard];
                 CGFloat scale = [[UIScreen mainScreen] scale];
-                NSString *urlTemplate = @"http://mts0.google.com/vt/lyrs=m,r?x={x}&y={y}&z={z}&scale={scale}";
+                NSString *urlTemplate = @"https://mts0.google.com/vt/lyrs=m,r?x={x}&y={y}&z={z}&scale={scale}";
                 if (scale > 2.0) {
-                    urlTemplate = @"http://mts0.google.com/vt/lyrs=m,r?x={x}&y={y}&z={z}&scale=2";
+                    urlTemplate = @"https://mts0.google.com/vt/lyrs=m,r?x={x}&y={y}&z={z}&scale=2";
                     scale = 2.0;
                 }
                 self_->tileOverlay = [[MKTileOverlay alloc] initWithURLTemplate:urlTemplate];
@@ -523,9 +523,9 @@
                 }
                 [self_.mapView setMapType:MKMapTypeStandard];
                 CGFloat scale = [[UIScreen mainScreen] scale];
-                NSString *urlTemplate = @"http://mts0.google.com/vt/lyrs=s,l,r&x={x}&y={y}&z={z}&scale={scale}";
+                NSString *urlTemplate = @"https://mts0.google.com/vt/lyrs=s,l,r&x={x}&y={y}&z={z}&scale={scale}";
                 if (scale > 2.0) {
-                    urlTemplate = @"http://mts0.google.com/vt/lyrs=s,l,r&x={x}&y={y}&z={z}&scale=2";
+                    urlTemplate = @"https://mts0.google.com/vt/lyrs=s,l,r&x={x}&y={y}&z={z}&scale=2";
                     scale = 2.0;
                 }
                 self_->tileOverlay = [[MKTileOverlay alloc] initWithURLTemplate:urlTemplate];
@@ -546,9 +546,9 @@
                 }
                 [self_.mapView setMapType:MKMapTypeStandard];
                 CGFloat scale = [[UIScreen mainScreen] scale];
-                NSString *urlTemplate = @"http://mts0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&scale={scale}";
+                NSString *urlTemplate = @"https://mts0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&scale={scale}";
                 if (scale > 2.0) {
-                    urlTemplate = @"http://mts0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&scale=2";
+                    urlTemplate = @"https://mts0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&scale=2";
                     scale = 2.0;
                 }
                 self_->tileOverlay = [[MKTileOverlay alloc] initWithURLTemplate:urlTemplate];
@@ -569,9 +569,9 @@
                 }
                 [self_.mapView setMapType:MKMapTypeStandard];
                 CGFloat scale = [[UIScreen mainScreen] scale];
-                NSString *urlTemplate = @"http://mts0.google.com/vt/lyrs=t,r&x={x}&y={y}&z={z}&scale={scale}";
+                NSString *urlTemplate = @"https://mts0.google.com/vt/lyrs=t,r&x={x}&y={y}&z={z}&scale={scale}";
                 if (scale > 2.0) {
-                    urlTemplate = @"http://mts0.google.com/vt/lyrs=t,r&x={x}&y={y}&z={z}&scale=2";
+                    urlTemplate = @"https://mts0.google.com/vt/lyrs=t,r&x={x}&y={y}&z={z}&scale=2";
                     scale = 2.0;
                 }
                 self_->tileOverlay = [[MKTileOverlay alloc] initWithURLTemplate:urlTemplate];
@@ -621,9 +621,22 @@
                     [self_.mapView setNeedsDisplay];
                 }
                 [self_.mapView setMapType:MKMapTypeStandard];
-                
-                self_->tileOverlay = [[OTWMSTileOverlay alloc] initWithWMSUrlString:[OTSetting getGeoServerURL] layers:[OTSetting getGeoServerLayers] tileSize:CGSizeMake(TILE_SIZE, TILE_SIZE)];
-                [self_->tileOverlay setOffline:YES];
+                CGFloat scale = [[UIScreen mainScreen] scale];
+                NSString *urlTemplate = [OTSetting getOfflineMapURL];
+                if (scale >= 2.0) { // {scale}
+                    urlTemplate = [urlTemplate stringByReplacingOccurrencesOfString:@"{scale}" withString:@"2"];
+                }
+                if ([OTSetting getOMTPType] == GeoServer) {
+                    self_->tileOverlay = [[OTWMSTileOverlay alloc] initWithWMSUrlString:urlTemplate tileSize:CGSizeMake(TILE_SIZE, TILE_SIZE)];
+                } else {
+                    self_->tileOverlay = [[OTWMSTileOverlay alloc] initWithURLTemplate:urlTemplate];
+                    CGSize tileSize = [self_->tileOverlay tileSize];
+                    if ([urlTemplate containsString:@"&scale="]) {
+                        tileSize.height *= scale;
+                        tileSize.width *= scale;
+                    }
+                    [self_->tileOverlay setTileSize:tileSize];
+                }
                 [self_->tileOverlay setCanReplaceMapContent:YES];
                 [self_.mapView insertOverlay:self_->tileOverlay belowOverlay:self_.shapes];
                 
@@ -637,9 +650,8 @@
                 }
                 [self_.mapView setMapType:MKMapTypeStandard];
                 
-                self_->tileOverlay = [[OTWMSTileOverlay alloc] initWithWMSUrlString:[OTSetting getGeoServerURL] layers:[OTSetting getGeoServerLayers] tileSize:CGSizeMake(TILE_SIZE, TILE_SIZE)];
-                [self_->tileOverlay setOffline:NO];
-                [self_->tileOverlay setCanReplaceMapContent:YES];
+                self_->tileOverlay = [[OTWMSTileOverlay alloc] initWithWMSUrlString:[OTSetting getGeoServerWMSURL] tileSize:CGSizeMake(TILE_SIZE, TILE_SIZE)];
+                [self_->tileOverlay setCanReplaceMapContent:NO];
                 [self_.mapView insertOverlay:self_->tileOverlay belowOverlay:self_.shapes];
                 
                 [self_ configureMapTypeLabelForTitle:[[cells objectAtIndex:itemIndex] objectForKey:@"title"] message:nil];
@@ -2002,6 +2014,28 @@
     [self presentViewController:settingViewController animated:YES completion:nil];
 }
 
+- (OTWMSTileOverlay *)getWMSTileOverlay {
+    OTWMSTileOverlay *wmsTileOverlay_ = nil;
+    OTOMTPType omtpType = [OTSetting getOMTPType];
+    NSString *urlString = [OTSetting getOfflineMapURL];
+    CGFloat scale = [[UIScreen mainScreen] scale];
+    if (scale >= 2.0) { // {scale}
+        urlString = [urlString stringByReplacingOccurrencesOfString:@"{scale}" withString:@"2"];
+    }
+    if (omtpType == GeoServer) {
+        wmsTileOverlay_ = [[OTWMSTileOverlay alloc] initWithWMSUrlString:[OTSetting getGeoServerWMSURL] tileSize:CGSizeMake(TILE_SIZE, TILE_SIZE)];
+    } else {
+        wmsTileOverlay_ = [[OTWMSTileOverlay alloc] initWithURLTemplate:urlString];
+        CGSize tileSize = [wmsTileOverlay_ tileSize];
+        if ([urlString containsString:@"&scale="]) {
+            tileSize.height *= scale;
+            tileSize.width *= scale;
+        }
+        [wmsTileOverlay_ setTileSize:tileSize];
+    }
+    return wmsTileOverlay_;
+}
+
 - (IBAction)downloadMapTiles:(id)sender {
     if ([self isTileDownloading]) {
         NSString *message = [NSString stringWithFormat:NSLocalizedStringFromTable(@"message_downloading_tiles", @"Additional", nil), _totalTilesDownloaded, _totalTilesToDownload];
@@ -2022,34 +2056,48 @@
         MKMapPoint swMapPoint = MKMapPointMake(mRect.origin.x, MKMapRectGetMaxY(mRect));
         CLLocationCoordinate2D neCoord = MKCoordinateForMapPoint(neMapPoint);
         CLLocationCoordinate2D swCoord = MKCoordinateForMapPoint(swMapPoint);
-        OTWMSTileOverlay *wmsTileOverlay = [[OTWMSTileOverlay alloc] initWithWMSUrlString:[OTSetting getGeoServerURL] layers:[OTSetting getGeoServerLayers] tileSize:CGSizeMake(TILE_SIZE, TILE_SIZE)];
-        [wmsTileOverlay setOffline:YES];
-        NSArray *tiles = [wmsTileOverlay tilesForNorthEast:neCoord southWest:swCoord startZoom:[self mapZoomLevel] endZoom:20];
+
+        int startZoom = [self mapZoomLevel];
+        int endZoom = 20;
+        NSInteger tilesCount = 0;
+        POINT northeast = TileOfCoordinate(neCoord, startZoom);
+        POINT southwest = TileOfCoordinate(swCoord, startZoom);
+        for(int zoom = startZoom ; zoom <= endZoom; zoom++) {
+            for(int x = southwest.x ; x <= northeast.x ; x++) {
+                for(int y = northeast.y ; y <= southwest.y ; y++) {
+                    tilesCount++;
+                }
+            }
+            northeast.x *= 2;
+            northeast.y *= 2;
+            southwest.x *= 2;
+            southwest.y *= 2;
+        }
+            
+        NSString *tileQueued = [NSString stringWithFormat:NSLocalizedString(@"tiles_queued", nil), tilesCount];
         
-        NSString *tileQueued = [NSString stringWithFormat:NSLocalizedString(@"tiles_queued", nil), tiles.count];
-        
-        if (tiles.count == 0) {
+        if (tilesCount == 0) {
             [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"all_tiles_downloaded", nil)];
             return;
         } else {
             [UIAlertView showWithTitle:NSLocalizedString(@"app_name", nil) message:tileQueued cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"confirm", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                 if (buttonIndex != alertView.cancelButtonIndex) {
-                    _totalTilesToDownload = tiles.count;
+                    _totalTilesToDownload = tilesCount;
                     _totalTilesDownloaded = 0;
                     _totalTilesDownloadError = 0;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         NSString *formatString = NSLocalizedString(@"too_many_tiles_queued", nil);
-                        [SVProgressHUD showWithStatus:[NSString stringWithFormat:formatString, tiles.count] maskType:SVProgressHUDMaskTypeGradient];
-                        [self configureDownloadTilesStatusLabelForTitle:[NSString stringWithFormat:formatString, tiles.count] message:nil];
+                        [SVProgressHUD showWithStatus:[NSString stringWithFormat:formatString, tilesCount] maskType:SVProgressHUDMaskTypeGradient];
+                        [self configureDownloadTilesStatusLabelForTitle:[NSString stringWithFormat:formatString, tilesCount] message:nil];
                     });
-                    [self performSelector:@selector(createDownloadList:) withObject:tiles afterDelay:0.3];
+                    [self performSelector:@selector(createDownloadList) withObject:nil afterDelay:0.3];
                 }
             }];
         }
     }
 }
 
-- (void)createDownloadList:(NSArray *)tiles {
+- (void)createDownloadList {
     if (_downloadTilesQueue == nil)
         _downloadTilesQueue = [[NSOperationQueue alloc] init];
     
@@ -2079,22 +2127,48 @@
     }];
     
     [self setTileDownloading:YES];
-    for (NSDictionary *dict in tiles) {
-        NSURL *sourceUrl = [dict objectForKey:@"sourceUrl"];
-        NSString *filePath = [dict objectForKey:@"filePath"];
-        NSURL *appUrl = [[FileSystemUtilities applicationDocumentsDirectory] URLByAppendingPathComponent:@"tiles"];
-        NSURL *destinationUrl = [appUrl URLByAppendingPathComponent:filePath];
-        
-        NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-            _totalTilesDownloaded++;
-            NSData *data = [NSData dataWithContentsOfURL:sourceUrl];
-            [data writeToFile:destinationUrl.path atomically:YES];
-            NSString *message = [NSString stringWithFormat:NSLocalizedStringFromTable(@"message_downloading_tiles", @"Additional", nil), _totalTilesDownloaded, _totalTilesToDownload];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self configureDownloadTilesStatusLabelForTitle:message message:nil];
-            });
-        }];
-        [completionOperation addDependency:operation];
+    
+    OTWMSTileOverlay *wmsTileOverlay = [self getWMSTileOverlay];
+
+    MKMapRect mRect = self.mapView.visibleMapRect;
+    MKMapPoint neMapPoint = MKMapPointMake(MKMapRectGetMaxX(mRect), mRect.origin.y);
+    MKMapPoint swMapPoint = MKMapPointMake(mRect.origin.x, MKMapRectGetMaxY(mRect));
+    CLLocationCoordinate2D neCoord = MKCoordinateForMapPoint(neMapPoint);
+    CLLocationCoordinate2D swCoord = MKCoordinateForMapPoint(swMapPoint);
+    int startZoom = [self mapZoomLevel];
+    int endZoom = 20;
+    NSInteger tilesCount = 0;
+    POINT northeast = TileOfCoordinate(neCoord, startZoom);
+    POINT southwest = TileOfCoordinate(swCoord, startZoom);
+    for(int zoom = startZoom ; zoom <= endZoom; zoom++) {
+        for(int x = southwest.x ; x <= northeast.x ; x++) {
+            for(int y = northeast.y ; y <= southwest.y ; y++) {
+                tilesCount++;
+                MKTileOverlayPath path;
+                path.x = x;
+                path.y = y;
+                path.z = zoom;
+                NSURL *sourceUrl = [wmsTileOverlay URLForTilePath:path];
+                NSURL *destinationUrl = [NSURL URLWithString:[wmsTileOverlay filePathForTilePath:path]];
+                if (![[NSFileManager defaultManager] fileExistsAtPath:[destinationUrl path]]) {
+                    NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+                        _totalTilesDownloaded++;
+                        NSData *data = [NSData dataWithContentsOfURL:sourceUrl];
+                        [data writeToFile:destinationUrl.path atomically:YES];
+                        NSString *message = [NSString stringWithFormat:NSLocalizedStringFromTable(@"message_downloading_tiles", @"Additional", nil), _totalTilesDownloaded, _totalTilesToDownload];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [self configureDownloadTilesStatusLabelForTitle:message message:nil];
+                        });
+                    }];
+                    [completionOperation addDependency:operation];
+                }
+
+            }
+        }
+        northeast.x *= 2;
+        northeast.y *= 2;
+        southwest.x *= 2;
+        southwest.y *= 2;
     }
     
     [_downloadTilesQueue addOperations:completionOperation.dependencies waitUntilFinished:NO];

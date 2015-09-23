@@ -29,8 +29,6 @@
 #import "OTTileOverlay.h"
 #import "OTSetting.h"
 
-#define MAP_TILES   @"MapTiles"
-
 @interface OTTileOverlay ()
 
 @property (strong, nonatomic) NSString *tilesDirectory;

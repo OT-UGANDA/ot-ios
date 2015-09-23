@@ -36,6 +36,9 @@
 #define _ATTACHMENT_FOLDER @"attachments"
 #define _OPEN_TENURE_FOLDER @"Open Tenure"
 
+
++ (BOOL)createDirectoryAtURL:(NSURL *)url;
++ (BOOL)createDirectoryAtPath:(NSString *)path;
 + (BOOL)createFolder:(NSString *)folderName;
 + (BOOL)createClaimsFolder;
 + (BOOL)createOpenTenureFolder;

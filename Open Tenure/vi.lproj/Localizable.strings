@@ -982,3 +982,15 @@
 "local_data"="Local Data";
 "dymamic_information"="Dynamic information";
 "action_export_geo"="Export geographic data";
+
+"general"="General";
+"map_sources"="Map sources";
+"dynamic_form"="Dynamic Form";
+"tiles_provider"="Tiles Provider";
+"tiles_provider_dialog_title"="Select the type of your offline map tiles provider";
+"tms_url_pref_title"="TMS URL";
+"tms_url_pref_summary"="Base URL of your Tiles Map Server";
+"tms_url_pref_dialog_title"="Enter the URL of your Tiles Map Server";
+"wtms_url_pref_title"="WTMS URL";
+"wtms_url_pref_summary"="Base URL of your Web Tiles Map Server";
+"wtms_url_pref_dialog_title"="Enter the URL of your Web Tiles Map Server";

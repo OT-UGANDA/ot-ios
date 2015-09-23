@@ -1669,7 +1669,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = OT;
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Food and Agriculture Organization of the United Nations (FAO)";
 				TargetAttributes = {
 					DE7952F01976AF9800AAA157 = {
@@ -2021,6 +2021,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -2121,6 +2122,7 @@
 					"$(PROJECT_DIR)/Dependencies",
 				);
 				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = org.fao.sola.clients.ios.OT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -2145,6 +2147,7 @@
 					"$(PROJECT_DIR)/Dependencies",
 				);
 				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = org.fao.sola.clients.ios.OT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;

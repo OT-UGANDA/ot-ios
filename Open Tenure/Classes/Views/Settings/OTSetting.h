@@ -28,11 +28,18 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSInteger, OTOMTPType) {
+    WTMS = 0,
+    TMS,
+    GeoServer
+};
+
 @interface OTSetting : NSObject
 
 + (NSString *)getCommunityServerURL;
 + (void)setCommunityServerURL:(NSString *)url;
 
++ (NSString *)getGeoServerWMSURL;
 + (NSString *)getGeoServerURL;
 + (void)setGeoServerURL:(NSString *)url;
 
@@ -41,6 +48,17 @@
 
 + (NSString *)getFormURL;
 + (void)setFormURL:(NSString *)url;
+
++ (OTOMTPType)getOMTPType;
++ (void)setOMTPType:(OTOMTPType)omtpType;
+
++ (NSString *)getTMSURL;
++ (void)setTMSURL:(NSString *)url;
+
++ (NSString *)getOfflineMapURL;
+
++ (NSString *)getWTMSURL;
++ (void)setWTMSURL:(NSString *)url;
 
 + (NSString *)getWMSVersion;
 + (void)setWMSVersion:(NSString *)wmsVersion;
