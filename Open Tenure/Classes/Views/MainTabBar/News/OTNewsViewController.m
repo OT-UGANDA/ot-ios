@@ -66,11 +66,11 @@
     _searchBar.placeholder = NSLocalizedString(@"hint_type_to_filter", @"Search");
     
     if (self.cells == nil) {
-        NSString *csUrl = [OTSetting getCommunityServerURL];
-        NSString *homeUrl = [csUrl stringByAppendingPathComponent:@"home"];
-        self.cells = @[@{@"title" : csUrl,
+        NSURL *csUrl = [[NSURL alloc] initWithString:[OTSetting getCommunityServerURL]];
+        NSString *homePath = [[csUrl URLByAppendingPathComponent:@"home"] absoluteString];
+        self.cells = @[@{@"title" : csUrl.absoluteString,
                          @"subtitle" : @"OpenTenure Community: visit the OpenTenure Community web site and tell us what you think."},
-                       @{@"title" : homeUrl,
+                       @{@"title" : homePath,
                          @"subtitle" : @"FLOSS SOLA: look at the latest news on FLOSS SOLA web site."}
                        ];
     }
