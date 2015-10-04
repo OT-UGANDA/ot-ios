@@ -2121,7 +2121,8 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Dependencies",
 				);
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.fao.sola.clients.ios.OT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -2147,6 +2148,7 @@
 					"$(PROJECT_DIR)/Dependencies",
 				);
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = org.fao.sola.clients.ios.OT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

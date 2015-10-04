@@ -624,6 +624,7 @@
                 CGFloat scale = [[UIScreen mainScreen] scale];
                 NSString *urlTemplate = [OTSetting getOfflineMapURL];
                 if (scale >= 2.0) { // {scale}
+                    scale = 2.0;
                     urlTemplate = [urlTemplate stringByReplacingOccurrencesOfString:@"{scale}" withString:@"2"];
                 }
                 if ([OTSetting getOMTPType] == GeoServer) {
@@ -2020,6 +2021,7 @@
     NSString *urlString = [OTSetting getOfflineMapURL];
     CGFloat scale = [[UIScreen mainScreen] scale];
     if (scale >= 2.0) { // {scale}
+        scale = 2.0;
         urlString = [urlString stringByReplacingOccurrencesOfString:@"{scale}" withString:@"2"];
     }
     if (omtpType == GeoServer) {
@@ -2102,6 +2104,10 @@
         _downloadTilesQueue = [[NSOperationQueue alloc] init];
     
     _downloadTilesQueue.maxConcurrentOperationCount = 4;
+
+    // Không cho tự động dừng, chỉ tự động tắt màn hình khi để lâu hoặc gấp máy
+    // Chỉ dừng tải khi nhấn nút Home hoặc nút Power
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
     NSBlockOperation *completionOperation = [NSBlockOperation blockOperationWithBlock:^{
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
@@ -2109,7 +2115,13 @@
                 [SVProgressHUD show];
             });
             [self performSelector:@selector(stopAllDownloads:) withObject:nil afterDelay:0.3];
-            NSString *message = NSLocalizedString(@"all_tiles_downloaded", nil);
+            NSString *message;
+            if (_totalTilesDownloadError == 0) {
+                message = NSLocalizedString(@"all_tiles_downloaded", nil);
+            } else {
+                message = [NSString stringWithFormat:NSLocalizedString(@"all_tiles_downloaded_unsuccessfully", nil), _totalTilesDownloadError, _totalTilesToDownload];
+            }
+            
             [SVProgressHUD showInfoWithStatus:message];
             
             UILocalNotification *localNotification = [[UILocalNotification alloc] init];
@@ -2152,10 +2164,15 @@
                 NSURL *destinationUrl = [NSURL URLWithString:[wmsTileOverlay filePathForTilePath:path]];
                 if (![[NSFileManager defaultManager] fileExistsAtPath:[destinationUrl path]]) {
                     NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
-                        _totalTilesDownloaded++;
-                        NSData *data = [NSData dataWithContentsOfURL:sourceUrl];
-                        [data writeToFile:destinationUrl.path atomically:YES];
                         NSString *message = [NSString stringWithFormat:NSLocalizedStringFromTable(@"message_downloading_tiles", @"Additional", nil), _totalTilesDownloaded, _totalTilesToDownload];
+                        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:sourceUrl cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0];
+                        NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+                        if ([data isImage]) {
+                            _totalTilesDownloaded++;
+                            [data writeToFile:destinationUrl.path atomically:YES];
+                        } else {
+                            _totalTilesDownloadError++;
+                        }
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [self configureDownloadTilesStatusLabelForTitle:message message:nil];
                         });
@@ -2186,6 +2203,7 @@
         [_downloadTilesStatusLabel removeFromSuperview];
         _downloadTilesStatusLabel = nil;
         dispatch_async(dispatch_get_main_queue(), ^{
+            [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
             [SVProgressHUD dismiss];
         });
     });

@@ -994,3 +994,4 @@
 "wtms_url_pref_title"="WTMS URL";
 "wtms_url_pref_summary"="Base URL of your Web Tiles Map Server";
 "wtms_url_pref_dialog_title"="Enter the URL of your Web Tiles Map Server";
+"all_tiles_downloaded_unsuccessfully" = "%d/%d tiles have been downloaded unsuccessfully";

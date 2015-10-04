@@ -95,7 +95,7 @@
 
 + (NSString *)getTMSURL {
     NSString *url = [[NSUserDefaults standardUserDefaults] stringForKey:@"TMSURL"];
-    if (url == nil) url = @"https://mts0.google.com/vt/lyrs=s,l,r&x={x}&y={y}&z={z}scale={scale}";
+    if (url == nil) url = @"https://mts0.google.com/vt/lyrs=s,l,r&x={x}&y={y}&z={z}&scale={scale}";
     return url;
 }
 
@@ -106,7 +106,7 @@
 
 + (NSString *)getWTMSURL {
     NSString *url = [[NSUserDefaults standardUserDefaults] stringForKey:@"WTMSURL"];
-    if (url == nil) url = @"https://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
+    if (url == nil) url = @"http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
     return url;
 }
 
