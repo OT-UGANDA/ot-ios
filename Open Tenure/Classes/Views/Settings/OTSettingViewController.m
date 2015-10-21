@@ -195,13 +195,15 @@
                           tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
                               if (buttonIndex != alertView.cancelButtonIndex) {
                                   NSString *urlString = [[alertView textFieldAtIndex:0] text];
-                                  if (urlString.length == 0)
-                                      urlString = nil;
-                                  NSURL *theURL = [NSURL URLWithString:urlString];
-                                  if (theURL && theURL.scheme && theURL.host) {
-                                      [OTSetting setFormURL:theURL.absoluteString];
+                                  if (urlString.length == 0) {
+                                      [OTSetting setFormURL:nil];
                                   } else {
-                                      [OT handleErrorWithMessage:@"This URL which has no scheme or host"];
+                                      NSURL *theURL = [NSURL URLWithString:urlString];
+                                      if (theURL && theURL.scheme && theURL.host) {
+                                          [OTSetting setFormURL:theURL.absoluteString];
+                                      } else {
+                                          [OT handleErrorWithMessage:@"This URL which has no scheme or host"];
+                                      }
                                   }
                               }
                           }];
