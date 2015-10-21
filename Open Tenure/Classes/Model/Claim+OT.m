@@ -268,8 +268,43 @@
         ShapeKitPolygon *polygon = [[ShapeKitPolygon alloc] initWithWKT:self.mappedGeometry];
         area_ = [polygon.geometry getArea];
         area_ = round(area_);
-        NSInteger mod = (long)area_ % 10;
-        area_ = mod > 8 ? area_ + 1 : (mod > 3 ? area_ - mod + 5 : area_ - mod);
+//        NSInteger mod = (long)area_ % 10;
+//        area_ = mod > 8 ? area_ - mod + 10 : (mod > 3 ? area_ - mod + 5 : area_ - mod);
+        
+        if (area_ > 100 && area_ < 1000) {
+            int digit = (long)area_ % 10;
+            if (digit > 0 && digit < 7)
+                area_ = area_ - digit;
+            else if (digit >= 7 && digit < 9)
+                area_ = area_ + 10 - digit;
+            else if (digit == 9)
+                area_ = area_ + 1;
+        }
+        
+        if (area_ > 1000 && area_ < 10000) {
+            int digit = (long)area_ % 100;
+            if (digit > 0 && digit < 70)
+                area_ = area_ - digit;
+            else if (digit >= 70 && digit <= 99)
+                area_ = area_ + 100 - digit;
+            
+        }
+        
+        if (area_ > 10000 && area_ < 100000) {
+            int digit = (long)area_ % 1000;
+            if (digit > 0 && digit < 700)
+                area_ = area_ - digit;
+            else if (digit >= 700 && digit <= 999)
+                area_ = area_ + 1000 - digit;
+        }
+        
+        if (area_ > 100000) {
+            int digit = (long)area_ % 10000;
+            if (digit > 0 && digit < 7000)
+                area_ = area_ - digit;
+            else if (digit >= 7000 && digit <= 9999)
+                area_ = area_ + 10000 - digit;
+        }
     }
     return area_;
 }
