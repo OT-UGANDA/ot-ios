@@ -145,7 +145,8 @@
 - (void)configureSideBarMenu {
     _sideBarItems = [[OTSideBarItems alloc] initWithStyle:UITableViewStylePlain];
     NSArray *cells = @[@{@"title" : NSLocalizedString(@"action_settings", nil)},
-                       @{@"title" : NSLocalizedStringFromTable(@"action_showcase", @"Showcase", nil)}];
+                       @{@"title" : NSLocalizedStringFromTable(@"action_showcase", @"Showcase", nil)},
+                       @{@"title" : NSLocalizedString(@"action_export_log", nil)}];
     
     [_sideBarItems setCells:cells];
     __strong typeof(self) self_ = self;
@@ -157,6 +158,9 @@
                 
             case 1:
                 [[NSNotificationCenter defaultCenter] postNotificationName:kSetMainTabBarIndexNotificationName object:[NSNumber numberWithInteger:0] userInfo:@{@"action":@"showcase"}];
+                break;
+            case 2:
+                [OTSetting exportLog];
                 break;
         }
         [self_.sideBarMenu dismiss];

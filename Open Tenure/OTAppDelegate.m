@@ -34,6 +34,8 @@
 {
     [OTSetting getReInitialization];
     
+    [OTSetting preparingExportLog];
+    
     [self managedObjectContext];
     
     // Check document opened with OpenTenure

@@ -73,6 +73,12 @@ typedef NS_ENUM(NSInteger, OTOMTPType) {
 + (void)setInitialization:(BOOL)initialized;
 
 /*!
+ Export log
+ */
++ (void)preparingExportLog;
++ (void)exportLog;
+
+/*!
  Lưu và lấy trạng thái thiết lập mới (xóa toàn bộ dữ liệu)
  */
 + (void)setReInitialization:(BOOL)state;

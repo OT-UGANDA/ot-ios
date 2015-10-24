@@ -446,6 +446,7 @@
 - (void)configureSideBarMenu {
     _sideBarItems = [[OTSideBarItems alloc] initWithStyle:UITableViewStylePlain];
     NSArray *cells = @[@{@"title" : NSLocalizedString(@"action_settings", nil)},
+                       @{@"title" : NSLocalizedString(@"action_export_log", nil)},
                        @{@"title" : NSLocalizedStringFromTable(@"map_type_standard", @"Additional", nil)},
                        @{@"title" : NSLocalizedStringFromTable(@"map_type_satellite", @"Additional", nil)},
                        @{@"title" : NSLocalizedStringFromTable(@"map_type_hybird", @"Additional", nil)},
@@ -466,7 +467,10 @@
                 [self_ showSettings:nil];
                 break;
             }
-            case 1: {
+            case 1:
+                [OTSetting exportLog];
+                break;
+            case 2: {
                 if ([self_.mapView.overlays containsObject:self_->tileOverlay])
                     [self_.mapView removeOverlay:self_->tileOverlay];
                 
@@ -475,7 +479,7 @@
                 [self_ configureMapTypeLabelForTitle:[[cells objectAtIndex:itemIndex] objectForKey:@"title"] message:nil];
                 break;
             }
-            case 2:
+            case 3:
                 if ([self_.mapView.overlays containsObject:self_->tileOverlay])
                     [self_.mapView removeOverlay:self_->tileOverlay];
                 
@@ -484,7 +488,7 @@
                 [self_ configureMapTypeLabelForTitle:[[cells objectAtIndex:itemIndex] objectForKey:@"title"] message:nil];
                 break;
                 
-            case 3:
+            case 4:
                 if ([self_.mapView.overlays containsObject:self_->tileOverlay])
                     [self_.mapView removeOverlay:self_->tileOverlay];
                 
@@ -493,7 +497,7 @@
                 [self_ configureMapTypeLabelForTitle:[[cells objectAtIndex:itemIndex] objectForKey:@"title"] message:nil];
                 break;
                 
-            case 4: {
+            case 5: {
                 if ([self_.mapView.overlays containsObject:self_->tileOverlay]) {
                     [self_.mapView removeOverlay:self_->tileOverlay];
                     [self_.mapView setNeedsDisplay];
@@ -516,7 +520,7 @@
                 [self_ configureMapTypeLabelForTitle:[[cells objectAtIndex:itemIndex] objectForKey:@"title"] message:nil];
                 break;
             }
-            case 5: {
+            case 6: {
                 if ([self_.mapView.overlays containsObject:self_->tileOverlay]) {
                     [self_.mapView removeOverlay:self_->tileOverlay];
                     [self_.mapView setNeedsDisplay];
@@ -539,7 +543,7 @@
                 [self_ configureMapTypeLabelForTitle:[[cells objectAtIndex:itemIndex] objectForKey:@"title"] message:nil];
                 break;
             }
-            case 6: {
+            case 7: {
                 if ([self_.mapView.overlays containsObject:self_->tileOverlay]) {
                     [self_.mapView removeOverlay:self_->tileOverlay];
                     [self_.mapView setNeedsDisplay];
@@ -562,7 +566,7 @@
                 [self_ configureMapTypeLabelForTitle:[[cells objectAtIndex:itemIndex] objectForKey:@"title"] message:nil];
                 break;
             }
-            case 7: {
+            case 8: {
                 if ([self_.mapView.overlays containsObject:self_->tileOverlay]) {
                     [self_.mapView removeOverlay:self_->tileOverlay];
                     [self_.mapView setNeedsDisplay];
@@ -585,7 +589,7 @@
                 [self_ configureMapTypeLabelForTitle:[[cells objectAtIndex:itemIndex] objectForKey:@"title"] message:nil];
                 break;
             }
-            case 8: {
+            case 9: {
                 if ([self_.mapView.overlays containsObject:self_->tileOverlay]) {
                     [self_.mapView removeOverlay:self_->tileOverlay];
                     [self_.mapView setNeedsDisplay];
@@ -600,7 +604,7 @@
                 [self_ configureMapTypeLabelForTitle:[[cells objectAtIndex:itemIndex] objectForKey:@"title"] message:nil];
                 break;
             }
-            case 9: {
+            case 10: {
                 if ([self_.mapView.overlays containsObject:self_->tileOverlay]) {
                     [self_.mapView removeOverlay:self_->tileOverlay];
                     [self_.mapView setNeedsDisplay];
@@ -615,7 +619,7 @@
                 [self_ configureMapTypeLabelForTitle:[[cells objectAtIndex:itemIndex] objectForKey:@"title"] message:nil];
                 break;
             }
-            case 10: { // Offline
+            case 11: { // Offline
                 if ([self_.mapView.overlays containsObject:self_->tileOverlay]) {
                     [self_.mapView removeOverlay:self_->tileOverlay];
                     [self_.mapView setNeedsDisplay];
@@ -644,7 +648,7 @@
                 [self_ configureMapTypeLabelForTitle:[[cells objectAtIndex:itemIndex] objectForKey:@"title"] message:nil];
                 break;
             }
-            case 11: { // Online
+            case 12: { // Online
                 if ([self_.mapView.overlays containsObject:self_->tileOverlay]) {
                     [self_.mapView removeOverlay:self_->tileOverlay];
                     [self_.mapView setNeedsDisplay];

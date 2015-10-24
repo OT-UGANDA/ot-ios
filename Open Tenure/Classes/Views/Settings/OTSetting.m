@@ -27,7 +27,7 @@
  */
 
 #import "OTSetting.h"
-#define defaultGeoServerUrl @"https://demo.opentenure.org/geoserver"
+#define defaultGeoServerUrl @"http://demo.flossola.org:8080/geoserver"
 
 @implementation OTSetting
 
@@ -171,6 +171,22 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++ (void)preparingExportLog {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *fileName =[NSString stringWithFormat:@"%@.log",[NSDate date]];
+    NSString *logFilePath = [documentsDirectory stringByAppendingPathComponent:fileName];
+    freopen([logFilePath cStringUsingEncoding:NSASCIIStringEncoding],"a+", stderr);
+}
+
++ (void)exportLog {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *fileName =[NSString stringWithFormat:@"%@.log",[NSDate date]];
+    NSString *logFilePath = [documentsDirectory stringByAppendingPathComponent:fileName];
+    freopen([logFilePath cStringUsingEncoding:NSASCIIStringEncoding],"a+", stderr);
+    [SVProgressHUD showInfoWithStatus:NSLocalizedString(@"message_log_exported", nil)];
+}
 
 + (void)setReInitialization:(BOOL)state {
     if (state) {

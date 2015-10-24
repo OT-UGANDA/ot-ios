@@ -106,6 +106,8 @@
 /* loco:54c52dfe14d725972b8b457b */
 "action_view_community_area" = "Area di interesse";
 
+"action_export_log" = "Export log";
+
 /* loco:54c52dfe14d725972b8b4660 */
 "add_description" = "Descrizione?";
 
@@ -663,6 +665,8 @@
 
 /* loco:54c52dfe14d725972b8b4639 */
 "message_withdrawn_claim" = "Claim correttamente ritirato";
+
+"message_log_exported" = "A copy of the application log has been exported";
 
 /* loco:54c52dfe14d725972b8b45de */
 "mobile_phone_number" = "Telefono mobile";
