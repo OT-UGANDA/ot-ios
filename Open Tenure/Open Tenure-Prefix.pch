@@ -100,6 +100,7 @@
 #import "SectionPayloadEntity.h"
 #import "SectionElementPayloadEntity.h"
 #import "FieldPayloadEntity.h"
+#import "MapBookmarkEntity.h"
 
 /*!
  NSManagedObject Subclass
@@ -124,6 +125,8 @@
 #import "SectionPayload.h"
 #import "SectionElementPayload.h"
 #import "FieldPayload.h"
+#import "MapBookmark.h"
+#import "MapBookmark+CoreDataProperties.h"
 
 // NSManagedObject Subclass category
 #import "NSManagedObject+OT.h"

@@ -98,6 +98,9 @@
 		DE8B327B1993C61A0013A83E /* PersonEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = DE8B327A1993C61A0013A83E /* PersonEntity.m */; };
 		DE94CBDA19B950BD00636189 /* LandUse.m in Sources */ = {isa = PBXBuildFile; fileRef = DE94CBD919B950BD00636189 /* LandUse.m */; };
 		DE97F4E1198778B400F3B0B5 /* OpenTenure.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DE97F4DF198778B400F3B0B5 /* OpenTenure.xcdatamodeld */; };
+		DE9A7D2A1BDBF0E7002163A1 /* MapBookmark+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9A7D271BDBF0E7002163A1 /* MapBookmark+CoreDataProperties.m */; };
+		DE9A7D2B1BDBF0E7002163A1 /* MapBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9A7D291BDBF0E7002163A1 /* MapBookmark.m */; };
+		DE9A7D2E1BDBF3E6002163A1 /* MapBookmarkEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9A7D2D1BDBF3E6002163A1 /* MapBookmarkEntity.m */; };
 		DEA1379B1976B82E00C0C232 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = DEA137991976B82E00C0C232 /* Localizable.strings */; };
 		DEB89C1F199616FC00BBC9D3 /* Claim+OT.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C1E199616FC00BBC9D3 /* Claim+OT.m */; };
 		DEB89C2A199646B600BBC9D3 /* OTClaimUpdateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB89C29199646B600BBC9D3 /* OTClaimUpdateViewController.m */; };
@@ -409,6 +412,12 @@
 		DE94CBD819B950BD00636189 /* LandUse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LandUse.h; path = Classes/Model/LandUse.h; sourceTree = "<group>"; };
 		DE94CBD919B950BD00636189 /* LandUse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LandUse.m; path = Classes/Model/LandUse.m; sourceTree = "<group>"; };
 		DE97F4E0198778B400F3B0B5 /* OpenTenure.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = OpenTenure.xcdatamodel; sourceTree = "<group>"; };
+		DE9A7D261BDBF0E7002163A1 /* MapBookmark+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "MapBookmark+CoreDataProperties.h"; path = "Classes/Model/MapBookmark+CoreDataProperties.h"; sourceTree = "<group>"; };
+		DE9A7D271BDBF0E7002163A1 /* MapBookmark+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "MapBookmark+CoreDataProperties.m"; path = "Classes/Model/MapBookmark+CoreDataProperties.m"; sourceTree = "<group>"; };
+		DE9A7D281BDBF0E7002163A1 /* MapBookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapBookmark.h; path = Classes/Model/MapBookmark.h; sourceTree = "<group>"; };
+		DE9A7D291BDBF0E7002163A1 /* MapBookmark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapBookmark.m; path = Classes/Model/MapBookmark.m; sourceTree = "<group>"; };
+		DE9A7D2C1BDBF3E6002163A1 /* MapBookmarkEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapBookmarkEntity.h; path = Classes/Model/DataController/MapBookmarkEntity.h; sourceTree = "<group>"; };
+		DE9A7D2D1BDBF3E6002163A1 /* MapBookmarkEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapBookmarkEntity.m; path = Classes/Model/DataController/MapBookmarkEntity.m; sourceTree = "<group>"; };
 		DEA1379C1976B89500C0C232 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DEA1379D1976B8B900C0C232 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		DEB89C1D199616FC00BBC9D3 /* Claim+OT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Claim+OT.h"; path = "Classes/Model/Claim+OT.h"; sourceTree = "<group>"; };
@@ -712,6 +721,10 @@
 		DE0D2C9B197F9F1300D248B9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				DE9A7D261BDBF0E7002163A1 /* MapBookmark+CoreDataProperties.h */,
+				DE9A7D271BDBF0E7002163A1 /* MapBookmark+CoreDataProperties.m */,
+				DE9A7D281BDBF0E7002163A1 /* MapBookmark.h */,
+				DE9A7D291BDBF0E7002163A1 /* MapBookmark.m */,
 				DE1F5A941A21D9D6005BA900 /* Dynamic Form */,
 				DE1F364A199078F60035F7D7 /* DataController */,
 				DE97F4DF198778B400F3B0B5 /* OpenTenure.xcdatamodeld */,
@@ -888,6 +901,8 @@
 				DEC6185519D1659900A89485 /* ShareEntity.m */,
 				DEC256F11A05D7B10005D245 /* LocationEntity.h */,
 				DEC256F21A05D7B10005D245 /* LocationEntity.m */,
+				DE9A7D2C1BDBF3E6002163A1 /* MapBookmarkEntity.h */,
+				DE9A7D2D1BDBF3E6002163A1 /* MapBookmarkEntity.m */,
 			);
 			name = DataController;
 			sourceTree = "<group>";
@@ -1740,6 +1755,7 @@
 			files = (
 				DE31245F1A2EBCB5001D5069 /* OTFormTabBarViewController.m in Sources */,
 				DEC18F9D198BF84000CCEF37 /* OTMainTabBarController.m in Sources */,
+				DE9A7D2E1BDBF3E6002163A1 /* MapBookmarkEntity.m in Sources */,
 				DE5CFBED19AB52D200E253B0 /* Attachment+OT.m in Sources */,
 				DE5A68F319B0944C00D15B08 /* SaveAttachmentTask.m in Sources */,
 				DE6D1DA119CDEA780096C50B /* GeoShapeVertex.m in Sources */,
@@ -1855,6 +1871,7 @@
 				DE586F341A64C49C007A066C /* SVIndefiniteAnimatedView.m in Sources */,
 				DEB89D03199DFEA600BBC9D3 /* DocumentType.m in Sources */,
 				DE1F3628198F97F80035F7D7 /* OTFormInputTextFieldCell.m in Sources */,
+				DE9A7D2A1BDBF0E7002163A1 /* MapBookmark+CoreDataProperties.m in Sources */,
 				DE6D1D9E19CDEA780096C50B /* GeoShapeAnnotationView.m in Sources */,
 				DE8134ED1A1336DB000B7051 /* OTSetting.m in Sources */,
 				DEFD1AE01B59525F00FBF11B /* SSZipArchive.m in Sources */,
@@ -1877,6 +1894,7 @@
 				DE86CE1A1A2C2131000DD7AC /* SectionElementPayloadEntity.m in Sources */,
 				DED374F0198E8A1900B48E7A /* BPFormTextField.m in Sources */,
 				DEEE28D2199139DD00B69E94 /* IdTypeEntity.m in Sources */,
+				DE9A7D2B1BDBF0E7002163A1 /* MapBookmark.m in Sources */,
 				DEC6184D19D1607500A89485 /* Claim.m in Sources */,
 				DEED932E1A7E91B3007091B1 /* PDFClaimExporter.m in Sources */,
 				DE56148A1A10BA2F0075ABD5 /* OTSettingViewController.m in Sources */,

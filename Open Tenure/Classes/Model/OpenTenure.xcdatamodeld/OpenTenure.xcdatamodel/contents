@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6254" systemVersion="14C109" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="1.0" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9057" systemVersion="15B42" minimumToolsVersion="Xcode 4.3">
     <entity name="AdditionalInfo" representedClassName="AdditionalInfo" syncable="YES">
         <attribute name="key" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
@@ -143,6 +143,12 @@
         <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="claim" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Claim" inverseName="locations" inverseEntity="Claim" syncable="YES"/>
     </entity>
+    <entity name="MapBookmark" representedClassName="MapBookmark" syncable="YES">
+        <attribute name="lat" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="lon" optional="YES" attributeType="Decimal" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="mapBookmarkId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="Person" representedClassName="Person" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="birthDate" optional="YES" attributeType="String" syncable="YES"/>
@@ -211,5 +217,6 @@
         <element name="SectionPayload" positionX="-8793" positionY="-1003" width="140" height="103"/>
         <element name="SectionTemplate" positionX="-8613" positionY="-1330" width="128" height="223"/>
         <element name="Share" positionX="-9324" positionY="-1503" width="128" height="118"/>
+        <element name="MapBookmark" positionX="-8982" positionY="-1503" width="128" height="103"/>
     </elements>
 </model>
