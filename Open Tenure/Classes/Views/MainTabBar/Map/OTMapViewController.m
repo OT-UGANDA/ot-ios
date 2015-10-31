@@ -37,6 +37,7 @@
 #import "GeoShapeCollection.h"
 #import "GeoShapeOverlayRenderer.h"
 #import "GeoShapeAnnotationView.h"
+#import "MapBookmarkAnnotationView.h"
 #import "OTPolylineRenderer.h"
 
 #import "OTAnnotationView1.h"
@@ -50,10 +51,11 @@
 #import "OTSideBarItems.h"
 
 #import "OTShowcase.h"
+#import "OTSelectionTabBarViewController.h"
 
 #define TILE_SIZE 256
 
-@interface OTMapViewController () <DownloadClaimTaskDelegate> {
+@interface OTMapViewController () <DownloadClaimTaskDelegate, OTSelectionTabBarViewControllerDelegate> {
     MKAnnotationView *workingAnnotationView;
     GeoShapeVertex *workingVertex;
     BOOL snapped;
@@ -118,6 +120,8 @@
 
 @property (nonatomic, strong) UILabel *mapTypeLabel;
 @property (nonatomic, strong) IBOutlet UILabel *downloadTilesStatusLabel;
+
+@property (nonatomic, strong) MKMapView *bookmarkMapView;
 
 @end
 
@@ -255,6 +259,11 @@
             [_additionalMarkers addObject:annotation];
         }
     }
+    
+    _bookmarkMapView = [[MKMapView alloc] initWithFrame:CGRectZero];
+    if (_claim == nil) {
+        [self loadMapBookmark];
+    }
 }
 
 // Chuyển qua tab khác
@@ -298,6 +307,16 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)loadMapBookmark {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSArray *bookmarks = [MapBookmarkEntity getCollection];
+        for (MapBookmark *bookmark in bookmarks) {
+            [_bookmarkMapView addAnnotation:bookmark.annotation];
+        }
+        [_mapView addAnnotations:_bookmarkMapView.annotations];
+    });
 }
 
 - (IBAction)initialization:(id)sender {
@@ -442,6 +461,22 @@
     }
 }
 
+- (void)showSelectMapBookmark {
+    [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:OTSelectionActionMapBookmark] forKey:@"OTSelectionAction"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    OTAppDelegate* appDelegate = (OTAppDelegate*)[[UIApplication sharedApplication] delegate];
+    id main = appDelegate.window.rootViewController;
+    OTSelectionTabBarViewController *selectionViewController = (OTSelectionTabBarViewController *)[[main storyboard] instantiateViewControllerWithIdentifier:@"SelectionTabBarDetail"];
+    selectionViewController.selectionDelegate = self;
+    
+    UINavigationController *nav = [[main storyboard] instantiateViewControllerWithIdentifier:@"SelectionTabBar"];
+    nav = [nav initWithRootViewController:selectionViewController];
+    
+    if (nav != nil) {
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
+}
+
 #pragma mark - configure
 - (void)configureSideBarMenu {
     _sideBarItems = [[OTSideBarItems alloc] initWithStyle:UITableViewStylePlain];
@@ -458,17 +493,41 @@
                        @{@"title" : NSLocalizedString(@"map_provider_osm_mapquest", nil)},
                        @{@"title" : NSLocalizedString(@"map_provider_local_tiles", nil)},
                        @{@"title" : NSLocalizedString(@"map_provider_geoserver", nil)}];
-    
+
+    if (_claim != nil) {
+        cells = @[@{@"title" : NSLocalizedString(@"action_center", nil)},
+                  @{@"title" : NSLocalizedString(@"action_select_bookmark", nil)},
+                  @{@"title" : NSLocalizedStringFromTable(@"map_type_standard", @"Additional", nil)},
+                  @{@"title" : NSLocalizedStringFromTable(@"map_type_satellite", @"Additional", nil)},
+                  @{@"title" : NSLocalizedStringFromTable(@"map_type_hybird", @"Additional", nil)},
+                  @{@"title" : NSLocalizedString(@"map_provider_google_normal", nil)},
+                  @{@"title" : NSLocalizedString(@"map_provider_google_hybrid", nil)},
+                  @{@"title" : NSLocalizedString(@"map_provider_google_satellite", nil)},
+                  @{@"title" : NSLocalizedString(@"map_provider_google_terrain", nil)},
+                  @{@"title" : NSLocalizedString(@"map_provider_osm_mapnik", nil)},
+                  @{@"title" : NSLocalizedString(@"map_provider_osm_mapquest", nil)},
+                  @{@"title" : NSLocalizedString(@"map_provider_local_tiles", nil)},
+                  @{@"title" : NSLocalizedString(@"map_provider_geoserver", nil)}];
+    }
     [_sideBarItems setCells:cells];
     __strong typeof(self) self_ = self;
     _sideBarItems.itemAction = ^void(NSInteger section, NSInteger itemIndex) {
         switch (itemIndex) {
             case 0: {
-                [self_ showSettings:nil];
+                if (_claim != nil) {
+                    [self_.mapView setCenterCoordinate:self_.mapView.userLocation.coordinate animated:YES];
+                } else {
+                    [self_ showSettings:nil];
+                }
                 break;
             }
             case 1:
-                [OTSetting exportLog];
+                if (_claim != nil) {
+                    // Show bookmark
+                    [self_ showSelectMapBookmark];
+                } else {
+                    [OTSetting exportLog];
+                }
                 break;
             case 2: {
                 if ([self_.mapView.overlays containsObject:self_->tileOverlay])
@@ -1004,11 +1063,31 @@
 #pragma handler touch on the map
 
 - (IBAction)handleLongPress:(id)sender {
+    if (_claim == nil) { // Add bookmark
+        UIGestureRecognizer *gestureRecognizer = sender;
+        if (gestureRecognizer.state != UIGestureRecognizerStateBegan)
+            return;
+        
+        CGPoint touchPoint = [gestureRecognizer locationInView:_mapView];
+        CLLocationCoordinate2D touchMapCoordinate = [_mapView convertPoint:touchPoint toCoordinateFromView:_mapView];
+        MKPointAnnotation *point = [[MKPointAnnotation alloc] init];
+        point.coordinate = touchMapCoordinate;
+        point.isAccessibilityElement = YES;
+        // Show message: Add map bookmark marker? Long: xxx, Lat: xxx; Cancel / Confirm
+        NSString *title = NSLocalizedString(@"message_add_map_bookmark_marker", nil);
+        NSString *message = [NSString stringWithFormat:@"Lon: %f, Lat: %f", point.coordinate.longitude, point.coordinate.latitude];
+        [UIAlertView showWithTitle:title message:message cancelButtonTitle:NSLocalizedString(@"cancel", nil) otherButtonTitles:@[NSLocalizedString(@"confirm", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+            if (buttonIndex != alertView.cancelButtonIndex) {
+                [self createMapBookmarkForCoordinate:point.coordinate];
+            }
+        }];
+        return;
+    }
     if (_claim.getViewType == OTViewTypeAdd) {
         [SVProgressHUD showErrorWithStatus:NSLocalizedString(@"message_save_claim_before_adding_content", nil)];
     } else if (_claim.getViewType == OTViewTypeView) {
         return;
-    } else {
+    } else if (_claim.getViewType == OTViewTypeEdit) {
         UIGestureRecognizer *gestureRecognizer = sender;
         if (gestureRecognizer.state != UIGestureRecognizerStateBegan)
             return;
@@ -1020,6 +1099,23 @@
         point.isAccessibilityElement = YES;
         [self confirmAddingMarkerFromAnnotation:point];
     }
+}
+
+- (IBAction)createMapBookmarkForCoordinate:(CLLocationCoordinate2D)coordinate {
+    NSString *title = NSLocalizedString(@"message_add_map_bookmark_marker", nil);
+    NSString *message = NSLocalizedString(@"message_enter_description", nil);
+
+    [UIAlertView showWithTitle:title message:message placeholder:message defaultText:nil style:UIAlertViewStylePlainTextInput cancelButtonTitle:NSLocalizedString(@"cancel", nil)  otherButtonTitles:@[NSLocalizedString(@"confirm", nil)] tapBlock:^(UIAlertView *alertView, NSInteger buttonIndex) {
+        if (buttonIndex != alertView.cancelButtonIndex && [[alertView textFieldAtIndex:0] text].length != 0) {
+            MapBookmark *mapBookmark = [MapBookmarkEntity create];
+            [mapBookmark setCoordinate:coordinate];
+            [mapBookmark setName:[[alertView textFieldAtIndex:0] text]];
+            [mapBookmark.managedObjectContext save:nil];
+            MKPointAnnotation *ann = mapBookmark.annotation;
+            [_bookmarkMapView addAnnotation:ann];
+            [_mapView addAnnotation:ann];
+        }
+    }];
 }
 
 - (void)confirmAddingMarkerFromAnnotation:(MKPointAnnotation *)point {
@@ -1616,6 +1712,12 @@
 
 - (void)updateMapViewAnnotationsWithAnnotations:(NSArray *)annotations {
     NSMutableSet *before = [NSMutableSet setWithArray:self.mapView.annotations];
+    // Loại MapBookmark
+    for (id <MKAnnotation>object in self.bookmarkMapView.annotations)
+        if ([object conformsToProtocol:@protocol(MKAnnotation)]) {
+            [before removeObject:object];
+        }
+    
     // Không cho cluster đối với các đỉnh của polygon
     for (id <MKAnnotation>object in [self.workingAnnotations copy])
         if ([object conformsToProtocol:@protocol(MKAnnotation)]) {
@@ -1720,11 +1822,6 @@
                 
                 pin.draggable = (_claim.getViewType == OTViewTypeView) ? NO : YES;
                 pin.canShowCallout = YES;
-//                UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(1, 0, 25, 25)];
-//                UIImage *btnImage = [UIImage imageNamed:@"Icon-remove"];
-//                [deleteButton setImage:btnImage forState:UIControlStateNormal];
-//                if (_claim.getViewType != OTViewTypeView)
-//                    pin.rightCalloutAccessoryView = deleteButton;
             }
             [pin setSelected:YES animated:YES];
             return pin;
@@ -1741,6 +1838,25 @@
                 pin.canShowCallout = YES;
             }
             [pin setSelected:YES animated:YES];
+            return pin;
+        }
+        
+        // MapBookmark
+        if ([[((MKPointAnnotation *)annotation) accessibilityHint] isEqualToString:@"MapBookmark"]) {
+            NSString *annotationIdentifier = @"MapBookmark";
+            MapBookmarkAnnotationView *pin = (MapBookmarkAnnotationView *)[_mapView dequeueReusableAnnotationViewWithIdentifier:annotationIdentifier];
+            if (!pin) {
+                pin = [[MapBookmarkAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:annotationIdentifier];
+                
+                pin.canShowCallout = YES;
+                if (_claim == nil) { // Chỉ cho xóa ở ngoài map view chính
+                    UIButton *deleteButton = [[UIButton alloc] initWithFrame:CGRectMake(1, 0, 25, 25)];
+                    UIImage *btnImage = [UIImage imageNamed:@"ic_action_remove"];
+                    [deleteButton setImage:btnImage forState:UIControlStateNormal];
+                    [deleteButton addTarget:self action:@selector(deleteMapBookmark:) forControlEvents:UIControlEventTouchUpInside];
+                    pin.rightCalloutAccessoryView = deleteButton;
+                }
+            }
             return pin;
         }
         
@@ -2213,5 +2329,35 @@
     });
     [self setTileDownloading:NO];
 }
+
+- (IBAction)deleteMapBookmark:(id)sender {
+    MKPointAnnotation *ann = _mapView.selectedAnnotations.firstObject;
+    if (ann != nil) {
+        [self.mapView removeAnnotation:ann];
+        [self.bookmarkMapView removeAnnotation:ann];
+        MapBookmark *mapBookmark = [MapBookmarkEntity getMapBookmarkByMapBookmarkId:ann.accessibilityValue];
+        if (mapBookmark != nil) {
+            [dataContext deleteObject:mapBookmark];
+            [dataContext save:nil];
+        }
+    }
+}
+
+#pragma OTSelectionTabBarViewControllerDelegate method
+
+- (void)mapBookmark:(OTMapBookmarkViewController *)controller didSelectMapBookmark:(MapBookmark *)bookmark {
+    [_mapView removeAnnotations:_bookmarkMapView.annotations];
+    MKPointAnnotation *ann = bookmark.annotation;
+    [_bookmarkMapView addAnnotation:ann];
+    [_mapView addAnnotation:ann];
+    [_mapView setCenterCoordinate:bookmark.coordinate animated:YES];
+    [_mapView selectAnnotation:ann animated:YES];
+}
+
+//- (void)mapBookmark:(OTMapBookmarkViewController *)controller didDeleteMapBookmarkId:(NSString *)bookmarkId {
+//    MKPointAnnotation *ann = [[_mapView.annotations filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"accessibilityValue==%@", bookmarkId]] firstObject];
+//    [self.mapView removeAnnotation:ann];
+//    [self.bookmarkMapView removeAnnotation:ann];
+//}
 
 @end

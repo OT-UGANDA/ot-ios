@@ -27,7 +27,7 @@
  */
 #import "ViewPagerController.h"
 
-@class OTSelectionTabBarViewController;
+@class OTSelectionTabBarViewController, OTMapBookmarkViewController;
 
 @protocol OTSelectionTabBarViewControllerDelegate <NSObject>
 
@@ -35,6 +35,8 @@
 
 - (void)personSelection:(OTSelectionTabBarViewController *)controller didSelectPerson:(Person *)person;
 - (void)claimSelection:(OTSelectionTabBarViewController *)controller didSelelectClaim:(Claim *)claim;
+- (void)mapBookmark:(OTMapBookmarkViewController *)controller didSelectMapBookmark:(MapBookmark *)bookmark;
+- (void)mapBookmark:(OTMapBookmarkViewController *)controller didDeleteMapBookmarkId:(NSString *)bookmarkId;
 
 @end
 

@@ -26,21 +26,24 @@
  * *********************************************************************************************
  */
 
-#import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
+#import "OTAbstractListViewController.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@class OTMapBookmarkViewController;
 
-@interface MapBookmark : NSManagedObject
+@protocol OTMapBookmarkViewControllerDelegate <NSObject>
 
-// Insert code here to declare functionality of your managed object subclass
-- (NSString *)toString;
-- (CLLocationCoordinate2D)coordinate;
-- (MKPointAnnotation *)annotation;
-- (void)setCoordinate:(CLLocationCoordinate2D)coordinate;
+@optional
+
+- (void)mapBookmark:(OTMapBookmarkViewController *)controller didSelectMapBookmark:(MapBookmark *)bookmark;
+- (void)mapBookmark:(OTMapBookmarkViewController *)controller didDeleteMapBookmarkId:(NSString *)bookmarkId;
 
 @end
 
-NS_ASSUME_NONNULL_END
+@interface OTMapBookmarkViewController : OTAbstractListViewController
 
-#import "MapBookmark+CoreDataProperties.h"
+@property (strong, nonatomic) MapBookmark *mapBookmark;
+@property (weak, nonatomic) id <OTMapBookmarkViewControllerDelegate> delegate;
+
+- (IBAction)cancel:(id)sender;
+
+@end

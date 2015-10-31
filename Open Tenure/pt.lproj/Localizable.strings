@@ -108,6 +108,12 @@
 
 "action_export_log" = "Export log";
 
+"action_go_to" = "Go to";
+
+"action_center" = "Center GPS";
+
+"action_select_bookmark" = "Go to bookmark";
+
 /* loco:54c52dfe14d725972b8b4660 */
 "add_description" = "Descrição?";
 
@@ -916,6 +922,8 @@
 
 /* loco:54c52dfe14d725972b8b459a */
 "title_share" = "Parcela";
+
+"title_bookmarks" = "Bookmarks";
 
 /* loco:54c52dfe14d725972b8b464c */
 "too_many_tiles_queued" = "Existem %d arquivos na lista de transferência. Por favor, espere antes de baixar outros arquivos";

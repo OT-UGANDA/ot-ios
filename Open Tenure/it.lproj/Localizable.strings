@@ -108,6 +108,12 @@
 
 "action_export_log" = "Export log";
 
+"action_go_to" = "Go to";
+
+"action_center" = "Center GPS";
+
+"action_select_bookmark" = "Go to bookmark";
+
 /* loco:54c52dfe14d725972b8b4660 */
 "add_description" = "Descrizione?";
 
@@ -668,6 +674,8 @@
 
 "message_log_exported" = "A copy of the application log has been exported";
 
+"message_add_map_bookmark_marker" = "Add map bookmark marker?";
+
 /* loco:54c52dfe14d725972b8b45de */
 "mobile_phone_number" = "Telefono mobile";
 
@@ -916,6 +924,8 @@
 
 /* loco:54c52dfe14d725972b8b459a */
 "title_share" = "Quota";
+
+"title_bookmarks" = "Bookmarks";
 
 /* loco:54c52dfe14d725972b8b464c */
 "too_many_tiles_queued" = "Ci sono %d immagini nella lista di download. Attendi prima di aggiungerne altre";

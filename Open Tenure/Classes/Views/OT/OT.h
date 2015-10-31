@@ -80,7 +80,8 @@ extern NSString * const kPersonTypeGroup;
 
 typedef NS_ENUM(NSInteger, OTSelectionAction) {
     OTClaimSelectionAction = 0,
-    OTShareViewDetail
+    OTShareViewDetail,
+    OTSelectionActionMapBookmark
 };
 
 typedef NS_ENUM(NSInteger, OTViewType) {

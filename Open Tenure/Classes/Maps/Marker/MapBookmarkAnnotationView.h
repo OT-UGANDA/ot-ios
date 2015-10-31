@@ -26,21 +26,10 @@
  * *********************************************************************************************
  */
 
-#import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
+#import <MapKit/MapKit.h>
 
-NS_ASSUME_NONNULL_BEGIN
+@interface MapBookmarkAnnotationView : MKAnnotationView
 
-@interface MapBookmark : NSManagedObject
-
-// Insert code here to declare functionality of your managed object subclass
-- (NSString *)toString;
-- (CLLocationCoordinate2D)coordinate;
-- (MKPointAnnotation *)annotation;
-- (void)setCoordinate:(CLLocationCoordinate2D)coordinate;
+@property (nonatomic, assign, getter = isSelecting) BOOL selcting;
 
 @end
-
-NS_ASSUME_NONNULL_END
-
-#import "MapBookmark+CoreDataProperties.h"

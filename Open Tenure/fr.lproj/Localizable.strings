@@ -108,6 +108,12 @@
 
 "action_export_log" = "Export log";
 
+"action_go_to" = "Go to";
+
+"action_center" = "Center GPS";
+
+"action_select_bookmark" = "Go to bookmark";
+
 /* loco:54c52dfe14d725972b8b4660 */
 "add_description" = "Description?";
 
@@ -668,6 +674,8 @@
 
 "message_log_exported" = "A copy of the application log has been exported";
 
+"message_add_map_bookmark_marker" = "Add map bookmark marker?";
+
 /* loco:54c52dfe14d725972b8b45de */
 "mobile_phone_number" = "Numéro de téléphone mobile";
 
@@ -916,6 +924,8 @@
 
 /* loco:54c52dfe14d725972b8b459a */
 "title_share" = "Part";
+
+"title_bookmarks" = "Bookmarks";
 
 /* loco:54c52dfe14d725972b8b464c */
 "too_many_tiles_queued" = "Il y a %d images du mosaiquage dans la liste des téléchargement. Merci d'attendre avant de télécharger d'autres images du mosaiquage.";

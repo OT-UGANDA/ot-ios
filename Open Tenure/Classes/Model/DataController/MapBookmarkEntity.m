@@ -122,6 +122,7 @@
 
 + (MapBookmark *)create {
     MapBookmark *newObject = [NSEntityDescription insertNewObjectForEntityForName:[[self sharedEntity] entityName] inManagedObjectContext:[[self sharedEntity] managedObjectContext]];
+    newObject.mapBookmarkId = [[[NSUUID UUID] UUIDString] lowercaseString];
     return newObject;
 }
 

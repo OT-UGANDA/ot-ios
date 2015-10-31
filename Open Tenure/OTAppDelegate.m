@@ -34,7 +34,7 @@
 {
     [OTSetting getReInitialization];
     
-    [OTSetting preparingExportLog];
+    //[OTSetting preparingExportLog];
     
     [self managedObjectContext];
     

@@ -35,4 +35,22 @@
     return self.description;
 }
 
+- (CLLocationCoordinate2D)coordinate {
+    return CLLocationCoordinate2DMake([self.lat doubleValue], [self.lon doubleValue]);
+}
+
+- (MKPointAnnotation *)annotation {
+    MKPointAnnotation *ann = [[MKPointAnnotation alloc] init];
+    ann.coordinate = self.coordinate;
+    ann.accessibilityHint = @"MapBookmark";
+    ann.title = self.name;
+    ann.accessibilityValue = self.mapBookmarkId;
+    return ann;
+}
+
+- (void)setCoordinate:(CLLocationCoordinate2D)coordinate {
+    self.lat = [NSDecimalNumber decimalNumberWithString:[@(coordinate.latitude) stringValue]];
+    self.lon = [NSDecimalNumber decimalNumberWithString:[@(coordinate.longitude) stringValue]];
+}
+
 @end

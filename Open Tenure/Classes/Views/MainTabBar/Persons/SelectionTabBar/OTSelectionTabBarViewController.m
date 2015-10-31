@@ -29,8 +29,9 @@
 #import "OTSelectionTabBarViewController.h"
 #import "OTClaimsViewController.h"
 #import "OTShareUpdateViewController.h"
+#import "OTMapBookmarkViewController.h"
 
-@interface OTSelectionTabBarViewController () <ViewPagerDataSource, ViewPagerDelegate, OTClaimsViewControllerDelegate>
+@interface OTSelectionTabBarViewController () <ViewPagerDataSource, ViewPagerDelegate, OTClaimsViewControllerDelegate, OTMapBookmarkViewControllerDelegate>
 
 @property (nonatomic) NSUInteger numberOfTabs;
 @property (nonatomic) NSArray *views;
@@ -80,6 +81,12 @@
         case OTShareViewDetail: {
             OTShareUpdateViewController *shareUpdateviewController = (OTShareUpdateViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"Share"];
             _views = @[shareUpdateviewController];
+            break;
+        }
+        case OTSelectionActionMapBookmark: {
+            OTMapBookmarkViewController *mapBookmarkVC = (OTMapBookmarkViewController *)[self.storyboard instantiateViewControllerWithIdentifier:@"MapBookmark"];
+            mapBookmarkVC.delegate = self;
+            _views = @[mapBookmarkVC];
             break;
         }
     }
@@ -135,6 +142,9 @@
             break;
         case OTShareViewDetail:
             titles = @[NSLocalizedString(@"title_activity_share_details", nil)];
+            break;
+        case OTSelectionActionMapBookmark:
+            titles = @[NSLocalizedString(@"title_bookmarks", nil)];
             break;
     }
     UILabel *label = [UILabel new];
@@ -211,6 +221,9 @@
         case OTShareViewDetail:
             titles = @[NSLocalizedString(@"title_activity_share_details", nil)];
             break;
+        case OTSelectionActionMapBookmark:
+            titles = @[NSLocalizedString(@"title_bookmarks", nil)];
+            break;
     }
     UIBarButtonItem *logo = [OT logoButtonWithTitle:titles[index]];
     self.navigationItem.leftBarButtonItems = @[logo];
@@ -230,6 +243,9 @@
                     }
                     break;
                 }
+                case OTSelectionActionMapBookmark:
+                    self.navigationItem.rightBarButtonItems = @[_cancel, _flexibleSpace];
+                    break;
             }
             break;
     }
@@ -239,6 +255,16 @@
 
 - (void)claimSelection:(OTClaimsViewController *)controller didSelectClaim:(Claim *)claim {
     [_selectionDelegate claimSelection:self didSelelectClaim:claim];
+}
+
+#pragma OTMapBookmarkViewControllerDelegate method
+
+- (void)mapBookmark:(OTMapBookmarkViewController *)controller didSelectMapBookmark:(MapBookmark *)bookmark {
+    [_selectionDelegate mapBookmark:controller didSelectMapBookmark:bookmark];
+}
+
+- (void)mapBookmark:(OTMapBookmarkViewController *)controller didDeleteMapBookmarkId:(NSString *)bookmarkId {
+    [_selectionDelegate mapBookmark:controller didDeleteMapBookmarkId:bookmarkId];
 }
 
 @end

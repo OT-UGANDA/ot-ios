@@ -215,6 +215,8 @@
 		DEFD1ADE1B59525F00FBF11B /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1ACB1B59525F00FBF11B /* unzip.c */; };
 		DEFD1ADF1B59525F00FBF11B /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1ACD1B59525F00FBF11B /* zip.c */; };
 		DEFD1AE01B59525F00FBF11B /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = DEFD1AD11B59525F00FBF11B /* SSZipArchive.m */; };
+		DEFF3F5E1BE32CD800E1D511 /* MapBookmarkAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = DEFF3F5D1BE32CD800E1D511 /* MapBookmarkAnnotationView.m */; };
+		DEFF3F621BE373EB00E1D511 /* OTMapBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DEFF3F611BE373EB00E1D511 /* OTMapBookmarkViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -654,6 +656,10 @@
 		DEFD1ACF1B59525F00FBF11B /* SSZipArchive-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SSZipArchive-Prefix.pch"; sourceTree = "<group>"; };
 		DEFD1AD01B59525F00FBF11B /* SSZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSZipArchive.h; sourceTree = "<group>"; };
 		DEFD1AD11B59525F00FBF11B /* SSZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSZipArchive.m; sourceTree = "<group>"; };
+		DEFF3F5C1BE32CD800E1D511 /* MapBookmarkAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MapBookmarkAnnotationView.h; path = Classes/Maps/Marker/MapBookmarkAnnotationView.h; sourceTree = "<group>"; };
+		DEFF3F5D1BE32CD800E1D511 /* MapBookmarkAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MapBookmarkAnnotationView.m; path = Classes/Maps/Marker/MapBookmarkAnnotationView.m; sourceTree = "<group>"; };
+		DEFF3F601BE373EB00E1D511 /* OTMapBookmarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OTMapBookmarkViewController.h; path = "Classes/Views/MainTabBar/Claims/ClaimTabBar/Claim Update/MapBookmark/OTMapBookmarkViewController.h"; sourceTree = "<group>"; };
+		DEFF3F611BE373EB00E1D511 /* OTMapBookmarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OTMapBookmarkViewController.m; path = "Classes/Views/MainTabBar/Claims/ClaimTabBar/Claim Update/MapBookmark/OTMapBookmarkViewController.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1044,6 +1050,8 @@
 		DE5A14E51A0264B8005643DE /* Marker */ = {
 			isa = PBXGroup;
 			children = (
+				DEFF3F5C1BE32CD800E1D511 /* MapBookmarkAnnotationView.h */,
+				DEFF3F5D1BE32CD800E1D511 /* MapBookmarkAnnotationView.m */,
 				DE5A14E61A026618005643DE /* OTAnnotationView1.h */,
 				DE5A14E71A026618005643DE /* OTAnnotationView1.m */,
 			);
@@ -1327,6 +1335,7 @@
 		DEB89C1C1996139D00BBC9D3 /* Claim Update */ = {
 			isa = PBXGroup;
 			children = (
+				DEFF3F5F1BE3739900E1D511 /* MapBookmark */,
 				DEB89C2119963E0900BBC9D3 /* Claim */,
 				DEB89C2219963E1100BBC9D3 /* Documents */,
 				DEB89C2519963E6800BBC9D3 /* Adjacencies */,
@@ -1657,6 +1666,15 @@
 			path = aes;
 			sourceTree = "<group>";
 		};
+		DEFF3F5F1BE3739900E1D511 /* MapBookmark */ = {
+			isa = PBXGroup;
+			children = (
+				DEFF3F601BE373EB00E1D511 /* OTMapBookmarkViewController.h */,
+				DEFF3F611BE373EB00E1D511 /* OTMapBookmarkViewController.m */,
+			);
+			name = MapBookmark;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1766,6 +1784,7 @@
 				DE825C7219D2586800D07FDA /* LandUse+OT.m in Sources */,
 				DED374F5198E8A1900B48E7A /* BPFormButtonCell.m in Sources */,
 				DEB89C331996477E00BBC9D3 /* OTAdjacenciesUpdateViewController.m in Sources */,
+				DEFF3F621BE373EB00E1D511 /* OTMapBookmarkViewController.m in Sources */,
 				DEB89C4A199A13B200BBC9D3 /* OTFileChooserViewController.m in Sources */,
 				DE373FBA1A72547B00360AA2 /* FileDownloadInfo.m in Sources */,
 				DE7F64541988AA540063047F /* TBClusterAnnotation.m in Sources */,
@@ -1899,6 +1918,7 @@
 				DEED932E1A7E91B3007091B1 /* PDFClaimExporter.m in Sources */,
 				DE56148A1A10BA2F0075ABD5 /* OTSettingViewController.m in Sources */,
 				DEB89C4E199A14B300BBC9D3 /* DirectoryWatcher.m in Sources */,
+				DEFF3F5E1BE32CD800E1D511 /* MapBookmarkAnnotationView.m in Sources */,
 				DEBF8ECF1B6251B20046DEB0 /* OTPolylineRenderer.m in Sources */,
 				DE6D1D9D19CDEA780096C50B /* GeoShape.m in Sources */,
 				DEEF29F01A2336CD002A3AA6 /* SectionPayload+OT.m in Sources */,
