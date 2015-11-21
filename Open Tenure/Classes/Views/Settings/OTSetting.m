@@ -31,6 +31,12 @@
 
 @implementation OTSetting
 
++ (NSString *)getAppVersion {
+    NSString *bundleVersionString = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    NSString *bundleVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+    return [NSString stringWithFormat:@"Software Version: %@ (%@)", bundleVersionString, bundleVersion];
+}
+
 + (NSString *)getCommunityServerURL {
     NSString *url = [[NSUserDefaults standardUserDefaults] stringForKey:@"CommunityServerURL"];
     if (url == nil) url = @"https://demo.opentenure.org";

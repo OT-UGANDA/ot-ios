@@ -44,7 +44,8 @@
     if (self.sections == nil)
         self.sections = @[NSLocalizedString(@"general", nil),
                           NSLocalizedString(@"map_sources", nil),
-                          NSLocalizedString(@"dynamic_form", nil)];
+                          NSLocalizedString(@"dynamic_form", nil),
+                          NSLocalizedString(@"information", nil)];
     if (self.cells == nil)
         self.cells = @[@[@{@"title" : NSLocalizedString(@"cs_url_pref_title", nil),
                            @"subtitle" : NSLocalizedString(@"cs_url_pref_summary", nil)}],
@@ -59,7 +60,8 @@
                          @{@"title" : NSLocalizedString(@"wtms_url_pref_title", nil),
                            @"subtitle" : NSLocalizedString(@"wtms_url_pref_summary", nil)}],
                        @[@{@"title" : NSLocalizedString(@"form_template_url_pref_title", nil),
-                           @"subtitle" : NSLocalizedString(@"form_template_url_pref_summary", nil)}]];
+                           @"subtitle" : NSLocalizedString(@"form_template_url_pref_summary", nil)}],
+                       @[@{@"title" : [OTSetting getAppVersion]}]];
 }
 
 - (void)didReceiveMemoryWarning {

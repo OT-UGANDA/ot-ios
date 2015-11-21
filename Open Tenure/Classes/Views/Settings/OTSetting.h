@@ -36,6 +36,8 @@ typedef NS_ENUM(NSInteger, OTOMTPType) {
 
 @interface OTSetting : NSObject
 
++ (NSString *)getAppVersion;
+
 + (NSString *)getCommunityServerURL;
 + (void)setCommunityServerURL:(NSString *)url;
 
